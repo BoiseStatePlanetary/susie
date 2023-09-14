@@ -48,3 +48,7 @@ package.nls.*.json
 l10n/
 build
 venv
+notebook_env
+env
+malia_examples
+notebook_requirements.txt
