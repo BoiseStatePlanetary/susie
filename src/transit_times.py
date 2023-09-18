@@ -39,5 +39,5 @@ class TransitTimes(object):
         if np.any(np.isnan(self.uncertainties)):
             raise ValueError("The 'uncertainties' array contains NaN (Not-a-Number) values.")
         # Check that uncertainties are positive and non-zero
-        if not np.all((self.uncertainties > 0) & (self.uncertainties != 0)):
+        if not np.all(self.uncertainties > 0):
             raise ValueError("The 'uncertainties' array must contain non-negative and non-zero values.")

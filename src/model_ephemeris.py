@@ -18,9 +18,6 @@ class LinearModelEphemeris(BaseModelEphemeris):
     def fit_model(self, x, y, yerr, **kwargs):
         popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
-        print("curve_fit linear")
-        print("P = (%g +- %g) days" % (popt[0], unc[0]))
-        print("T0 = (%g +- %g) days" % (popt[1], unc[1]))
         return_data = {
             'period': popt[0],
             'period_err': unc[0],
@@ -34,10 +31,6 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
     def fit_model(self, x, y, yerr, **kwargs):
         popt, pcov = curve_fit(self.quad_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
-        print("curve_fit quadratic")
-        print("dPdE = (%g +- %g) days" % (popt[0], unc[0]))
-        print("P = (%g +- %g) days" % (popt[1], unc[1]))
-        print("T0 = (%g +- %g) days" % (popt[2], unc[2]))
         return_data = {
             'period': popt[0],
             'period_err': unc[0],
@@ -81,12 +74,14 @@ class ModelEphemeris:
         pass
 
     def get_model_parameters(self, model_type, x, y, yerr, **kwargs):
+        # NOTE: Do we want to store the values of x, y, and yerr that were used for this model?
+        
         # Step 1: Instantiate model factory object
         # Step 2: Create the model with the given variables & user inputs
-        # Step 3: The model_ephemeris variable will return a dictionary of model parameters and their errors
+        # Step 3: Iterate over every key value pair in the return data dictionary and add as attribute to this object
+        # The model_ephemeris variable will return a dictionary of model parameters and their errors
         # an example of this would look like:
         # {'period': 329847, 'period_err': 2931, 'conjunction': 123231, 'conjunction_err': 2183}
-        # Iterate over every key value pair in the return data dictionary and add as attribute to this object
         # Step 4: Return the return data dictionary to the user just so they can see what's going on
         factory = ModelEphemerisFactory()
         model_ephemeris = factory.create_model(model_type, x, y, yerr, **kwargs)
