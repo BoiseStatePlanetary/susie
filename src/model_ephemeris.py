@@ -77,10 +77,10 @@ class ModelEphemerisFactory:
 
 
 class ModelEphemeris:
-    def __init__(self, model_type):
-        self.model_type = model_type
+    def __init__(self):
+        pass
 
-    def get_model_parameters(self, x, y, yerr, **kwargs):
+    def get_model_parameters(self, model_type, x, y, yerr, **kwargs):
         # Step 1: Instantiate model factory object
         # Step 2: Create the model with the given variables & user inputs
         # Step 3: The model_ephemeris variable will return a dictionary of model parameters and their errors
@@ -89,14 +89,14 @@ class ModelEphemeris:
         # Iterate over every key value pair in the return data dictionary and add as attribute to this object
         # Step 4: Return the return data dictionary to the user just so they can see what's going on
         factory = ModelEphemerisFactory()
-        model_ephemeris = factory.create_model(self.model_type, x, y, yerr, **kwargs)
+        model_ephemeris = factory.create_model(model_type, x, y, yerr, **kwargs)
         for key, val in model_ephemeris.items():
             setattr(self, key, val)
         return model_ephemeris
 
     def get_bic(self):
         # TODO: Figure out how to calculate this and what we need from the user
-        # Step 1: get value of k based on model_type (linear=2, quad=3, custom=?)
+        # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
         # Step 2: Calculate chi-squared
         # Step 3: Calculate BIC
         pass
