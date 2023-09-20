@@ -90,7 +90,7 @@ class ModelEphemeris:
         return model_ephemeris
 
     def get_bic(self):
-        # TODO: Figure out how to calculate this and what we need from the user
+        # TODO: Figure out how to calculate this and what we need from the user ***FROM UTILS IN BRIAN CODE
         # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
         # Step 2: Calculate chi-squared
         # Step 3: Calculate BIC

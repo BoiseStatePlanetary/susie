@@ -6,6 +6,7 @@ class TransitTimes(object):
     def __init__(self, epochs, mid_transit_times, uncertainties=None):
         self.epochs = epochs
         self.mid_transit_times = mid_transit_times
+        #self.mid_transit_time_system = 
         self.uncertainties = uncertainties
         if uncertainties is None:
             # Make an array of 1s in the same shape of epochs and mid_transit_times
@@ -41,3 +42,28 @@ class TransitTimes(object):
         # Check that uncertainties are positive and non-zero
         if not np.all(self.uncertainties > 0):
             raise ValueError("The 'uncertainties' array must contain non-negative and non-zero values.")
+
+
+if __name__ == '__main__':
+    # CODE BLOCK FOR SMALL TESTS, WILL BE DELETED
+    test = np.array([1, 2, 3, 4])
+    print(type(test))
+
+    data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
+    epochs = data['epoch']
+    print(epochs)
+    print(type(epochs))
+
+    print(type(epochs) == np.ndarray)
+    print(epochs.shape)
+    print(data['transit_time'].shape)
+    print('Beep')
+    print(isinstance(epochs, np.ndarray))
+    print(all(isinstance(value, int) for value in epochs))
+    print(type(epochs[0]))
+    epochs = epochs.astype(int)
+    print(epochs)
+    print(type(epochs[0]))
+
+    tt1 = TransitTimes(epochs, data['transit_time'], data['sigma_transit_time'])
+    print(vars(tt1))

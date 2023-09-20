@@ -3,6 +3,7 @@ from model_ephemeris import ModelEphemeris
 from transit_times import TransitTimes
 
 class Ephemeris(object):
+    # TODO: Merge model ephemeris into this obj
     """Docstring about the ephemeris object.
     """
     def __init__(self, transit_times, model_ephemerides=None):
@@ -22,7 +23,6 @@ class Ephemeris(object):
         # Check that if model_ephemerides is given, it is a list of ModelEphemeris objects **will do if we keep it that way
         
     def get_model_parameters(self, model_type, **kwargs):
-        # NOTE: Do we want to have the user control their x, y, yerr inputs or do we want to pull them straight from the transit times obj?
         # NOTE: Do we want to have the user be able to store the model, do we want to store it for them (if so, as a dict or array)
         # NOTE: Do we want to return the model ephemeris object to the user or just the return data dict? *Would help to keep in mind how users may use this going further into package use
         # Step 1: Get data from transit times obj
@@ -37,3 +37,16 @@ class Ephemeris(object):
         self.model_ephemerides.append(model_ephemeris)
         # Step 5: Return the model ephemeris to the user so they can handle it
         return model_ephemeris
+
+
+if __name__ == '__main__':
+    # This is for small tests, will only run if file is called directly
+    data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
+    epochs = data['epoch'].astype('int')
+    test_tt = TransitTimes(epochs, data['transit_time'], data['sigma_transit_time'])
+    test = Ephemeris(test_tt)
+    print(vars(test))
+
+    mp = test.get_model_parameters('quadratic')
+    print(vars(mp))
+    print(vars(test))
