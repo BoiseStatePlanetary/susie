@@ -37,3 +37,4 @@ class Ephemeris(object):
         self.model_ephemerides.append(model_ephemeris)
         # Step 5: Return the model ephemeris to the user so they can handle it
         return model_ephemeris
+    
