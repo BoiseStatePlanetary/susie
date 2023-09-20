@@ -37,17 +37,3 @@ class Ephemeris(object):
         self.model_ephemerides.append(model_ephemeris)
         # Step 5: Return the model ephemeris to the user so they can handle it
         return model_ephemeris
-    
-
-
-if __name__ == '__main__':
-    # This is for small tests, will only run if file is called directly
-    data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
-    epochs = data['epoch'].astype('int')
-    test_tt = TransitTimes(epochs, data['transit_time'], data['sigma_transit_time'])
-    test = Ephemeris(test_tt)
-    print(vars(test))
-
-    mp = test.get_model_parameters('quadratic')
-    print(vars(mp))
-    print(vars(test))
