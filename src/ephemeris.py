@@ -1,19 +1,82 @@
+from abc import ABC, abstractmethod
+from scipy.optimize import curve_fit
 import numpy as np
-from model_ephemeris import ModelEphemeris
 from transit_times import TransitTimes
 
+class BaseModelEphemeris(ABC):
+    @abstractmethod
+    def fit_model(self, x, y, yerr, **kwargs):
+        pass
+
+
+class LinearModelEphemeris(BaseModelEphemeris):
+    def lin_fit(self, x, P, T0):
+        return P*x + T0
+    
+    def fit_model(self, x, y, yerr, **kwargs):
+        popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
+        unc = np.sqrt(np.diag(pcov))
+        return_data = {
+            'period': popt[0],
+            'period_err': unc[0],
+            'conjunction_time': popt[1],
+            'conjunction_time_err': unc[1]
+        }
+        return(return_data)
+
+
+class QuadraticModelEphemeris(BaseModelEphemeris):
+    def quad_fit(self, x, dPdE, P, T0):
+        return 0.5*dPdE*x*x + P*x + T0
+    
+    def fit_model(self, x, y, yerr, **kwargs):
+        popt, pcov = curve_fit(self.quad_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
+        unc = np.sqrt(np.diag(pcov))
+        return_data = {
+            'period': popt[0],
+            'period_err': unc[0],
+            'conjunction_time': popt[1],
+            'conjunction_time_err': unc[1],
+            'period_change_by_epoch': popt[2],
+            'period_change_by_epoch_err': unc[2]
+        }
+        return(return_data)
+
+
+class CustomModelEphemeris(BaseModelEphemeris):
+    def fit_model(self, x, y, yerr, **kwargs):
+        pass
+
+
+class ModelEphemerisFactory:
+    """example using this: 
+
+    factory = ModelEphemerisFactory()
+    linear_model = factory.create_model('linear', x=epochs, y=transit_time, yerr=uncertainties, fit_intercept=True)
+    quadratic_model = factory.create_model('quadratic', x=epochs, y=transit_time, yerr=uncertainties)
+    """
+    @staticmethod
+    def create_model(model_type, x, y, yerr, **kwargs):
+        models = {
+            'linear': LinearModelEphemeris(),
+            'quadratic': QuadraticModelEphemeris(),
+            'custom': CustomModelEphemeris()
+        }
+
+        if model_type not in models:
+            raise ValueError(f"Invalid model type: {model_type}")
+
+        model = models[model_type]
+        return model.fit_model(x, y, yerr, **kwargs)
+
+
 class Ephemeris(object):
-    # TODO: Merge model ephemeris into this obj
     """Docstring about the ephemeris object.
     """
-    def __init__(self, transit_times, model_ephemerides=None):
+    def __init__(self, transit_times):
         # initializing the transit times object and model ephermeris object
         # NOTE: We will have the user create their own transit times obj and send that to the ephemeris obj
-        # NOTE: Do we want there to be a list of model ephemerides or just hold one at a time?
-        self.model_ephemerides = model_ephemerides
         self.transit_times = transit_times
-        if model_ephemerides is None:
-            self.model_ephemeris = []
         self._validate()
 
     def _validate(self):
@@ -23,31 +86,25 @@ class Ephemeris(object):
         # Check that if model_ephemerides is given, it is a list of ModelEphemeris objects **will do if we keep it that way
         
     def get_model_parameters(self, model_type, **kwargs):
-        # NOTE: Do we want to have the user be able to store the model, do we want to store it for them (if so, as a dict or array)
         # NOTE: Do we want to return the model ephemeris object to the user or just the return data dict? *Would help to keep in mind how users may use this going further into package use
         # Step 1: Get data from transit times obj
         x = self.transit_times.epochs - np.min(self.transit_times.epochs)
         y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
         yerr = self.transit_times.uncertainties
-        # Step 2: Instantiate model ephemeris object
-        model_ephemeris = ModelEphemeris()
-        # Step 3: Call get_model_parameters to run model and get back parameters
-        model_ephemeris.get_model_parameters(model_type, x, y, yerr, **kwargs) # this will return the model parameters as dict
-        # Step 4: Append this new model to the list of models
-        self.model_ephemerides.append(model_ephemeris)
-        # Step 5: Return the model ephemeris to the user so they can handle it
+        # Step 2: Create the model with the given variables & user inputs
+        model_ephemeris = ModelEphemerisFactory.create_model(model_type, x, y, yerr, **kwargs) # this will return the model parameters as dict
+        # Step 3: Iterate over every key value pair in the return data dictionary and add as attribute to this object
+        # The model_ephemeris variable will return a dictionary of model parameters and their errors
+        # an example of this would look like:
+        # {'period': 329847, 'period_err': 2931, 'conjunction': 123231, 'conjunction_err': 2183}
+        for key, val in model_ephemeris.items():
+            setattr(self, key, val)
+        # Step 4: Return the return data dictionary to the user just so they can see what's going on
         return model_ephemeris
-    
 
-
-if __name__ == '__main__':
-    # This is for small tests, will only run if file is called directly
-    data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
-    epochs = data['epoch'].astype('int')
-    test_tt = TransitTimes(epochs, data['transit_time'], data['sigma_transit_time'])
-    test = Ephemeris(test_tt)
-    print(vars(test))
-
-    mp = test.get_model_parameters('quadratic')
-    print(vars(mp))
-    print(vars(test))
+    def get_bic(self):
+        # TODO: Figure out how to calculate this and what we need from the user ***FROM UTILS IN BRIAN CODE
+        # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
+        # Step 2: Calculate chi-squared
+        # Step 3: Calculate BIC
+        pass
