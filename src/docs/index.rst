@@ -10,9 +10,10 @@ Welcome to susie's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   ephemeris.rst
+   transit_times.rst
 
-
-Indices and tables
+Indices and tables.\
 ==================
 
 * :ref:`genindex`
