@@ -5,6 +5,24 @@ from transit_times import TransitTimes
 class Ephemeris(object):
     # TODO: Merge model ephemeris into this obj
     """Docstring about the ephemeris object.
+
+    Parameters
+    -----------
+    self :
+    transit_times :
+        
+    Returns
+    -------
+    model_ephemeris :
+
+    Exceptions
+    ----------
+     ValueError
+        raised if transit_times is not an instance of the TransitTimes object
+
+
+    ----------
+
     """
     def __init__(self, transit_times, model_ephemerides=None):
         # initializing the transit times object and model ephermeris object

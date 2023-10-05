@@ -2,6 +2,18 @@ import numpy as np
 
 class TransitTimes(object):
     """Docstrings for transit times object.
+ 
+    Parameters
+    ----------
+    self : 
+    epochs : NumPy array
+        what does it do
+    mid_transit_times : NumPy
+        what does it do 
+
+    Exceptions
+    ----------
+        lots to add
     """
     def __init__(self, epochs, mid_transit_times, uncertainties=None):
         self.epochs = epochs
