@@ -24,3 +24,6 @@ There should be clear guidelines for third-parties wishing to:
 Contribute to the software
 Report issues or problems with the software
 Seek support
+
+## Links
+[Test PyPi](https://test.pypi.org/project/Susie/0.0.1/)
