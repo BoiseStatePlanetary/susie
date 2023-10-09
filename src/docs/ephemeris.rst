@@ -3,7 +3,7 @@
 Ephemeris
 =========
 
-Testing out linking the ephemeris file.
+Description of the Ephemeris File
 
 .. automodule:: ephemeris
    :members:
