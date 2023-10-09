@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock
 from pytest_mock import mocker
-from ..src.ephemeris import Ephemeris
+from ..src.susie.ephemeris import Ephemeris
 
 class TestEphemeris:
     """
