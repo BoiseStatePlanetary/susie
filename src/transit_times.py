@@ -2,11 +2,24 @@ import numpy as np
 
 class TransitTimes(object):
     """Docstrings for transit times object.
+
+    Args: prolly not use the term args
+        time_system: 
+
+        epochs:
+
+        mid_transit_times:
+
+        uncertainties:
     """
     def __init__(self, epochs, mid_transit_times, uncertainties=None):
+        # self.time_system = time_system # Should we add a default time system?
+        # self.time_system = Time(mid_transit_times, format='time_system') 
+        # What is the goal of putting into time obj? Do we want to just make sure 
+        # they're aware of the time system they're using or do we eventually want 
+        # to be able to use/convert the times in some way?
         self.epochs = epochs
         self.mid_transit_times = mid_transit_times
-        #self.mid_transit_time_system = 
         self.uncertainties = uncertainties
         if uncertainties is None:
             # Make an array of 1s in the same shape of epochs and mid_transit_times

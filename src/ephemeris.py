@@ -108,3 +108,10 @@ class Ephemeris(object):
         # Step 2: Calculate chi-squared
         # Step 3: Calculate BIC
         pass
+
+# if __name__ == '__main__':
+#     data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
+#     epochs = data["epoch"] - np.min(data["epoch"])
+#     mid_transit_times = data["transit_time"] - np.min(data["transit_time"])
+#     uncertainties = data["sigma_transit_time"]
+#     tt1 = TransitTimes(epochs, mid_transit_times, uncertainties)
