@@ -72,6 +72,28 @@ class ModelEphemerisFactory:
 
 class Ephemeris(object):
     """Docstring about the ephemeris object.
+
+    Parameters
+    -----------
+    self :
+        represents an instance of the class Ephemeris
+    transit_times : ??
+        user generated object from transit_times.py
+    model_ephemerides : list - potentially tbd
+    model_type : 
+
+        
+    Returns
+    -------
+    model_ephemeris : list - ask
+        Model of epemieris as a list of dictionaries
+    
+    Exceptions
+    ----------
+     ValueError
+        raised if transit_times is not an instance of the TransitTimes object
+    ----------
+
     """
     def __init__(self, transit_times):
         # initializing the transit times object and model ephermeris object
