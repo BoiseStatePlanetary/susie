@@ -1,5 +1,5 @@
 import pytest
-from ..src.transit_times import TransitTimes
+from ..src.susie.transit_times import TransitTimes
 
 class TestTransitTimes:
     """

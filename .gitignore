@@ -53,3 +53,4 @@ env
 malia_examples
 notebook_requirements.txt
 Susie.egg-info
+dist

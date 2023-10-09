@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
-from transit_times import TransitTimes
+from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
     @abstractmethod
@@ -105,7 +105,6 @@ class Ephemeris(object):
         # Check that transit_times is an instance of the TransitTimes object
         if not isinstance(self.transit_times, TransitTimes):
             raise ValueError("Variable 'transit_times' expected type of object 'TransitTimes'.")
-        # Check that if model_ephemerides is given, it is a list of ModelEphemeris objects **will do if we keep it that way
         
     def get_model_parameters(self, model_type, **kwargs):
         # NOTE: Do we want to return the model ephemeris object to the user or just the return data dict? *Would help to keep in mind how users may use this going further into package use
@@ -130,10 +129,3 @@ class Ephemeris(object):
         # Step 2: Calculate chi-squared
         # Step 3: Calculate BIC
         pass
-
-# if __name__ == '__main__':
-#     data = np.genfromtxt("./malia_examples/WASP12b_transit_ephemeris.csv", delimiter=',', names=True)
-#     epochs = data["epoch"] - np.min(data["epoch"])
-#     mid_transit_times = data["transit_time"] - np.min(data["transit_time"])
-#     uncertainties = data["sigma_transit_time"]
-#     tt1 = TransitTimes(epochs, mid_transit_times, uncertainties)
