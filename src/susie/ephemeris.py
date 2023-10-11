@@ -75,12 +75,10 @@ class Ephemeris(object):
 
     Parameters
     -----------
-    self :
-        represents an instance of the class Ephemeris
-    transit_times : ??
+    transit_times : obj
         user generated object from transit_times.py
-    model_ephemerides : list - potentially tbd
-    model_type : 
+    model_type : str 
+        Specifies linear or quadratic model of transit time
 
         
     Returns

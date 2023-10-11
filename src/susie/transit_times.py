@@ -7,13 +7,36 @@ class TransitTimes(object):
     ----------
     self : 
     epochs : NumPy array
-        what does it do
-    mid_transit_times : NumPy
-        what does it do 
+        ints representing ???
+    mid_transit_times : NumPy array
+        floats representing ??
+    Uncertainties : Numpy array
+        floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times
 
     Exceptions
     ----------
-        lots to add
+        TypeError : 
+            raised if epochs is not a NumPy Array
+        TypeError : 
+            raised if mid_transit_times is not a NumPy Array
+        TypeError : 
+            raised if Uncertainties is not a NumPy Array
+        ValueError :
+            raised if shapes of epochs, mid_transit_times, and uncertainties arrays are not all the same
+        TypeError :
+            raised if any values in epochs are not ints
+        TypeError :
+            raised if any values in mid_transit_times are not floats
+        TypeError :
+            raised if any values in uncertainties are not floats
+        ValueError :
+            raised if any value in epochs is not a number
+        ValueError :
+            raised if any value in mid_transit_times is not a number
+        ValueError :
+            raised if any value in uncertainties is not a number
+        ValueError :
+            raised if any value in uncertainites is not positive
     """
     def __init__(self, epochs, mid_transit_times, uncertainties=None):
         # self.time_system = time_system # Should we add a default time system?
