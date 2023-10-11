@@ -14,7 +14,7 @@ Welcome to susie's documentation!
    transit_times.rst
 
 Indices and tables.\
-==================
+=====================
 
 * :ref:`genindex`
 * :ref:`modindex`
