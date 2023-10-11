@@ -5,5 +5,5 @@ Ephemeris
 
 Description of the Ephemeris File
 
-.. automodule:: \susie\ephemeris
+.. automodule:: ephemeris
    :members:
