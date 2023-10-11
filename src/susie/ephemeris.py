@@ -50,12 +50,6 @@ class CustomModelEphemeris(BaseModelEphemeris):
 
 
 class ModelEphemerisFactory:
-    """example using this: 
-
-    factory = ModelEphemerisFactory()
-    linear_model = factory.create_model('linear', x=epochs, y=transit_time, yerr=uncertainties, fit_intercept=True)
-    quadratic_model = factory.create_model('quadratic', x=epochs, y=transit_time, yerr=uncertainties)
-    """
     @staticmethod
     def create_model(model_type, x, y, yerr, **kwargs):
         models = {
@@ -142,9 +136,17 @@ class Ephemeris(object):
             
 
         """
+        # Try to get parameters (parameters if linear=period, conjunction time, if quadratic=period, conjunction time, period change by epoch)
+        # EXPLANATION:
+            # call _get_model... pass in model type (linear or quadratic) 
+            # Getting data from transit times (epochs, mid transit times, and error) ** If an error is not given, we will substitute our own error using an array of 1s in the same shape as your given mid transit itmes
+            # Creates the model ephemeris with ModelEPhemerisFactory obj, passing in data
+            # Model factory will choose which model object to create based on model_type
+            # Model will use scipy curve fit to fit data to whatever and then return parameters
+            # RETURNS model parameters as a dictionary
         parameters = self._get_model_parameters(model_type)
+        # ONce we get parameters back, we call _cal_linear_ephemeris 
         if model_type == 'linear':
-
             return self._calc_linear_ephemeris(self.transit_times.epochs, parameters['period'], parameters['conjunction_time'])
         elif model_type == 'quadratic':
             return self._calc_quadratic_ephemeris(self.transit_times.epochs, parameters['period'], parameters['conjunction_time'], parameters['period_change_by_epoch'])
