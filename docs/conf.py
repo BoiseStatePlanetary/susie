@@ -8,8 +8,8 @@
 
 import os
 import sys
-# sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
+sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 project = 'Susie'
 copyright = '2023, Holly VanLooy'
@@ -20,7 +20,7 @@ release = 'Sept. 2023'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = ['sphinx.ext.autodoc','sphinx.ext.viewcode', 'sphinx.ext.napoleon']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

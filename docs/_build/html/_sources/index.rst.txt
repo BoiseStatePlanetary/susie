@@ -10,8 +10,7 @@ Welcome to Susie's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   ephemeris.rst
-   transit_times.rst
+   modules.rst
 
 
 Indices and tables
