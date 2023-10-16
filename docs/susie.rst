@@ -1,19 +1,16 @@
-susie package
-=============
+Susie 
+======
 
-Submodules
-----------
-
-susie.ephemeris module
-----------------------
+Ephemeris module
+----------------
 
 .. automodule:: src.susie.ephemeris
    :members:
    :undoc-members:
    :show-inheritance:
 
-susie.transit\_times module
----------------------------
+Transit Times module
+--------------------
 
 .. automodule:: src.susie.transit_times
    :members:

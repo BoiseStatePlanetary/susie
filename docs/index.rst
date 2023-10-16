@@ -10,7 +10,7 @@ Welcome to Susie's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules.rst
+   susie.rst
 
 
 Indices and tables
