@@ -41,7 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">susie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../susie.html">Susie</a></li>
 </ul>
 
         </div>
@@ -78,6 +78,9 @@
 <div class="viewcode-block" id="BaseModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseModelEphemeris</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Big question for monday - why do we need this???</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="BaseModelEphemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris.fit_model">[docs]</a>
     <span class="nd">@abstractmethod</span>
@@ -90,6 +93,23 @@
 <div class="viewcode-block" id="LinearModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a linear fit to the model ephemeris data. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------- </span>
+<span class="sd">        BaseModelEphemeris : class</span>
+<span class="sd">            is this class just a holding point for x, y, and yerr??? - ask</span>
+
+<span class="sd">    STEP 1: create a linear fit model.</span>
+<span class="sd">    </span>
+<span class="sd">    STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------- </span>
+<span class="sd">        Return data : dictionary</span>
+<span class="sd">            contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="LinearModelEphemeris.lin_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.lin_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">lin_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">):</span>
@@ -115,6 +135,23 @@
 <div class="viewcode-block" id="QuadraticModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">QuadraticModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a quadratic fit to the model ephemeris data. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------- </span>
+<span class="sd">        BaseModelEphemeris : class</span>
+<span class="sd">            is this class just a holding point for x, y, and yerr??? - ask</span>
+
+<span class="sd">    STEP 1: create a quadratic fit model.</span>
+<span class="sd">    </span>
+<span class="sd">    STEP 2: fit the model ephemieris data to the quadratic fit using SciPy curve fit techniques.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------- </span>
+<span class="sd">        Return data : dictionary</span>
+<span class="sd">            contains the period, conjunction time, and the period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="QuadraticModelEphemeris.quad_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.quad_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">quad_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dPdE</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">):</span>
@@ -142,6 +179,9 @@
 <div class="viewcode-block" id="CustomModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.CustomModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">CustomModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    I think this will get changed to accept more user input - talk to malia at a later date - HV 10/22/23</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="CustomModelEphemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.CustomModelEphemeris.fit_model">[docs]</a>
     <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -153,6 +193,25 @@
 <div class="viewcode-block" id="ModelEphemerisFactory">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.ModelEphemerisFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">ModelEphemerisFactory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Selects which type of SciPy model (linear, quadratic, or custom) will be used to model the given ephmeris data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        SHOULD WE STATE ANY : </span>
+
+
+<span class="sd">    STEP 1: depending on the model type, call LinearModelEphemeris(), QuadraticModelEphemeris(), or CustomModelEphemeris(). </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------- </span>
+<span class="sd">        model : dictonary</span>
+<span class="sd">            the returned data dictionary from whichever regression type (linear, quadratic, or custom) was called.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------ </span>
+<span class="sd">        error if model specified is not &#39;linear&#39;, &#39;quadratic&#39;, or &#39;custom&#39;.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="ModelEphemerisFactory.create_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.ModelEphemerisFactory.create_model">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -184,18 +243,14 @@
 <span class="sd">    model_type : str </span>
 <span class="sd">        Specifies linear or quadratic model of transit time</span>
 
-<span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    model_ephemeris : list - ask</span>
 <span class="sd">        Model of epemieris as a list of dictionaries</span>
 <span class="sd">    </span>
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----------</span>
-<span class="sd">     ValueError</span>
-<span class="sd">        raised if transit_times is not an instance of the TransitTimes object</span>
-<span class="sd">    ----------</span>
-
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">        ValueError raised if transit_times is not an instance of the TransitTimes object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transit_times</span><span class="p">):</span>
         <span class="c1"># initializing the transit times object and model ephermeris object</span>
@@ -236,27 +291,30 @@
     <span class="k">def</span> <span class="nf">get_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">):</span>
         <span class="c1"># Returns predicted transit times for given epochs</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            STEP 1: Call get model parameters to create a model ephemeris object</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            model_type : string</span>
+<span class="sd">                Type of ephemeris model (either &#39;linear&#39; or &#39;quadratic&#39;) to build</span>
 
-<span class="sd">            Parameters:</span>
-<span class="sd">                model_type: string</span>
-<span class="sd">                    Type of ephemeris model (either &#39;linear&#39; or &#39;quadratic&#39;) to build</span>
-
-<span class="sd">            Returns:</span>
-
+<span class="sd">        STEP 1: Call get model parameters to create a model ephemeris object. get model parameters returns a data dictionary containing data from transit times (epochs, mid transit times, and error). If an error is not given, we will substitute our own error using an array of 1s in the same shape as the given mid transit itmes.</span>
 <span class="sd">            </span>
-
+<span class="sd">        STEP 2: Call calc linear ephemeris or calc quadratic ephemeris depending on the model type. Both models use SciPy curve fit to fit data to either a linear or quadratic curve and then returns the curve. </span>
+<span class="sd">                     </span>
+<span class="sd">        Returns</span>
+<span class="sd">        ------- </span>
+<span class="sd">            model_data : dictionary</span>
+<span class="sd">                model parameters needed to build the curve fit for the data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Try to get parameters (parameters if linear=period, conjunction time, if quadratic=period, conjunction time, period change by epoch)</span>
         <span class="c1"># EXPLANATION:</span>
-            <span class="c1"># call _get_model... pass in model type (linear or quadratic) </span>
+            <span class="c1"># call _get_model... pass in model type (linear or quadratic) model</span>
             <span class="c1"># Getting data from transit times (epochs, mid transit times, and error) ** If an error is not given, we will substitute our own error using an array of 1s in the same shape as your given mid transit itmes</span>
             <span class="c1"># Creates the model ephemeris with ModelEPhemerisFactory obj, passing in data</span>
             <span class="c1"># Model factory will choose which model object to create based on model_type</span>
             <span class="c1"># Model will use scipy curve fit to fit data to whatever and then return parameters</span>
             <span class="c1"># RETURNS model parameters as a dictionary</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_parameters</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
-        <span class="c1"># ONce we get parameters back, we call _cal_linear_ephemeris </span>
+        <span class="c1"># ONce we get parameters back, we call _calc_linear_ephemeris </span>
         <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_linear_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
@@ -267,7 +325,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.calc_chi_squared">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_chi_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
+<span class="sd">        needs to be built</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># STEP 1: Calculate model data using given epochs (these will be predicted transit times)</span>
         <span class="c1"># STEP 2: Get observed transit times</span>
@@ -281,6 +339,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.calc_bic">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         needs to be built</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)</span>
         <span class="c1"># Step 2: Calculate chi-squared</span>
@@ -294,6 +353,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.calc_delta_bic">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         needs to be built</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
