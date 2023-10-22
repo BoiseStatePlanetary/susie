@@ -117,6 +117,7 @@
 <dt class="sig sig-object py" id="src.susie.ephemeris.BaseModelEphemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">BaseModelEphemeris</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#BaseModelEphemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.BaseModelEphemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Big question for monday - why do we need this???</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.BaseModelEphemeris.fit_model">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#BaseModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.BaseModelEphemeris.fit_model" title="Link to this definition"></a></dt>
@@ -128,6 +129,7 @@
 <dt class="sig sig-object py" id="src.susie.ephemeris.CustomModelEphemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">CustomModelEphemeris</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#CustomModelEphemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.CustomModelEphemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.susie.ephemeris.BaseModelEphemeris" title="src.susie.ephemeris.BaseModelEphemeris"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModelEphemeris</span></code></a></p>
+<p>I think this will get changed to accept more user input - talk to malia at a later date - HV 10/22/23</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.CustomModelEphemeris.fit_model">
 <span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#CustomModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.CustomModelEphemeris.fit_model" title="Link to this definition"></a></dt>
@@ -148,46 +150,51 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul>
-<li><p><strong>model_ephemeris</strong> (<em>list - ask</em>) – Model of epemieris as a list of dictionaries</p></li>
-<li><p><em>Exceptions</em></p></li>
-<li><p><em>———-</em> –</p>
-<dl class="simple">
-<dt>ValueError</dt><dd><p>raised if transit_times is not an instance of the TransitTimes object</p>
+<dd class="field-even"><p><strong>model_ephemeris</strong> – Model of epemieris as a list of dictionaries</p>
 </dd>
-</dl>
-</li>
-<li><p><em>———-</em></p></li>
-</ul>
-</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list - ask</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError raised if transit_times is not an instance</strong><strong> of </strong><strong>the TransitTimes object</strong> – </p>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_bic">
 <span class="sig-name descname"><span class="pre">calc_bic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_bic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>needs to be built</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_chi_squared">
 <span class="sig-name descname"><span class="pre">calc_chi_squared</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_chi_squared"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_chi_squared" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>needs to be built</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_delta_bic">
 <span class="sig-name descname"><span class="pre">calc_delta_bic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>needs to be built</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.get_model_ephemeris">
 <span class="sig-name descname"><span class="pre">get_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_model_ephemeris" title="Link to this definition"></a></dt>
-<dd><p>STEP 1: Call get model parameters to create a model ephemeris object</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_type</strong> – string
-Type of ephemeris model (either ‘linear’ or ‘quadratic’) to build</p>
+<dd class="field-odd"><p><strong>model_type</strong> (<em>string</em>) – Type of ephemeris model (either ‘linear’ or ‘quadratic’) to build</p>
 </dd>
 </dl>
-<p>Returns:</p>
+<p>STEP 1: Call get model parameters to create a model ephemeris object. get model parameters returns a data dictionary containing data from transit times (epochs, mid transit times, and error). If an error is not given, we will substitute our own error using an array of 1s in the same shape as the given mid transit itmes.</p>
+<p>STEP 2: Call calc linear ephemeris or calc quadratic ephemeris depending on the model type. Both models use SciPy curve fit to fit data to either a linear or quadratic curve and then returns the curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_data</strong> – model parameters needed to build the curve fit for the data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -196,6 +203,22 @@ Type of ephemeris model (either ‘linear’ or ‘quadratic’) to build</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.LinearModelEphemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">LinearModelEphemeris</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#LinearModelEphemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.LinearModelEphemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.susie.ephemeris.BaseModelEphemeris" title="src.susie.ephemeris.BaseModelEphemeris"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModelEphemeris</span></code></a></p>
+<p>Generates a linear fit to the model ephemeris data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – is this class just a holding point for x, y, and yerr??? - ask</p>
+</dd>
+</dl>
+<p>STEP 1: create a linear fit model.</p>
+<p>STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Return data</strong> – contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.LinearModelEphemeris.fit_model">
 <span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#LinearModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.LinearModelEphemeris.fit_model" title="Link to this definition"></a></dt>
@@ -212,6 +235,24 @@ Type of ephemeris model (either ‘linear’ or ‘quadratic’) to build</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.ModelEphemerisFactory">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">ModelEphemerisFactory</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#ModelEphemerisFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.ModelEphemerisFactory" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Selects which type of SciPy model (linear, quadratic, or custom) will be used to model the given ephmeris data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ANY</strong> (<em>SHOULD WE STATE</em>) – </p>
+</dd>
+</dl>
+<p>STEP 1: depending on the model type, call LinearModelEphemeris(), QuadraticModelEphemeris(), or CustomModelEphemeris().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model</strong> – the returned data dictionary from whichever regression type (linear, quadratic, or custom) was called.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictonary</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error if model specified is not 'linear'</strong><strong>, </strong><strong>'quadratic'</strong><strong>, or </strong><strong>'custom'.</strong> – </p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.ModelEphemerisFactory.create_model">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#ModelEphemerisFactory.create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.ModelEphemerisFactory.create_model" title="Link to this definition"></a></dt>
@@ -223,6 +264,22 @@ Type of ephemeris model (either ‘linear’ or ‘quadratic’) to build</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.QuadraticModelEphemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">QuadraticModelEphemeris</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#QuadraticModelEphemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.QuadraticModelEphemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.susie.ephemeris.BaseModelEphemeris" title="src.susie.ephemeris.BaseModelEphemeris"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModelEphemeris</span></code></a></p>
+<p>Generates a quadratic fit to the model ephemeris data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – is this class just a holding point for x, y, and yerr??? - ask</p>
+</dd>
+</dl>
+<p>STEP 1: create a quadratic fit model.</p>
+<p>STEP 2: fit the model ephemieris data to the quadratic fit using SciPy curve fit techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Return data</strong> – contains the period, conjunction time, and the period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.QuadraticModelEphemeris.fit_model">
 <span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#QuadraticModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.QuadraticModelEphemeris.fit_model" title="Link to this definition"></a></dt>
