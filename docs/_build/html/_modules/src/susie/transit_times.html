@@ -41,9 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../ephemeris.html">Ephemeris</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../transit_times.html">Transit Times</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">susie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../susie.html">Susie</a></li>
 </ul>
 
         </div>
@@ -76,42 +74,20 @@
 <div class="viewcode-block" id="TransitTimes">
 <a class="viewcode-back" href="../../../susie.html#src.susie.transit_times.TransitTimes">[docs]</a>
 <span class="k">class</span> <span class="nc">TransitTimes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Docstrings for transit times object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;BIG DEFINITION</span>
 <span class="sd"> </span>
 <span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self : </span>
-<span class="sd">    epochs : NumPy array</span>
-<span class="sd">        ints representing ???</span>
-<span class="sd">    mid_transit_times : NumPy array</span>
-<span class="sd">        floats representing ??</span>
-<span class="sd">    Uncertainties : Numpy array</span>
-<span class="sd">        floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times</span>
+<span class="sd">    ------------</span>
+<span class="sd">        epochs : NumPy array</span>
+<span class="sd">            ints representing ???</span>
+<span class="sd">        mid_transit_times : NumPy array</span>
+<span class="sd">            floats representing ??</span>
+<span class="sd">        Uncertainties : Numpy array</span>
+<span class="sd">             floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times</span>
 
-<span class="sd">    Exceptions</span>
-<span class="sd">    ----------</span>
-<span class="sd">        TypeError : </span>
-<span class="sd">            raised if epochs is not a NumPy Array</span>
-<span class="sd">        TypeError : </span>
-<span class="sd">            raised if mid_transit_times is not a NumPy Array</span>
-<span class="sd">        TypeError : </span>
-<span class="sd">            raised if Uncertainties is not a NumPy Array</span>
-<span class="sd">        ValueError :</span>
-<span class="sd">            raised if shapes of epochs, mid_transit_times, and uncertainties arrays are not all the same</span>
-<span class="sd">        TypeError :</span>
-<span class="sd">            raised if any values in epochs are not ints</span>
-<span class="sd">        TypeError :</span>
-<span class="sd">            raised if any values in mid_transit_times are not floats</span>
-<span class="sd">        TypeError :</span>
-<span class="sd">            raised if any values in uncertainties are not floats</span>
-<span class="sd">        ValueError :</span>
-<span class="sd">            raised if any value in epochs is not a number</span>
-<span class="sd">        ValueError :</span>
-<span class="sd">            raised if any value in mid_transit_times is not a number</span>
-<span class="sd">        ValueError :</span>
-<span class="sd">            raised if any value in uncertainties is not a number</span>
-<span class="sd">        ValueError :</span>
-<span class="sd">            raised if any value in uncertainites is not positive</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------------</span>
+<span class="sd">        Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Default time: maybe BJD?</span>

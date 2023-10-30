@@ -79,7 +79,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseModelEphemeris</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Big question for monday - why do we need this???</span>
+<span class="sd">    Creates a holding place for the fit variables (x, y, yerr, \*\*kwargs) before a linear, quadratic, or custom fit can be created. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="BaseModelEphemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris.fit_model">[docs]</a>
@@ -99,11 +99,11 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ---------- </span>
 <span class="sd">        BaseModelEphemeris : class</span>
-<span class="sd">            is this class just a holding point for x, y, and yerr??? - ask</span>
+<span class="sd">            a holding place for x, y, and yerr</span>
 
-<span class="sd">    STEP 1: create a linear fit model.</span>
+<span class="sd">    STEP 1: create a linear fit model by calling lin_fit.</span>
 <span class="sd">    </span>
-<span class="sd">    STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques.</span>
+<span class="sd">    STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques by calling fit_model.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    ------- </span>
@@ -113,12 +113,47 @@
 <div class="viewcode-block" id="LinearModelEphemeris.lin_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.lin_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">lin_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        creates an initial linear fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            x : ??</span>
+<span class="sd">                time ????</span>
+<span class="sd">            p : ??</span>
+<span class="sd">                slope derived from ??</span>
+<span class="sd">            T0 : ??</span>
+<span class="sd">                the initial ??</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            P*x + T0 :</span>
+<span class="sd">                a linear function based off of the inital data points in ???</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">P</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">T0</span></div>
 
     
 <div class="viewcode-block" id="LinearModelEphemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.fit_model">[docs]</a>
     <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compares the model ephemieris data to the linear fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            x : ??</span>
+<span class="sd">                define this</span>
+<span class="sd">            y : ??</span>
+<span class="sd">                define this</span>
+<span class="sd">            yerr : ??</span>
+<span class="sd">                the error in ??</span>
+<span class="sd">            **kwargs : ??</span>
+<span class="sd">                define this</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ------- </span>
+<span class="sd">        Return data : dictionary</span>
+<span class="sd">            contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_fit</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">yerr</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">unc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -141,7 +176,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ---------- </span>
 <span class="sd">        BaseModelEphemeris : class</span>
-<span class="sd">            is this class just a holding point for x, y, and yerr??? - ask</span>
+<span class="sd">            a holding place for x, y, and yerr</span>
 
 <span class="sd">    STEP 1: create a quadratic fit model.</span>
 <span class="sd">    </span>
@@ -155,12 +190,49 @@
 <div class="viewcode-block" id="QuadraticModelEphemeris.quad_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.quad_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">quad_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dPdE</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        creates an initial quadratic fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            x : ??</span>
+<span class="sd">                time of the transit in ???</span>
+<span class="sd">            dPdE : ??</span>
+<span class="sd">                change in period (maybe) with respect to ???</span>
+<span class="sd">            p : ??</span>
+<span class="sd">                slope derived from the period of the transit??</span>
+<span class="sd">            T0 : ??</span>
+<span class="sd">                the initial time of ???</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            0.5*dPdE*x*x + P*x + T0 : ??</span>
+<span class="sd">                a quadratic function based off of the inital data points in ???</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dPdE</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">P</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">T0</span></div>
 
     
 <div class="viewcode-block" id="QuadraticModelEphemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.fit_model">[docs]</a>
     <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compares the model ephemieris data to the  fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            x : ??</span>
+<span class="sd">                define this</span>
+<span class="sd">            y : ??</span>
+<span class="sd">                define this</span>
+<span class="sd">            yerr : ??</span>
+<span class="sd">                the error in ??</span>
+<span class="sd">            **kwargs : ??</span>
+<span class="sd">                define this</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ------- </span>
+<span class="sd">        Return data : dictionary</span>
+<span class="sd">            contains the period, conjunction time, and period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quad_fit</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">yerr</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">unc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -234,7 +306,7 @@
 <div class="viewcode-block" id="Ephemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">Ephemeris</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Docstring about the ephemeris object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;BIG DEFINITION </span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -245,7 +317,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    model_ephemeris : list - ask</span>
+<span class="sd">    model_ephemeris : list </span>
 <span class="sd">        Model of epemieris as a list of dictionaries</span>
 <span class="sd">    </span>
 <span class="sd">    Raises</span>

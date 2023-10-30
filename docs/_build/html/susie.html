@@ -117,7 +117,7 @@
 <dt class="sig sig-object py" id="src.susie.ephemeris.BaseModelEphemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">BaseModelEphemeris</span></span><a class="reference internal" href="_modules/src/susie/ephemeris.html#BaseModelEphemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.BaseModelEphemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<p>Big question for monday - why do we need this???</p>
+<p>Creates a holding place for the fit variables (x, y, yerr, **kwargs) before a linear, quadratic, or custom fit can be created.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.BaseModelEphemeris.fit_model">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#BaseModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.BaseModelEphemeris.fit_model" title="Link to this definition"></a></dt>
@@ -141,7 +141,7 @@
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">Ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transit_times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Docstring about the ephemeris object.</p>
+<p>BIG DEFINITION</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -153,7 +153,7 @@
 <dd class="field-even"><p><strong>model_ephemeris</strong> – Model of epemieris as a list of dictionaries</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list - ask</p>
+<dd class="field-odd"><p>list</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError raised if transit_times is not an instance</strong><strong> of </strong><strong>the TransitTimes object</strong> – </p>
@@ -206,11 +206,11 @@
 <p>Generates a linear fit to the model ephemeris data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – is this class just a holding point for x, y, and yerr??? - ask</p>
+<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – a holding place for x, y, and yerr</p>
 </dd>
 </dl>
-<p>STEP 1: create a linear fit model.</p>
-<p>STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques.</p>
+<p>STEP 1: create a linear fit model by calling lin_fit.</p>
+<p>STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques by calling fit_model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Return data</strong> – contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data.</p>
@@ -222,12 +222,45 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.LinearModelEphemeris.fit_model">
 <span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#LinearModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.LinearModelEphemeris.fit_model" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compares the model ephemieris data to the linear fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – define this</p></li>
+<li><p><strong>y</strong> – define this</p></li>
+<li><p><strong>yerr</strong> – the error in ??</p></li>
+<li><p><strong>**kwargs</strong> – define this</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Return data</strong> – contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.LinearModelEphemeris.lin_fit">
 <span class="sig-name descname"><span class="pre">lin_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#LinearModelEphemeris.lin_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.LinearModelEphemeris.lin_fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>creates an initial linear fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – time ????</p></li>
+<li><p><strong>p</strong> – slope derived from ??</p></li>
+<li><p><strong>T0</strong> – the initial ??</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a linear function based off of the inital data points in ???</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>P*x + T0</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -267,7 +300,7 @@
 <p>Generates a quadratic fit to the model ephemeris data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – is this class just a holding point for x, y, and yerr??? - ask</p>
+<dd class="field-odd"><p><strong>BaseModelEphemeris</strong> (<em>class</em>) – a holding place for x, y, and yerr</p>
 </dd>
 </dl>
 <p>STEP 1: create a quadratic fit model.</p>
@@ -283,12 +316,47 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.QuadraticModelEphemeris.fit_model">
 <span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#QuadraticModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.QuadraticModelEphemeris.fit_model" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compares the model ephemieris data to the  fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – define this</p></li>
+<li><p><strong>y</strong> – define this</p></li>
+<li><p><strong>yerr</strong> – the error in ??</p></li>
+<li><p><strong>**kwargs</strong> – define this</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Return data</strong> – contains the period, conjunction time, and period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.QuadraticModelEphemeris.quad_fit">
 <span class="sig-name descname"><span class="pre">quad_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dPdE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#QuadraticModelEphemeris.quad_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.QuadraticModelEphemeris.quad_fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>creates an initial quadratic fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – time of the transit in ???</p></li>
+<li><p><strong>dPdE</strong> – change in period (maybe) with respect to ???</p></li>
+<li><p><strong>p</strong> – slope derived from the period of the transit??</p></li>
+<li><p><strong>T0</strong> – the initial time of ???</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>0.5*dPdE*x*x + P*x + T0</strong> – a quadratic function based off of the inital data points in ???</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>??</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -299,41 +367,17 @@
 <dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Docstrings for transit times object.</p>
+<p>BIG DEFINITION</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> – </p></li>
 <li><p><strong>epochs</strong> (<em>NumPy array</em>) – ints representing ???</p></li>
 <li><p><strong>mid_transit_times</strong> (<em>NumPy array</em>) – floats representing ??</p></li>
 <li><p><strong>Uncertainties</strong> (<em>Numpy array</em>) – floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times</p></li>
-<li><p><strong>Exceptions</strong> – </p></li>
-<li><p><strong>----------</strong> – <dl class="simple">
-<dt>TypeError :</dt><dd><p>raised if epochs is not a NumPy Array</p>
-</dd>
-<dt>TypeError :</dt><dd><p>raised if mid_transit_times is not a NumPy Array</p>
-</dd>
-<dt>TypeError :</dt><dd><p>raised if Uncertainties is not a NumPy Array</p>
-</dd>
-<dt>ValueError :</dt><dd><p>raised if shapes of epochs, mid_transit_times, and uncertainties arrays are not all the same</p>
-</dd>
-<dt>TypeError :</dt><dd><p>raised if any values in epochs are not ints</p>
-</dd>
-<dt>TypeError :</dt><dd><p>raised if any values in mid_transit_times are not floats</p>
-</dd>
-<dt>TypeError :</dt><dd><p>raised if any values in uncertainties are not floats</p>
-</dd>
-<dt>ValueError :</dt><dd><p>raised if any value in epochs is not a number</p>
-</dd>
-<dt>ValueError :</dt><dd><p>raised if any value in mid_transit_times is not a number</p>
-</dd>
-<dt>ValueError :</dt><dd><p>raised if any value in uncertainties is not a number</p>
-</dd>
-<dt>ValueError :</dt><dd><p>raised if any value in uncertainites is not positive</p>
-</dd>
-</dl>
-</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Error raised if parameters are not NumPy Arrays</strong><strong>, </strong><strong>parameters are not the same shape</strong><strong> of </strong><strong>array</strong><strong>, </strong><strong>the values</strong><strong> of </strong><strong>epochs are not all ints</strong><strong>, </strong><strong>the values</strong><strong> of </strong><strong>mid_transit_times and unertainites are not all floats</strong><strong>, or </strong><strong>values</strong><strong> of </strong><strong>uncertainities are not all positive.</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
