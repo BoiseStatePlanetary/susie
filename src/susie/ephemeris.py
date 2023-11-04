@@ -119,18 +119,26 @@ class Ephemeris(object):
         # Step 3: Return the data dictionary with the model parameters
         return model_ephemeris_data
     
-    def _get_model_uncertainty_data(self, model_data):
-        if model_data['model_type'] == 'linear':
-            return self._calc_linear_model_uncertainties(model_data)
-        elif model_data['model_type'] == 'quadratic':
-            return self._calc_quadratic_model_uncertainties(model_data)
+    def _get_k_value(self, model_type):
+        if model_type == 'linear':
+            return 2
+        elif model_type == 'quadratic':
+            return 3
+        else:
+            return ValueError('Only linear and quadratic models are supported at this time.')
     
     def _calc_linear_model_uncertainties(self, model_data):
         # σ(t pred, tra) = √σ(T0)^2 + σ(P)^2 * E^2
+        # if I want to return in seconds, multiply conjunction time and period by: days > 24 hours > 60 min > 60 sec ()
+        # c_time = model_data['conjunction_time_err'] * 24 * 60 * 60
+        # period = model_data['period_err'] * 24 * 60 * 60
+        # print('new c time', c_time, 'new period', period)
+        # return np.sqrt((c_time**2) + ((self.transit_times.epochs**2)*(period**2)))
         return np.sqrt((model_data['conjunction_time_err']**2) + ((self.transit_times.epochs**2)*(model_data['period_err']**2)))
     
     def _calc_quadratic_model_uncertainties(self, model_data):
         # σ(t pred, tra) = √σ(T0)^2 + (σ(P)^2 * E^2) + (1/4 * σ(dP/dE)^2 * E^4)
+        # if I want to return in second, 
         return np.sqrt((model_data['conjunction_time_err']**2) + ((self.transit_times.epochs**2)*(model_data['period_err']**2)) + ((1/4)*(self.transit_times.epochs**4)*(model_data['period_change_by_epoch_err']**2)))
     
     def _calc_linear_ephemeris(self, epochs, period, conjunction_time):
@@ -138,6 +146,16 @@ class Ephemeris(object):
     
     def _calc_quadratic_ephemeris(self, epochs, period, conjunction_time, period_change_by_epoch):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
+    
+    def _calc_chi_squared(self, model_data):
+        """
+
+        """
+        # STEP 1: Get observed transit times
+        observed_data = self.transit_times.mid_transit_times
+        uncertainties = self.transit_times.mid_transit_times_uncertainties
+        # STEP 2: calculate X2 with observed data and model data
+        return np.sum(((observed_data - model_data)/uncertainties)**2)
     
     def get_model_ephemeris(self, model_type):
         # Returns predicted transit times for given epochs
@@ -148,6 +166,7 @@ class Ephemeris(object):
             # Model factory will choose which model object to create based on model_type
             # Model will use scipy curve fit to fit data to whatever and then return parameters
             # RETURNS model parameters as a dictionary
+            # NOTE: Are these values returned in days? ex: conjunction time, orbital period, change in orbital period
         parameters = self._get_model_parameters(model_type)
         parameters['model_type'] = model_type
         # ONce we get parameters back, we call _cal_linear_ephemeris 
@@ -157,6 +176,32 @@ class Ephemeris(object):
         elif model_type == 'quadratic':
             parameters['model_data'] = self._calc_quadratic_ephemeris(self.transit_times.epochs, parameters['period'], parameters['conjunction_time'], parameters['period_change_by_epoch'])
         return parameters
+    
+    def get_ephemeris_uncertainties(self, model_data):
+        if model_data['model_type'] == 'linear':
+            return self._calc_linear_model_uncertainties(model_data)
+        elif model_data['model_type'] == 'quadratic':
+            return self._calc_quadratic_model_uncertainties(model_data)
+    
+    def calc_bic(self, model_data_dict):
+        """
+        """
+        # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
+        num_params = self._get_k_value(model_data_dict['model_type'])
+        # Step 2: Calculate chi-squared
+        chi_squared = self._calc_chi_squared(model_data_dict['model_data'])
+        # Step 3: Calculate BIC
+        return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
+
+    def calc_delta_bic(self):
+        """
+        """
+        linear_data = self.get_model_ephemeris('linear')
+        quadratic_data = self.get_model_ephemeris('quadratic')
+        linear_bic = self.calc_bic(linear_data)
+        quadratic_bic = self.calc_bic(quadratic_data)
+        delta_bic = linear_bic - quadratic_bic
+        return delta_bic
     
     def plot_model_ephemeris(self, model_data_dict, save_plot):
         plt.scatter(x=self.transit_times.epochs, y=model_data_dict['model_data'])
@@ -168,36 +213,44 @@ class Ephemeris(object):
         plt.show()
 
     def plot_timing_uncertainties(self, model_data, save_plot):
-        model_uncertainties = self._get_model_uncertainty_data(model_data)
-        # plot model data
-        # plot model transit duration (model data +- 1/2 tau)
-        return model_uncertainties
-    
-    def calc_chi_squared(self):
-        """
+        # get uncertainties
+        model_uncertainties = self.get_ephemeris_uncertainties(model_data)
+        x = self.transit_times.epochs
+        # get T(E) - T0 - PE
+        y = (model_data['model_data'] - model_data['conjunction_time'] - (model_data['period']*self.transit_times.epochs))
+        # plot the y line, then the line +- the uncertainties
+        plt.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
+        plt.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
+        plt.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
+        # Add labels and show legend
+        plt.xlabel('Epochs')
+        plt.ylabel('Days')
+        plt.legend()
+        if save_plot is True:
+            plt.savefig()
+        plt.show()
 
-        """
-        # STEP 1: Calculate model data using given epochs (these will be predicted transit times)
-        # STEP 2: Get observed transit times
-        # STEP 3: calculate X2
-        # NOTE: Do we want this to be connected to a 
-        # return np.sum(((given_data - model_data)/uncertainties)**2)
+    def plot_oc_plot(self, model_data, save_plot):
         pass
 
-    def calc_bic(self):
-        """
-        """
-        # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
-        # Step 2: Calculate chi-squared
-        # Step 3: Calculate BIC
-        # chi_sq = calc_chi_sq(data, model, sigma)
-        # return chi_sq + num_params*np.log(len(data))
-        pass
-
-    def calc_delta_bic(self):
-        """
-        """
-        pass
+    def plot_running_delta_bic(self, save_plot):
+        delta_bics = []
+        all_epochs = self.transit_times.epochs
+        all_mid_transit_times = self.transit_times.mid_transit_times
+        all_uncertainties = self.transit_times.mid_transit_times_uncertainties
+        # for each epoch (starting at 3?), calculate the delta bic, plot delta bics over epoch
+        for i in range(0, len(all_epochs)):
+            if i < 2:
+                delta_bics.append(int(0))
+            else:
+                self.transit_times.mid_transit_times = all_mid_transit_times[:i+1]
+                self.transit_times.mid_transit_times_uncertainties = all_uncertainties[:i+1]
+                self.transit_times.epochs = all_epochs[:i+1]
+                delta_bic = self.calc_delta_bic()
+                delta_bics.append(delta_bic)
+        plt.scatter(x=self.transit_times.epochs, y=delta_bics)
+        plt.plot(self.transit_times.epochs, delta_bics)
+        plt.show()
 
 
 
@@ -219,51 +272,14 @@ if __name__ == '__main__':
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(transit_times_obj1)
     # STEP 5: Get model ephemeris data
-    model_data = ephemeris_obj1.get_model_ephemeris('linear')
+    model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
     print(model_data)
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
     # STEP 7: Uncertainties plot
-    model_uncertainties = ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
-    print(model_uncertainties)
+    # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
+    bic = ephemeris_obj1.calc_bic(model_data)
+    print(bic)
 
-    tau = (0.008135620436/0.02320) * ((1.09142*24) / (2*np.pi))
-    b = 0.339
-    transit_dur = (2*tau*(np.sqrt(1-(b**2))))
-
-    # plt.scatter(x=transit_times_obj1.epochs, y=model_data['model_data'], marker='.')
-    # plt.scatter(x=transit_times_obj1.epochs, y=model_data['model_data'] + ((1/2)*transit_dur), marker='.')
-    # plt.scatter(x=transit_times_obj1.epochs, y=model_data['model_data'] - ((1/2)*transit_dur))
-    # # plt.scatter(x=transit_times_obj1.epochs, y=model_data['model_data'] + ((1/2)*transit_dur) + model_uncertainties, marker='.')
-    # # plt.scatter(x=transit_times_obj1.epochs, y=model_data['model_data'] - ((1/2)*transit_dur) - model_uncertainties, marker='.')
-    # plt.show()
-
-    # wasp_12b_data = NasaExoplanetArchive.query_criteria(table="pscomppars", select="top 1 pl_orbper,pl_ratdor,pl_imppar",
-    #                                                     where="pl_name like '%WASP-12 b%'")
-    # print(wasp_12b_data)
-    
-    # def calc_tau0(semi, period):
-    #     return period/2/np.pi/semi
-    
-    # def calc_T(tau0, b):
-    #     return 2.*tau0*np.sqrt(1. - b**2)
-
-    # semi = wasp_12b_data['pl_ratdor']
-    # period = wasp_12b_data['pl_orbper']
-    # b = wasp_12b_data['pl_imppar']
-    # tau0 = calc_tau0(semi, period)
-    # T = calc_T(tau0, b)
-
-    base_url = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
-    # Define the query parameters
-    params = {
-        "query": "select top 1 pl_name, pl_orbper, pl_ratdor, pl_imppar from ps where pl_name like '%WASP-12 b%'",
-        "format": "json"
-    }
-
-    # Send a GET request to the TAP service
-    response = requests.get(base_url, params=params)
-    print(np.array(response.text))
-    data = response.json()
-    print(data)
-
+    print(ephemeris_obj1.calc_delta_bic())
+    print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
