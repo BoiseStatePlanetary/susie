@@ -4,7 +4,7 @@ class TransitTimes(object):
     # TODO: Have user input their timing system, store their original times, if it is not BJD TDB then convert 
     # (will need coords of observatory and coords of star, 
     # can let user not put in coords of observatory and use grav center of Earth)
-    
+
     """Docstrings for transit times object.
  
     Parameters
@@ -19,7 +19,7 @@ class TransitTimes(object):
 
     Exceptions
     ----------
-        TypeError : 
+        TypeError :
             raised if epochs is not a NumPy Array
         TypeError : 
             raised if mid_transit_times is not a NumPy Array
