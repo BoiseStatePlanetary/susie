@@ -3,8 +3,6 @@ from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
 from susie.transit_times import TransitTimes
-from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-import requests
 
 class BaseModelEphemeris(ABC):
     @abstractmethod
@@ -19,7 +17,6 @@ class LinearModelEphemeris(BaseModelEphemeris):
     def fit_model(self, x, y, yerr, **kwargs):
         popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
-        print(f'uncertainty: {unc}')
         return_data = {
             'period': popt[0],
             'period_err': unc[0],
@@ -89,7 +86,6 @@ class Ephemeris(object):
      ValueError
         raised if transit_times is not an instance of the TransitTimes object
     ----------
-
     """
     def __init__(self, transit_times):
         # initializing the transit times object and model ephermeris object
@@ -105,6 +101,8 @@ class Ephemeris(object):
     def _get_transit_times_data(self):
         # Process the transit data so it can be used
         # NOTE QUESTION: Why do we subtract np.min?
+        print(self.transit_times.epochs)
+        print(np.min(self.transit_times.epochs))
         x = self.transit_times.epochs - np.min(self.transit_times.epochs)
         y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
         yerr = self.transit_times.mid_transit_times_uncertainties
@@ -281,5 +279,5 @@ if __name__ == '__main__':
     bic = ephemeris_obj1.calc_bic(model_data)
     print(bic)
 
-    print(ephemeris_obj1.calc_delta_bic())
-    print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
+    # print(ephemeris_obj1.calc_delta_bic())
+    #print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
