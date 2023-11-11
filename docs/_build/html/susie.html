@@ -227,9 +227,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – define this</p></li>
-<li><p><strong>y</strong> – define this</p></li>
-<li><p><strong>yerr</strong> – the error in ??</p></li>
+<li><p><strong>x</strong> – The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)</p></li>
+<li><p><strong>y</strong> – The mid-transit times of a given epoch</p></li>
+<li><p><strong>yerr</strong> – The error in the mid-transit time</p></li>
 <li><p><strong>**kwargs</strong> – define this</p></li>
 </ul>
 </dd>
@@ -249,9 +249,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – time ????</p></li>
-<li><p><strong>p</strong> – slope derived from ??</p></li>
-<li><p><strong>T0</strong> – the initial ??</p></li>
+<li><p><strong>x</strong> – The mid-transit time</p></li>
+<li><p><strong>p</strong> – The period of a transit ??</p></li>
+<li><p><strong>T0</strong> – the initial epoch associated with a mid-transit time</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -321,9 +321,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – define this</p></li>
-<li><p><strong>y</strong> – define this</p></li>
-<li><p><strong>yerr</strong> – the error in ??</p></li>
+<li><p><strong>x</strong> – The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)</p></li>
+<li><p><strong>y</strong> – The mid-transit times of a given epoch</p></li>
+<li><p><strong>yerr</strong> – The error in the mid-transit time</p></li>
 <li><p><strong>**kwargs</strong> – define this</p></li>
 </ul>
 </dd>
@@ -343,10 +343,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – time of the transit in ???</p></li>
+<li><p><strong>x</strong> – The mid-transit time</p></li>
 <li><p><strong>dPdE</strong> – change in period (maybe) with respect to ???</p></li>
-<li><p><strong>p</strong> – slope derived from the period of the transit??</p></li>
-<li><p><strong>T0</strong> – the initial time of ???</p></li>
+<li><p><strong>p</strong> – The period of the transit time, in days??</p></li>
+<li><p><strong>T0</strong> – The initial epoch associated with a mid-transit time???</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
