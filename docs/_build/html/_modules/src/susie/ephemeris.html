@@ -96,8 +96,8 @@
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Generates a linear fit to the model ephemeris data. </span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------- </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
 <span class="sd">        BaseModelEphemeris : class</span>
 <span class="sd">            a holding place for x, y, and yerr</span>
 
@@ -119,11 +119,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            x : ??</span>
-<span class="sd">                time ????</span>
+<span class="sd">                The mid-transit time</span>
 <span class="sd">            p : ??</span>
-<span class="sd">                slope derived from ??</span>
+<span class="sd">                The period of a transit ?? </span>
 <span class="sd">            T0 : ??</span>
-<span class="sd">                the initial ??</span>
+<span class="sd">                the initial epoch associated with a mid-transit time</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            P*x + T0 :</span>
@@ -141,11 +141,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            x : ??</span>
-<span class="sd">                define this</span>
+<span class="sd">                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)</span>
 <span class="sd">            y : ??</span>
-<span class="sd">                define this</span>
+<span class="sd">                The mid-transit times of a given epoch</span>
 <span class="sd">            yerr : ??</span>
-<span class="sd">                the error in ??</span>
+<span class="sd">                The error in the mid-transit time  </span>
 <span class="sd">            **kwargs : ??</span>
 <span class="sd">                define this</span>
 
@@ -196,13 +196,13 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            x : ??</span>
-<span class="sd">                time of the transit in ???</span>
+<span class="sd">                The mid-transit time</span>
 <span class="sd">            dPdE : ??</span>
 <span class="sd">                change in period (maybe) with respect to ???</span>
 <span class="sd">            p : ??</span>
-<span class="sd">                slope derived from the period of the transit??</span>
+<span class="sd">                The period of the transit time, in days??</span>
 <span class="sd">            T0 : ??</span>
-<span class="sd">                the initial time of ???</span>
+<span class="sd">                The initial epoch associated with a mid-transit time???</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            0.5*dPdE*x*x + P*x + T0 : ??</span>
@@ -220,11 +220,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            x : ??</span>
-<span class="sd">                define this</span>
+<span class="sd">                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)</span>
 <span class="sd">            y : ??</span>
-<span class="sd">                define this</span>
+<span class="sd">                The mid-transit times of a given epoch</span>
 <span class="sd">            yerr : ??</span>
-<span class="sd">                the error in ??</span>
+<span class="sd">                The error in the mid-transit time</span>
 <span class="sd">            **kwargs : ??</span>
 <span class="sd">                define this</span>
 
