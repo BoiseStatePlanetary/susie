@@ -1,42 +1,20 @@
 import numpy as np
 
 class TransitTimes(object):
-    """Docstrings for transit times object.
+    """BIG DEFINITION
  
     Parameters
-    ----------
-    self : 
-    epochs : NumPy array
-        ints representing ???
-    mid_transit_times : NumPy array
-        floats representing ??
-    Uncertainties : Numpy array
-        floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times
+    ------------
+        epochs : NumPy array
+            ints representing ???
+        mid_transit_times : NumPy array
+            floats representing ??
+        Uncertainties : Numpy array
+             floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times
 
-    Exceptions
-    ----------
-        TypeError : 
-            raised if epochs is not a NumPy Array
-        TypeError : 
-            raised if mid_transit_times is not a NumPy Array
-        TypeError : 
-            raised if Uncertainties is not a NumPy Array
-        ValueError :
-            raised if shapes of epochs, mid_transit_times, and uncertainties arrays are not all the same
-        TypeError :
-            raised if any values in epochs are not ints
-        TypeError :
-            raised if any values in mid_transit_times are not floats
-        TypeError :
-            raised if any values in uncertainties are not floats
-        ValueError :
-            raised if any value in epochs is not a number
-        ValueError :
-            raised if any value in mid_transit_times is not a number
-        ValueError :
-            raised if any value in uncertainties is not a number
-        ValueError :
-            raised if any value in uncertainites is not positive
+    Raises
+    ------------
+        Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
     """
     def __init__(self, epochs, mid_transit_times, mid_transit_times_uncertainties=None):
         # Default time: maybe BJD?
