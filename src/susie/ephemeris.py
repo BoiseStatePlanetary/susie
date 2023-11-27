@@ -5,16 +5,71 @@ import matplotlib.pyplot as plt
 from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
+    '''
+    Creates a holding place for the fit variables (x, y, yerr, \*\*kwargs) before a linear, quadratic, or custom fit can be created. 
+    '''
     @abstractmethod
     def fit_model(self, x, y, yerr, **kwargs):
         pass
 
 
 class LinearModelEphemeris(BaseModelEphemeris):
+    '''
+    Generates a linear fit to the model ephemeris data. 
+
+    Parameters
+    ----------
+        BaseModelEphemeris : class
+            a holding place for x, y, and yerr
+
+    STEP 1: create a linear fit model by calling lin_fit.
+    
+    STEP 2: fit the model ephemieris data to the linear fit using SciPy curve fit techniques by calling fit_model.
+
+    Returns
+    ------- 
+        Return data : dictionary
+            contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data.
+    '''
     def lin_fit(self, x, P, T0):
+        '''
+        creates an initial linear fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30
+
+        Parameters
+        ----------
+            x : ??
+                The mid-transit time
+            p : ??
+                The period of a transit ?? 
+            T0 : ??
+                the initial epoch associated with a mid-transit time
+        Returns
+        -------
+            P*x + T0 :
+                a linear function based off of the inital data points in ???
+        '''
         return P*x + T0
     
     def fit_model(self, x, y, yerr, **kwargs):
+        '''
+        Compares the model ephemieris data to the linear fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. 
+
+        Parameters
+        ----------
+            x : ??
+                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)
+            y : ??
+                The mid-transit times of a given epoch
+            yerr : ??
+                The error in the mid-transit time  
+            **kwargs : ??
+                define this
+
+        Returns
+        ------- 
+        Return data : dictionary
+            contains the period and conjunction time values and errors, which is used to build a best fit linear regression for the model ephemeris data. 
+        '''
         popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
         return_data = {
@@ -27,10 +82,64 @@ class LinearModelEphemeris(BaseModelEphemeris):
 
 
 class QuadraticModelEphemeris(BaseModelEphemeris):
+    '''
+    Generates a quadratic fit to the model ephemeris data. 
+
+    Parameters
+    ---------- 
+        BaseModelEphemeris : class
+            a holding place for x, y, and yerr
+
+    STEP 1: create a quadratic fit model.
+    
+    STEP 2: fit the model ephemieris data to the quadratic fit using SciPy curve fit techniques.
+
+    Returns
+    ------- 
+        Return data : dictionary
+            contains the period, conjunction time, and the period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data.
+    '''
     def quad_fit(self, x, dPdE, P, T0):
+        '''
+        creates an initial quadratic fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30
+
+        Parameters
+        ----------
+            x : ??
+                The mid-transit time
+            dPdE : ??
+                change in period (maybe) with respect to ???
+            p : ??
+                The period of the transit time, in days??
+            T0 : ??
+                The initial epoch associated with a mid-transit time???
+        Returns
+        -------
+            0.5*dPdE*x*x + P*x + T0 : ??
+                a quadratic function based off of the inital data points in ???
+        '''
         return 0.5*dPdE*x*x + P*x + T0
     
     def fit_model(self, x, y, yerr, **kwargs):
+        '''
+        Compares the model ephemieris data to the  fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. 
+
+        Parameters
+        ----------
+            x : ??
+                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)
+            y : ??
+                The mid-transit times of a given epoch
+            yerr : ??
+                The error in the mid-transit time
+            **kwargs : ??
+                define this
+
+        Returns
+        ------- 
+        Return data : dictionary
+            contains the period, conjunction time, and period change by epoch values and errors, which is used to build a best fit quadratic regression for the model ephemeris data. 
+        '''
         popt, pcov = curve_fit(self.quad_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
         return_data = {
@@ -45,11 +154,33 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
 
 class CustomModelEphemeris(BaseModelEphemeris):
+    '''
+    I think this will get changed to accept more user input - talk to malia at a later date - HV 10/22/23
+    '''
     def fit_model(self, x, y, yerr, **kwargs):
         pass
 
 
 class ModelEphemerisFactory:
+    '''
+    Selects which type of SciPy model (linear, quadratic, or custom) will be used to model the given ephmeris data
+
+    Parameters
+    ----------
+        SHOULD WE STATE ANY : 
+
+
+    STEP 1: depending on the model type, call LinearModelEphemeris(), QuadraticModelEphemeris(), or CustomModelEphemeris(). 
+
+    Returns
+    ------- 
+        model : dictonary
+            the returned data dictionary from whichever regression type (linear, quadratic, or custom) was called.
+
+    Raises
+    ------ 
+        error if model specified is not 'linear', 'quadratic', or 'custom'.
+    '''
     @staticmethod
     def create_model(model_type, x, y, yerr, **kwargs):
         models = {
@@ -66,7 +197,7 @@ class ModelEphemerisFactory:
 
 
 class Ephemeris(object):
-    """Docstring about the ephemeris object.
+    """BIG DEFINITION 
 
     Parameters
     -----------
@@ -75,12 +206,11 @@ class Ephemeris(object):
     model_type : str 
         Specifies linear or quadratic model of transit time
 
-        
     Returns
     -------
-    model_ephemeris : list - ask
+    model_ephemeris : list 
         Model of epemieris as a list of dictionaries
-    
+        
     Exceptions
     ----------
      ValueError
@@ -147,7 +277,21 @@ class Ephemeris(object):
     
     def _calc_chi_squared(self, model_data):
         """
+        docstring here
 
+        Parameters
+        ----------
+            model_type : string
+                Type of ephemeris model (either 'linear' or 'quadratic') to build
+
+        STEP 1: Call get model parameters to create a model ephemeris object. get model parameters returns a data dictionary containing data from transit times (epochs, mid transit times, and error). If an error is not given, we will substitute our own error using an array of 1s in the same shape as the given mid transit itmes.
+            
+        STEP 2: Call calc linear ephemeris or calc quadratic ephemeris depending on the model type. Both models use SciPy curve fit to fit data to either a linear or quadratic curve and then returns the curve. 
+                     
+        Returns
+        ------- 
+            model_data : dictionary
+                model parameters needed to build the curve fit for the data.
         """
         # STEP 1: Get observed transit times
         observed_data = self.transit_times.mid_transit_times
@@ -158,7 +302,7 @@ class Ephemeris(object):
     def get_model_ephemeris(self, model_type):
         # Returns predicted transit times for given epochs
         # EXPLANATION:
-            # call _get_model... pass in model type (linear or quadratic) 
+            # call _get_model... pass in model type (linear or quadratic) model
             # Getting data from transit times (epochs, mid transit times, and error) ** If an error is not given, we will substitute our own error using an array of 1s in the same shape as your given mid transit itmes
             # Creates the model ephemeris with ModelEPhemerisFactory obj, passing in data
             # Model factory will choose which model object to create based on model_type
@@ -183,6 +327,7 @@ class Ephemeris(object):
     
     def calc_bic(self, model_data_dict):
         """
+         needs to be built
         """
         # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
         num_params = self._get_k_value(model_data_dict['model_type'])
@@ -193,6 +338,7 @@ class Ephemeris(object):
 
     def calc_delta_bic(self):
         """
+         needs to be built
         """
         linear_data = self.get_model_ephemeris('linear')
         quadratic_data = self.get_model_ephemeris('quadratic')
