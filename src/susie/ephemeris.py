@@ -34,31 +34,30 @@ class LinearModelEphemeris(BaseModelEphemeris):
     '''
     def lin_fit(self, x, P, T0):
         '''
-        creates an initial linear fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30
-
+        creates an initial linear fit model based off of the first data point in (FILE RETURNED BY TRANSIT_TIMES.PY)
         Parameters
         ----------
             x : ??
                 The mid-transit time
-            p : ??
+            P : ??
                 The period of a transit ?? 
             T0 : ??
                 the initial epoch associated with a mid-transit time
         Returns
         -------
             P*x + T0 :
-                a linear function based off of the inital data points in ???
+                a linear function based off of the inital data points in (FILE RETURNED BY TRANSIT_TIMES.PY)
         '''
         return P*x + T0
     
     def fit_model(self, x, y, yerr, **kwargs):
         '''
-        Compares the model ephemieris data to the linear fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. 
+        Compares the model ephemieris data to the linear fit created by the inital data. Then creates a curve fit which minimizes the difference between the two data sets. 
 
         Parameters
         ----------
-            x : ??
-                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)
+            x : list
+                The list of epochs, normalized to start at 0 (Question for Malia: has this been normalized to 0 yet? - I'm 99% sure the answer is yes)
             y : ??
                 The mid-transit times of a given epoch
             yerr : ??
@@ -109,15 +108,15 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             x : ??
                 The mid-transit time
             dPdE : ??
-                change in period (maybe) with respect to ???
+                change in period with respect to Epoch (double check this)
             p : ??
                 The period of the transit time, in days??
             T0 : ??
-                The initial epoch associated with a mid-transit time???
+                The initial epoch associated with a mid-transit time
         Returns
         -------
             0.5*dPdE*x*x + P*x + T0 : ??
-                a quadratic function based off of the inital data points in ???
+                a quadratic function based off of the inital data points in (FILE FROM TRANSIT_TIME.PY)
         '''
         return 0.5*dPdE*x*x + P*x + T0
     
@@ -127,8 +126,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
         Parameters
         ----------
-            x : ??
-                The (list?) of epochs, possibly normalized to start at 0 (Question for Malia: has this been normalized to 0 yet?)
+            x : list
+                The list of epochs, normalized to start at 0 (Question for Malia: has this been normalized to 0 yet? - again, it think it has)
             y : ??
                 The mid-transit times of a given epoch
             yerr : ??
@@ -156,7 +155,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
 class CustomModelEphemeris(BaseModelEphemeris):
     '''
-    I think this will get changed to accept more user input - talk to malia at a later date - HV 10/22/23
+    yet to be buit. Eventually the program will be modified to accept more user input and create custom for the regression model.
     '''
     def fit_model(self, x, y, yerr, **kwargs):
         pass
@@ -164,14 +163,9 @@ class CustomModelEphemeris(BaseModelEphemeris):
 
 class ModelEphemerisFactory:
     '''
-    Selects which type of SciPy model (linear, quadratic, or custom) will be used to model the given ephmeris data
+    Selects which type of SciPy model (linear, quadratic, or custom) will be used to model the given ephmeris data.
 
-    Parameters
-    ----------
-        SHOULD WE STATE ANY : 
-
-
-    STEP 1: depending on the model type, call LinearModelEphemeris(), QuadraticModelEphemeris(), or CustomModelEphemeris(). 
+    STEP 1: checks the user input model_type, then calls the appropriate LinearModelEphemeris(), QuadraticModelEphemeris(), or CustomModelEphemeris(). 
 
     Returns
     ------- 
@@ -184,6 +178,21 @@ class ModelEphemerisFactory:
     '''
     @staticmethod
     def create_model(model_type, x, y, yerr, **kwargs):
+        '''
+        Matches the user input model_type to the correct class of model ephemeris. Calls whichever class of model is desired, then returns the best fit model to the user. 
+        
+        Parameters
+        ----------
+        ADD THIS
+
+        Returns
+        -------
+        ADD THIS
+
+        Raises
+        ------
+        ADD THIS
+        '''
         models = {
             'linear': LinearModelEphemeris(),
             'quadratic': QuadraticModelEphemeris(),
@@ -274,8 +283,9 @@ class Ephemeris(object):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
     
     def _calc_chi_squared(self, model_data):
+        #this docstring is in the wrong place - must have been copy pasted wrong. figure this out - 12/4/23 HV
         """
-        docstring here
+        docstring here 
 
         Parameters
         ----------
