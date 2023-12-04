@@ -34,7 +34,17 @@ bibliography: paper.bib
 
 # Summary
 <!-- A summary describing the high-level functionality and purpose of the software for a diverse, non-specialist audience. -->
+The goal of this package is to take transit-timing observational data and give users access to different methods and visualization to learn more about the possible tidal decay of the exoplanet. The package consists of two main objects: transit time and ephemeris. Users insert observational data into the transit time object. 
 
+Transit time data consists of a string denoting the time format and time scale of the data and Numpy lists of epochs, mid-transit times, and uncertainties for the mid-transit times. The object will always default to using the Barycentric Julian Date (BJD) time format with the Barycentric Dynamical Time (TDB) scale. (This following is a maybe; I still need to talk to Elisabeth) If the user indicates their times are not corrected for barycentric light travel times, the Astropy time, coordinates, and unit packages will be used for corrections. 
+
+The ephemeris object takes in the user’s created transit time object as data. The primary method of the object fits the user’s timing transit data to a specified model ephemeris, either linear or quadratic. The strategy and factory python design patterns are used to create the model ephemeris. The strategy pattern allows us to dynamically choose the model fit method based on conditionals in runtime. We define an abstract class to represent the model fit method. The linear and quadratic model fit methods are built on the abstract class and contain the respective equations for the curve fit package. The factory pattern allows us to create objects based on conditionals during runtime. The user inputs their desired ephemeris type (linear or quadratic), which is used as a conditional passed to the factory pattern to decide which model fit will be executed. 
+
+The user is returned a Python dictionary consisting of the model parameters and the calculated values of the model at each epoch of their inputted transit timing object. This data can then be used for further calculations and visualizations that tell the user about the motion of the exoplanet. 
+
+Python tests utilize pytest and pytest mock objects to simulate data and object creation. Tests ensure objects only accept user inputs of the correct types, method outputs are of the correct type and length, and calculation methods output correct numerical values. 
+
+Our package is publicly available to download through the Python Package Index (PyPi). The package uses the setuptools python package as the build system, which uses inputs from the metadata file to automate the build process. To upload distribution archives created using our build system, we use the official PyPi upload tool twine. Users can download the package from the PyPi repository using the Python package installer, pip, in the command line or a Jupyter notebook. Additionally, the code is publicly accessible on GitHub.
 
 # Statement of need
 <!-- A clear statement of need that illustrates the purpose of the software. -->

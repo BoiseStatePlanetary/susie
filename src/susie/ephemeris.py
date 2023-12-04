@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-# from transit_times import TransitTimes
-from susie.transit_times import TransitTimes
+from transit_times import TransitTimes
+# from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
     '''

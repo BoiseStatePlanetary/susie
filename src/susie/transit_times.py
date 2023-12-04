@@ -1,7 +1,6 @@
 import numpy as np
 from astropy import time
 from astropy import coordinates as coord
-from astropy import units as u
 import logging
 
 class TransitTimes(object):
@@ -37,6 +36,13 @@ class TransitTimes(object):
             self.mid_transit_times_uncertainties = np.ones_like(self.epochs, dtype=float)
         # Call validation function
         self._validate()
+
+    def _calc_barycentric_time(self):
+        obj_coord = coord.SkyCoord(self.obj_coords[0], self.obj_coords[1], unit='deg', frame='icrs')
+        obs_location = coord.EarthLocation.from_geodetic(self.observatory_coords[0], self.observatory_coords[1])
+        self.time.location = obs_location
+        time_corrected = self.time.light_travel_time(obj_coord)
+        print(time_corrected)
 
     def _validate(self):
         # Check that all are of type array
@@ -81,17 +87,8 @@ class TransitTimes(object):
                 if all(elem is None for elem in self.observatory_coords):
                     logging.warning(f"Unable to process observatory coordinates {self.observatory_coords}. "
                                     "Will use gravitational center of Earth.")
+                    # TODO enter grav center of earth coords here
                     # self.observatory_coords = ()
                 logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {self.obj_coords} for time correction. "
                                 f"Using geodetic Earth coordinates in degrees of longitude and latitude {self.observatory_coords} for time correction.")
-                
-
-    def _calc_barycentric_time(self):
-        obj_coord = coord.SkyCoord(self.obj_coords[0], self.obj_coords[1], unit='deg', frame='icrs')
-        obs_location = coord.EarthLocation.from_geodetic(self.observatory_coords[0], self.observatory_coords[1])
-        times = time.Time([56325.95833333, 56325.978254], format='mjd',
-                        scale='utc', location=greenwich)
-        ltt_bary = times.light_travel_time(ip_peg)  
-        ltt_bary
-        self.time.location = obs_location
-        self.time_corrected = self.time.light_travel_time()
+                self._calc_barycentric_time()
