@@ -442,8 +442,11 @@ if __name__ == '__main__':
     # are numpy arrays
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     epochs = epochs.astype('int')
+    print(list(mid_transit_times))
+    print(list(mid_transit_times_err))
     # STEP 3: Create new transit times object with above data
-    transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err)
+    # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
     # # STEP 4: Create new ephemeris object with transit times object
     # ephemeris_obj1 = Ephemeris(transit_times_obj1)
     # # STEP 5: Get model ephemeris data
