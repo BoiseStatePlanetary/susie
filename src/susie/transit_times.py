@@ -1,6 +1,7 @@
 import numpy as np
 from astropy import time
 from astropy import coordinates as coord
+from astropy import units as u
 import logging
 
 class TransitTimes(object):
@@ -23,26 +24,65 @@ class TransitTimes(object):
         Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
     """
     def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
-        # Default time: BJD TDB
-        self.time = time.Time(mid_transit_times, format=time_format, scale=time_scale)
-        self.obj_coords = (object_ra, object_dec)
-        self.observatory_coords = (observatory_lon, observatory_lat)
-        # TODO: Check if time system and scale are BJD and TDB, if not run a correction 
         self.epochs = epochs
-        self.mid_transit_times = mid_transit_times
-        self.mid_transit_times_uncertainties = mid_transit_times_uncertainties
         if mid_transit_times_uncertainties is None:
             # Make an array of 1s in the same shape of epochs and mid_transit_times
-            self.mid_transit_times_uncertainties = np.ones_like(self.epochs, dtype=float)
+            mid_transit_times_uncertainties = np.ones_like(self.epochs, dtype=float)
+        self.mid_transit_times = mid_transit_times
+        self.mid_transit_times_uncertainties = mid_transit_times_uncertainties
+        self.obj_coords = (object_ra, object_dec)
+        self.observatory_coords = (observatory_lon, observatory_lat)
+        # Check that timing system and scale are JD and TDB
+        if time_format != 'jd' or time_scale != 'tdb':
+            # If not correct time format and scale, create time objects and run corrections
+            self.mid_transit_times = None
+            self.mid_transit_times_uncertainties = None
+            self.mid_transit_times_obj = time.Time(mid_transit_times, format=time_format, scale=time_scale)
+            self.mid_transit_times_uncertainties_obj = time.Time(mid_transit_times_uncertainties, format=time_format, scale=time_scale)
+            self._validate_times(time_format, time_scale)
         # Call validation function
         self._validate()
 
-    def _calc_barycentric_time(self):
-        obj_coord = coord.SkyCoord(self.obj_coords[0], self.obj_coords[1], unit='deg', frame='icrs')
-        obs_location = coord.EarthLocation.from_geodetic(self.observatory_coords[0], self.observatory_coords[1])
-        self.time.location = obs_location
-        time_corrected = self.time.light_travel_time(obj_coord)
-        print(time_corrected)
+    def _calc_barycentric_time(self, time_obj):
+        """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale."""
+        # If given uncertainties, check they are actual values and not placeholders vals of 1
+        # If they are placeholder vals, no correction needed, just return array of 1s
+        if np.all(time_obj.value == 1):
+            return time_obj.value
+        obj_coord = coord.SkyCoord(ra=self.obj_coords[0], dec=self.obj_coords[1], unit='deg', frame='icrs')
+        if self.observatory_coords == (0, 0):
+            # No observatory coords given, use grav center of earth
+            obs_location = coord.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
+        else:
+            # Observatory coords given, use those
+            obs_location = coord.EarthLocation.from_geodetic(self.observatory_coords[0], self.observatory_coords[1])
+        logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_coord.ra.value, 2), round(obj_coord.dec.value, 2)} for time correction. "
+                        f"Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
+        time_obj.location = obs_location
+        ltt_bary = time_obj.light_travel_time(obj_coord)
+        corrected_time_vals = time_obj.tdb + ltt_bary
+        print(corrected_time_vals)
+        return corrected_time_vals
+    
+    def _validate_times(self, time_format, time_scale):
+        """Checks that object and observatory coordinates are in correct format for correction function."""
+        # if correction has to happen, raise warning so they know
+        logging.warning(f"Recieved time format {time_format} and time scale {time_scale}. " 
+                        "Correcting all times to BJD timing system with TDB time scale. "
+                        "If this is incorrect, please set the time format and time scale for TransitTime object.")
+        # check if there are objects coords, raise error if not
+        if all(elem is None for elem in self.obj_coords):
+            raise ValueError("Recieved None for object right ascension and/or declination. " 
+                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
+        # Check if there are observatory coords, raise warning and use earth grav center coords if not
+        if all(elem is None for elem in self.observatory_coords):
+            logging.warning(f"Unable to process observatory coordinates {self.observatory_coords}. "
+                             "Using gravitational center of Earth at North Pole.")
+            # Set as 0, 0 for future detection in calc_barycentric_time function
+            self.observatory_coords = (0, 0)
+        # Perform correction, will return array of corrected times
+        self.mid_transit_times_uncertainties = self._calc_barycentric_time(self.mid_transit_times_uncertainties_obj)
+        self.mid_transit_times = self._calc_barycentric_time(self.mid_transit_times_obj)
 
     def _validate(self):
         # Check that all are of type array
@@ -72,23 +112,3 @@ class TransitTimes(object):
         # Check that mid_transit_times_uncertainties are positive and non-zero
         if not np.all(self.mid_transit_times_uncertainties > 0):
             raise ValueError("The 'mid_transit_times_uncertainties' array must contain non-negative and non-zero values.")
-        # Check that timing system and scale are JD and TDB
-        if self.time.format != 'jd' or self.time.scale != 'tdb':
-            # if correction has to happen, raise warning so they know
-            logging.warning(f"Recieved time format {self.time.format} and time scale {self.time.scale}. " 
-                            "Correcting all times to BJD timing system with TDB time scale. "
-                            "If this is incorrect, please set the time format and time scale for TransitTime object.")
-            # check if there is skycoord of object and site coordinates of obs
-            if all(elem is None for elem in self.obj_coords):
-                raise ValueError("Recieved None for object right ascension and/or declination. " 
-                                 "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
-            else:
-                # Check if there is observatory coords, if not raise error and use earth coords
-                if all(elem is None for elem in self.observatory_coords):
-                    logging.warning(f"Unable to process observatory coordinates {self.observatory_coords}. "
-                                    "Will use gravitational center of Earth.")
-                    # TODO enter grav center of earth coords here
-                    # self.observatory_coords = ()
-                logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {self.obj_coords} for time correction. "
-                                f"Using geodetic Earth coordinates in degrees of longitude and latitude {self.observatory_coords} for time correction.")
-                self._calc_barycentric_time()
