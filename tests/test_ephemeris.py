@@ -1,9 +1,9 @@
-import pytest
-from unittest.mock import Mock
-from pytest_mock import mocker
-from ..src.susie.ephemeris import Ephemeris
+import sys
+sys.path.append(".")
+import unittest
+from src.susie.ephemeris import Ephemeris
 
-class TestEphemeris:
+class TestEphemeris(unittest.TestCase):
     """
     Tests:
         s initialization of object (given correct params)
@@ -13,8 +13,8 @@ class TestEphemeris:
 
     """
     def test_get_model_parameters_linear(self):
-        ephemeris = Ephemeris()
+        # ephemeris = Ephemeris()
         pass
 
-    def test_get_model_parameters_quad():
+    def test_get_model_parameters_quad(self):
         pass

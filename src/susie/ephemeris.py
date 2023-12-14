@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-from transit_times import TransitTimes
-# from susie.transit_times import TransitTimes
+# from transit_times import TransitTimes
+from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
     '''
@@ -447,20 +447,20 @@ if __name__ == '__main__':
     # STEP 3: Create new transit times object with above data
     # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-    # # STEP 4: Create new ephemeris object with transit times object
-    # ephemeris_obj1 = Ephemeris(transit_times_obj1)
-    # # STEP 5: Get model ephemeris data
-    # model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
-    # print(model_data)
-    # # STEP 6: Show a plot of the model ephemeris data
-    # # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
-    # # STEP 7: Uncertainties plot
-    # # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
-    # bic = ephemeris_obj1.calc_bic(model_data)
-    # # print(bic)
+    # STEP 4: Create new ephemeris object with transit times object
+    ephemeris_obj1 = Ephemeris(transit_times_obj1)
+    # STEP 5: Get model ephemeris data
+    model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
+    print(model_data)
+    # STEP 6: Show a plot of the model ephemeris data
+    # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
+    # STEP 7: Uncertainties plot
+    # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
+    bic = ephemeris_obj1.calc_bic(model_data)
+    # print(bic)
 
-    # # print(ephemeris_obj1.calc_delta_bic())
-    # # print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
-    # # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+    # print(ephemeris_obj1.calc_delta_bic())
+    # print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
+    # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
 
     # ephemeris_obj1.plot_oc_plot(False)
