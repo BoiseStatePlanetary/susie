@@ -1,6 +1,6 @@
-import pytest
-from ..src.susie.transit_times import TransitTimes
-from susie.transit_times import TransitTimes
+import sys
+sys.path.append(".")
+from src.susie.transit_times import TransitTimes
 import unittest
 import numpy as np
 
@@ -60,6 +60,5 @@ class TestTransitTimes(unittest.TestCase):
 
     # def test_no_uncertainties():
     #     pass
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
