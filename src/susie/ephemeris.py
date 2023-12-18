@@ -207,25 +207,17 @@ class ModelEphemerisFactory:
 
 
 class Ephemeris(object):
-    """BIG DEFINITION 
+    """Represents the model ephemeris using transit midpoint data over epochs.
 
     Parameters
     -----------
-    transit_times : obj
-        user generated object from transit_times.py
-    model_type : str 
-        Specifies linear or quadratic model of transit time
-
-    Returns
-    -------
-    model_ephemeris : list 
-        Model of epemieris as a list of dictionaries
+    transit_times: TransitTimes obj
+        A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.
         
-    Exceptions
+    Raises
     ----------
      ValueError
         raised if transit_times is not an instance of the TransitTimes object
-    ----------
     """
     def __init__(self, transit_times):
         # initializing the transit times object and model ephermeris object
@@ -240,7 +232,6 @@ class Ephemeris(object):
         
     def _get_transit_times_data(self):
         # Process the transit data so it can be used
-        # NOTE QUESTION: Why do we subtract np.min?
         x = self.transit_times.epochs - np.min(self.transit_times.epochs)
         y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
         yerr = self.transit_times.mid_transit_times_uncertainties
@@ -308,18 +299,32 @@ class Ephemeris(object):
         return np.sum(((observed_data - model_data)/uncertainties)**2)
     
     def get_model_ephemeris(self, model_type):
-        # Returns predicted transit times for given epochs
-        # EXPLANATION:
-            # call _get_model... pass in model type (linear or quadratic) model
-            # Getting data from transit times (epochs, mid transit times, and error) ** If an error is not given, we will substitute our own error using an array of 1s in the same shape as your given mid transit itmes
-            # Creates the model ephemeris with ModelEPhemerisFactory obj, passing in data
-            # Model factory will choose which model object to create based on model_type
-            # Model will use scipy curve fit to fit data to whatever and then return parameters
-            # RETURNS model parameters as a dictionary
-            # NOTE: Are these values returned in days? ex: conjunction time, orbital period, change in orbital period
+        """Fits the transit data to a specified model using [SciPy's `curve_fit` function](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html).
+        
+        Parameters
+        ----------
+            model_type: str
+                Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
+
+        Returns
+        ------- 
+            A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
+            {
+                'period': An array of exoplanet periods over time corresponding to epochs,
+                'period_err': The uncertainities associated with period,
+                'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
+                'conjunction_time_err': The uncertainties associated with conjunction_time
+            }
+            If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
+            {
+                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch,
+                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch,
+            }
+        """
+        # NOTE: Are these values returned in days? ex: conjunction time, orbital period, change in orbital period
         parameters = self._get_model_parameters(model_type)
         parameters['model_type'] = model_type
-        # ONce we get parameters back, we call _calc_linear_ephemeris 
+        # Once we get parameters back, we call _calc_linear_ephemeris 
         if model_type == 'linear':
             # Return dict with parameters and model data
             parameters['model_data'] = self._calc_linear_ephemeris(self.transit_times.epochs, parameters['period'], parameters['conjunction_time'])
@@ -328,14 +333,42 @@ class Ephemeris(object):
         return parameters
     
     def get_ephemeris_uncertainties(self, model_data_dict):
+        """Calculates the uncertainties of a specific model data when compared to the actual data. 
+        
+        Uses the equation σ(t pred, tra) = √(σ(T0)^2 + σ(P)^2 * E^2) for linear models and 
+        σ(t pred, tra) = √(σ(T0)^2 + (σ(P)^2 * E^2) + (1/4 * σ(dP/dE)^2 * E^4)) for quadratic models 
+        (where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change by epoch error).
+        
+        Parameters
+        ----------
+        model_data_dict: dict
+            A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        
+        Returns
+        ------- 
+            A list of uncertainties associated with the model ephemeris passed in, calculated with the 
+            equations above and the passed in model data.
+        """
         if model_data_dict['model_type'] == 'linear':
             return self._calc_linear_model_uncertainties(model_data_dict)
         elif model_data_dict['model_type'] == 'quadratic':
             return self._calc_quadratic_model_uncertainties(model_data_dict)
     
     def calc_bic(self, model_data_dict):
-        """
-         needs to be built
+        """Calculates the BIC value for a given model ephemeris. 
+        
+        Uses the equation BIC = 𝜒2 + (k * log(N)) where 
+        𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2, 
+        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.
+        
+        Parameters
+        ----------
+            model_data_dict: dict
+                A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        
+        Returns
+        ------- 
+            A float value representing the BIC value for this model ephemeris.
         """
         # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
         num_params = self._get_k_value(model_data_dict['model_type'])
@@ -346,8 +379,11 @@ class Ephemeris(object):
         return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
 
     def calc_delta_bic(self):
-        """
-         needs to be built
+        """Calculates the ΔBIC value between linear and quadratic model ephemerides using the given transit data. 
+        
+        Returns
+        ------- 
+            A float value representing the ΔBIC value for this transit data.
         """
         linear_data = self.get_model_ephemeris('linear')
         quadratic_data = self.get_model_ephemeris('quadratic')
@@ -357,6 +393,21 @@ class Ephemeris(object):
         return delta_bic
     
     def plot_model_ephemeris(self, model_data_dict, save_plot, save_filepath=None):
+        """Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
+        
+        Parameters
+        ----------
+            model_data_dict: dict
+                A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+            save_plot: bool 
+                If True, will save the plot as a figure.
+            save_filepath: Optional(str)
+                The path used to save the plot if `save_plot` is True.
+        
+        Returns
+        ------- 
+            A MatplotLib plot of epochs vs. model predicted mid-transit times.
+        """
         plt.scatter(x=self.transit_times.epochs, y=model_data_dict['model_data'])
         plt.xlabel('Epochs')
         plt.ylabel('Model Predicted Mid-Transit Times')
@@ -366,6 +417,21 @@ class Ephemeris(object):
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot, save_filepath=None):
+        """
+
+        Parameters
+        ----------
+            model_data_dict: dict
+                A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+            save_plot: bool 
+                If True, will save the plot as a figure.
+            save_filepath: Optional(str)
+                The path used to save the plot if `save_plot` is True.
+        
+        Returns
+        ------- 
+            A MatplotLib plot of timing uncertainties.
+        """
         # get uncertainties
         model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
         x = self.transit_times.epochs
@@ -384,6 +450,19 @@ class Ephemeris(object):
         plt.show()
 
     def plot_oc_plot(self, save_plot, save_filepath=None):
+        """
+
+        Parameters
+        ----------
+            save_plot: bool 
+                If True, will save the plot as a figure.
+            save_filepath: Optional(str)
+                The path used to save the plot if `save_plot` is True.
+        
+        Returns
+        -------
+            A MatplotLib plot of observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.
+        """
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
@@ -407,6 +486,18 @@ class Ephemeris(object):
         plt.show()
 
     def plot_running_delta_bic(self, save_plot, save_filepath=None):
+        """
+        Parameters
+        ----------
+            save_plot: bool 
+                If True, will save the plot as a figure.
+            save_filepath: Optional(str)
+                The path used to save the plot if `save_plot` is True.
+        
+        Returns
+        -------
+            A MatplotLib scatter plot of epochs vs. ΔBIC for each epoch.
+        """
         delta_bics = []
         all_epochs = self.transit_times.epochs
         all_mid_transit_times = self.transit_times.mid_transit_times
@@ -427,3 +518,34 @@ class Ephemeris(object):
             plt.savefig(save_filepath)
         plt.show()
 
+# if __name__ == '__main__':
+#     # STEP 1: Upload data from file
+#     filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
+#     data = np.genfromtxt(filepath, delimiter=',', names=True)
+#     # STEP 2: Break data up into epochs, mid transit times, and error
+#     epochs = data["epoch"] - np.min(data["epoch"])
+#     mid_transit_times = data["transit_time"] - np.min(data["transit_time"])
+#     mid_transit_times_err = data["sigma_transit_time"]
+#     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
+#     epochs = epochs.astype('int')
+#     # STEP 3: Create new transit times object with above data
+#     # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+#     # print(vars(transit_times_obj1))
+#     transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
+#     # STEP 4: Create new ephemeris object with transit times object
+#     ephemeris_obj1 = Ephemeris(transit_times_obj1)
+#     # STEP 5: Get model ephemeris data
+#     model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
+#     print(model_data)
+#     # STEP 6: Show a plot of the model ephemeris data
+#     ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
+#     # STEP 7: Uncertainties plot
+#     ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
+#     bic = ephemeris_obj1.calc_bic(model_data)
+#     print(bic)
+
+#     print(ephemeris_obj1.calc_delta_bic())
+#     print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
+#     ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+
+#     ephemeris_obj1.plot_oc_plot(False)

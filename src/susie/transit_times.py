@@ -5,20 +5,28 @@ from astropy import units as u
 import logging
 
 class TransitTimes(object):
-    # TODO: Have user input their timing system, store their original times, if it is not BJD TDB then convert 
-    # (will need coords of observatory and coords of star, 
-    # can let user not put in coords of observatory and use grav center of Earth)
-
-    """Docstrings for transit times object.
+    """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
  
     Parameters
     ------------
-        epochs : NumPy array
-            ints representing ???
-        mid_transit_times : NumPy array
-            floats representing ??
-        Uncertainties : Numpy array
-             floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times
+        time_format: str 
+            An abbreviation of the data's timing system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
+        epochs: numpy.ndarray(int)
+            List of reference points for transit observations represented in the transit times data.
+        mid_transit_times: numpy.ndarray(float)
+            List of observed transit midpoints corresponding with epochs.
+        mid_transit_times_uncertainties: Optional(numpy.ndarray[float])
+            List of uncertainties corresponding with transit midpoints. If given None, will be replaced with array of 1's with same shape as `mid_transit_times`.
+        time_scale: Optional(str)
+            An abbreviation of the data's timing scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
+        object_ra: Optional(float)
+            The right ascension in degrees of observed object represented by data.
+        object_dec: Optional(float)
+            The declination in degrees of observed object represented by data.
+        observatory_lon: Optional(float)
+            The longitude in degrees of observatory data was collected from.
+        observatory_lat: Optional(float) 
+            The latitude in degrees of observatory data was collected from.
     Raises
     ------------
         Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
