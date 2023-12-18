@@ -304,7 +304,6 @@ class Ephemeris(object):
         # STEP 1: Get observed transit times
         observed_data = self.transit_times.mid_transit_times
         uncertainties = self.transit_times.mid_transit_times_uncertainties
-
         # STEP 2: calculate X2 with observed data and model data
         return np.sum(((observed_data - model_data)/uncertainties)**2)
     
@@ -328,11 +327,11 @@ class Ephemeris(object):
             parameters['model_data'] = self._calc_quadratic_ephemeris(self.transit_times.epochs, parameters['period'], parameters['conjunction_time'], parameters['period_change_by_epoch'])
         return parameters
     
-    def get_ephemeris_uncertainties(self, model_data):
-        if model_data['model_type'] == 'linear':
-            return self._calc_linear_model_uncertainties(model_data)
-        elif model_data['model_type'] == 'quadratic':
-            return self._calc_quadratic_model_uncertainties(model_data)
+    def get_ephemeris_uncertainties(self, model_data_dict):
+        if model_data_dict['model_type'] == 'linear':
+            return self._calc_linear_model_uncertainties(model_data_dict)
+        elif model_data_dict['model_type'] == 'quadratic':
+            return self._calc_quadratic_model_uncertainties(model_data_dict)
     
     def calc_bic(self, model_data_dict):
         """
@@ -342,7 +341,7 @@ class Ephemeris(object):
         num_params = self._get_k_value(model_data_dict['model_type'])
         # Step 2: Calculate chi-squared
         chi_squared = self._calc_chi_squared(model_data_dict['model_data'])
-        print('chi squared', chi_squared)
+        # print('chi squared', chi_squared)
         # Step 3: Calculate BIC
         return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
 
@@ -357,21 +356,21 @@ class Ephemeris(object):
         delta_bic = linear_bic - quadratic_bic
         return delta_bic
     
-    def plot_model_ephemeris(self, model_data_dict, save_plot):
+    def plot_model_ephemeris(self, model_data_dict, save_plot, save_filepath=None):
         plt.scatter(x=self.transit_times.epochs, y=model_data_dict['model_data'])
         plt.xlabel('Epochs')
         plt.ylabel('Model Predicted Mid-Transit Times')
         plt.title('Predicted Model Mid Transit Times over Epochs')
         if save_plot == True:
-            plt.savefig()
+            plt.savefig(save_filepath)
         plt.show()
 
-    def plot_timing_uncertainties(self, model_data, save_plot):
+    def plot_timing_uncertainties(self, model_data_dict, save_plot, save_filepath=None):
         # get uncertainties
-        model_uncertainties = self.get_ephemeris_uncertainties(model_data)
+        model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
         x = self.transit_times.epochs
         # get T(E) - T0 - PE
-        y = (model_data['model_data'] - model_data['conjunction_time'] - (model_data['period']*self.transit_times.epochs))
+        y = (model_data_dict['model_data'] - model_data_dict['conjunction_time'] - (model_data_dict['period']*self.transit_times.epochs))
         # plot the y line, then the line +- the uncertainties
         plt.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
         plt.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
@@ -381,10 +380,10 @@ class Ephemeris(object):
         plt.ylabel('Days')
         plt.legend()
         if save_plot is True:
-            plt.savefig()
+            plt.savefig(save_filepath)
         plt.show()
 
-    def plot_oc_plot(self, save_plot):
+    def plot_oc_plot(self, save_plot, save_filepath=None):
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
@@ -404,10 +403,10 @@ class Ephemeris(object):
         plt.xlabel('E')
         plt.ylabel('O-C (seconds)')
         if save_plot is True:
-            plt.savefig()
+            plt.savefig(save_filepath)
         plt.show()
 
-    def plot_running_delta_bic(self, save_plot):
+    def plot_running_delta_bic(self, save_plot, save_filepath=None):
         delta_bics = []
         all_epochs = self.transit_times.epochs
         all_mid_transit_times = self.transit_times.mid_transit_times
@@ -425,42 +424,6 @@ class Ephemeris(object):
         plt.scatter(x=self.transit_times.epochs, y=delta_bics)
         plt.plot(self.transit_times.epochs, delta_bics)
         if save_plot is True:
-            plt.savefig()
+            plt.savefig(save_filepath)
         plt.show()
 
-
-if __name__ == '__main__':
-    # STEP 1: Upload data from file
-    filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
-    data = np.genfromtxt(filepath, delimiter=',', names=True)
-    # STEP 2: Break data up into epochs, mid transit times, and error
-    epochs = data["epoch"] - np.min(data["epoch"])
-    mid_transit_times = data["transit_time"] - np.min(data["transit_time"])
-    mid_transit_times_err = data["sigma_transit_time"]
-    # NOTE: You can use any method and/or file type to upload your data. Just make sure 
-    # the resulting variables (epoch, mid transit times, and mid transit time errors) 
-    # are numpy arrays
-    # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
-    epochs = epochs.astype('int')
-    print(list(mid_transit_times))
-    print(list(mid_transit_times_err))
-    # STEP 3: Create new transit times object with above data
-    # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-    # STEP 4: Create new ephemeris object with transit times object
-    ephemeris_obj1 = Ephemeris(transit_times_obj1)
-    # STEP 5: Get model ephemeris data
-    model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
-    print(model_data)
-    # STEP 6: Show a plot of the model ephemeris data
-    # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
-    # STEP 7: Uncertainties plot
-    # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
-    bic = ephemeris_obj1.calc_bic(model_data)
-    # print(bic)
-
-    # print(ephemeris_obj1.calc_delta_bic())
-    # print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
-    # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-
-    # ephemeris_obj1.plot_oc_plot(False)
