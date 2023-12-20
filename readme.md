@@ -15,7 +15,7 @@ This package uses numpy, scipy, matplotlib, and astropy software. These packages
 ## Objects
 
 ### TransitTimes
-**Description:** Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
+Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
 
 **Arguments:**
  - **`time_format`** (str): An abbreviation of the data's timing system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
@@ -28,8 +28,9 @@ This package uses numpy, scipy, matplotlib, and astropy software. These packages
  - `observatory_lon` (Optional[float]): The longitude in degrees of observatory data was collected from.
  - `observatory_lat` (Optional[float]): The latitude in degrees of observatory data was collected from.
 
+
 ### Ephemeris
-**Description:** Represents the model ephemeris using transit midpoint data over epochs.
+Represents the model ephemeris using transit midpoint data over epochs.
 
 **Arguments:**
  - `transit_times` (TransitTimes): A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.
