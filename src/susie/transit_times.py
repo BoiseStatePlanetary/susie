@@ -9,16 +9,23 @@ class TransitTimes(object):
     # (will need coords of observatory and coords of star, 
     # can let user not put in coords of observatory and use grav center of Earth)
 
-    """Docstrings for transit times object.
+    """ The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
  
     Parameters
     ------------
         epochs : NumPy array
-            ints representing ???
+            ints representing epochs which have been normalized to start at zero. Each epoch is associated with a mid transit time.
         mid_transit_times : NumPy array
-            floats representing ??
+            floats representing the mid transit time of an exoplanet transit.
         Uncertainties : Numpy array
-             floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times
+             floats reprensting the uncertainities in mid_transit_times, has same shape as epochs and mid_transit_times
+
+    STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
+
+    STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
+
+    STEP 3: Check that the array's are formatted properly. The appropriate Type or Value Error is raised if there are any issues.
+
     Raises
     ------------
         Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.

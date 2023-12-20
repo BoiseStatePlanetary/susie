@@ -34,7 +34,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
     '''
     def lin_fit(self, x, P, T0):
         '''
-        creates an initial linear fit model based off of the first data point in (FILE RETURNED BY TRANSIT_TIMES.PY)
+        Creates an initial linear fit model based off of the first data point in (FILE RETURNED BY TRANSIT_TIMES.PY)
         Parameters
         ----------
             x : ??
@@ -101,7 +101,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
     '''
     def quad_fit(self, x, dPdE, P, T0):
         '''
-        creates an initial quadratic fit model based off of the first data point in ??? - I think I need to review the paper - do this week of 10/30
+        creates an initial quadratic fit model based off of the first data point in ??? 
 
         Parameters
         ----------
@@ -122,7 +122,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
     
     def fit_model(self, x, y, yerr, **kwargs):
         '''
-        Compares the model ephemieris data to the  fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. 
+        Compares the model ephemieris data to the fit created by the inital data and creates a curve fit which minimizes the difference between the two data sets. 
 
         Parameters
         ----------
@@ -308,6 +308,9 @@ class Ephemeris(object):
         return np.sum(((observed_data - model_data)/uncertainties)**2)
     
     def get_model_ephemeris(self, model_type):
+        '''
+        docstring to be added
+        '''
         # Returns predicted transit times for given epochs
         # EXPLANATION:
             # call _get_model... pass in model type (linear or quadratic) model
@@ -328,6 +331,9 @@ class Ephemeris(object):
         return parameters
     
     def get_ephemeris_uncertainties(self, model_data_dict):
+        '''
+        docstring to be added
+        '''
         if model_data_dict['model_type'] == 'linear':
             return self._calc_linear_model_uncertainties(model_data_dict)
         elif model_data_dict['model_type'] == 'quadratic':
