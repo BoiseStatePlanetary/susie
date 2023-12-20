@@ -5,27 +5,35 @@ from astropy import units as u
 import logging
 
 class TransitTimes(object):
-    # TODO: Have user input their timing system, store their original times, if it is not BJD TDB then convert 
-    # (will need coords of observatory and coords of star, 
-    # can let user not put in coords of observatory and use grav center of Earth)
-
-    """ The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
- 
-    Parameters
-    ------------
-        epochs : NumPy array
-            ints representing epochs which have been normalized to start at zero. Each epoch is associated with a mid transit time.
-        mid_transit_times : NumPy array
-            floats representing the mid transit time of an exoplanet transit.
-        Uncertainties : Numpy array
-             floats reprensting the uncertainities in mid_transit_times, has same shape as epochs and mid_transit_times
-
+    """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
+    
+    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
     STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
 
     STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
 
     STEP 3: Check that the array's are formatted properly. The appropriate Type or Value Error is raised if there are any issues.
-
+ 
+    Parameters
+    ------------
+        time_format: str 
+            An abbreviation of the data's timing system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
+        epochs: numpy.ndarray(int)
+            List of reference points for transit observations represented in the transit times data.
+        mid_transit_times: numpy.ndarray(float)
+            List of observed transit midpoints corresponding with epochs.
+        mid_transit_times_uncertainties: Optional(numpy.ndarray[float])
+            List of uncertainties corresponding with transit midpoints. If given None, will be replaced with array of 1's with same shape as `mid_transit_times`.
+        time_scale: Optional(str)
+            An abbreviation of the data's timing scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
+        object_ra: Optional(float)
+            The right ascension in degrees of observed object represented by data.
+        object_dec: Optional(float)
+            The declination in degrees of observed object represented by data.
+        observatory_lon: Optional(float)
+            The longitude in degrees of observatory data was collected from.
+        observatory_lat: Optional(float) 
+            The latitude in degrees of observatory data was collected from.
     Raises
     ------------
         Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
