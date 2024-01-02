@@ -11,8 +11,8 @@ class BaseModelEphemeris(ABC):
     def fit_model(self, x, y, yerr, **kwargs):
         """Fits a model ephemeris to transit data.
 
-            Defines the structure for fitting a model (linear or quadratic) to transit data. 
-            All subclasses must implement this method.
+        Defines the structure for fitting a model (linear or quadratic) to transit data. 
+        All subclasses must implement this method.
 
         Parameters
         ----------
@@ -43,7 +43,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
             x: numpy.ndarray[int]
                 The mid-transit times.
             P: float
-                The exoplanet transit period
+                The exoplanet transit period.
             T0: float
                 The initial epoch associated with a mid-transit time.
         
@@ -84,6 +84,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
                     'conjunction_time_err': The uncertainties associated with conjunction_time
                 }
         """
+        # Will come back in units of y/x (so will be in days), period is days per orbit (but rly this is days bc orbit is unitless)
         popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
         unc = np.sqrt(np.diag(pcov))
         return_data = {
@@ -332,7 +333,7 @@ class Ephemeris(object):
             The calculated period errors from a linear model ephemeris.
         
         Returns
-        ------- 
+        -------
             A list of uncertainties associated with the model ephemeris data passed in, calculated with the 
             equation above and the TransitTimes epochs.
         """
@@ -386,6 +387,8 @@ class Ephemeris(object):
     def _calc_quadratic_ephemeris(self, epochs, period, conjunction_time, period_change_by_epoch):
         """Calculates the mid transit times using parameters from a quadratic model ephemeris.
         
+        # Returning 
+
         Uses the equation (T0 + PE + 0.5 * dPdE * E^2) to calculate the mid transit times over each epoch 
         where T0 is conjunction time, P is period, E is epoch, and dPdE is period change with respect to epoch.
 
@@ -407,6 +410,7 @@ class Ephemeris(object):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
     
     def _calc_chi_squared(self, model_data):
+        # TODO: Docstring
         """Calculates the residual chi squared values for the 
         
         """
@@ -426,7 +430,7 @@ class Ephemeris(object):
                 Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
 
         Returns
-        ------- 
+        -------
             A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
             {
                 'period': An array of exoplanet periods over time corresponding to epochs,
@@ -549,7 +553,7 @@ class Ephemeris(object):
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot, save_filepath=None):
-        """
+        """TODO: This short docstring
 
         Parameters
         ----------
@@ -582,7 +586,7 @@ class Ephemeris(object):
         plt.show()
 
     def plot_oc_plot(self, save_plot, save_filepath=None):
-        """
+        """TODO docstring
 
         Parameters
         ----------
@@ -597,18 +601,18 @@ class Ephemeris(object):
         """
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
-        quad_model = self.get_model_ephemeris('quadratic')
+        # quad_model = self.get_model_ephemeris('quadratic')
         lin_bic = self.calc_bic(lin_model)
-        quad_bic = self.calc_bic(quad_model)
+        # quad_bic = self.calc_bic(quad_model)
         days_to_seconds = 86400
         # y = self.transit_times.mid_transit_times - Yees_period*self.transit_times.epochs -0.5*Yees_dPdE/days_to_seconds*(self.transit_times.epochs - np.median(self.transit_times.epochs))**2
         # plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0
-        plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['period']*self.transit_times.epochs)*days_to_seconds, 
-                    yerr=self.transit_times.mid_transit_times_uncertainties*days_to_seconds, marker='o', ls='', 
+        plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['period']*self.transit_times.epochs), 
+                    yerr=self.transit_times.mid_transit_times_uncertainties, marker='o', ls='', 
                     label=r'$\left(t(E) - T_0 - P E\right)$')
-        plt.plot(self.transit_times.epochs, (-0.5*quad_model['period_change_by_epoch']/days_to_seconds*(self.transit_times.epochs - np.median(self.transit_times.epochs))**2)*days_to_seconds, lw=6, label="quad BIC = %i" % quad_bic)
-        plt.plot(self.transit_times.epochs, (lin_model['model_data'])*days_to_seconds, ls='--', lw=6, color='green',
-                label="linear BIC = %i" % lin_bic)
+        # plt.plot(self.transit_times.epochs, (-0.5*quad_model['period_change_by_epoch']/days_to_seconds*(self.transit_times.epochs - np.median(self.transit_times.epochs))**2), lw=6, label="quad BIC = %i" % quad_bic)
+        # plt.plot(self.transit_times.epochs, (lin_model['model_data'])*days_to_seconds, ls='--', lw=6, color='green',
+                # label="linear BIC = %i" % lin_bic)
         plt.legend()
         plt.xlabel('E')
         plt.ylabel('O-C (seconds)')
@@ -617,7 +621,8 @@ class Ephemeris(object):
         plt.show()
 
     def plot_running_delta_bic(self, save_plot, save_filepath=None):
-        """
+        """TODO docstring
+
         Parameters
         ----------
             save_plot: bool 
@@ -644,6 +649,7 @@ class Ephemeris(object):
                 delta_bic = self.calc_delta_bic()
                 delta_bics.append(delta_bic)
         plt.scatter(x=self.transit_times.epochs, y=delta_bics)
+        plt.grid(True)
         plt.plot(self.transit_times.epochs, delta_bics)
         if save_plot is True:
             plt.savefig(save_filepath)
@@ -666,7 +672,7 @@ if __name__ == '__main__':
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(transit_times_obj1)
     # STEP 5: Get model ephemeris data
-    model_data = ephemeris_obj1.get_model_ephemeris('linear')
+    model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
     print(model_data)
     model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(model_data)
     print(model_uncertainties)
@@ -678,7 +684,7 @@ if __name__ == '__main__':
     # print(bic)
 
     # print(ephemeris_obj1.calc_delta_bic())
-    # print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
+    print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
 
     # ephemeris_obj1.plot_oc_plot(False)
