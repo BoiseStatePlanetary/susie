@@ -70,43 +70,100 @@
              
   <h1>Source code for src.susie.transit_times</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coord</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <div class="viewcode-block" id="TransitTimes">
 <a class="viewcode-back" href="../../../susie.html#src.susie.transit_times.TransitTimes">[docs]</a>
 <span class="k">class</span> <span class="nc">TransitTimes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;BIG DEFINITION</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</span>
+<span class="sd">    </span>
+<span class="sd">    #TODO: Make long definition more concise</span>
+<span class="sd">    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.</span>
+<span class="sd">    STEP 1: Make an array of 1&#39;s to be the uncertainities in the same shape as epochs and mid_transit_times.</span>
+<span class="sd">    STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.</span>
+<span class="sd">    STEP 3: Check that the array&#39;s are formatted properly. The appropriate Type or Value Error is raised if there are any issues.</span>
 <span class="sd"> </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ------------</span>
-<span class="sd">        epochs : NumPy array</span>
-<span class="sd">            ints representing ???</span>
-<span class="sd">        mid_transit_times : NumPy array</span>
-<span class="sd">            floats representing ??</span>
-<span class="sd">        Uncertainties : Numpy array</span>
-<span class="sd">             floats reprensting the uncertainities in ??, has same shape as epochs and mid_transit_times</span>
-
+<span class="sd">        time_format: str </span>
+<span class="sd">            An abbreviation of the data&#39;s timing system. Abbreviations for systems can be found on [Astropy&#39;s Time documentation](https://docs.astropy.org/en/stable/time/#id3).</span>
+<span class="sd">        epochs: numpy.ndarray(int)</span>
+<span class="sd">            List of reference points for transit observations represented in the transit times data.</span>
+<span class="sd">        mid_transit_times: numpy.ndarray(float)</span>
+<span class="sd">            List of observed transit midpoints TODO in &lt;units&gt; corresponding with epochs.</span>
+<span class="sd">        mid_transit_times_uncertainties: Optional(numpy.ndarray[float])</span>
+<span class="sd">            List of uncertainties TODO in &lt;units&gt; corresponding with transit midpoints. If given None, will be replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
+<span class="sd">        time_scale: Optional(str)</span>
+<span class="sd">            An abbreviation of the data&#39;s timing scale. Abbreviations for scales can be found on [Astropy&#39;s Time documentation](https://docs.astropy.org/en/stable/time/#id6).</span>
+<span class="sd">        object_ra: Optional(float)</span>
+<span class="sd">            The right ascension in degrees of observed object represented by data.</span>
+<span class="sd">        object_dec: Optional(float)</span>
+<span class="sd">            The declination in degrees of observed object represented by data.</span>
+<span class="sd">        observatory_lon: Optional(float)</span>
+<span class="sd">            The longitude in degrees of observatory data was collected from.</span>
+<span class="sd">        observatory_lat: Optional(float) </span>
+<span class="sd">            The latitude in degrees of observatory data was collected from.</span>
 <span class="sd">    Raises</span>
 <span class="sd">    ------------</span>
 <span class="sd">        Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># Default time: maybe BJD?</span>
-
-        <span class="c1"># self.time_system = time_system # Should we add a default time system?</span>
-        <span class="c1"># self.time_system = Time(mid_transit_times, format=&#39;time_system&#39;) </span>
-        <span class="c1"># What is the goal of putting into time obj? Do we want to just make sure </span>
-        <span class="c1"># they&#39;re aware of the time system they&#39;re using or do we eventually want </span>
-        <span class="c1"># to be able to use/convert the times in some way?</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_format</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">mid_transit_times</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">mid_transit_times_uncertainties</span>
         <span class="k">if</span> <span class="n">mid_transit_times_uncertainties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Make an array of 1s in the same shape of epochs and mid_transit_times</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">mid_transit_times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">mid_transit_times_uncertainties</span>
+        <span class="c1"># Check that timing system and scale are JD and TDB</span>
+        <span class="k">if</span> <span class="n">time_format</span> <span class="o">!=</span> <span class="s1">&#39;jd&#39;</span> <span class="ow">or</span> <span class="n">time_scale</span> <span class="o">!=</span> <span class="s1">&#39;tdb&#39;</span><span class="p">:</span>
+            <span class="c1"># TODO: Make sure they know default scale is UTC</span>
+            <span class="c1"># If not correct time format and scale, create time objects and run corrections</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recieved time format </span><span class="si">{</span><span class="n">time_format</span><span class="si">}</span><span class="s2"> and time scale </span><span class="si">{</span><span class="n">time_scale</span><span class="si">}</span><span class="s2">. &quot;</span> 
+                            <span class="s2">&quot;Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mid_transit_times_obj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">mid_transit_times</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">time_format</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">time_scale</span><span class="p">)</span>
+            <span class="n">mid_transit_times_uncertainties_obj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">time_format</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">time_scale</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
         <span class="c1"># Call validation function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">_calc_barycentric_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.&quot;&quot;&quot;</span>
+        <span class="c1"># If given uncertainties, check they are actual values and not placeholders vals of 1</span>
+        <span class="c1"># If they are placeholder vals, no correction needed, just return array of 1s</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_obj</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">time_obj</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">time_obj</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">obs_location</span>
+        <span class="n">ltt_bary</span> <span class="o">=</span> <span class="n">time_obj</span><span class="o">.</span><span class="n">light_travel_time</span><span class="p">(</span><span class="n">obj_location</span><span class="p">)</span>
+        <span class="n">corrected_time_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_obj</span><span class="o">.</span><span class="n">tdb</span><span class="o">+</span><span class="n">ltt_bary</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">corrected_time_vals</span>
+    
+    <span class="k">def</span> <span class="nf">_validate_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_coords</span><span class="p">,</span> <span class="n">obs_coords</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that object and observatory coordinates are in correct format for correction function.&quot;&quot;&quot;</span>
+        <span class="c1"># check if there are objects coords, raise error if not</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obj_coords</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Recieved None for object right ascension and/or declination. &quot;</span> 
+                             <span class="s2">&quot;Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.&quot;</span><span class="p">)</span>
+        <span class="c1"># Check if there are observatory coords, raise warning and use earth grav center coords if not</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obs_coords</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to process observatory coordinates </span><span class="si">{</span><span class="n">obs_coords</span><span class="si">}</span><span class="s2">. &quot;</span>
+                             <span class="s2">&quot;Using gravitational center of Earth.&quot;</span><span class="p">)</span>
+            <span class="n">obs_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geocentric</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obs_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geodetic</span><span class="p">(</span><span class="n">obs_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">obs_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">obj_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dec</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using ICRS coordinates in degrees of RA and Dec </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Using geodetic Earth coordinates in degrees of longitude and latitude </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction.&quot;</span><span class="p">)</span>
+        <span class="c1"># Perform correction, will return array of corrected times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that all object attributes are of correct types and within value constraints.&quot;&quot;&quot;</span>
         <span class="c1"># Check that all are of type array</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;epochs&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
