@@ -7,7 +7,10 @@ import logging
 class TransitTimes(object):
     """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
     
-    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
+    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. \
+        This object creates and/or formats the array of uncertainties in mid_transit_times. This object \
+            will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric \
+                Dynamical time as the time scale.
     STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
 
     STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
