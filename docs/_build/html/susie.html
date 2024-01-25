@@ -19,6 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage" href="usage.html" />
     <link rel="prev" title="Welcome to Susie’s documentation!" href="index.html" /> 
 </head>
 
@@ -83,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-src.susie">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 </ul>
 
         </div>
@@ -500,6 +502,7 @@ used with curve_fit.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</p>
+<p># Users enter JD so it is by default in days, probably want to mention that somewhere that we default to julian date and therefore the units would be in JD and therefore days</p>
 <p>#TODO: Make long definition more concise
 The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
 STEP 1: Make an array of 1’s to be the uncertainities in the same shape as epochs and mid_transit_times.
@@ -510,8 +513,8 @@ STEP 3: Check that the array’s are formatted properly. The appropriate Type or
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_format</strong> (<em>str</em>) – An abbreviation of the data’s timing system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
 <li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>(</em><em>int</em><em>)</em>) – List of reference points for transit observations represented in the transit times data.</p></li>
-<li><p><strong>mid_transit_times</strong> (<em>numpy.ndarray</em><em>(</em><em>float</em><em>)</em>) – List of observed transit midpoints TODO in &lt;units&gt; corresponding with epochs.</p></li>
-<li><p><strong>mid_transit_times_uncertainties</strong> (<em>Optional</em><em>(</em><em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em><em>)</em>) – List of uncertainties TODO in &lt;units&gt; corresponding with transit midpoints. If given None, will be replaced with array of 1’s with same shape as <cite>mid_transit_times</cite>.</p></li>
+<li><p><strong>mid_transit_times</strong> (<em>numpy.ndarray</em><em>(</em><em>float</em><em>)</em>) – List of observed transit midpoints in days corresponding with epochs.</p></li>
+<li><p><strong>mid_transit_times_uncertainties</strong> (<em>Optional</em><em>(</em><em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em><em>)</em>) – List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1’s with same shape as <cite>mid_transit_times</cite>.</p></li>
 <li><p><strong>time_scale</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – An abbreviation of the data’s timing scale. Abbreviations for scales can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id6">https://docs.astropy.org/en/stable/time/#id6</a>).</p></li>
 <li><p><strong>object_ra</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The right ascension in degrees of observed object represented by data.</p></li>
 <li><p><strong>object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination in degrees of observed object represented by data.</p></li>
@@ -537,6 +540,7 @@ STEP 3: Check that the array’s are formatted properly. The appropriate Type or
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Susie’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

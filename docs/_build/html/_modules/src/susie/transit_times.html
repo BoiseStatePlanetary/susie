@@ -42,6 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../susie.html">Susie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 </ul>
 
         </div>
@@ -80,6 +81,9 @@
 <span class="k">class</span> <span class="nc">TransitTimes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</span>
 <span class="sd">    </span>
+<span class="sd">    # Users enter JD so it is by default in days, probably want to mention that somewhere that we default to julian date and therefore the units would be in JD and therefore days</span>
+
+
 <span class="sd">    #TODO: Make long definition more concise</span>
 <span class="sd">    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.</span>
 <span class="sd">    STEP 1: Make an array of 1&#39;s to be the uncertainities in the same shape as epochs and mid_transit_times.</span>
@@ -93,9 +97,9 @@
 <span class="sd">        epochs: numpy.ndarray(int)</span>
 <span class="sd">            List of reference points for transit observations represented in the transit times data.</span>
 <span class="sd">        mid_transit_times: numpy.ndarray(float)</span>
-<span class="sd">            List of observed transit midpoints TODO in &lt;units&gt; corresponding with epochs.</span>
+<span class="sd">            List of observed transit midpoints in days corresponding with epochs.</span>
 <span class="sd">        mid_transit_times_uncertainties: Optional(numpy.ndarray[float])</span>
-<span class="sd">            List of uncertainties TODO in &lt;units&gt; corresponding with transit midpoints. If given None, will be replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
+<span class="sd">            List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
 <span class="sd">        time_scale: Optional(str)</span>
 <span class="sd">            An abbreviation of the data&#39;s timing scale. Abbreviations for scales can be found on [Astropy&#39;s Time documentation](https://docs.astropy.org/en/stable/time/#id6).</span>
 <span class="sd">        object_ra: Optional(float)</span>

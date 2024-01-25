@@ -7,11 +7,10 @@ import logging
 class TransitTimes(object):
     """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
     
-    # Users enter JD so it is by default in days, probably want to mention that somewhere that we default to julian date and therefore the units would be in JD and therefore days
-
-
-    #TODO: Make long definition more concise
-    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. This object creates and/or formats the array of uncertainties in mid_transit_times. This object will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric Dynamical time as the time scale.
+    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. \
+        This object creates and/or formats the array of uncertainties in mid_transit_times. This object \
+            will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric \
+                Dynamical time as the time scale.
     STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
     STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
     STEP 3: Check that the array's are formatted properly. The appropriate Type or Value Error is raised if there are any issues.
@@ -62,7 +61,24 @@ class TransitTimes(object):
         self._validate()
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
-        """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale."""
+        """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
+        
+        Parameters
+        ----------
+            time_obj : numpy.ndarray[float]
+                List to be corrected to the Barycentric Julian Date in TDB time scale.
+            obj_location : numpy.ndarray[float]
+                List of the RA and DEC in degrees of the object being observed.
+            obs_location : Optional(numpy.ndarray[float])                           #is it still considered optional if the correction has been made?
+                List of the longitude and latitude in degrees of the site of observation. If None given, uses gravitational center of Earth at North Pole.
+       
+        Returns
+        -------
+            time_obj.value : numpy.ndarray[float]
+                Returned only if no correction needed. Placeholder array of 1s with same shape as `mid_transit_times`.
+            corrected_time_vals : numpy.ndarray[float]
+                List now corrected to Barycentric Julian Date in TDB time scale.
+        """
         # If given uncertainties, check they are actual values and not placeholders vals of 1
         # If they are placeholder vals, no correction needed, just return array of 1s
         if np.all(time_obj.value == 1):
@@ -73,7 +89,25 @@ class TransitTimes(object):
         return corrected_time_vals
     
     def _validate_times(self, mid_transit_times_obj, mid_transit_times_uncertainties_obj, obj_coords, obs_coords):
-        """Checks that object and observatory coordinates are in correct format for correction function."""
+        """Checks that object and observatory coordinates are in correct format for correction function, passes the observed transit midpoints and the uncertainties in observed transit midpoints to the correction function. 
+    
+        Parameters
+        ----------
+            mid_transit_times_obj : astropy.time.Time()   #this array contains an array and then some floats i think?? how do we classify the contents of the array
+                List of transit midpoints, time_format, and time_scale 
+            mid_trnasit_times_uncertainties_obj : numpy.ndarray[float]        #is this considered optional if already corrected?
+                List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1's with same shape as `mid_transit_times`.
+            obj_coords : numpy.ndarray[float]
+                List of the RA and DEC in degrees of the object being observed.
+            obs_coords : Optional(numpy.ndarray[float])             
+                List of the longitude and latitude in degrees of the site of observation. If None given, use gravitational center of Earth at North Pole.
+
+        Raises
+            ValueError :
+                Error if None recieved for object_ra or object_dec.
+        ------
+
+        """
         # check if there are objects coords, raise error if not
         if all(elem is None for elem in obj_coords):
             raise ValueError("Recieved None for object right ascension and/or declination. " 
