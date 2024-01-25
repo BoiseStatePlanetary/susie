@@ -70,7 +70,7 @@ class TransitTimes(object):
                 List to be corrected to the Barycentric Julian Date in TDB time scale.
             obj_location : numpy.ndarray[float]
                 List of the RA and DEC in degrees of the object being observed.
-            obs_location : Optional(numpy.ndarray[float])                           #is it still considered optional if the correction has been made?
+            obs_location : Optional(numpy.ndarray[float])                           NOTE considered optional only if keyword argument - check for these
                 List of the longitude and latitude in degrees of the site of observation. If None given, uses gravitational center of Earth at North Pole.
        
         Returns
@@ -94,9 +94,9 @@ class TransitTimes(object):
     
         Parameters
         ----------
-            mid_transit_times_obj : numpy.ndarray[]           #this array contains an array and then some floats i think?? how do we classify the contents of the array
+            mid_transit_times_obj : (astropy.time.Time[array, string, string])          
                 List of transit midpoints, time_format, and time_scale 
-            mid_trnasit_times_uncertainties_obj : numpy.ndarray[float]        #is this considered optional if already corrected?
+            mid_trnasit_times_uncertainties_obj : Optional(astropy.time.Time[array, string, string])      NOTE also not really uncertainties in strings - maybe reformat the description
                 List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1's with same shape as `mid_transit_times`.
             obj_coords : numpy.ndarray[float]
                 List of the RA and DEC in degrees of the object being observed.
