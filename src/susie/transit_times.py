@@ -127,7 +127,15 @@ class TransitTimes(object):
         self.mid_transit_times = self._calc_barycentric_time(mid_transit_times_obj, obj_location, obs_location)
 
     def _validate(self):
-        """Checks that all object attributes are of correct types and within value constraints."""
+        """Checks that all object attributes are of correct types and within value constraints.
+        
+        Raises
+            TypeError:
+                Error if epochs, mid 
+            ValueError :
+                Error if None recieved for object_ra or object_dec.
+            
+        """
         # Check that all are of type array
         if not isinstance(self.epochs, np.ndarray):
             raise TypeError("The variable 'epochs' expected a NumPy array (np.ndarray) but received a different data type")
