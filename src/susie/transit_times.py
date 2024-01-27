@@ -63,7 +63,11 @@ class TransitTimes(object):
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
-        
+
+        STEP 1: Checks if given placeholder values of 1. If given placeholder values, no correction needed and array of 1's returned.
+
+        STEP 2: If given actual values, correct the values to be Barycentric Julian Date in TDB time scale. Return corrected values.
+
         Parameters
         ----------
             time_obj : numpy.ndarray[float]
@@ -92,6 +96,12 @@ class TransitTimes(object):
     def _validate_times(self, mid_transit_times_obj, mid_transit_times_uncertainties_obj, obj_coords, obs_coords):
         """Checks that object and observatory coordinates are in correct format for correction function, passes the observed transit midpoints and the uncertainties in observed transit midpoints to the correction function. 
     
+        STEP 1: Checks if there are object coordinates (right ascension and declination). Raises a ValueError if not.
+
+        STEP 2: Checks if there are observatory coordinates (latitude and longitude). Raises a warning and uses the gravitational center of Earth at the North Pole if not.
+
+        STEP 3: Performs corrections to 'mid_transit_times_obj' and 'mid_transit_times_uncertainties_obj' by calling '_calc_barycentric_time'
+
         Parameters
         ----------
             mid_transit_times_obj : (astropy.time.Time[array, string, string])          
@@ -128,7 +138,31 @@ class TransitTimes(object):
         self.mid_transit_times = self._calc_barycentric_time(mid_transit_times_obj, obj_location, obs_location)
 
     def _validate(self):
-        """Checks that all object attributes are of correct types and within value constraints."""
+        """Checks that all object attributes are of correct types and within value constraints.
+        
+        STEP 1: Check all object attributes are of type array.
+
+        STEP 2: Check all object attributes are of same shape.
+
+        STEP 3: Check all object attributes contain correct value type.
+
+        STEP 4: Check all object attributes contain no null values.
+
+        STEP 5: Check 'mid_transit_times_uncertainties' contains non-negative and non-zero values.
+
+        Raises
+        ------
+            TypeError :
+                Error if 'epochs', 'mid_traisit_times', or 'mid_transit_times_uncertainties' are not NumPy arrays.
+            ValueError :
+                Error if shapes of 'epochs', 'mid_transit_times', and 'mid_transit_times_uncertainties' arrays do not match.
+            TypeError :
+                Error if values in 'epochs' are not ints, values in 'mid_transit_times' or 'mid_transit_times_uncertainties" are not floats. 
+            ValueError :
+                Error if 'epochs', 'mid_transit_times', or 'mid_transit_times_uncertainties' contain a NaN (Not-a-Number) value.
+            ValueError :
+                Error if 'mid_transit_times_uncertainties' contains a negative or zero value. 
+        """
         # Check that all are of type array
         if not isinstance(self.epochs, np.ndarray):
             raise TypeError("The variable 'epochs' expected a NumPy array (np.ndarray) but received a different data type")
