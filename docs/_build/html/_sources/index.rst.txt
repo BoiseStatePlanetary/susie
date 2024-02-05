@@ -7,10 +7,10 @@ Welcome to Susie's documentation!
 =================================
 
 .. toctree::
-   :maxdepth: 2
    :caption: Contents:
 
-   susie.rst
+   susie
+   usage
 
 
 Indices and tables

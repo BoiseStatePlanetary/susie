@@ -12,9 +12,7 @@ class TransitTimes(object):
             will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric \
                 Dynamical time as the time scale.
     STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
-
     STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
-
     STEP 3: Check that the array's are formatted properly. The appropriate Type or Value Error is raised if there are any issues.
  
     Parameters
@@ -24,9 +22,9 @@ class TransitTimes(object):
         epochs: numpy.ndarray(int)
             List of reference points for transit observations represented in the transit times data.
         mid_transit_times: numpy.ndarray(float)
-            List of observed transit midpoints corresponding with epochs.
+            List of observed transit midpoints in days corresponding with epochs.
         mid_transit_times_uncertainties: Optional(numpy.ndarray[float])
-            List of uncertainties corresponding with transit midpoints. If given None, will be replaced with array of 1's with same shape as `mid_transit_times`.
+            List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1's with same shape as `mid_transit_times`.
         time_scale: Optional(str)
             An abbreviation of the data's timing scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
         object_ra: Optional(float)
@@ -50,6 +48,7 @@ class TransitTimes(object):
         self.mid_transit_times_uncertainties = mid_transit_times_uncertainties
         # Check that timing system and scale are JD and TDB
         if time_format != 'jd' or time_scale != 'tdb':
+            # TODO: Make sure they know default scale is UTC
             # If not correct time format and scale, create time objects and run corrections
             logging.warning(f"Recieved time format {time_format} and time scale {time_scale}. " 
                             "Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.")
@@ -104,7 +103,7 @@ class TransitTimes(object):
 
         Parameters
         ----------
-            mid_transit_times_obj : (astropy.time.Time[array, string, string])          
+            mid_transit_times_obj : (astropy.time.Time[array, string, string])         
                 List of transit midpoints, time_format, and time_scale 
             mid_trnasit_times_uncertainties_obj : Optional(astropy.time.Time[array, string, string])      NOTE also not really uncertainties in strings - maybe reformat the description
                 List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1's with same shape as `mid_transit_times`.
@@ -126,7 +125,7 @@ class TransitTimes(object):
         # Check if there are observatory coords, raise warning and use earth grav center coords if not
         if all(elem is None for elem in obs_coords):
             logging.warning(f"Unable to process observatory coordinates {obs_coords}. "
-                             "Using gravitational center of Earth at North Pole.")
+                             "Using gravitational center of Earth.")
             obs_location = coord.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
         else:
             obs_location = coord.EarthLocation.from_geodetic(obs_coords[0], obs_coords[1])
@@ -139,7 +138,6 @@ class TransitTimes(object):
 
     def _validate(self):
         """Checks that all object attributes are of correct types and within value constraints.
-        
         STEP 1: Check all object attributes are of type array.
 
         STEP 2: Check all object attributes are of same shape.
@@ -161,7 +159,7 @@ class TransitTimes(object):
             ValueError :
                 Error if 'epochs', 'mid_transit_times', or 'mid_transit_times_uncertainties' contain a NaN (Not-a-Number) value.
             ValueError :
-                Error if 'mid_transit_times_uncertainties' contains a negative or zero value. 
+                Error if 'mid_transit_times_uncertainties' contains a negative or zero value.
         """
         # Check that all are of type array
         if not isinstance(self.epochs, np.ndarray):
