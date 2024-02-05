@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>src.susie.transit_times &mdash; Susie Sept. 2023 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -136,14 +138,18 @@
 
     <span class="k">def</span> <span class="nf">_calc_barycentric_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.</span>
-<span class="sd">        </span>
+
+<span class="sd">        STEP 1: Checks if given placeholder values of 1. If given placeholder values, no correction needed and array of 1&#39;s returned.</span>
+
+<span class="sd">        STEP 2: If given actual values, correct the values to be Barycentric Julian Date in TDB time scale. Return corrected values.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            time_obj : numpy.ndarray[float]</span>
 <span class="sd">                List to be corrected to the Barycentric Julian Date in TDB time scale.</span>
 <span class="sd">            obj_location : numpy.ndarray[float]</span>
 <span class="sd">                List of the RA and DEC in degrees of the object being observed.</span>
-<span class="sd">            obs_location : Optional(numpy.ndarray[float])                           #is it still considered optional if the correction has been made?</span>
+<span class="sd">            obs_location : Optional(numpy.ndarray[float])                           NOTE considered optional only if keyword argument - check for these</span>
 <span class="sd">                List of the longitude and latitude in degrees of the site of observation. If None given, uses gravitational center of Earth at North Pole.</span>
 <span class="sd">       </span>
 <span class="sd">        Returns</span>
@@ -165,11 +171,17 @@
     <span class="k">def</span> <span class="nf">_validate_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_coords</span><span class="p">,</span> <span class="n">obs_coords</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that object and observatory coordinates are in correct format for correction function, passes the observed transit midpoints and the uncertainties in observed transit midpoints to the correction function. </span>
 <span class="sd">    </span>
+<span class="sd">        STEP 1: Checks if there are object coordinates (right ascension and declination). Raises a ValueError if not.</span>
+
+<span class="sd">        STEP 2: Checks if there are observatory coordinates (latitude and longitude). Raises a warning and uses the gravitational center of Earth at the North Pole if not.</span>
+
+<span class="sd">        STEP 3: Performs corrections to &#39;mid_transit_times_obj&#39; and &#39;mid_transit_times_uncertainties_obj&#39; by calling &#39;_calc_barycentric_time&#39;</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            mid_transit_times_obj : astropy.time.Time()   #this array contains an array and then some floats i think?? how do we classify the contents of the array</span>
+<span class="sd">            mid_transit_times_obj : (astropy.time.Time[array, string, string])         </span>
 <span class="sd">                List of transit midpoints, time_format, and time_scale </span>
-<span class="sd">            mid_trnasit_times_uncertainties_obj : numpy.ndarray[float]        #is this considered optional if already corrected?</span>
+<span class="sd">            mid_trnasit_times_uncertainties_obj : Optional(astropy.time.Time[array, string, string])      NOTE also not really uncertainties in strings - maybe reformat the description</span>
 <span class="sd">                List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
 <span class="sd">            obj_coords : numpy.ndarray[float]</span>
 <span class="sd">                List of the RA and DEC in degrees of the object being observed.</span>
@@ -202,13 +214,28 @@
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that all object attributes are of correct types and within value constraints.</span>
-<span class="sd">        </span>
+<span class="sd">        STEP 1: Check all object attributes are of type array.</span>
+
+<span class="sd">        STEP 2: Check all object attributes are of same shape.</span>
+
+<span class="sd">        STEP 3: Check all object attributes contain correct value type.</span>
+
+<span class="sd">        STEP 4: Check all object attributes contain no null values.</span>
+
+<span class="sd">        STEP 5: Check &#39;mid_transit_times_uncertainties&#39; contains non-negative and non-zero values.</span>
+
 <span class="sd">        Raises</span>
-<span class="sd">            TypeError:</span>
-<span class="sd">                Error if epochs, mid </span>
+<span class="sd">        ------</span>
+<span class="sd">            TypeError :</span>
+<span class="sd">                Error if &#39;epochs&#39;, &#39;mid_traisit_times&#39;, or &#39;mid_transit_times_uncertainties&#39; are not NumPy arrays.</span>
 <span class="sd">            ValueError :</span>
-<span class="sd">                Error if None recieved for object_ra or object_dec.</span>
-<span class="sd">            </span>
+<span class="sd">                Error if shapes of &#39;epochs&#39;, &#39;mid_transit_times&#39;, and &#39;mid_transit_times_uncertainties&#39; arrays do not match.</span>
+<span class="sd">            TypeError :</span>
+<span class="sd">                Error if values in &#39;epochs&#39; are not ints, values in &#39;mid_transit_times&#39; or &#39;mid_transit_times_uncertainties&quot; are not floats. </span>
+<span class="sd">            ValueError :</span>
+<span class="sd">                Error if &#39;epochs&#39;, &#39;mid_transit_times&#39;, or &#39;mid_transit_times_uncertainties&#39; contain a NaN (Not-a-Number) value.</span>
+<span class="sd">            ValueError :</span>
+<span class="sd">                Error if &#39;mid_transit_times_uncertainties&#39; contains a negative or zero value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check that all are of type array</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
