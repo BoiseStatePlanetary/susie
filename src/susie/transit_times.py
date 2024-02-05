@@ -62,14 +62,18 @@ class TransitTimes(object):
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
-        
+
+        STEP 1: Checks if given placeholder values of 1. If given placeholder values, no correction needed and array of 1's returned.
+
+        STEP 2: If given actual values, correct the values to be Barycentric Julian Date in TDB time scale. Return corrected values.
+
         Parameters
         ----------
             time_obj : numpy.ndarray[float]
                 List to be corrected to the Barycentric Julian Date in TDB time scale.
             obj_location : numpy.ndarray[float]
                 List of the RA and DEC in degrees of the object being observed.
-            obs_location : Optional(numpy.ndarray[float])                           #is it still considered optional if the correction has been made?
+            obs_location : Optional(numpy.ndarray[float])                           NOTE considered optional only if keyword argument - check for these
                 List of the longitude and latitude in degrees of the site of observation. If None given, uses gravitational center of Earth at North Pole.
        
         Returns
@@ -91,11 +95,17 @@ class TransitTimes(object):
     def _validate_times(self, mid_transit_times_obj, mid_transit_times_uncertainties_obj, obj_coords, obs_coords):
         """Checks that object and observatory coordinates are in correct format for correction function, passes the observed transit midpoints and the uncertainties in observed transit midpoints to the correction function. 
     
+        STEP 1: Checks if there are object coordinates (right ascension and declination). Raises a ValueError if not.
+
+        STEP 2: Checks if there are observatory coordinates (latitude and longitude). Raises a warning and uses the gravitational center of Earth at the North Pole if not.
+
+        STEP 3: Performs corrections to 'mid_transit_times_obj' and 'mid_transit_times_uncertainties_obj' by calling '_calc_barycentric_time'
+
         Parameters
         ----------
-            mid_transit_times_obj : astropy.time.Time()   #this array contains an array and then some floats i think?? how do we classify the contents of the array
+            mid_transit_times_obj : (astropy.time.Time[array, string, string])         
                 List of transit midpoints, time_format, and time_scale 
-            mid_trnasit_times_uncertainties_obj : numpy.ndarray[float]        #is this considered optional if already corrected?
+            mid_trnasit_times_uncertainties_obj : Optional(astropy.time.Time[array, string, string])      NOTE also not really uncertainties in strings - maybe reformat the description
                 List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1's with same shape as `mid_transit_times`.
             obj_coords : numpy.ndarray[float]
                 List of the RA and DEC in degrees of the object being observed.
@@ -128,13 +138,28 @@ class TransitTimes(object):
 
     def _validate(self):
         """Checks that all object attributes are of correct types and within value constraints.
-        
+        STEP 1: Check all object attributes are of type array.
+
+        STEP 2: Check all object attributes are of same shape.
+
+        STEP 3: Check all object attributes contain correct value type.
+
+        STEP 4: Check all object attributes contain no null values.
+
+        STEP 5: Check 'mid_transit_times_uncertainties' contains non-negative and non-zero values.
+
         Raises
-            TypeError:
-                Error if epochs, mid 
+        ------
+            TypeError :
+                Error if 'epochs', 'mid_traisit_times', or 'mid_transit_times_uncertainties' are not NumPy arrays.
             ValueError :
-                Error if None recieved for object_ra or object_dec.
-            
+                Error if shapes of 'epochs', 'mid_transit_times', and 'mid_transit_times_uncertainties' arrays do not match.
+            TypeError :
+                Error if values in 'epochs' are not ints, values in 'mid_transit_times' or 'mid_transit_times_uncertainties" are not floats. 
+            ValueError :
+                Error if 'epochs', 'mid_transit_times', or 'mid_transit_times_uncertainties' contain a NaN (Not-a-Number) value.
+            ValueError :
+                Error if 'mid_transit_times_uncertainties' contains a negative or zero value.
         """
         # Check that all are of type array
         if not isinstance(self.epochs, np.ndarray):
