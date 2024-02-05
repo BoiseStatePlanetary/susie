@@ -646,7 +646,7 @@
     
 <div class="viewcode-block" id="Ephemeris.plot_model_ephemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_model_ephemeris">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -665,7 +665,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">])</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Model Predicted Mid-Transit Times (units)&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Predicted Model Mid Transit Times over Epochs&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicted </span><span class="si">{</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> Model Mid Transit Times over Epochs&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">save_plot</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
@@ -673,7 +673,7 @@
 
 <div class="viewcode-block" id="Ephemeris.plot_timing_uncertainties">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO: This short docstring</span>
 
 <span class="sd">        Parameters</span>
@@ -709,7 +709,8 @@
 
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># TODO: Something wrong with this, maybe with data, the y axis values aren&#39;t right and the plot for 1/2 dP/dE E^2 looks totally wrong.</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
 
 <span class="sd">        Parameters</span>
@@ -725,18 +726,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># y = T0 - PE - 0.5 dP/dE E^2</span>
         <span class="n">lin_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
-        <span class="c1"># quad_model = self.get_model_ephemeris(&#39;quadratic&#39;)</span>
+        <span class="n">quad_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
         <span class="n">lin_bic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">lin_model</span><span class="p">)</span>
         <span class="c1"># quad_bic = self.calc_bic(quad_model)</span>
-        <span class="n">days_to_seconds</span> <span class="o">=</span> <span class="mi">86400</span>
-        <span class="c1"># y = self.transit_times.mid_transit_times - Yees_period*self.transit_times.epochs -0.5*Yees_dPdE/days_to_seconds*(self.transit_times.epochs - np.median(self.transit_times.epochs))**2</span>
+
         <span class="c1"># plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-</span> <span class="n">lin_model</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">),</span> 
-                    <span class="n">yerr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
-                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\left(t(E) - T_0 - P E\right)$&#39;</span><span class="p">)</span>
-        <span class="c1"># plt.plot(self.transit_times.epochs, (-0.5*quad_model[&#39;period_change_by_epoch&#39;]/days_to_seconds*(self.transit_times.epochs - np.median(self.transit_times.epochs))**2), lw=6, label=&quot;quad BIC = %i&quot; % quad_bic)</span>
-        <span class="c1"># plt.plot(self.transit_times.epochs, (lin_model[&#39;model_data&#39;])*days_to_seconds, ls=&#39;--&#39;, lw=6, color=&#39;green&#39;,</span>
-                <span class="c1"># label=&quot;linear BIC = %i&quot; % lin_bic)</span>
+                    <span class="n">yerr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$t(E) - T_0 - P E$&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> 
+                 <span class="p">(((</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">quad_model</span><span class="p">[</span><span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span> 
+                 <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#D64309&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\frac</span><span class="si">{1}{2}</span><span class="s1">(\frac</span><span class="si">{dP}{dE}</span><span class="s1">)E^2$&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;O-C (seconds)&#39;</span><span class="p">)</span>
@@ -747,7 +747,7 @@
 
 <div class="viewcode-block" id="Ephemeris.plot_running_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
 
 <span class="sd">        Parameters</span>
@@ -801,22 +801,27 @@
     <span class="c1"># STEP 4: Create new ephemeris object with transit times object</span>
     <span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">transit_times_obj1</span><span class="p">)</span>
     <span class="c1"># STEP 5: Get model ephemeris data</span>
-    <span class="n">model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">model_data</span><span class="p">)</span>
-    <span class="n">model_uncertainties</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_ephemeris_uncertainties</span><span class="p">(</span><span class="n">model_data</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">model_uncertainties</span><span class="p">)</span>
-    <span class="c1"># STEP 6: Show a plot of the model ephemeris data</span>
-    <span class="c1"># ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)</span>
-    <span class="c1"># # STEP 7: Uncertainties plot</span>
-    <span class="c1"># ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)</span>
-    <span class="c1"># bic = ephemeris_obj1.calc_bic(model_data)</span>
-    <span class="c1"># print(bic)</span>
+    <span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+    <span class="n">quad_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">quad_model_data</span><span class="p">)</span>
+    <span class="c1"># ephemeris_obj1.plot_model_ephemeris(linear_model_data)</span>
+    <span class="c1"># ephemeris_obj1.plot_model_ephemeris(quad_model_data)</span>
+    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
+    <span class="c1"># model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(model_data)</span>
+    <span class="c1"># print(model_uncertainties)</span>
+    <span class="c1"># # STEP 6: Show a plot of the model ephemeris data</span>
+    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)</span>
+    <span class="c1"># # # STEP 7: Uncertainties plot</span>
+    <span class="c1"># # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)</span>
+    <span class="c1"># # bic = ephemeris_obj1.calc_bic(model_data)</span>
+    <span class="c1"># # print(bic)</span>
 
-    <span class="c1"># print(ephemeris_obj1.calc_delta_bic())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-    <span class="c1"># ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
+    <span class="c1"># # print(ephemeris_obj1.calc_delta_bic())</span>
+    <span class="c1"># print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))</span>
+    <span class="c1"># # ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
 
-    <span class="c1"># ephemeris_obj1.plot_oc_plot(False)</span>
+    <span class="c1"># # ephemeris_obj1.plot_oc_plot(False)</span>
 </pre></div>
 
            </div>

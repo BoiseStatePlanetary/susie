@@ -1,9 +1,7 @@
-.. _ephemeris:
+Ephemeris Class
+================
 
-Ephemeris
-==========
-
-Description of Ephemeris
-
-.. automodule:: ephemeris
-    :members:
+.. automodule:: susie.ephemeris
+   :members:
+   :undoc-members:
+   :show-inheritance:
