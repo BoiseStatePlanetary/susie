@@ -235,17 +235,48 @@ class Ephemeris(object):
         Raised if transit_times is not an instance of the TransitTimes object.
     """
     def __init__(self, transit_times):
-        """Initializing the transit times object and model ephermeris object"""
+        """Initializing the transit times object and model ephermeris object
+        
+        Parameters
+        -----------
+        transit_times: TransitTimes obj
+            A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.
+        
+        """
         self.transit_times = transit_times
         self._validate()
 
     def _validate(self):
-        """Check that transit_times is an instance of the TransitTimes object."""
+        """Check that transit_times is an instance of the TransitTimes object.
+        
+        Raises
+        ------
+            ValueError :
+                error raised if 'transit_times' is not an instance of 'TransitTimes' object.
+        """
         if not isinstance(self.transit_times, TransitTimes):
             raise ValueError("Variable 'transit_times' expected type of object 'TransitTimes'.")
         
     def _get_transit_times_data(self):
-        """Normalizes transit time data and returns for use."""
+        """Normalizes transit time data and returns for use.
+        
+        STEP 1: Normalize the epoch data by subtracting the minimum value of the epochs from each epoch in the array.
+
+        STEP 2: Normalize the mid transit time data by subtracting the minimum value of the mid transit times from each mid transit time in the array.
+
+        STEP 3: yerr is created NOTE: I'm confused about this - we didn't do anything???
+
+        STEP 4: return the epoch, mid transit time and mid transit time error data.
+
+        Returns
+        -------
+            x: numpy.ndarray[int]
+                The epoch data as recieved from the TransitTimes object.
+            y: numpy.ndarray[float]
+                The mid transit time data as recieved from the TransitTimes object.
+            yerr: numpy.ndarray[float]
+                The mid transit time error data as recieved from the TransitTimes object.
+        """
         x = self.transit_times.epochs - np.min(self.transit_times.epochs)
         y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
         yerr = self.transit_times.mid_transit_times_uncertainties
@@ -519,7 +550,7 @@ class Ephemeris(object):
         
         Returns
         ------- 
-            A float value representing the ΔBIC value for this transit data.
+            A float value representing the ΔBIC value for this transit data. NOTE: not done
         """
         linear_data = self.get_model_ephemeris('linear')
         quadratic_data = self.get_model_ephemeris('quadratic')
