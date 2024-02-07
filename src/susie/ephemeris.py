@@ -441,9 +441,21 @@ class Ephemeris(object):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
     
     def _calc_chi_squared(self, model_data):
-        # TODO: Docstring
-        """Calculates the residual chi squared values for the 
+        # TODO: Docstring - needs editing
+        """Calculates the residual chi squared values for the model ephemeris.
+
+        STEP 1: Get the observed transit times and observed transit times uncertainties from transit_times.py.
+
+        STEP 2: Calculate the chi-squared value for the observed and model data, then return this value.
         
+        Parameters
+        ----------
+            model_data : 
+                NOTE: a key of the model data dictionary - what data type is this and what is it really doing? This is our predicted data
+        
+        Returns
+        -------
+            Return the calculated chi-squared value
         """
         # TODO: change model_data to something more descriptive
         # STEP 1: Get observed transit times
@@ -561,7 +573,7 @@ class Ephemeris(object):
     
     def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
         """Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
-        
+
         Parameters
         ----------
             model_data_dict: dict
@@ -584,7 +596,13 @@ class Ephemeris(object):
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
-        """TODO: This short docstring
+        """Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
+        NOTE: these steps need to be checked - I need to clarify what 'model_data' is.
+        STEP 1: Get the uncertianies from the model data dictionary 
+
+        STEP 2: Get the model data, subtract the conjunction time and subtract the initial period
+
+        STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.
 
         Parameters
         ----------
