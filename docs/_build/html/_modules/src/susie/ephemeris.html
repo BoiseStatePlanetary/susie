@@ -87,7 +87,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris.fit_model">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits a model ephemeris to transit data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits a model ephemeris to transit data. NOTE: Not finished</span>
 
 <span class="sd">        Defines the structure for fitting a model (linear or quadratic) to transit data. </span>
 <span class="sd">        All subclasses must implement this method.</span>
@@ -103,7 +103,8 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
-<span class="sd">            A dictionary containing fitted model parameters.</span>
+<span class="sd">            A dictionary containing fitted model parameters. </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
@@ -341,17 +342,48 @@
 <span class="sd">        Raised if transit_times is not an instance of the TransitTimes object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transit_times</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the transit times object and model ephermeris object&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the transit times object and model ephermeris object</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        transit_times: TransitTimes obj</span>
+<span class="sd">            A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span> <span class="o">=</span> <span class="n">transit_times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that transit_times is an instance of the TransitTimes object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that transit_times is an instance of the TransitTimes object.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">            ValueError :</span>
+<span class="sd">                error raised if &#39;transit_times&#39; is not an instance of &#39;TransitTimes&#39; object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="p">,</span> <span class="n">TransitTimes</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Variable &#39;transit_times&#39; expected type of object &#39;TransitTimes&#39;.&quot;</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">_get_transit_times_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalizes transit time data and returns for use.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalizes transit time data and returns for use.</span>
+<span class="sd">        </span>
+<span class="sd">        STEP 1: Normalize the epoch data by subtracting the minimum value of the epochs from each epoch in the array.</span>
+
+<span class="sd">        STEP 2: Normalize the mid transit time data by subtracting the minimum value of the mid transit times from each mid transit time in the array.</span>
+
+<span class="sd">        STEP 3: yerr is created NOTE: I&#39;m confused about this - we didn&#39;t do anything???</span>
+
+<span class="sd">        STEP 4: return the epoch, mid transit time and mid transit time error data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            x: numpy.ndarray[int]</span>
+<span class="sd">                The epoch data as recieved from the TransitTimes object.</span>
+<span class="sd">            y: numpy.ndarray[float]</span>
+<span class="sd">                The mid transit time data as recieved from the TransitTimes object.</span>
+<span class="sd">            yerr: numpy.ndarray[float]</span>
+<span class="sd">                The mid transit time error data as recieved from the TransitTimes object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">)</span>
         <span class="n">yerr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span>
@@ -516,9 +548,21 @@
         <span class="k">return</span><span class="p">((</span><span class="mf">0.5</span><span class="o">*</span><span class="n">period_change_by_epoch</span><span class="o">*</span><span class="p">(</span><span class="n">epochs</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">period</span><span class="o">*</span><span class="n">epochs</span><span class="p">)</span> <span class="o">+</span> <span class="n">conjunction_time</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">_calc_chi_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
-        <span class="c1"># TODO: Docstring</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the residual chi squared values for the </span>
+        <span class="c1"># TODO: Docstring - needs editing</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the residual chi squared values for the model ephemeris.</span>
+
+<span class="sd">        STEP 1: Get the observed transit times and observed transit times uncertainties from transit_times.py.</span>
+
+<span class="sd">        STEP 2: Calculate the chi-squared value for the observed and model data, then return this value.</span>
 <span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            model_data : </span>
+<span class="sd">                NOTE: a key of the model data dictionary - what data type is this and what is it really doing? This is our predicted data</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Return the calculated chi-squared value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: change model_data to something more descriptive</span>
         <span class="c1"># STEP 1: Get observed transit times</span>
@@ -608,7 +652,11 @@
     <span class="k">def</span> <span class="nf">calc_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the BIC value for a given model ephemeris. </span>
 <span class="sd">        </span>
-<span class="sd">        Uses the equation BIC = 𝜒2 + (k * log(N)) where </span>
+<span class="sd">        Uses the equation </span>
+<span class="sd">        .. math:: </span>
+<span class="sd">            BIC = 𝜒2 + (k * log(N)) $</span>
+<span class="sd">         </span>
+<span class="sd">        where </span>
 <span class="sd">        𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2, </span>
 <span class="sd">        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
 <span class="sd">        </span>
@@ -636,7 +684,7 @@
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
-<span class="sd">            A float value representing the ΔBIC value for this transit data.</span>
+<span class="sd">            A float value representing the ΔBIC value for this transit data. NOTE: not done</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">linear_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
         <span class="n">quadratic_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
@@ -650,7 +698,7 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_model_ephemeris">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            model_data_dict: dict</span>
@@ -676,7 +724,13 @@
 <div class="viewcode-block" id="Ephemeris.plot_timing_uncertainties">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO: This short docstring</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing timing uncertainties over epochs.</span>
+<span class="sd">        NOTE: these steps need to be checked - I need to clarify what &#39;model_data&#39; is.</span>
+<span class="sd">        STEP 1: Get the uncertianies from the model data dictionary </span>
+
+<span class="sd">        STEP 2: Get the model data, subtract the conjunction time and subtract the initial period</span>
+
+<span class="sd">        STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

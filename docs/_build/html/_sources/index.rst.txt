@@ -12,7 +12,9 @@ Welcome to Susie's documentation!
    susie
    usage
 
-
+.. note::
+   This project is under active development.
+   
 Indices and tables
 ==================
 
