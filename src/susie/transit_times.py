@@ -4,6 +4,8 @@ from astropy import coordinates as coord
 from astropy import units as u
 import logging
 
+# TESTING
+
 class TransitTimes(object):
     """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
     
