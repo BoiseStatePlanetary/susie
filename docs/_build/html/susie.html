@@ -161,13 +161,15 @@ All subclasses must implement this method.</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_bic">
 <span class="sig-name descname"><span class="pre">calc_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_bic" title="Link to this definition"></a></dt>
 <dd><p>Calculates the BIC value for a given model ephemeris.</p>
-<p>Uses the equation
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>BIC = 𝜒2 + (k * log(N)) $
-</pre></div>
-</div>
-<p>where
-𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2,
+<dl class="simple">
+<dt>Uses the equation</dt><dd><p>:math:’BIC = 𝜒2 + (k * log(N))’</p>
+</dd>
+</dl>
+<p>where</p>
+<blockquote>
+<div><p>:math:’𝜒^2=sum{  (frac{(observed mid transit times - model mid transit times)}{observed mid transit time uncertainties)^2}   }’</p>
+</div></blockquote>
+<p>𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2,
 k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

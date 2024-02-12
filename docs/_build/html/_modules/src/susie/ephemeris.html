@@ -653,10 +653,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the BIC value for a given model ephemeris. </span>
 <span class="sd">        </span>
 <span class="sd">        Uses the equation </span>
-<span class="sd">        .. math:: </span>
-<span class="sd">            BIC = 𝜒2 + (k * log(N)) $</span>
+<span class="sd">           :math:&#39;BIC = 𝜒2 + (k * log(N))&#39;</span>
 <span class="sd">         </span>
-<span class="sd">        where </span>
+<span class="sd">        where</span>
+
+<span class="sd">            :math:&#39;𝜒^2=\\sum{  (\\frac{(observed mid transit times - model mid transit times)}{observed mid transit time uncertainties)^2}   }&#39;</span>
+
 <span class="sd">        𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2, </span>
 <span class="sd">        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
 <span class="sd">        </span>
