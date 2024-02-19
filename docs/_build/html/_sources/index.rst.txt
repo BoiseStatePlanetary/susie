@@ -11,6 +11,8 @@ Welcome to Susie's documentation!
 
    susie
    usage
+.. math::
+      x^2+b^3=\frac{1}{2}
 
 .. note::
    This project is under active development.
