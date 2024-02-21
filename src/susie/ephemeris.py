@@ -236,17 +236,48 @@ class Ephemeris(object):
         Raised if transit_times is not an instance of the TransitTimes object.
     """
     def __init__(self, transit_times):
-        """Initializing the transit times object and model ephermeris object"""
+        """Initializing the transit times object and model ephermeris object
+        
+        Parameters
+        -----------
+        transit_times: TransitTimes obj
+            A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.
+        
+        """
         self.transit_times = transit_times
         self._validate()
 
     def _validate(self):
-        """Check that transit_times is an instance of the TransitTimes object."""
+        """Check that transit_times is an instance of the TransitTimes object.
+        
+        Raises
+        ------
+            ValueError :
+                error raised if 'transit_times' is not an instance of 'TransitTimes' object.
+        """
         if not isinstance(self.transit_times, TransitTimes):
             raise ValueError("Variable 'transit_times' expected type of object 'TransitTimes'.")
         
     def _get_transit_times_data(self):
-        """Normalizes transit time data and returns for use."""
+        """Normalizes transit time data and returns for use.
+        
+        STEP 1: Normalize the epoch data by subtracting the minimum value of the epochs from each epoch in the array.
+
+        STEP 2: Normalize the mid transit time data by subtracting the minimum value of the mid transit times from each mid transit time in the array.
+
+        STEP 3: yerr is created NOTE: I'm confused about this - we didn't do anything???
+
+        STEP 4: return the epoch, mid transit time and mid transit time error data.
+
+        Returns
+        -------
+            x: numpy.ndarray[int]
+                The epoch data as recieved from the TransitTimes object.
+            y: numpy.ndarray[float]
+                The mid transit time data as recieved from the TransitTimes object.
+            yerr: numpy.ndarray[float]
+                The mid transit time error data as recieved from the TransitTimes object.
+        """
         x = self.transit_times.epochs - np.min(self.transit_times.epochs)
         y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
         yerr = self.transit_times.mid_transit_times_uncertainties
@@ -411,9 +442,21 @@ class Ephemeris(object):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
     
     def _calc_chi_squared(self, model_data):
-        # TODO: Docstring
-        """Calculates the residual chi squared values for the 
+        # TODO: Docstring - needs editing
+        """Calculates the residual chi squared values for the model ephemeris.
+
+        STEP 1: Get the observed transit times and observed transit times uncertainties from transit_times.py.
+
+        STEP 2: Calculate the chi-squared value for the observed and model data, then return this value.
         
+        Parameters
+        ----------
+            model_data : 
+                NOTE: a key of the model data dictionary - what data type is this and what is it really doing? This is our predicted data
+        
+        Returns
+        -------
+            Return the calculated chi-squared value
         """
         # TODO: change model_data to something more descriptive
         # STEP 1: Get observed transit times
@@ -520,7 +563,7 @@ class Ephemeris(object):
         
         Returns
         ------- 
-            A float value representing the ΔBIC value for this transit data.
+            A float value representing the ΔBIC value for this transit data. NOTE: not done
         """
         linear_data = self.get_model_ephemeris('linear')
         quadratic_data = self.get_model_ephemeris('quadratic')
@@ -531,7 +574,7 @@ class Ephemeris(object):
     
     def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
         """Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
-        
+
         Parameters
         ----------
             model_data_dict: dict
@@ -554,7 +597,13 @@ class Ephemeris(object):
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
-        """TODO: This short docstring
+        """Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
+        NOTE: these steps need to be checked - I need to clarify what 'model_data' is.
+        STEP 1: Get the uncertianies from the model data dictionary 
+
+        STEP 2: Get the model data, subtract the conjunction time and subtract the initial period
+
+        STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.
 
         Parameters
         ----------

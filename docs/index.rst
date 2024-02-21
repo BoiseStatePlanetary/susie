@@ -12,6 +12,8 @@ Welcome to Susie's documentation!
    susie
    usage
 
+.. note::
+   This project is under active development.
 
 Indices and tables
 ==================
@@ -19,3 +21,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+The developers were supported by a TESS Guest Investigator Cycle-5 grant (NNH21ZDA001N), and 
+an Exoplanets Research grant (NNH21ZDA001N).
