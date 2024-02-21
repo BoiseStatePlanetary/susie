@@ -166,6 +166,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             'period_change_by_epoch': popt[0],
             'period_change_by_epoch_err': unc[0],
         }
+        print(return_data)
         return(return_data)
 
 class ModelEphemerisFactory:
@@ -652,18 +653,18 @@ class Ephemeris(object):
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
-        lin_bic = self.calc_bic(lin_model)
-        # quad_bic = self.calc_bic(quad_model)
+
+        quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.transit_times.epochs - np.median(self.transit_times.epochs))**2)
 
         # plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0
-        plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['period']*self.transit_times.epochs), 
+        plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['conjunction_time'] - (lin_model['period']*self.transit_times.epochs)), 
                     yerr=self.transit_times.mid_transit_times_uncertainties, marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
-        plt.plot(self.transit_times.epochs, 
-                 (((1/2)*quad_model['period_change_by_epoch'])*(self.transit_times.epochs**2)), 
+        plt.plot(self.transit_times.epochs,
+                 (quad_model_curve),
                  color='#D64309', label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
         plt.legend()
-        plt.xlabel('E')
+        plt.xlabel('E - Median E')
         plt.ylabel('O-C (seconds)')
         if save_plot is True:
             plt.savefig(save_filepath)
@@ -709,15 +710,16 @@ if __name__ == '__main__':
     filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
     data = np.genfromtxt(filepath, delimiter=',', names=True)
     # STEP 2: Break data up into epochs, mid transit times, and error
-    epochs = data["epoch"] - np.min(data["epoch"])
-    mid_transit_times = data["transit_time"] - np.min(data["transit_time"])
-    mid_transit_times_err = data["sigma_transit_time"]
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
-    epochs = epochs.astype('int')
+    epochs = data["epoch"].astype('int')
+    mid_transit_times = data["transit_time"]
+    mid_transit_times_err = data["sigma_transit_time"]
     # STEP 3: Create new transit times object with above data
     # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     # print(vars(transit_times_obj1))
     transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
+    print(f"EPOCHS: {transit_times_obj1.epochs}\n")
+    print(f"MID TRANSIT TIMES: {transit_times_obj1.mid_transit_times}\n")
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(transit_times_obj1)
     # STEP 5: Get model ephemeris data
