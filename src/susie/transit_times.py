@@ -41,7 +41,7 @@ class TransitTimes(object):
 
     Side Effects
     -------------
-        Epochs and mid transit times are shifted to start at zero by subtracting the minimum number from each value.
+        Variables epochs and mid_transit_times are shifted to start at zero by subtracting the minimum number from each value.
     """
     def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
         # TODO: What would happen here if a non-numpy array is passed in? Should we add validation for that?
