@@ -166,7 +166,6 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             'period_change_by_epoch': popt[0],
             'period_change_by_epoch_err': unc[0],
         }
-        print(return_data)
         return(return_data)
 
 class ModelEphemerisFactory:
@@ -636,7 +635,6 @@ class Ephemeris(object):
         plt.show()
 
     def plot_oc_plot(self, save_plot=False, save_filepath=None):
-        # TODO: Something wrong with this, maybe with data, the y axis values aren't right and the plot for 1/2 dP/dE E^2 looks totally wrong.
         """TODO docstring
 
         Parameters
@@ -653,9 +651,8 @@ class Ephemeris(object):
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
-
+        # y = 0.5 dP/dE * (E - median E)^2
         quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.transit_times.epochs - np.median(self.transit_times.epochs))**2)
-
         # plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0
         plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['conjunction_time'] - (lin_model['period']*self.transit_times.epochs)), 
                     yerr=self.transit_times.mid_transit_times_uncertainties, marker='o', ls='', color='#0033A0',
