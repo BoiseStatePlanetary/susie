@@ -67,8 +67,8 @@ class TransitTimes(object):
         # Call validation function
         self._validate()
         # Shift epochs and mid transit times
-        self.epochs = self.epochs - np.min(self.epochs)
-        self.mid_transit_times = self.mid_transit_times - np.min(self.mid_transit_times)
+        self.epochs -= np.min(self.epochs)
+        self.mid_transit_times -= np.min(self.mid_transit_times)
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
