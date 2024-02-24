@@ -11,8 +11,11 @@ class TransitTimes(object):
         This object creates and/or formats the array of uncertainties in mid_transit_times. This object \
             will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric \
                 Dynamical time as the time scale.
+
     STEP 1: Make an array of 1's to be the uncertainities in the same shape as epochs and mid_transit_times.
+
     STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.
+
     STEP 3: Check that the array's are formatted properly. The appropriate Type or Value Error is raised if there are any issues.
  
     Parameters
@@ -36,8 +39,9 @@ class TransitTimes(object):
         observatory_lat: Optional(float) 
             The latitude in degrees of observatory data was collected from.
     Raises
-    ------------
-        Error raised if parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
+    ------
+        Error raised if : 
+            parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
     """
     def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
         self.epochs = epochs
