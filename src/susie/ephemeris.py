@@ -9,7 +9,7 @@ class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
     @abstractmethod
     def fit_model(self, x, y, yerr, **kwargs):
-        """Fits a model ephemeris to transit data.
+        """Fits a model ephemeris to transit data. NOTE: Not finished
 
         Defines the structure for fitting a model (linear or quadratic) to transit data. 
         All subclasses must implement this method.
@@ -25,7 +25,8 @@ class BaseModelEphemeris(ABC):
 
         Returns
         ------- 
-            A dictionary containing fitted model parameters.
+            A dictionary containing fitted model parameters. 
+
         """
         pass
 
@@ -76,13 +77,13 @@ class LinearModelEphemeris(BaseModelEphemeris):
         Returns
         ------- 
         return_data: dict
-            A dictionary of parameters from the fit model ephemeris. Example:
-                {
-                    'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
-                    'period_err': The uncertainities associated with period (in units of days),
-                    'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
-                    'conjunction_time_err': The uncertainties associated with conjunction_time
-                }
+            A dictionary of parameters from the fit model ephemeris. 
+            
+            Example:
+                * 'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                * 'period_err': The uncertainities associated with period (in units of days),
+                * 'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
+                * 'conjunction_time_err': The uncertainties associated with conjunction_time
         """
         # Will come back in units of y/x (so will be in days), period is days per orbit (but rly this is days bc orbit is unitless)
         popt, pcov = curve_fit(self.lin_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
@@ -470,17 +471,16 @@ class Ephemeris(object):
         Returns
         -------
             A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
-            {
-                'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
-                'period_err': The uncertainities associated with period (in units of days),
-                'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
-                'conjunction_time_err': The uncertainties associated with conjunction_time
-            }
+            
+                * 'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                * 'period_err': The uncertainities associated with period (in units of days),
+                * 'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
+                * 'conjunction_time_err': The uncertainties associated with conjunction_time
+            
             If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
-            {
-                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
-                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days),
-            }
+            
+                * 'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+                * 'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days),
         """
         parameters = self._get_model_parameters(model_type)
         parameters['model_type'] = model_type
@@ -495,9 +495,17 @@ class Ephemeris(object):
     def get_ephemeris_uncertainties(self, model_params):
         """Calculates the uncertainties of a specific model data when compared to the actual data. 
         
-        Uses the equation σ(t pred, tra) = √(σ(T0)^2 + σ(P)^2 * E^2) for linear models and 
-        σ(t pred, tra) = √(σ(T0)^2 + (σ(P)^2 * E^2) + (1/4 * σ(dP/dE)^2 * E^4)) for quadratic models 
-        (where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change by 
+        Uses the equation 
+        
+        .. math::
+            \\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}
+        
+        for linear models and 
+
+        .. math::
+            \\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))} 
+        
+        for quadratic models (where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change by 
         epoch error) to calculate the uncertainties between the model data and actual data over epochs.
         
         Parameters
@@ -529,10 +537,19 @@ class Ephemeris(object):
             return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'])
     
     def calc_bic(self, model_data_dict):
-        """Calculates the BIC value for a given model ephemeris. 
+        """
+        Calculates the BIC value for a given model ephemeris. 
         
-        Uses the equation BIC = 𝜒2 + (k * log(N)) where 
-        𝜒2=∑((observed mid transit times - model mid transit times)/observed mid transit time uncertainties)^2, 
+        Uses the equation
+
+        .. math::
+            BIC = \\chi^2 + (k * log(N))
+         
+        where
+
+        .. math::
+            \\chi^2=\\sum{  \\frac{(\\text{observed mid transit times - model mid transit times})}{\\text{(observed mid transit time uncertainties})^2}   }
+        
         k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.
         
         Parameters

@@ -164,13 +164,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
 <span class="sd">        return_data: dict</span>
-<span class="sd">            A dictionary of parameters from the fit model ephemeris. Example:</span>
-<span class="sd">                {</span>
-<span class="sd">                    &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs,</span>
-<span class="sd">                    &#39;period_err&#39;: The uncertainities associated with period,</span>
-<span class="sd">                    &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
-<span class="sd">                    &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
-<span class="sd">                }</span>
+<span class="sd">            A dictionary of parameters from the fit model ephemeris. </span>
+<span class="sd">            </span>
+<span class="sd">            Example:</span>
+<span class="sd">                * &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs,</span>
+<span class="sd">                * &#39;period_err&#39;: The uncertainities associated with period,</span>
+<span class="sd">                * &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
+<span class="sd">                * &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Will come back in units of y/x (so will be in days), period is days per orbit (but rly this is days bc orbit is unitless)</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_fit</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">yerr</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -584,17 +584,16 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:</span>
-<span class="sd">            {</span>
-<span class="sd">                &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs,</span>
-<span class="sd">                &#39;period_err&#39;: The uncertainities associated with period,</span>
-<span class="sd">                &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
-<span class="sd">                &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
-<span class="sd">            }</span>
+<span class="sd">            </span>
+<span class="sd">                * &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs,</span>
+<span class="sd">                * &#39;period_err&#39;: The uncertainities associated with period,</span>
+<span class="sd">                * &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
+<span class="sd">                * &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
+<span class="sd">            </span>
 <span class="sd">            If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</span>
-<span class="sd">            {</span>
-<span class="sd">                &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch,</span>
-<span class="sd">                &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch,</span>
-<span class="sd">            }</span>
+<span class="sd">            </span>
+<span class="sd">                * &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch,</span>
+<span class="sd">                * &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch,</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># NOTE: Are these values returned in days? ex: conjunction time, orbital period, change in orbital period</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_parameters</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>

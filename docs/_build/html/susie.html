@@ -235,16 +235,20 @@ epoch error) to calculate the uncertainties between the model data and actual da
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><em>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are</em></p></li>
-<li><p><em>{</em> – ‘period’: An array of exoplanet periods over time corresponding to epochs,
-‘period_err’: The uncertainities associated with period,
-‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
-‘conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
-<li><p><em>}</em></p></li>
-<li><p><em>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary</em></p></li>
-<li><p><em>{</em> – ‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch,
-‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch,</p></li>
-<li><p><em>}</em></p></li>
+<li><p><em>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are</em> –</p>
+<ul>
+<li><p>‘period’: An array of exoplanet periods over time corresponding to epochs,</p></li>
+<li><p>’period_err’: The uncertainities associated with period,</p></li>
+<li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
+<li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
+</ul>
+</li>
+<li><p><em>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary</em> –</p>
+<ul>
+<li><p>‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch,</p></li>
+<li><p>’period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch,</p></li>
+</ul>
+</li>
 </ul>
 </p>
 </dd>
@@ -350,16 +354,14 @@ and their respective errors. These parameters are returned in a dictionary to th
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p><strong>return_data</strong> –</p>
-<dl>
-<dt>A dictionary of parameters from the fit model ephemeris. Example:</dt><dd><dl class="simple">
-<dt>{</dt><dd><p>‘period’: An array of exoplanet periods over time corresponding to epochs,
-‘period_err’: The uncertainities associated with period,
-‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
-‘conjunction_time_err’: The uncertainties associated with conjunction_time</p>
-</dd>
-</dl>
-<p>}</p>
+<dd class="field-even"><p><p><strong>return_data</strong> – A dictionary of parameters from the fit model ephemeris.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><ul class="simple">
+<li><p>’period’: An array of exoplanet periods over time corresponding to epochs,</p></li>
+<li><p>’period_err’: The uncertainities associated with period,</p></li>
+<li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
+<li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
+</ul>
 </dd>
 </dl>
 </p>
