@@ -42,8 +42,12 @@ class TransitTimes(object):
             The latitude in degrees of observatory data was collected from.
     Raises
     ------
-        Error raised if : 
-            parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.
+        Error raised if  
+            * parameters are not NumPy Arrays 
+            * parameters are not the same shape of array 
+            * the values of epochs are not all ints
+            * the values of mid_transit_times and unertainites are not all floats
+            * values of uncertainities are not all positive.
 
     Side Effects
     -------------
