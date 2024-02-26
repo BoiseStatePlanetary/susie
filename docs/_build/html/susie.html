@@ -541,9 +541,22 @@ used with curve_fit.</p>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Error raised if :</strong> – parameters are not NumPy Arrays, parameters are not the same shape of array, the values of epochs are not all ints, the values of mid_transit_times and unertainites are not all floats, or values of uncertainities are not all positive.</p>
+<dd class="field-even"><p><strong>Error raised if</strong> – <ul class="simple">
+<li><p>parameters are not NumPy Arrays
+    * parameters are not the same shape of array
+    * the values of epochs are not all ints
+    * the values of mid_transit_times and unertainites are not all floats
+    * values of uncertainities are not all positive.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
+<section id="side-effects">
+<h3>Side Effects<a class="headerlink" href="#side-effects" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>Variables epochs and mid_transit_times are shifted to start at zero by subtracting the minimum number from each value.</p>
+</div></blockquote>
+</section>
 </dd></dl>
 
 </section>

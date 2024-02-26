@@ -9,7 +9,7 @@ class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
     @abstractmethod
     def fit_model(self, x, y, yerr, **kwargs):
-        """Fits a model ephemeris to transit data. NOTE: Not finished
+        """Fits a model ephemeris to transit data.
 
         Defines the structure for fitting a model (linear or quadratic) to transit data. 
         All subclasses must implement this method.
@@ -608,7 +608,7 @@ class Ephemeris(object):
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
         """Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
-        NOTE: these steps need to be checked - I need to clarify what 'model_data' is.
+        NOTE: these steps need to be checked - I need to clarify what 'model_data' is. 
         STEP 1: Get the uncertianies from the model data dictionary 
 
         STEP 2: Get the model data, subtract the conjunction time and subtract the initial period
