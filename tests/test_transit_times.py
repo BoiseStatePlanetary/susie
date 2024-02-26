@@ -14,10 +14,10 @@ class TestTransitTimes(unittest.TestCase):
     """
     Tests:
     ** s = successful, us = unsuccessful
-        test s that each variable is of np.ndarray type
-        test us that each variable is of np.ndarray type
-        test s that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)
-        test us that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)
+        test s that each variable is of np.ndarray type=done
+        test us that each variable is of np.ndarray type=done
+        test s that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)=done
+        test us that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)=errors
         test s that all variables have same shape
         test us that all variables have same shape
         test s that there are no null/nan values
@@ -32,11 +32,24 @@ class TestTransitTimes(unittest.TestCase):
 
     """
     # Test instantiating with correct and incorrect timescales
-    def test_us_init_jd_tdb(self):
-        # Should not get any errors, the epochs and transit times should be the same as they are inputted
+    def test_us_init_jd_epochs_err_str(self):
+        # epochs are strings
         new_test_epochs = str(test_epochs)
         with self.assertRaises(TypeError, msg="The variable 'epochs' expected a NumPy array (np.ndarray) but received a different data type"):
             TransitTimes('jd', new_test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+     
+
+    def test_us_init_jd_mtts_err_str(self):
+        # midtransitstimes are strings
+        new_test_mtts = str(test_mtts)
+        with self.assertRaises(TypeError, msg="The variable 'mid_transit_times' expected a NumPy array (np.ndarray) but received a different data type"):
+            TransitTimes('jd', test_epochs , new_test_mtts, test_mtts_err, time_scale='tdb')
+    
+    def test_us_init_jd_tdb_mtts_err_err_str(self):
+        # mid transit times uncertainites are strings
+        new_test_mtts_err = str(test_mtts_err)
+        with self.assertRaises(TypeError, msg="The variable 'mid_transit_times_uncertainties' expected a NumPy array (np.ndarray) but received a different data type"):
+            TransitTimes('jd', test_epochs , test_mtts, new_test_mtts_err, time_scale='tdb')
 
     def test_s_init_jd_tdb_no_uncertainties(self):
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
@@ -58,6 +71,32 @@ class TestTransitTimes(unittest.TestCase):
         self.assertTrue(np.array_equal(transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
         self.assertTrue(np.array_equal(transit_times.mid_transit_times, test_mtts))  # Check mid_transit_times
         self.assertTrue(np.array_equal(transit_times.mid_transit_times_uncertainties, test_mtts_err))  # Check uncertainties
+
+   #Test that varibles are specified type
+    def test_successful_variables(self):
+        #should not get any errors
+        self.assertTrue(np.all(np.equal(test_epochs, test_epochs.astype(int))))
+        self.assertTrue(np.all(np.equal(test_mtts, test_mtts.astype(float))))
+        self.assertTrue(np.all(np.equal(test_mtts_err, test_mtts_err.astype(float))))
+   
+    def test_us_init_jd_epochs_err_float(self):
+        # epochs are floats 
+        new_test_epochs = test_epochs.astype(float)
+        with self.assertRaises(TypeError, msg="All values in 'epochs' must be of type int."):
+            TransitTimes('jd', new_test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+    
+    def test_us_init_jd_mtts_err_int(self):
+        # mid transit times are int error is not being raised
+        new_test_mtts= test_mtts.astype(int)
+        with self.assertRaises(TypeError, msg="All values in 'mid_transit_times' must be of type float."):
+            TransitTimes('jd', test_epochs , new_test_mtts, test_mtts_err, time_scale='tdb')
+    
+    def test_us_init_jd_mtts__err_err_int(self):
+        # mid transit times uncertanties are int error not being raised
+        new_test_mtts_err= test_mtts_err.astype(int)
+        with self.assertRaises(TypeError, msg="All values in 'mid_transit_times_uncertainties' must be of type float."):
+            TransitTimes('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
+
     # def test_successful_instantiation_jd_no_timescale(self):
     #     transit_times = TransitTimes('jd', )
     # def test_successful_instantiation_jd_non_tdb_timescale(self):
