@@ -437,7 +437,6 @@ class Ephemeris(object):
         return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
     
     def _calc_chi_squared(self, model_data):
-        # TODO: Docstring - needs editing
         """Calculates the residual chi squared values for the model ephemeris.
 
         STEP 1: Get the observed transit times and observed transit times uncertainties from transit_times.py.
@@ -446,13 +445,13 @@ class Ephemeris(object):
         
         Parameters
         ----------
-            model_data : The 'model_data' value from the returned dictionary of fit model ephemeris method.
-                NOTE: Look up doc examples of getting value from dict as parameter
-                NOTE: a key of the model data dictionary - what data type is this and what is it really doing? This is our predicted data
+            model_data : numpy.ndarray[float]
+                The 'model_data' values from the returned dictionary of fit model ephemeris method, representing the predicted mid-transit time data.
         
         Returns
         -------
-            Return the calculated chi-squared value
+            Chi-squared value : float
+                The chi-squared value calculated from the observed and model data.
         """
         # STEP 1: Get observed transit times
         observed_data = self.transit_times.mid_transit_times
@@ -469,7 +468,7 @@ class Ephemeris(object):
                 Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
 
         Returns
-        -------
+        ------- 
             A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
             
                 * 'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
