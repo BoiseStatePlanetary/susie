@@ -13,6 +13,7 @@ test_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
 class TestTransitTimes(unittest.TestCase):
     """
     Tests:
+    beep
     ** s = successful, us = unsuccessful
         test s that each variable is of np.ndarray type=done
         test us that each variable is of np.ndarray type=done
