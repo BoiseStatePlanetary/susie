@@ -78,8 +78,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
         return_data: dict
             A dictionary of parameters from the fit model ephemeris. Example:
                 {
-                    'period': An array of exoplanet periods over time corresponding to epochs,
-                    'period_err': The uncertainities associated with period,
+                    'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                    'period_err': The uncertainities associated with period (in units of days),
                     'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
                     'conjunction_time_err': The uncertainties associated with conjunction_time
                 }
@@ -148,12 +148,12 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         return_data: dict
             A dictionary of parameters from the fit model ephemeris. Example:
                 {
-                    'period': An array of exoplanet periods over time corresponding to epochs,
-                    'period_err': The uncertainities associated with period,
+                    'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                    'period_err': The uncertainities associated with period (in units of days),
                     'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
                     'conjunction_time_err': The uncertainties associated with conjunction_time,
-                    'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch,
-                    'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch
+                    'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+                    'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
                 }
         """
         popt, pcov = curve_fit(self.quad_fit, x, y, sigma=yerr, absolute_sigma=True, **kwargs)
@@ -195,15 +195,15 @@ class ModelEphemerisFactory:
         ------- 
             A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
             {
-                'period': An array of exoplanet periods over time corresponding to epochs,
-                'period_err': The uncertainities associated with period,
+                'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                'period_err': The uncertainities associated with period (in units of days),
                 'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
                 'conjunction_time_err': The uncertainties associated with conjunction_time
             }
             If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
             {
-                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch,
-                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch,
+                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days),
             }
         
         Raises
@@ -242,6 +242,10 @@ class Ephemeris(object):
         transit_times: TransitTimes obj
             A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.
         
+        Raises
+        ------
+            ValueError :
+                error raised if 'transit_times' is not an instance of 'TransitTimes' object.
         """
         self.transit_times = transit_times
         self._validate()
@@ -258,15 +262,9 @@ class Ephemeris(object):
             raise ValueError("Variable 'transit_times' expected type of object 'TransitTimes'.")
         
     def _get_transit_times_data(self):
-        """Normalizes transit time data and returns for use.
-        
-        STEP 1: Normalize the epoch data by subtracting the minimum value of the epochs from each epoch in the array.
+        """Returns transit time data for use.
 
-        STEP 2: Normalize the mid transit time data by subtracting the minimum value of the mid transit times from each mid transit time in the array.
-
-        STEP 3: yerr is created NOTE: I'm confused about this - we didn't do anything???
-
-        STEP 4: return the epoch, mid transit time and mid transit time error data.
+        Returns the epoch, mid transit time, and mid transit time error data from the TransitTimes object.
 
         Returns
         -------
@@ -277,8 +275,8 @@ class Ephemeris(object):
             yerr: numpy.ndarray[float]
                 The mid transit time error data as recieved from the TransitTimes object.
         """
-        x = self.transit_times.epochs - np.min(self.transit_times.epochs)
-        y = self.transit_times.mid_transit_times - np.min(self.transit_times.mid_transit_times)
+        x = self.transit_times.epochs
+        y = self.transit_times.mid_transit_times
         yerr = self.transit_times.mid_transit_times_uncertainties
         return x, y, yerr
     
@@ -292,7 +290,7 @@ class Ephemeris(object):
         Parameters
         ----------
             model_type: str
-                Either 'linear' or 'quadratic, the ephemeris subclass specified to create and run.
+                Either 'linear' or 'quadratic'. The ephemeris subclass specified to create and run.
 
         Returns
         -------
@@ -394,7 +392,6 @@ class Ephemeris(object):
         return np.sqrt((T0_err**2) + ((self.transit_times.epochs**2)*(P_err**2)) + ((1/4)*(self.transit_times.epochs**4)*(dPdE_err**2)))
     
     def _calc_linear_ephemeris(self, epochs, period, conjunction_time):
-        # NOTE: Is this actually calculating mid transit times?
         """Calculates the mid transit times using parameters from a linear model ephemeris.
         
         Uses the equation (T0 + PE) to calculate the mid transit times over each epoch where T0 is 
@@ -417,8 +414,6 @@ class Ephemeris(object):
     
     def _calc_quadratic_ephemeris(self, epochs, period, conjunction_time, period_change_by_epoch):
         """Calculates the mid transit times using parameters from a quadratic model ephemeris.
-        
-        # Returning 
 
         Uses the equation (T0 + PE + 0.5 * dPdE * E^2) to calculate the mid transit times over each epoch 
         where T0 is conjunction time, P is period, E is epoch, and dPdE is period change with respect to epoch.
@@ -450,14 +445,14 @@ class Ephemeris(object):
         
         Parameters
         ----------
-            model_data : 
+            model_data : The 'model_data' value from the returned dictionary of fit model ephemeris method.
+                NOTE: Look up doc examples of getting value from dict as parameter
                 NOTE: a key of the model data dictionary - what data type is this and what is it really doing? This is our predicted data
         
         Returns
         -------
             Return the calculated chi-squared value
         """
-        # TODO: change model_data to something more descriptive
         # STEP 1: Get observed transit times
         observed_data = self.transit_times.mid_transit_times
         uncertainties = self.transit_times.mid_transit_times_uncertainties
@@ -476,18 +471,17 @@ class Ephemeris(object):
         -------
             A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
             {
-                'period': An array of exoplanet periods over time corresponding to epochs,
-                'period_err': The uncertainities associated with period,
+                'period': An array of exoplanet periods over time corresponding to epochs (in units of days),
+                'period_err': The uncertainities associated with period (in units of days),
                 'conjunction_time': The time of conjunction of exoplanet transit over time corresponding to epochs,
                 'conjunction_time_err': The uncertainties associated with conjunction_time
             }
             If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
             {
-                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch,
-                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch,
+                'period_change_by_epoch': The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+                'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days),
             }
         """
-        # NOTE: Are these values returned in days? ex: conjunction time, orbital period, change in orbital period
         parameters = self._get_model_parameters(model_type)
         parameters['model_type'] = model_type
         # Once we get parameters back, we call _calc_linear_ephemeris 
