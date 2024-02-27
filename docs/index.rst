@@ -8,7 +8,7 @@ Welcome to Susie's documentation!
 
 Susie is a package which determines if exoplanets are good candidates for tidal decay. It does this by GENERAL OVERVIEW.
 
-HERE IS A SUMMARY OF TRANSIT TIMES.PY (ADD LINKS)
+HERE IS A SUMMARY OF TRANSIT TIMES.PY 
 
 HERE IS A SUMMARY OF EPHEMERIS.PY
 
