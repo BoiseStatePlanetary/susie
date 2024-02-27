@@ -126,7 +126,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.BaseModelEphemeris.fit_model">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#BaseModelEphemeris.fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.BaseModelEphemeris.fit_model" title="Link to this definition"></a></dt>
-<dd><p>Fits a model ephemeris to transit data. NOTE: Not finished</p>
+<dd><p>Fits a model ephemeris to transit data.</p>
 <p>Defines the structure for fitting a model (linear or quadratic) to transit data.
 All subclasses must implement this method.</p>
 <dl class="field-list simple">
@@ -183,12 +183,15 @@ All subclasses must implement this method.</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_delta_bic">
 <span class="sig-name descname"><span class="pre">calc_delta_bic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic" title="Link to this definition"></a></dt>
 <dd><p>Calculates the ΔBIC value between linear and quadratic model ephemerides using the given transit data.</p>
+<p>STEP 1: Calls get_model_ephemeris for both the linear and quadratic models.</p>
+<p>STEP 2: Calls calc_bic for both the linear and quadratic sets of data.</p>
+<p>STEP 3: Calculates and returns ΔBIC, which is the difference between the linear BIC and quadratic BIC.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>A float value representing the ΔBIC value for this transit data. NOTE</strong></p>
+<dd class="field-odd"><p><strong>delta_bic</strong> – Represents the ΔBIC value for this transit data.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>not done</p>
+<dd class="field-even"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -237,16 +240,16 @@ epoch error) to calculate the uncertainties between the model data and actual da
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are</em> –</p>
 <ul>
-<li><p>‘period’: An array of exoplanet periods over time corresponding to epochs,</p></li>
-<li><p>’period_err’: The uncertainities associated with period,</p></li>
+<li><p>‘period’: An array of exoplanet periods over time corresponding to epochs (in units of days),</p></li>
+<li><p>’period_err’: The uncertainities associated with period (in units of days),</p></li>
 <li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
 <li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
 </ul>
 </li>
 <li><p><em>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary</em> –</p>
 <ul>
-<li><p>‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch,</p></li>
-<li><p>’period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch,</p></li>
+<li><p>‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</p></li>
+<li><p>’period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days),</p></li>
 </ul>
 </li>
 </ul>
@@ -259,6 +262,8 @@ epoch error) to calculate the uncertainties between the model data and actual da
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_model_ephemeris">
 <span class="sig-name descname"><span class="pre">plot_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris" title="Link to this definition"></a></dt>
 <dd><p>Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</p>
+<p>STEP 1: Plot a scatterplot of epochs from ‘transit_times.py’ vs model_data, array of floats which is a value of model_data_dict.</p>
+<p>STEP 2: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -276,7 +281,12 @@ epoch error) to calculate the uncertainties between the model data and actual da
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_oc_plot">
 <span class="sig-name descname"><span class="pre">plot_oc_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_oc_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot" title="Link to this definition"></a></dt>
-<dd><p>TODO docstring</p>
+<dd><dl class="simple">
+<dt>Returns a MatplotLib scatter plot showing observed vs. calculated values </dt><dd><p>of mid transit times for linear and quadratic model ephemerides over epochs.</p>
+</dd>
+</dl>
+<p>STEP 1: TODO: fill this in 2/27/24</p>
+<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -293,7 +303,11 @@ epoch error) to calculate the uncertainties between the model data and actual da
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_running_delta_bic">
 <span class="sig-name descname"><span class="pre">plot_running_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic" title="Link to this definition"></a></dt>
-<dd><p>TODO docstring</p>
+<dd><p>Returns a MatPlotlib scatterplot of epochs vs. ΔBIC for each epoch.</p>
+<p>STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from ‘transit_times.py’.</p>
+<p>STEP 2: Create a list of the delta bic values. For the first 3 epochs, the delta bic value is zero. For the subsequent epochscall ‘calc_delta_bic’ and append the returned value to the list of delta bic values.</p>
+<p>STEP 3: Plot a scatterplot of the epochs vs. the delta bic values.</p>
+<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -310,11 +324,14 @@ epoch error) to calculate the uncertainties between the model data and actual da
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">
 <span class="sig-name descname"><span class="pre">plot_timing_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_timing_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties" title="Link to this definition"></a></dt>
-<dd><p>Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
-NOTE: these steps need to be checked - I need to clarify what ‘model_data’ is.
-STEP 1: Get the uncertianies from the model data dictionary</p>
-<p>STEP 2: Get the model data, subtract the conjunction time and subtract the initial period</p>
-<p>STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.</p>
+<dd><p>Returns a MatplotLib scatter plot showing timing uncertainties over epochs.</p>
+<p>STEP 1: Get the uncertianies from the model data dictionary.</p>
+<dl class="simple">
+<dt>STEP 2: Get the model data, which is an arrary of floats representing the predicted mid-transit time data, </dt><dd><p>the conjunction time and the inital period. Subtract the conjunction time and the initial period from this array.</p>
+</dd>
+</dl>
+<p>STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</p>
+<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -357,8 +374,8 @@ and their respective errors. These parameters are returned in a dictionary to th
 <dd class="field-even"><p><p><strong>return_data</strong> – A dictionary of parameters from the fit model ephemeris.</p>
 <dl class="simple">
 <dt>Example:</dt><dd><ul class="simple">
-<li><p>’period’: An array of exoplanet periods over time corresponding to epochs,</p></li>
-<li><p>’period_err’: The uncertainities associated with period,</p></li>
+<li><p>’period’: An array of exoplanet periods over time corresponding to epochs (in units of days),</p></li>
+<li><p>’period_err’: The uncertainities associated with period (in units of days),</p></li>
 <li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
 <li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
 </ul>
@@ -422,14 +439,14 @@ ephemeris return data dictionary.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are</em></p></li>
-<li><p><em>{</em> – ‘period’: An array of exoplanet periods over time corresponding to epochs,
-‘period_err’: The uncertainities associated with period,
+<li><p><em>{</em> – ‘period’: An array of exoplanet periods over time corresponding to epochs (in units of days),
+‘period_err’: The uncertainities associated with period (in units of days),
 ‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
 ‘conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
 <li><p><em>}</em></p></li>
 <li><p><em>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary</em></p></li>
-<li><p><em>{</em> – ‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch,
-‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch,</p></li>
+<li><p><em>{</em> – ‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days),</p></li>
 <li><p><em>}</em></p></li>
 </ul>
 </p>
@@ -468,12 +485,12 @@ and their respective errors. These parameters are returned in a dictionary to th
 <dd class="field-even"><p><p><strong>return_data</strong> –</p>
 <dl>
 <dt>A dictionary of parameters from the fit model ephemeris. Example:</dt><dd><dl class="simple">
-<dt>{</dt><dd><p>‘period’: An array of exoplanet periods over time corresponding to epochs,
-‘period_err’: The uncertainities associated with period,
+<dt>{</dt><dd><p>‘period’: An array of exoplanet periods over time corresponding to epochs (in units of days),
+‘period_err’: The uncertainities associated with period (in units of days),
 ‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
 ‘conjunction_time_err’: The uncertainties associated with conjunction_time,
-‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch,
-‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch</p>
+‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days)</p>
 </dd>
 </dl>
 <p>}</p>
