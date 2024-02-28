@@ -6,11 +6,11 @@
 Welcome to Susie's documentation!
 =================================
 
-Susie is a package which determines if exoplanets are good candidates for tidal decay. It does this by GENERAL OVERVIEW.
+Susie is a package which determines if exoplanets are good candidates for tidal decay. It does this by examining the sign (and magnitude??) of the :math:`\Delta BIC` for linear and quadratic models of the same transit data.
 
-HERE IS A SUMMARY OF TRANSIT TIMES.PY 
+:ref:`transit_times.py <transit_times_label>` corrects and holds the data to be accessed by the Ephemeris class.
 
-HERE IS A SUMMARY OF EPHEMERIS.PY
+:ref:`ephemeris.py <ephemeris_label>` uses the transit midpoint data and epochs held by the Transit Times class to calculate the :math:`\Delta BIC` value, and then creates a visual output using MatPlotLib comparing a linear and quadratic fit. 
 
 .. toctree::
    :caption: Contents:

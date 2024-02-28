@@ -1,6 +1,8 @@
 Susie 
 ======
 
+.. _ephemeris_label:
+
 Ephemeris module
 ----------------
 
@@ -8,6 +10,8 @@ Ephemeris module
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. _transit_times_label:
 
 Transit Times module
 --------------------
