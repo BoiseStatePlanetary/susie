@@ -114,7 +114,6 @@
 <div class="viewcode-block" id="LinearModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
-    <span class="c1">#autodocing gets in the way of math markup if it is a parameter/returned value - investigate this 2/28/24</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass of BaseModelEphemeris that implements a linear fit.&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="LinearModelEphemeris.lin_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.lin_fit">[docs]</a>
@@ -195,7 +194,6 @@
 <div class="viewcode-block" id="QuadraticModelEphemeris.quad_fit">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.quad_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">quad_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dPdE</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">):</span>
-        <span class="c1">#inline math not working with autodoc for parameters/returns - look into this 2/28/24</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates a quadratic function with given data.</span>
 
 <span class="sd">        Uses the equation (0.5 * change in period over epoch * mid transit times^2 + Period * mid transit times + initial epoch) </span>

@@ -76,10 +76,9 @@
              
   <section id="welcome-to-susie-s-documentation">
 <h1>Welcome to Susie’s documentation!<a class="headerlink" href="#welcome-to-susie-s-documentation" title="Link to this heading"></a></h1>
-<p>Susie is a package which determines if exoplanets are good candidates for tidal decay. It does this by GENERAL OVERVIEW.</p>
-<p>HERE IS A SUMMARY OF TRANSIT TIMES.PY</p>
-<p>HERE IS A SUMMARY OF EPHEMERIS.PY</p>
-<p><span class="math notranslate nohighlight">\(\frac{ \sum_{t=0}^{N}f(t,k) }{N}\)</span></p>
+<p>Susie is a package which determines if exoplanets are good candidates for tidal decay. It does this by examining the sign (and magnitude??) of the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for linear and quadratic models of the same transit data.</p>
+<p><a class="reference internal" href="susie.html#transit-times-label"><span class="std std-ref">transit_times.py</span></a> corrects and holds the data to be accessed by the Ephemeris class.</p>
+<p><a class="reference internal" href="susie.html#ephemeris-label"><span class="std std-ref">ephemeris.py</span></a> uses the transit midpoint data and epochs held by the Transit Times class to calculate the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value, and then creates a visual output using MatPlotLib comparing a linear and quadratic fit.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
