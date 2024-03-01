@@ -31,14 +31,15 @@ class TestTransitTimes(unittest.TestCase):
         epochs - type of variable (np.array), type of values (int), values are what u expect (if u pass in starting at 0, >0, <0)
         mid transit times - type of variable (np.array), type of values (float), values are what u expect (if u pass in starting at 0, >0, <0)
         mid transit time uncertainties - type of var (np.array), type of vals (float), values are what u expect (if pass in None, array of one, else what you give it)=what does this mean??
-        how to print to make sure the set up is working???
+        midtransit times are non-zero
+
 
 
     """
      #Set Up and Tear down Transit times
     def setUp(self):
        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-       
+       print('setUp')
        
      
      
@@ -89,6 +90,7 @@ class TestTransitTimes(unittest.TestCase):
    #Test that varibles are specified type
     def test_successful_variables(self):
         #should not get any errors
+        print('test_successful_variables')
         self.assertTrue(np.all(np.equal(test_epochs, test_epochs.astype(int))))
         self.assertTrue(np.all(np.equal(test_mtts, test_mtts.astype(float))))
         self.assertTrue(np.all(np.equal(test_mtts_err, test_mtts_err.astype(float))))
@@ -170,6 +172,7 @@ class TestTransitTimes(unittest.TestCase):
         self.transit_times=TransitTimes('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
         self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties,new_test_mtts_err))
 
+    
 
 
     # def test_successful_instantiation_jd_no_timescale(self):
