@@ -18,7 +18,7 @@ class TestTransitTimes(unittest.TestCase):
         test s that each variable is of np.ndarray type=done
         test us that each variable is of np.ndarray type=done
         test s that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)=done
-        test us that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)=errors
+        test us that values in each array are of specified type (epochs=ints, mid_transit_times=floats, uncertainties=floats)=done
         test s that all variables have same shape
         test us that all variables have same shape
         test s that there are no null/nan values
@@ -26,12 +26,44 @@ class TestTransitTimes(unittest.TestCase):
         test s that uncertainties are all non-negative and non-zero
         test s creation of uncertainties if not given
     TODO:
+        set up and tear down for transit times=done
+        successful 0, neg and positive =done
         epochs - type of variable (np.array), type of values (int), values are what u expect (if u pass in starting at 0, >0, <0)
         mid transit times - type of variable (np.array), type of values (float), values are what u expect (if u pass in starting at 0, >0, <0)
-        mid transit time uncertainties - type of var (np.array), type of vals (float), values are what u expect (if pass in None, array of one, else what you give it)
+        mid transit time uncertainties - type of var (np.array), type of vals (float), values are what u expect (if pass in None, array of one, else what you give it)=what does this mean??
+        how to print to make sure the set up is working???
 
 
     """
+     #Set Up and Tear down Transit times
+    def setUp(self):
+       self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+       
+       
+     
+     
+     # Test instantiating with correct and incorrect timescales
+    def test_successful_instantiation_jd_tdb_timescale(self):
+        # Should not get any errors, the epochs and transit times should be the same as they are inputted
+        self.assertIsInstance(self.transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
+        shifted_epochs = test_epochs - np.min(test_epochs)
+        self.assertTrue(np.array_equal(self.transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times, test_mtts))  # Check mid_transit_times
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties, test_mtts_err))  # Check uncertainties
+
+    def test_s_init_jd_tdb_no_uncertainties(self):
+        # Should not get any errors, the epochs and transit times should be the same as they are inputted
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, time_scale='tdb')
+        self.assertIsInstance(self.transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
+        shifted_epochs = test_epochs - np.min(test_epochs)
+        shifted_mtt = test_mtts - np.min(test_mtts)
+        new_uncertainties = np.ones_like(test_epochs, dtype=float)
+        self.assertTrue(np.array_equal(self.transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times, shifted_mtt))  # Check mid_transit_times
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties, new_uncertainties))  # Check uncertainties chage this back!!!
+
+    
+
     # Test instantiating with correct and incorrect timescales
     def test_us_init_jd_epochs_err_str(self):
         # epochs are strings
@@ -52,26 +84,7 @@ class TestTransitTimes(unittest.TestCase):
         with self.assertRaises(TypeError, msg="The variable 'mid_transit_times_uncertainties' expected a NumPy array (np.ndarray) but received a different data type"):
             TransitTimes('jd', test_epochs , test_mtts, new_test_mtts_err, time_scale='tdb')
 
-    def test_s_init_jd_tdb_no_uncertainties(self):
-        # Should not get any errors, the epochs and transit times should be the same as they are inputted
-        transit_times = TransitTimes('jd', test_epochs, test_mtts, time_scale='tdb')
-        self.assertIsInstance(transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
-        shifted_epochs = test_epochs - np.min(test_epochs)
-        shifted_mtt = test_mtts - np.min(test_mtts)
-        new_uncertainties = np.ones_like(test_epochs, dtype=float)
-        self.assertTrue(np.array_equal(transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
-        self.assertTrue(np.array_equal(transit_times.mid_transit_times, shifted_mtt))  # Check mid_transit_times
-        self.assertTrue(np.array_equal(transit_times.mid_transit_times_uncertainties, new_uncertainties))  # Check uncertainties
-    
-    # Test instantiating with correct and incorrect timescales
-    def test_successful_instantiation_jd_tdb_timescale(self):
-        # Should not get any errors, the epochs and transit times should be the same as they are inputted
-        transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertIsInstance(transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
-        shifted_epochs = test_epochs - np.min(test_epochs)
-        self.assertTrue(np.array_equal(transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
-        self.assertTrue(np.array_equal(transit_times.mid_transit_times, test_mtts))  # Check mid_transit_times
-        self.assertTrue(np.array_equal(transit_times.mid_transit_times_uncertainties, test_mtts_err))  # Check uncertainties
+
 
    #Test that varibles are specified type
     def test_successful_variables(self):
@@ -93,10 +106,71 @@ class TestTransitTimes(unittest.TestCase):
             TransitTimes('jd', test_epochs , new_test_mtts, test_mtts_err, time_scale='tdb')
     
     def test_us_init_jd_mtts__err_err_int(self):
-        # mid transit times uncertanties are int error not being raised
+        # mid transit times uncertanties are int
         new_test_mtts_err= test_mtts_err.astype(int)
         with self.assertRaises(TypeError, msg="All values in 'mid_transit_times_uncertainties' must be of type float."):
             TransitTimes('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
+
+    #Checks that shifted_epochs work with positive, negative and 0 values
+    def test_shifted_epochs_zero(self):
+        # shifted epochs work with 0 value
+        value=0
+        new_test_epochs= np.concatenate(([value],test_epochs[1:]))
+        shifted_epochs = new_test_epochs - np.min(new_test_epochs)
+        self.assertTrue(shifted_epochs[0]==0)
+    
+    def test_shifted_epochs_neg(self):
+        # shifted epochs work with negative values
+        value=-1
+        new_test_epochs= np.concatenate(([value],test_epochs[1:]))
+        shifted_epochs = new_test_epochs - np.min(new_test_epochs)
+        print(shifted_epochs)
+        self.assertTrue(shifted_epochs[0]==0)
+
+    def test_shifted_epochs_pos(self):
+        # shifted epochs work with postive values
+        value=1
+        new_test_epochs= np.concatenate(([value],test_epochs[1:]))
+        shifted_epochs = new_test_epochs - np.min(new_test_epochs)
+        self.assertTrue(shifted_epochs[0]==0)
+
+    #Checks that mid transit times work with positive, negative and 0 values
+    def test_mid_transit_times_zero(self):
+        #shifted mtts work with 0
+        value=0
+        new_test_mtts=np.concatenate(([value],test_mtts[1:]))
+        shifted_mtts = new_test_mtts - np.min(new_test_mtts)
+        self.assertTrue(shifted_mtts[0]==0)
+
+    def test_mid_transit_times_pos(self):
+        #shifted mtts work with 1
+        value=1
+        new_test_mtts=np.concatenate(([value],test_mtts[1:]))
+        shifted_mtts = new_test_mtts - np.min(new_test_mtts)
+        self.assertTrue(shifted_mtts[0]==0)
+    
+    def test_mid_transit_times_neg(self):
+        #shifted mtts work with -1
+        value=-1
+        new_test_mtts=np.concatenate(([value],test_mtts[1:]))
+        shifted_mtts = new_test_mtts - np.min(new_test_mtts)
+        self.assertTrue(shifted_mtts[0]==0)
+
+    #mid transit times uncertainies different arrays
+    def test_mid_transit_err_None(self):
+        #mid transit time errors are none
+        test_mtts_err= None
+        if test_mtts_err is None:
+            new_uncertainities= np.ones_like(test_epochs,dtype=float)
+            self.assertTrue(np.all(new_uncertainities==np.ones_like(test_epochs,dtype=float)))
+
+    def test_mid_transit_err_ones(self):
+        # mid transit time errors are ones not needed????
+        new_test_mtts_err=np.ones_like(test_mtts_err)
+        self.transit_times=TransitTimes('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties,new_test_mtts_err))
+
+
 
     # def test_successful_instantiation_jd_no_timescale(self):
     #     transit_times = TransitTimes('jd', )
