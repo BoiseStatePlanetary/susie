@@ -9,6 +9,9 @@ import numpy as np
 # test_mtts_err = [0.00043, 0.00028, 0.00062, 0.00042, 0.00043, 0.00032, 0.00036, 0.00046, 0.00041, 0.00019, 0.00043, 0.00072, 0.00079, 0.00037, 0.00031, 0.0004, 0.0004, 0.00028, 0.00028, 0.00068, 0.00035, 0.00029, 0.00024, 0.00029, 0.00039, 0.00027, 0.00021, 0.00027, 0.00024, 0.00032, 0.00031, 0.00022, 0.00018, 0.00017, 0.00033, 0.00011, 0.0001, 0.00017, 0.00032, 0.00039, 0.00035, 0.00034, 0.00035, 0.00032, 0.00042, 0.00037, 0.00037, 0.00031, 0.00033, 0.00039, 0.0003, 0.0003, 0.0003, 0.0003, 0.00046, 0.00024, 0.00038, 0.00027, 0.00029, 0.00021, 0.0003, 0.00033, 0.00071, 0.00019, 0.00043, 0.00034, 0.00034, 0.00019, 0.00019, 0.00031, 0.00028, 0.00032, 0.0004, 0.00029, 0.00029, 0.00025, 0.00034, 0.00034, 0.00046, 0.00043, 0.00039, 0.00049, 0.00046, 0.00049, 0.00035, 0.00036, 0.00022, 0.0002, 0.00031, 0.00042, 0.00033, 0.00033, 0.00055, 0.00023, 0.00021, 0.00035, 0.00025, 0.00034, 0.00037, 0.00028, 0.00023, 0.00028, 0.00039, 0.00024, 0.00022, 0.00029, 0.00043, 0.00036, 0.00026, 0.00048, 0.00032, 0.0004, 0.00018, 0.00021, 0.00056, 0.00023, 0.0003, 0.00022, 0.00034, 0.00028, 0.00027, 0.00035, 0.00031, 0.00032, 0.00033, 0.0005, 0.00031, 0.00032, 0.00091, 0.00035, 0.00026, 0.00021, 0.00034, 0.00034, 0.00038, 0.0004, 0.00026, 0.0003, 0.00044]
 test_epochs = np.array([0, 294, 298, 573])
 test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+test_mtts_pos_start = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+test_mtts_neg_start = np.array([-1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+test_mtts_zero_start = np.array([1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
 test_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
 class TestTransitTimes(unittest.TestCase):
     """
@@ -30,21 +33,24 @@ class TestTransitTimes(unittest.TestCase):
         successful 0, neg and positive =done
         epochs - type of variable (np.array), type of values (int), values are what u expect (if u pass in starting at 0, >0, <0)
         mid transit times - type of variable (np.array), type of values (float), values are what u expect (if u pass in starting at 0, >0, <0)
-        mid transit time uncertainties - type of var (np.array), type of vals (float), values are what u expect (if pass in None, array of one, else what you give it)=what does this mean??
+        mid transit time uncertainties - type of var (np.array), type of vals (float), values are what u expect (if pass in None, array of ones, else (if you pass in actual data and not None) data you pass in
         midtransit times are non-zero
-
-
-
     """
-     #Set Up and Tear down Transit times
+
+    # Set Up and Tear down Transit times
     def setUp(self):
        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
        print('setUp')
        
-     
-     
-     # Test instantiating with correct and incorrect timescales
+    # Test instantiating with correct and incorrect timescales
     def test_successful_instantiation_jd_tdb_timescale(self):
+        """
+            Testing successful instantiation of Transit Times object with the given parameters:
+                epochs: 
+                mid_transit_times:
+                mid_transit_time_errors:
+
+        """
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
         self.assertIsInstance(self.transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
         shifted_epochs = test_epochs - np.min(test_epochs)
@@ -107,7 +113,7 @@ class TestTransitTimes(unittest.TestCase):
         with self.assertRaises(TypeError, msg="All values in 'mid_transit_times' must be of type float."):
             TransitTimes('jd', test_epochs , new_test_mtts, test_mtts_err, time_scale='tdb')
     
-    def test_us_init_jd_mtts__err_err_int(self):
+    def test_us_init_jd_mtts_err_err_int(self):
         # mid transit times uncertanties are int
         new_test_mtts_err= test_mtts_err.astype(int)
         with self.assertRaises(TypeError, msg="All values in 'mid_transit_times_uncertainties' must be of type float."):
