@@ -203,6 +203,6 @@ class TransitTimes(object):
             raise ValueError("The 'mid_transit_times' array contains NaN (Not-a-Number) values.")
         if np.any(np.isnan(self.mid_transit_times_uncertainties)):
             raise ValueError("The 'mid_transit_times_uncertainties' array contains NaN (Not-a-Number) values.")
-        # Check that mid_transit_times_uncertainties are positive and non-zero
+        # Check that mid_transit_times_uncertainties are positive and non-zero (greater than zero)
         if not np.all(self.mid_transit_times_uncertainties > 0):
             raise ValueError("The 'mid_transit_times_uncertainties' array must contain non-negative and non-zero values.")
