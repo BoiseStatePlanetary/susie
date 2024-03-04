@@ -653,12 +653,7 @@
 <span class="sd">        .. math::</span>
 <span class="sd">            BIC = \\chi^2 + (k * log(N))</span>
 <span class="sd">         </span>
-<span class="sd">        where</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">            \\chi^2=\\sum{  \\frac{(\\text{observed mid transit times - model mid transit times})}{\\text{(observed mid transit time uncertainties})^2}   }</span>
-<span class="sd">        </span>
-<span class="sd">        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
+<span class="sd">        where :math:`\\chi^2=\\sum{  \\frac{(\\text{observed mid transit times - model mid transit times})}{\\text{(observed mid transit time uncertainties})^2}   },`  k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -708,7 +703,7 @@
 
 <span class="sd">        STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of &#39;model_data_dict&#39;.</span>
 
-<span class="sd">        STEP 2: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</span>
+<span class="sd">        STEP 2: Save the plot if indicated by the user.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -743,7 +738,7 @@
 
 <span class="sd">        STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</span>
 
-<span class="sd">        STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</span>
+<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -788,7 +783,7 @@
 <span class="sd">        STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the \\</span>
 <span class="sd">        &#39;mid_transit_times_uncertainties&#39; from transit_times.py.</span>
 
-<span class="sd">        STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</span>
+<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -833,7 +828,7 @@
 
 <span class="sd">        STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.</span>
 
-<span class="sd">        STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</span>
+<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

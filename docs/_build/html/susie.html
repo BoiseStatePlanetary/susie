@@ -165,10 +165,7 @@ All subclasses must implement this method.</p>
 <p>Uses the equation</p>
 <div class="math notranslate nohighlight">
 \[BIC = \chi^2 + (k * log(N))\]</div>
-<p>where</p>
-<div class="math notranslate nohighlight">
-\[\chi^2=\sum{  \frac{(\text{observed mid transit times - model mid transit times})}{\text{(observed mid transit time uncertainties})^2}   }\]</div>
-<p>k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
+<p>where <span class="math notranslate nohighlight">\(\chi^2=\sum{  \frac{(\text{observed mid transit times - model mid transit times})}{\text{(observed mid transit time uncertainties})^2}   },\)</span>  k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
@@ -262,7 +259,7 @@ All subclasses must implement this method.</p>
 <span class="sig-name descname"><span class="pre">plot_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris" title="Link to this definition"></a></dt>
 <dd><p>Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</p>
 <p>STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of ‘model_data_dict’.</p>
-<p>STEP 2: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
+<p>STEP 2: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -284,7 +281,7 @@ All subclasses must implement this method.</p>
 <p>STEP 1: Call ‘get_model_ephemeris’ for both the linear and quadratic model types.</p>
 <p>STEP 2: Calculate the quadratic model curve, which follows the formula <span class="math notranslate nohighlight">\(y = 0.5 \frac{dP_0}{dE} * (E - \text{median} E)^2.\)</span></p>
 <p>STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the ‘mid_transit_times_uncertainties’ from transit_times.py.</p>
-<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
+<p>STEP 4: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -305,7 +302,7 @@ All subclasses must implement this method.</p>
 <p>STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from ‘transit_times.py’.</p>
 <p>STEP 2: Create a list of the delta bic values. For the first 3 epochs, the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value is zero. For the subsequent epochscall ‘calc_delta_bic’ and append the returned value to the list of delta bic values.</p>
 <p>STEP 3: Plot a scatterplot of the epochs vs. the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> values.</p>
-<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
+<p>STEP 4: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -326,7 +323,7 @@ All subclasses must implement this method.</p>
 <p>STEP 1: Get the uncertianies from the model data dictionary.</p>
 <p>STEP 2: Get the model data, which is an arrary of floats representing the predicted mid-transit time data, the conjunction time and the inital period. Subtract the conjunction time and the initial period from this array.</p>
 <p>STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</p>
-<p>STEP 4: Save the plot if indicated by the user. NOTE: Is this a feature we have implemented?</p>
+<p>STEP 4: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
