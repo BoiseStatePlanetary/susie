@@ -206,5 +206,6 @@ class TransitTimes(object):
         if self.epochs[0] != 0:
             # Shift epochs and mid transit times
             self.epochs -= np.min(self.epochs)
+            # TODO import warning that we are minimizing their epochs and transit times
         if self.mid_transit_times[0] != 0:
             self.mid_transit_times -= np.min(self.mid_transit_times)
