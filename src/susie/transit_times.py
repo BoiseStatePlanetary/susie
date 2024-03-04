@@ -74,9 +74,6 @@ class TransitTimes(object):
             self._validate_times(mid_transit_times_obj, mid_transit_times_uncertainties_obj, (object_ra, object_dec), (observatory_lon, observatory_lat))
         # Call validation function
         self._validate()
-        # Shift epochs and mid transit times
-        self.epochs -= np.min(self.epochs)
-        self.mid_transit_times -= np.min(self.mid_transit_times)
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
@@ -206,3 +203,9 @@ class TransitTimes(object):
         # Check that mid_transit_times_uncertainties are positive and non-zero (greater than zero)
         if not np.all(self.mid_transit_times_uncertainties > 0):
             raise ValueError("The 'mid_transit_times_uncertainties' array must contain non-negative and non-zero values.")
+        if self.epochs[0] != 0:
+            # Shift epochs and mid transit times
+            self.epochs -= np.min(self.epochs)
+            # TODO import warning that we are minimizing their epochs and transit times
+        if self.mid_transit_times[0] != 0:
+            self.mid_transit_times -= np.min(self.mid_transit_times)

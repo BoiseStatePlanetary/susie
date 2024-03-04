@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../../">
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>src.susie.ephemeris &mdash; Susie Sept. 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -94,11 +92,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            x : numpy.ndarray[int]</span>
+<span class="sd">            x: numpy.ndarray[int]</span>
 <span class="sd">                The epoch data as recieved from the TransitTimes object.</span>
-<span class="sd">            y : numpy.ndarray[float]</span>
+<span class="sd">            y: numpy.ndarray[float]</span>
 <span class="sd">                The mid transit time data as recieved from the TransitTimes object.</span>
-<span class="sd">            yerr : numpy.ndarray[float]</span>
+<span class="sd">            yerr: numpy.ndarray[float]</span>
 <span class="sd">                The mid transit time error data as recieved from the TransitTimes object.</span>
 
 <span class="sd">        Returns</span>
@@ -125,16 +123,16 @@
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            x : numpy.ndarray[int]</span>
+<span class="sd">            x: numpy.ndarray[int]</span>
 <span class="sd">                The mid-transit times.</span>
-<span class="sd">            P : float</span>
+<span class="sd">            P: float</span>
 <span class="sd">                The exoplanet transit period.</span>
-<span class="sd">            T0 : float</span>
+<span class="sd">            T0: float</span>
 <span class="sd">                The initial epoch associated with a mid-transit time.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            P*x + T0 : numpy.ndarray[float]</span>
+<span class="sd">            P*x + T0: numpy.ndarray[float]</span>
 <span class="sd">                A linear function calculated with TransitTimes object data to be used with curve_fit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">P</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">T0</span></div>
@@ -244,12 +242,14 @@
 <span class="sd">        ------- </span>
 <span class="sd">        return_data: dict</span>
 <span class="sd">            A dictionary of parameters from the fit model ephemeris. Example:</span>
-<span class="sd">                * &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs (in units of days),</span>
-<span class="sd">                * &#39;period_err&#39;: The uncertainities associated with period (in units of days),</span>
-<span class="sd">                * &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
-<span class="sd">                * &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time,</span>
-<span class="sd">                * &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</span>
-<span class="sd">                * &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days)</span>
+<span class="sd">                {</span>
+<span class="sd">                    &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs (in units of days),</span>
+<span class="sd">                    &#39;period_err&#39;: The uncertainities associated with period (in units of days),</span>
+<span class="sd">                    &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
+<span class="sd">                    &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time,</span>
+<span class="sd">                    &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</span>
+<span class="sd">                    &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days)</span>
+<span class="sd">                }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quad_fit</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">yerr</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">unc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
@@ -294,15 +294,18 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
-<span class="sd">            Model : dict</span>
-<span class="sd">                A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:</span>
-<span class="sd">                    * &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs (in units of days),</span>
-<span class="sd">                    * &#39;period_err&#39;: The uncertainities associated with period (in units of days),</span>
-<span class="sd">                    * &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
-<span class="sd">                    * &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
-<span class="sd">                If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</span>
-<span class="sd">                    * &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</span>
-<span class="sd">                    * &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days)</span>
+<span class="sd">            A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;period&#39;: An array of exoplanet periods over time corresponding to epochs (in units of days),</span>
+<span class="sd">                &#39;period_err&#39;: The uncertainities associated with period (in units of days),</span>
+<span class="sd">                &#39;conjunction_time&#39;: The time of conjunction of exoplanet transit over time corresponding to epochs,</span>
+<span class="sd">                &#39;conjunction_time_err&#39;: The uncertainties associated with conjunction_time</span>
+<span class="sd">            }</span>
+<span class="sd">            If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;period_change_by_epoch&#39;: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</span>
+<span class="sd">                &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days),</span>
+<span class="sd">            }</span>
 <span class="sd">        </span>
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -547,8 +550,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            model_data : numpy.ndarray[float]</span>
-<span class="sd">                The &#39;model_data&#39; values from the returned dictionary of fit model ephemeris method, representing the \\</span>
-<span class="sd">                    predicted mid-transit time data, the inital period, and the conjunction time.</span>
+<span class="sd">                The &#39;model_data&#39; values from the returned dictionary of fit model ephemeris method, representing the predicted mid-transit time data.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -611,7 +613,8 @@
 <span class="sd">        .. math::</span>
 <span class="sd">            \\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))} </span>
 <span class="sd">        </span>
-<span class="sd">        for quadratic models (where :math:`\\sigma(T_0) =` conjunction time error, :math:`E=` epoch, :math:`\\sigma(P)=` period error, and :math:`\\sigma(\\frac{dP}{dE})=` period change by epoch error) to calculate the uncertainties between the model data and actual data over epochs.</span>
+<span class="sd">        for quadratic models (where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change by </span>
+<span class="sd">        epoch error) to calculate the uncertainties between the model data and actual data over epochs.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -675,18 +678,11 @@
 <div class="viewcode-block" id="Ephemeris.calc_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.calc_delta_bic">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the :math:`\\Delta BIC` value between linear and quadratic model ephemerides using the given transit data. </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the ΔBIC value between linear and quadratic model ephemerides using the given transit data. </span>
 <span class="sd">        </span>
-<span class="sd">        STEP 1: Calls get_model_ephemeris for both the linear and quadratic models. </span>
-
-<span class="sd">        STEP 2: Calls calc_bic for both the linear and quadratic sets of data.</span>
-
-<span class="sd">        STEP 3: Calculates and returns :math:`\\Delta BIC,` which is the difference between the linear BIC and quadratic BIC.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
-<span class="sd">            delta_bic : float</span>
-<span class="sd">                Represents the :math:`\\Delta BIC` value for this transit data. </span>
+<span class="sd">            A float value representing the ΔBIC value for this transit data. NOTE: not done</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">linear_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
         <span class="n">quadratic_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
@@ -701,10 +697,13 @@
     <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</span>
 
+<<<<<<< HEAD
+=======
 <span class="sd">        STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of &#39;model_data_dict&#39;.</span>
 
 <span class="sd">        STEP 2: Save the plot if indicated by the user.</span>
 
+>>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            model_data_dict: dict</span>
@@ -731,14 +730,18 @@
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing timing uncertainties over epochs.</span>
+<span class="sd">        NOTE: these steps need to be checked - I need to clarify what &#39;model_data&#39; is. </span>
+<span class="sd">        STEP 1: Get the uncertianies from the model data dictionary </span>
 
-<span class="sd">        STEP 1: Get the uncertianies from the model data dictionary.</span>
+<span class="sd">        STEP 2: Get the model data, subtract the conjunction time and subtract the initial period</span>
 
-<span class="sd">        STEP 2: Get the model data, which is an arrary of floats representing the predicted mid-transit time data, the conjunction time and the inital period. Subtract the conjunction time and the initial period from this array.</span>
-
+<<<<<<< HEAD
+<span class="sd">        STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.</span>
+=======
 <span class="sd">        STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</span>
 
 <span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+>>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -774,6 +777,9 @@
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<<<<<<< HEAD
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
+=======
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
 
 <span class="sd">        STEP 1: Call &#39;get_model_ephemeris&#39; for both the linear and quadratic model types. </span>
@@ -784,6 +790,7 @@
 <span class="sd">        &#39;mid_transit_times_uncertainties&#39; from transit_times.py.</span>
 
 <span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+>>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -819,6 +826,9 @@
 <div class="viewcode-block" id="Ephemeris.plot_running_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<<<<<<< HEAD
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
+=======
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatPlotlib scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
 
 <span class="sd">        STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from &#39;transit_times.py&#39;.</span>
@@ -829,6 +839,7 @@
 <span class="sd">        STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.</span>
 
 <span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+>>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -836,10 +847,10 @@
 <span class="sd">                If True, will save the plot as a figure.</span>
 <span class="sd">            save_filepath: Optional(str)</span>
 <span class="sd">                The path used to save the plot if `save_plot` is True.</span>
-<span class="sd">                </span>
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            A MatplotLib scatter plot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
+<span class="sd">            A MatplotLib scatter plot of epochs vs. ΔBIC for each epoch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">delta_bics</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">all_epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span>
