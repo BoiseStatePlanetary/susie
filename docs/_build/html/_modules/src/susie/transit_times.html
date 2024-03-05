@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>src.susie.transit_times &mdash; Susie Sept. 2023 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -15,6 +17,7 @@
         <script src="../../../_static/documentation_options.js?v=cc8b8c85"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -148,9 +151,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
         <span class="c1"># Call validation function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
-        <span class="c1"># Shift epochs and mid transit times</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_calc_barycentric_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.</span>
@@ -279,7 +279,13 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times_uncertainties&#39; array contains NaN (Not-a-Number) values.&quot;</span><span class="p">)</span>
         <span class="c1"># Check that mid_transit_times_uncertainties are positive and non-zero (greater than zero)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times_uncertainties&#39; array must contain non-negative and non-zero values.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times_uncertainties&#39; array must contain non-negative and non-zero values.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Shift epochs and mid transit times</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+            <span class="c1"># TODO import warning that we are minimizing their epochs and transit times</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">)</span></div>
 
 </pre></div>
 
