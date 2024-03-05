@@ -1,0 +1,15 @@
+Test 
+====
+
+.. automodule:: test.ipynb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: susie
+   :members:
+   :undoc-members:
+   :show-inheritance:

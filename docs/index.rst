@@ -17,6 +17,7 @@ Susie is a package which determines if exoplanets are good candidates for tidal 
 
    susie
    usage
+   0000
 
 .. note::
    This project is under active development.
