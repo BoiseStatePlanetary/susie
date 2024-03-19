@@ -93,8 +93,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting susie==1.0.8
-  Downloading susie-1.0.8-py3-none-any.whl.metadata (12 kB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: susie==1.0.8 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (1.0.8)
 Requirement already satisfied: numpy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.26.3)
 Requirement already satisfied: scipy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.12.0)
 Requirement already satisfied: matplotlib in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (3.8.2)
@@ -111,13 +110,6 @@ Requirement already satisfied: pillow&gt;=8 in c:\users\holly\onedrive\desktop\b
 Requirement already satisfied: pyparsing&gt;=2.3.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
 Requirement already satisfied: python-dateutil&gt;=2.7 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
 Requirement already satisfied: six&gt;=1.5 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
-Downloading susie-1.0.8-py3-none-any.whl (16 kB)
-Installing collected packages: susie
-  Attempting uninstall: susie
-    Found existing installation: susie 1.0.6
-    Uninstalling susie-1.0.6:
-      Successfully uninstalled susie-1.0.6
-Successfully installed susie-1.0.8
 Note: you may need to restart the kernel to use updated packages.
 </pre></div>
 </div>
@@ -170,6 +162,22 @@ Note: you may need to restart the kernel to use updated packages.
 <p>❗️<strong>IMPORTANT:</strong> Use either code block below depending on your data needs. The first code block contains values pulled from a CSV file. The second has hard coded values.</p>
 <p><small>NOTE: You can use any method and/or file type to upload your data. Just make sure the resulting variables (epoch, mid transit times, and mid transit time errors) are numpy arrays</small></p>
 <p>Can use this code block if you have the <strong>CSV file</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># STEP 1: Upload data</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;./WASP12b_transit_ephemeris.csv&quot;</span> <span class="c1"># IMPORTANT: Change to your own filepath</span>
+<span class="c1"># filepath = &quot;ENTER YOUR FILEPATH HERE&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span>
+<span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">]</span>
+<span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">]</span>
+<span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>Can use this code block if you do not have CSV file, this is <strong>hard coded</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -248,7 +256,7 @@ WARNING:astropy:Tried to get polar motions for times before IERS data is valid. 
 </div>
 </div>
 </div>
-<p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. You can view the data returned from this if you run <code class="docutils literal notranslate"><span class="pre">print(linear_model_data)</span></code>. Now you can use the linear_model_data dictionary for plotting method, such as the ones below. You can use the same process for a quadratic model ephemeris (shown below).</p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. You can view the data returned from this if you run <code class="docutils literal notranslate"><span class="pre">print(linear_model_data)</span></code>. Now you can use the linear_model_data dictionary for plotting methods, such as the ones below. You can use the same process for a quadratic model ephemeris (shown below).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_model_data</span>
