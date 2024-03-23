@@ -11,5 +11,5 @@ To use Susie, first install it using pip:
    (.venv) $ pip install susie
 
 
-Examples
----------
+Tutorial
+--------

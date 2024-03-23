@@ -16,8 +16,15 @@ Susie is a package which determines if exoplanets are good candidates for tidal 
    :caption: Contents:
 
    susie
-   usage
-   test_02
+   FAQ
+
+.. toctree::
+   :caption: Tutorials:
+
+   Installation <tutorial1>
+   Adding Transit Data <tutorial2>
+   Creating Ephemeris Object <tutorial3>
+   Fitting Transit Data <tutorial4>
 
 .. note::
    This project is under active development.
