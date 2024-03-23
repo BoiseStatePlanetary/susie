@@ -1,5 +1,5 @@
-Susie 
-======
+User Guide 
+==========
 
 .. _ephemeris_label:
 
