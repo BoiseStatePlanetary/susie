@@ -22,7 +22,7 @@ class TestTransitTimes(unittest.TestCase):
         test s that all variables have same shape= done
         test us that all variables have same shape=done
         test s that there are no null/nan values=done
-        test us that there are no null/nan values=error with epochs
+        test us that there are no null/nan values=done
         test s that uncertainties are all non-negative and non-zero=done
         test s creation of uncertainties if not given=done
     TODO:
@@ -35,9 +35,7 @@ class TestTransitTimes(unittest.TestCase):
     """
 
     # Set Up and Tear down Transit times
-    def setUp(self):
-       self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-       print('setUp')
+   
        
     # Test instantiating with correct and incorrect timescales
     def test_successful_instantiation_jd_tdb_timescale(self):
@@ -49,6 +47,7 @@ class TestTransitTimes(unittest.TestCase):
 
         """
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertIsInstance(self.transit_times, TransitTimes)  # Check if the object is an instance of TransitTimes
         shifted_epochs = test_epochs - np.min(test_epochs)
         self.assertTrue(np.array_equal(self.transit_times.epochs, shifted_epochs))  # Check if epochs remain unchanged
@@ -168,6 +167,7 @@ class TestTransitTimes(unittest.TestCase):
     def test_no_mtts_err(self):
         # mid transit time errors are none
         test_mtts_err = None
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         if test_mtts_err is None:
             new_uncertainities= np.ones_like(test_epochs,dtype=float)
             self.assertTrue(np.all(new_uncertainities==np.ones_like(test_epochs,dtype=float)))
@@ -193,10 +193,12 @@ class TestTransitTimes(unittest.TestCase):
 
     def test_mid_transit_err_self(self):
         # if the data is good then returns the same data
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties,test_mtts_err))
 
     #variables have the same shape
     def test_variable_shape(self):
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertEqual(test_epochs.shape,test_mtts.shape,test_mtts_err.shape)
 
     #variables do not have the same shape
@@ -208,6 +210,7 @@ class TestTransitTimes(unittest.TestCase):
     
    #successful no NaN values in variables
     def successful_no_nan_values(self):
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertNotIn(np.nan,test_epochs)
         self.assertNotIn(np.nan,test_mtts)
         self.assertNotIn(np.nan,test_mtts_err)
@@ -226,6 +229,19 @@ class TestTransitTimes(unittest.TestCase):
         with self.assertRaises(ValueError, msg="The 'mid_transit_times_uncertainties' array contains NaN (Not-a-Number) values."):
             TransitTimes('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')  
 
+    #tests for calc_barycentric_time
+    test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
+    test_time_obj=np.array([0.00034,0.0006,0.0005,0.0008])
+    test_obj_location= np.array([1.0,2.0])
+    test_obs_locations=np.array([2.0,3.0])
+    #check uncertainties arent ones
+    def calc_bary_time_instantiation(self):
+        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        self.assertIsInstance(self.transit_times, TransitTimes)
+    
+    def calc_bary_time_uncertinties(self):
+       test_mtts_err=np.array([1.0, 1.0, 1.0, 1.0])
+       self.transit_times= TransitTimes('jd', test_epochs, test_mtts,test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     
     # def test_successful_instantiation_jd_no_timescale(self):
     #     transit_times = TransitTimes('jd', )

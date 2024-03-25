@@ -736,7 +736,7 @@ class Ephemeris(object):
     #     pass
 
 if __name__ == '__main__':
-    # STEP 1: Upload data from file
+    # STEP 1: Upload datra from file
     filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
     data = np.genfromtxt(filepath, delimiter=',', names=True)
     # STEP 2: Break data up into epochs, mid transit times, and error
