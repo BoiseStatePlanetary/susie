@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Guide &mdash; Susie Sept. 2023 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -23,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Welcome to Susie’s documentation!" href="index.html" /> 
 </head>
 
@@ -82,15 +80,21 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.susie.transit_times.OccultationTimes"><code class="docutils literal notranslate"><span class="pre">OccultationTimes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-src.susie">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="test_02.html">🐷 Susie Package Test Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Fitting Transit Data</a></li>
 </ul>
 
         </div>
@@ -168,7 +172,10 @@ All subclasses must implement this method.</p>
 <p>Uses the equation</p>
 <div class="math notranslate nohighlight">
 \[BIC = \chi^2 + (k * log(N))\]</div>
-<p>where <span class="math notranslate nohighlight">\(\chi^2=\sum{  \frac{(\text{observed mid transit times - model mid transit times})}{\text{(observed mid transit time uncertainties})^2}   },\)</span>  k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\chi^2=\sum{  \frac{(\text{observed mid transit times - model mid transit times})}{\text{(observed mid transit time uncertainties})^2}   }\]</div>
+<p>k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
@@ -182,16 +189,13 @@ All subclasses must implement this method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_delta_bic">
 <span class="sig-name descname"><span class="pre">calc_delta_bic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic" title="Link to this definition"></a></dt>
-<dd><p>Calculates the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value between linear and quadratic model ephemerides using the given transit data.</p>
-<p>STEP 1: Calls get_model_ephemeris for both the linear and quadratic models.</p>
-<p>STEP 2: Calls calc_bic for both the linear and quadratic sets of data.</p>
-<p>STEP 3: Calculates and returns <span class="math notranslate nohighlight">\(\Delta BIC,\)</span> which is the difference between the linear BIC and quadratic BIC.</p>
+<dd><p>Calculates the ΔBIC value between linear and quadratic model ephemerides using the given transit data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>delta_bic</strong> – Represents the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for this transit data.</p>
+<dd class="field-odd"><p><strong>A float value representing the ΔBIC value for this transit data. NOTE</strong></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
+<dd class="field-even"><p>not done</p>
 </dd>
 </dl>
 </dd></dl>
@@ -206,7 +210,8 @@ All subclasses must implement this method.</p>
 <p>for linear models and</p>
 <div class="math notranslate nohighlight">
 \[\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * E^2) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\]</div>
-<p>for quadratic models (where <span class="math notranslate nohighlight">\(\sigma(T_0) =\)</span> conjunction time error, <span class="math notranslate nohighlight">\(E=\)</span> epoch, <span class="math notranslate nohighlight">\(\sigma(P)=\)</span> period error, and <span class="math notranslate nohighlight">\(\sigma(\frac{dP}{dE})=\)</span> period change by epoch error) to calculate the uncertainties between the model data and actual data over epochs.</p>
+<p>for quadratic models (where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change by
+epoch error) to calculate the uncertainties between the model data and actual data over epochs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>model_params</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
@@ -261,8 +266,6 @@ All subclasses must implement this method.</p>
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_model_ephemeris">
 <span class="sig-name descname"><span class="pre">plot_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris" title="Link to this definition"></a></dt>
 <dd><p>Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</p>
-<p>STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of ‘model_data_dict’.</p>
-<p>STEP 2: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -280,11 +283,7 @@ All subclasses must implement this method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_oc_plot">
 <span class="sig-name descname"><span class="pre">plot_oc_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_oc_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot" title="Link to this definition"></a></dt>
-<dd><p>Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</p>
-<p>STEP 1: Call ‘get_model_ephemeris’ for both the linear and quadratic model types.</p>
-<p>STEP 2: Calculate the quadratic model curve, which follows the formula <span class="math notranslate nohighlight">\(y = 0.5 \frac{dP_0}{dE} * (E - \text{median} E)^2.\)</span></p>
-<p>STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the ‘mid_transit_times_uncertainties’ from transit_times.py.</p>
-<p>STEP 4: Save the plot if indicated by the user.</p>
+<dd><p>TODO docstring</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -301,11 +300,7 @@ All subclasses must implement this method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_running_delta_bic">
 <span class="sig-name descname"><span class="pre">plot_running_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic" title="Link to this definition"></a></dt>
-<dd><p>Returns a MatPlotlib scatterplot of epochs vs. <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for each epoch.</p>
-<p>STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from ‘transit_times.py’.</p>
-<p>STEP 2: Create a list of the delta bic values. For the first 3 epochs, the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value is zero. For the subsequent epochscall ‘calc_delta_bic’ and append the returned value to the list of delta bic values.</p>
-<p>STEP 3: Plot a scatterplot of the epochs vs. the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> values.</p>
-<p>STEP 4: Save the plot if indicated by the user.</p>
+<dd><p>TODO docstring</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -314,7 +309,7 @@ All subclasses must implement this method.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>A MatplotLib scatter plot of epochs vs. <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for each epoch.</p>
+<dd class="field-even"><p>A MatplotLib scatter plot of epochs vs. ΔBIC for each epoch.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -322,11 +317,11 @@ All subclasses must implement this method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">
 <span class="sig-name descname"><span class="pre">plot_timing_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_timing_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties" title="Link to this definition"></a></dt>
-<dd><p>Returns a MatplotLib scatter plot showing timing uncertainties over epochs.</p>
-<p>STEP 1: Get the uncertianies from the model data dictionary.</p>
-<p>STEP 2: Get the model data, which is an arrary of floats representing the predicted mid-transit time data, the conjunction time and the inital period. Subtract the conjunction time and the initial period from this array.</p>
-<p>STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</p>
-<p>STEP 4: Save the plot if indicated by the user.</p>
+<dd><p>Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
+NOTE: these steps need to be checked - I need to clarify what ‘model_data’ is.
+STEP 1: Get the uncertianies from the model data dictionary</p>
+<p>STEP 2: Get the model data, subtract the conjunction time and subtract the initial period</p>
+<p>STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -393,7 +388,7 @@ curve_fit method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The mid-transit times.</p></li>
+<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid-transit times.</p></li>
 <li><p><strong>P</strong> (<em>float</em>) – The exoplanet transit period.</p></li>
 <li><p><strong>T0</strong> (<em>float</em>) – The initial epoch associated with a mid-transit time.</p></li>
 </ul>
@@ -432,28 +427,22 @@ ephemeris return data dictionary.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p><strong>Model</strong> –</p>
-<dl class="simple">
-<dt>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:</dt><dd><ul class="simple">
-<li><p>’period’: An array of exoplanet periods over time corresponding to epochs (in units of days),</p></li>
-<li><p>’period_err’: The uncertainities associated with period (in units of days),</p></li>
-<li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
-<li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are</em></p></li>
+<li><p><em>{</em> – ‘period’: An array of exoplanet periods over time corresponding to epochs (in units of days),
+‘period_err’: The uncertainities associated with period (in units of days),
+‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
+‘conjunction_time_err’: The uncertainties associated with conjunction_time</p></li>
+<li><p><em>}</em></p></li>
+<li><p><em>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary</em></p></li>
+<li><p><em>{</em> – ‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days),</p></li>
+<li><p><em>}</em></p></li>
 </ul>
-</dd>
-<dt>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</dt><dd><ul class="simple">
-<li><p>’period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</p></li>
-<li><p>’period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days)</p></li>
-</ul>
-</dd>
-</dl>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError:</strong> – If model specified is not a valid subclass of BaseModelEphemeris, which is either ‘linear’ or ‘quadratic’.</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError:</strong> – If model specified is not a valid subclass of BaseModelEphemeris, which is either ‘linear’ or ‘quadratic’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -484,15 +473,17 @@ and their respective errors. These parameters are returned in a dictionary to th
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p><strong>return_data</strong> –</p>
-<dl class="simple">
-<dt>A dictionary of parameters from the fit model ephemeris. Example:</dt><dd><ul class="simple">
-<li><p>’period’: An array of exoplanet periods over time corresponding to epochs (in units of days),</p></li>
-<li><p>’period_err’: The uncertainities associated with period (in units of days),</p></li>
-<li><p>’conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,</p></li>
-<li><p>’conjunction_time_err’: The uncertainties associated with conjunction_time,</p></li>
-<li><p>’period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),</p></li>
-<li><p>’period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days)</p></li>
-</ul>
+<dl>
+<dt>A dictionary of parameters from the fit model ephemeris. Example:</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>‘period’: An array of exoplanet periods over time corresponding to epochs (in units of days),
+‘period_err’: The uncertainities associated with period (in units of days),
+‘conjunction_time’: The time of conjunction of exoplanet transit over time corresponding to epochs,
+‘conjunction_time_err’: The uncertainties associated with conjunction_time,
+‘period_change_by_epoch’: The exoplanet period change over epochs, from first epoch to current epoch (in units of days),
+‘period_change_by_epoch_err’: The uncertainties associated with period_change_by_epoch (in units of days)</p>
+</dd>
+</dl>
+<p>}</p>
 </dd>
 </dl>
 </p>
@@ -534,8 +525,14 @@ used with curve_fit.</p>
 <section id="module-src.susie.transit_times">
 <span id="transit-times-module"></span><span id="transit-times-label"></span><h2>Transit Times module<a class="headerlink" href="#module-src.susie.transit_times" title="Link to this heading"></a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="src.susie.transit_times.OccultationTimes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">OccultationTimes</span></span><a class="reference internal" href="_modules/src/susie/transit_times.html#OccultationTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.OccultationTimes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tra_or_occ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</p>
 <p>The transit_times object is a class which formats user data to be passed to the ephemeris.py object.         This object creates and/or formats the array of uncertainties in mid_transit_times. This object             will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric                 Dynamical time as the time scale.</p>
@@ -587,7 +584,7 @@ used with curve_fit.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Susie’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -6,6 +6,7 @@
   <title>src.susie.ephemeris &mdash; Susie Sept. 2023 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -41,8 +42,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../susie.html">Susie</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../susie.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial1.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial2.html">Adding Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial3.html">Creating Ephemeris Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial4.html">Fitting Transit Data</a></li>
 </ul>
 
         </div>
@@ -76,6 +84,8 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="c1"># from transit_times import TransitTimes</span>
 <span class="kn">from</span> <span class="nn">susie.transit_times</span> <span class="kn">import</span> <span class="n">TransitTimes</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">astroplan</span> <span class="kn">import</span> <span class="n">EclipsingSystem</span>
 
 <div class="viewcode-block" id="BaseModelEphemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris">[docs]</a>
@@ -123,7 +133,7 @@
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            x: numpy.ndarray[int]</span>
+<span class="sd">            x: numpy.ndarray[float]</span>
 <span class="sd">                The mid-transit times.</span>
 <span class="sd">            P: float</span>
 <span class="sd">                The exoplanet transit period.</span>
@@ -656,7 +666,12 @@
 <span class="sd">        .. math::</span>
 <span class="sd">            BIC = \\chi^2 + (k * log(N))</span>
 <span class="sd">         </span>
-<span class="sd">        where :math:`\\chi^2=\\sum{  \\frac{(\\text{observed mid transit times - model mid transit times})}{\\text{(observed mid transit time uncertainties})^2}   },`  k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
+<span class="sd">        where</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \\chi^2=\\sum{  \\frac{(\\text{observed mid transit times - model mid transit times})}{\\text{(observed mid transit time uncertainties})^2}   }</span>
+<span class="sd">        </span>
+<span class="sd">        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -697,13 +712,6 @@
     <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.</span>
 
-<<<<<<< HEAD
-=======
-<span class="sd">        STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of &#39;model_data_dict&#39;.</span>
-
-<span class="sd">        STEP 2: Save the plot if indicated by the user.</span>
-
->>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">            model_data_dict: dict</span>
@@ -735,13 +743,7 @@
 
 <span class="sd">        STEP 2: Get the model data, subtract the conjunction time and subtract the initial period</span>
 
-<<<<<<< HEAD
 <span class="sd">        STEP 3: Plot this modified model data, shoing the maximum and minimum model uncertainity at each point.</span>
-=======
-<span class="sd">        STEP 3: Plot this modified model data, showing the maximum and minimum model uncertainity at each point.</span>
-
-<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
->>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -777,20 +779,7 @@
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<<<<<<< HEAD
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
-=======
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
-
-<span class="sd">        STEP 1: Call &#39;get_model_ephemeris&#39; for both the linear and quadratic model types. </span>
-
-<span class="sd">        STEP 2: Calculate the quadratic model curve, which follows the formula :math:`y = 0.5 \\frac{dP_0}{dE} * (E - \\text{median} E)^2.`</span>
-
-<span class="sd">        STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the \\</span>
-<span class="sd">        &#39;mid_transit_times_uncertainties&#39; from transit_times.py.</span>
-
-<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
->>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -826,20 +815,7 @@
 <div class="viewcode-block" id="Ephemeris.plot_running_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<<<<<<< HEAD
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO docstring</span>
-=======
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatPlotlib scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
-
-<span class="sd">        STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from &#39;transit_times.py&#39;.</span>
-
-<span class="sd">        STEP 2: Create a list of the delta bic values. For the first 3 epochs, the :math:`\\Delta BIC` value is zero. For the subsequent epochs\\</span>
-<span class="sd">        call &#39;calc_delta_bic&#39; and append the returned value to the list of delta bic values.</span>
-
-<span class="sd">        STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.</span>
-
-<span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
->>>>>>> edb845e75df286fc2e9b23097f3adc981a9ec8a9
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -875,8 +851,29 @@
 </div>
 
 
+    <span class="c1"># def test_astroplan_eclipsing_sys(self, model_data_dict):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     For this we will need an observer object, can pull this info from the transit timing object if given.</span>
+    <span class="c1">#     We also need the transit mid time, orbital period, and transit duration.</span>
+    <span class="c1">#     Mid time and orbital period can be pulled from our model?? But is there specific way we should get transit duration??</span>
+
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     # get relevant planet properties</span>
+    <span class="c1">#     epoch = Time(model_data_dict[&#39;conjunction_time&#39;], format=&#39;jd&#39;) # We will assume JD here BUT it might be good to incorporate BJD here?</span>
+    <span class="c1">#     period = model_data_dict[&#39;period&#39;]</span>
+    <span class="c1">#     transit_duration = planet_properties[&#39;pl_trandur&#39;] # We will need to calculate the transit duration</span>
+
+    <span class="c1">#     # Create an EclipsingSystem object for HD 209458</span>
+    <span class="c1">#     trappist1b = EclipsingSystem(primary_eclipse_time=epoch, orbital_period=period,</span>
+    <span class="c1">#                                 duration=transit_duration)</span>
+
+    <span class="c1">#     # Calculate next three mid-transit times which occur after ``obs_time``</span>
+    <span class="c1">#     obs_time = Time(&#39;2017-01-01 12:00&#39;)</span>
+    <span class="c1">#     trappist1b.next_primary_eclipse_time(obs_time, n_eclipses=3)</span>
+    <span class="c1">#     pass</span>
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># STEP 1: Upload data from file</span>
+    <span class="c1"># STEP 1: Upload datra from file</span>
     <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;../../malia_examples/WASP12b_transit_ephemeris.csv&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
