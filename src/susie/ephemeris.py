@@ -43,7 +43,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         
         Parameters
         ----------
-            x: numpy.ndarray[int]
+            x: numpy.ndarray[float]
                 The mid-transit times.
             P: float
                 The exoplanet transit period.
