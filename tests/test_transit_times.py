@@ -194,12 +194,12 @@ class TestTransitTimes(unittest.TestCase):
     def test_mid_transit_err_self(self):
         # if the data is good then returns the same data
         self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties,test_mtts_err))
+        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times_uncertainties, test_mtts_err))
 
     #variables have the same shape
     def test_variable_shape(self):
         self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertEqual(test_epochs.shape,test_mtts.shape,test_mtts_err.shape)
+        self.assertEqual(test_epochs.shape, test_mtts.shape, test_mtts_err.shape)
 
     #variables do not have the same shape
     def test_variable_shape_fail(self):
