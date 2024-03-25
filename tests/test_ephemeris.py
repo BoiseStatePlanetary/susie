@@ -20,8 +20,6 @@ class TestLinearModelEphemeris(unittest.TestCase):
         self.assertIsInstance(self.emphemeris, LinearModelEphemeris)
         self.linearmodelemphemeris= LinearModelEphemeris() 
     
-    def linear_fit_parameters(self):
-        pass
 
 
     ##not working but the arrays are equal
