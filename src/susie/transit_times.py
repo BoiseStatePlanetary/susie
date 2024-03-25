@@ -59,7 +59,7 @@ class TransitTimes(object):
         self.mid_transit_times = mid_transit_times
         if mid_transit_times_uncertainties is None:
             # Make an array of 1s in the same shape of epochs and mid_transit_times
-            mid_transit_times_uncertainties = np.ones_like(self.epochs, dtype=float)
+            mid_transit_times_uncertainties =  np.ones_like(self.epochs, dtype=float)
         self.mid_transit_times_uncertainties = mid_transit_times_uncertainties
         # Check that timing system and scale are JD and TDB
         if time_format != 'jd' or time_scale != 'tdb':
