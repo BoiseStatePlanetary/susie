@@ -8,6 +8,22 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "from susie.transit_times import TransitTimes\n",
+    "from susie.ephemeris import Ephemeris\n",
+    "import matplotlib.pyplot as plt\n",
+    "from astropy import coordinates as coords\n",
+    "from astropy import units as u\n",
+    "from astropy import time\n",
+    "import pandoc"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -25,7 +41,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -42,6 +58,26 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "numpy.ndarray"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "type(mid_transit_times)"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -50,7 +86,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -85,7 +121,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -106,7 +142,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
+   "execution_count": 12,
    "metadata": {},
    "outputs": [
     {
@@ -114,7 +150,13 @@
      "output_type": "stream",
      "text": [
       "WARNING:root:Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.\n",
-      "WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.\n",
+      "WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
       "WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]\n",
       "WARNING:astropy:Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.\n",
       "/Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages/erfa/core.py:154: ErfaWarning: ERFA function \"utctai\" yielded 139 of \"dubious year (Note 3)\"\n",
@@ -166,7 +208,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.12.1"
+   "version": "3.9.7"
   },
   "orig_nbformat": 4
  },

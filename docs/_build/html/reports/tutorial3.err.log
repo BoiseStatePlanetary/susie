@@ -21,8 +21,8 @@ ephemeris_obj1 = Ephemeris(transit_times_obj1)
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[1], line 1[0m
-[0;32m----> 1[0m ephemeris_obj1 [38;5;241m=[39m [43mEphemeris[49m(transit_times_obj1)
+Cell [0;32mIn[2], line 1[0m
+[0;32m----> 1[0m ephemeris_obj1 [38;5;241m=[39m Ephemeris([43mtransit_times_obj1[49m)
 
-[0;31mNameError[0m: name 'Ephemeris' is not defined
+[0;31mNameError[0m: name 'transit_times_obj1' is not defined
 

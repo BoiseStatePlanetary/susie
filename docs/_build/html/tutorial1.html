@@ -85,32 +85,12 @@
 <p>Importing the package from Test PyPi</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install susie==1.0.8
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install -q susie==1.0.8
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: susie==1.0.8 in ./venv/lib/python3.9/site-packages (1.0.8)
-Requirement already satisfied: matplotlib in ./venv/lib/python3.9/site-packages (from susie==1.0.8) (3.8.0)
-Requirement already satisfied: astropy in ./venv/lib/python3.9/site-packages (from susie==1.0.8) (5.3.4)
-Requirement already satisfied: scipy in ./venv/lib/python3.9/site-packages (from susie==1.0.8) (1.11.2)
-Requirement already satisfied: numpy in ./venv/lib/python3.9/site-packages (from susie==1.0.8) (1.25.2)
-Requirement already satisfied: pyerfa&gt;=2.0 in ./venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (2.0.1.1)
-Requirement already satisfied: PyYAML&gt;=3.13 in ./venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (6.0.1)
-Requirement already satisfied: packaging&gt;=19.0 in ./venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (23.1)
-Requirement already satisfied: importlib-resources&gt;=3.2.0 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (6.1.0)
-Requirement already satisfied: cycler&gt;=0.10 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (0.12.1)
-Requirement already satisfied: fonttools&gt;=4.22.0 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (4.43.1)
-Requirement already satisfied: pillow&gt;=6.2.0 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (10.1.0)
-Requirement already satisfied: contourpy&gt;=1.0.1 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (1.1.1)
-Requirement already satisfied: python-dateutil&gt;=2.7 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
-Requirement already satisfied: kiwisolver&gt;=1.0.1 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (1.4.5)
-Requirement already satisfied: pyparsing&gt;=2.3.1 in ./venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
-Requirement already satisfied: zipp&gt;=3.1.0 in ./venv/lib/python3.9/site-packages (from importlib-resources&gt;=3.2.0-&gt;matplotlib-&gt;susie==1.0.8) (3.17.0)
-Requirement already satisfied: six&gt;=1.5 in ./venv/lib/python3.9/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
-<span class=" -Color -Color-Yellow">WARNING: You are using pip version 21.2.4; however, version 24.0 is available.</span>
-<span class=" -Color -Color-Yellow">You should consider upgrading via the &#39;/Users/maliabarker/Desktop/main/susie/venv/bin/python -m pip install --upgrade pip&#39; command.</span>
-Note: you may need to restart the kernel to use updated packages.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: you may need to restart the kernel to use updated packages.
 </pre></div>
 </div>
 </div>
@@ -125,33 +105,6 @@ Note: you may need to restart the kernel to use updated packages.
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">import</span> <span class="nn">pandoc</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">8</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="ne">----&gt; </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">pandoc</span>
-
-<span class="n">File</span> <span class="n">c</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">holly</span>\<span class="n">OneDrive</span>\<span class="n">Desktop</span>\<span class="n">BSUResearch</span>\<span class="n">susie</span>\<span class="n">venv</span>\<span class="n">Lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">pandoc</span>\<span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">20</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># Pandoc</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="kn">import</span> <span class="nn">pandoc.about</span>
-<span class="ne">---&gt; </span><span class="mi">20</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="c1"># Filesystem Helper</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="k">def</span> <span class="nf">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-
-<span class="n">File</span> <span class="n">c</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">holly</span>\<span class="n">OneDrive</span>\<span class="n">Desktop</span>\<span class="n">BSUResearch</span>\<span class="n">susie</span>\<span class="n">venv</span>\<span class="n">Lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">pandoc</span>\<span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">6</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Third-Party Libraries</span>
-<span class="ne">----&gt; </span><span class="mi">6</span> <span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">import</span> <span class="nn">ply.lex</span> <span class="k">as</span> <span class="nn">lex</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">ply.yacc</span> <span class="k">as</span> <span class="nn">yacc</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pkg_resources&#39;
 </pre></div>
 </div>
 </div>
