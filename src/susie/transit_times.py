@@ -84,9 +84,9 @@ class TransitTimes(object):
         # Call validation function
         self._validate()
         # Once everything is validated and corrected, we can separate into transits and occultations if we are given the tra_or_occ data
-        if tra_or_occ is not None:
-            for epoch, mtt, mtt_err in zip(self.epochs, self.mid_transit_times, self.mid_transit_times_uncertainties):
-                foiwehf
+        # if tra_or_occ is not None:
+        #     for epoch, mtt, mtt_err in zip(self.epochs, self.mid_transit_times, self.mid_transit_times_uncertainties):
+        #         foiwehf
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
