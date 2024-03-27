@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # from transit_times import TransitTimes
 from susie.transit_times import TransitTimes
 from astropy.time import Time
-from astroplan import EclipsingSystem
+# from astroplan import EclipsingSystem
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
