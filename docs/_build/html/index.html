@@ -68,12 +68,10 @@
 </a>
 <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
 <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
-<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
@@ -94,7 +92,10 @@
 <div id="content" role="main">
 <section id="welcome-to-susie-s-documentation">
 <h1>Welcome to Susie’s documentation!<a class="headerlink" href="#welcome-to-susie-s-documentation" title="Link to this heading">¶</a></h1>
-<p>Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their extrasolar system.</p>
+<p>Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their
+extrasolar system.</p>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#about'">¶</a></h2>
 <p>Susie works by fitting your transit mid-times (or occultation mid-times if given) to both a linear and quadratic model,
 then calculating a modified <span class="math notranslate nohighlight">\(\chi ^2\)</span> metric called <span class="math notranslate nohighlight">\(BIC\)</span> for both models to determine which model
 best represents your data. Whichever model has a larger value of <span class="math notranslate nohighlight">\(BIC\)</span> will be the model that best represents
@@ -116,6 +117,7 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <p class="admonition-title">Note</p>
 <p>This project is under active development.</p>
 </div>
+</section>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#quickstart'">¶</a></h2>
 <ol class="arabic">
@@ -138,7 +140,6 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#documentation'">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="susie.html#module-src.susie.ephemeris">Ephemeris module</a><ul>
@@ -192,7 +193,6 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <section id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#tutorials'">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
@@ -215,6 +215,7 @@ an Exoplanets Research grant (NNH21ZDA001N).</p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(var(100vh)-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
+<li><a :data-current="activeSection === '#about'" class="reference internal" href="#about">About</a></li>
 <li><a :data-current="activeSection === '#quickstart'" class="reference internal" href="#quickstart">Quickstart</a></li>
 <li><a :data-current="activeSection === '#documentation'" class="reference internal" href="#documentation">Documentation</a></li>
 <li><a :data-current="activeSection === '#tutorials'" class="reference internal" href="#tutorials">Tutorials</a></li>
