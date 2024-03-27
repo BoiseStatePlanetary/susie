@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐷 Susie Package Test Notebook &mdash; Susie Sept. 2023 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -91,31 +93,29 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: susie==1.0.8 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (1.0.8)
-Requirement already satisfied: matplotlib in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (3.8.0)
-Requirement already satisfied: scipy in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (1.11.2)
-Requirement already satisfied: astropy in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (5.3.4)
 Requirement already satisfied: numpy in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (1.25.2)
+Requirement already satisfied: scipy in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (1.11.2)
+Requirement already satisfied: matplotlib in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (3.8.0)
+Requirement already satisfied: astropy in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from susie==1.0.8) (5.3.4)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: PyYAML&gt;=3.13 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (6.0.1)
-Requirement already satisfied: pyerfa&gt;=2.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (2.0.1.1)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pyerfa&gt;=2.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (2.0.1.1)
+Requirement already satisfied: PyYAML&gt;=3.13 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (6.0.1)
 Requirement already satisfied: packaging&gt;=19.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from astropy-&gt;susie==1.0.8) (23.1)
-Requirement already satisfied: kiwisolver&gt;=1.0.1 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (1.4.5)
-Requirement already satisfied: cycler&gt;=0.10 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (0.12.1)
-Requirement already satisfied: python-dateutil&gt;=2.7 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
-Requirement already satisfied: pyparsing&gt;=2.3.1 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
-Requirement already satisfied: importlib-resources&gt;=3.2.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (6.1.0)
-Requirement already satisfied: fonttools&gt;=4.22.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (4.43.1)
 Requirement already satisfied: contourpy&gt;=1.0.1 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (1.1.1)
+Requirement already satisfied: cycler&gt;=0.10 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (0.12.1)
+Requirement already satisfied: fonttools&gt;=4.22.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (4.43.1)
+Requirement already satisfied: kiwisolver&gt;=1.0.1 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (1.4.5)
 Requirement already satisfied: pillow&gt;=6.2.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (10.1.0)
+Requirement already satisfied: pyparsing&gt;=2.3.1 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
+Requirement already satisfied: python-dateutil&gt;=2.7 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
+Requirement already satisfied: importlib-resources&gt;=3.2.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from matplotlib-&gt;susie==1.0.8) (6.1.0)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: zipp&gt;=3.1.0 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from importlib-resources&gt;=3.2.0-&gt;matplotlib-&gt;susie==1.0.8) (3.17.0)
-Requirement already satisfied: six&gt;=1.5 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Yellow">WARNING: You are using pip version 21.2.4; however, version 24.0 is available.</span>
-<span class=" -Color -Color-Yellow">You should consider upgrading via the &#39;/Users/maliabarker/Desktop/main/susie/venv/bin/python3.9 -m pip install --upgrade pip&#39; command.</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: six&gt;=1.5 in /Users/maliabarker/Desktop/main/susie/venv/lib/python3.9/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: you may need to restart the kernel to use updated packages.
@@ -133,18 +133,6 @@ Requirement already satisfied: six&gt;=1.5 in /Users/maliabarker/Desktop/main/su
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">import</span> <span class="nn">pandoc</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">8</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="ne">----&gt; </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">pandoc</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandoc&#39;
 </pre></div>
 </div>
 </div>
@@ -198,6 +186,33 @@ Requirement already satisfied: six&gt;=1.5 in /Users/maliabarker/Desktop/main/su
 <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
 <span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
 <span class="c1"># print(vars(transit_times_obj1))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># STEP 3: Create new transit times object with above data</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># print(vars(transit_times_obj1))</span>
+
+<span class="nn">File ~/Desktop/main/susie/venv/lib/python3.9/site-packages/susie/transit_times.py:66,</span> in <span class="ni">TransitTimes.__init__</span><span class="nt">(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties, time_scale, object_ra, object_dec, observatory_lon, observatory_lat)</span>
+<span class="g g-Whitespace">     </span><span class="mi">64</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
+<span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="c1"># Call validation function</span>
+<span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="c1"># Shift epochs and mid transit times</span>
+<span class="g g-Whitespace">     </span><span class="mi">68</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+
+<span class="nn">File ~/Desktop/main/susie/venv/lib/python3.9/site-packages/susie/transit_times.py:178,</span> in <span class="ni">TransitTimes._validate</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">176</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;mid_transit_times&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">177</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">178</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;mid_transit_times_uncertainties&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">179</span> <span class="c1"># Check that all are same shape</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+
+<span class="ne">TypeError</span>: The variable &#39;mid_transit_times_uncertainties&#39; expected a NumPy array (np.ndarray) but received a different data type
 </pre></div>
 </div>
 </div>
