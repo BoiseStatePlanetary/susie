@@ -64,6 +64,8 @@ scipy==1.12.0
 six==1.16.0
 snowballstemmer==2.2.0
 Sphinx==7.2.6
+sphinx-mathjax-offline==0.0.2
+sphinx-rtd-theme==2.0.0
 sphinxcontrib-applehelp==1.0.8
 sphinxcontrib-devhelp==1.0.6
 sphinxcontrib-htmlhelp==2.0.5
