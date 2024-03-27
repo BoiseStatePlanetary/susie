@@ -5,6 +5,7 @@ astropy-iers-data==0.2024.3.25.0.29.50
 asttokens==2.4.1
 attrs==23.2.0
 Babel==2.14.0
+beautifulsoup4==4.12.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
@@ -30,6 +31,7 @@ jupyter-cache==1.0.0
 jupyter_client==8.6.1
 jupyter_core==5.7.2
 kiwisolver==1.4.5
+logging==0.4.9.6
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 matplotlib==3.8.3
@@ -63,12 +65,15 @@ rpds-py==0.18.0
 scipy==1.12.0
 six==1.16.0
 snowballstemmer==2.2.0
+soupsieve==2.5
 Sphinx==7.2.6
 sphinx-mathjax-offline==0.0.2
 sphinx-rtd-theme==2.0.0
+sphinxawesome-theme==5.1.1
 sphinxcontrib-applehelp==1.0.8
 sphinxcontrib-devhelp==1.0.6
 sphinxcontrib-htmlhelp==2.0.5
+sphinxcontrib-jquery==4.1
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.7
 sphinxcontrib-serializinghtml==1.1.10
