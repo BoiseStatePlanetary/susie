@@ -1,6 +1,8 @@
 # The Susie Python Package
 A package for exoplanet transit decay calculations and visualizations.
 
+https://susie.readthedocs.io/en/latest/
+
 ![Susie Superpig Cartoon Image](http://www.astrojack.com/wp-content/uploads/2013/12/susie-1024x748.png)
 
 ## Statement of need

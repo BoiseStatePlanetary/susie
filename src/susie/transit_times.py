@@ -16,7 +16,7 @@ class OccultationTimes():
         # pass in all the same stuff for occultation times
         pass
 
-class TransitTimes(object):
+class TransitTimes():
     """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
     
     The transit_times object is a class which formats user data to be passed to the ephemeris.py object. \
