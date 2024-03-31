@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 # from transit_times import TransitTimes
 from susie.transit_times import TransitTimes
+from astropy.time import Time
+# from astroplan import EclipsingSystem
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -41,7 +43,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
         
         Parameters
         ----------
-            x : numpy.ndarray[int]
+
+            x: numpy.ndarray[float]
                 The mid-transit times.
             P : float
                 The exoplanet transit period.
@@ -733,8 +736,29 @@ class Ephemeris(object):
             plt.savefig(save_filepath)
         plt.show()
 
+    # def test_astroplan_eclipsing_sys(self, model_data_dict):
+    #     """
+    #     For this we will need an observer object, can pull this info from the transit timing object if given.
+    #     We also need the transit mid time, orbital period, and transit duration.
+    #     Mid time and orbital period can be pulled from our model?? But is there specific way we should get transit duration??
+
+    #     """
+    #     # get relevant planet properties
+    #     epoch = Time(model_data_dict['conjunction_time'], format='jd') # We will assume JD here BUT it might be good to incorporate BJD here?
+    #     period = model_data_dict['period']
+    #     transit_duration = planet_properties['pl_trandur'] # We will need to calculate the transit duration
+
+    #     # Create an EclipsingSystem object for HD 209458
+    #     trappist1b = EclipsingSystem(primary_eclipse_time=epoch, orbital_period=period,
+    #                                 duration=transit_duration)
+
+    #     # Calculate next three mid-transit times which occur after ``obs_time``
+    #     obs_time = Time('2017-01-01 12:00')
+    #     trappist1b.next_primary_eclipse_time(obs_time, n_eclipses=3)
+    #     pass
+
 if __name__ == '__main__':
-    # STEP 1: Upload data from file
+    # STEP 1: Upload datra from file
     filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
     data = np.genfromtxt(filepath, delimiter=',', names=True)
     # STEP 2: Break data up into epochs, mid transit times, and error

@@ -6,7 +6,17 @@ import logging
 
 # TESTING
 
-class TransitTimes(object):
+class TransitTimes():
+    def __init__(self):
+        # pass in all the same stuff for transit times
+        pass
+
+class OccultationTimes():
+    def __init__(self):
+        # pass in all the same stuff for occultation times
+        pass
+
+class TransitTimes():
     """Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.
     
     The transit_times object is a class which formats user data to be passed to the ephemeris.py object. \
@@ -53,13 +63,12 @@ class TransitTimes(object):
     -------------
         Variables epochs and mid_transit_times are shifted to start at zero by subtracting the minimum number from each value.
     """
-    def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
-        # TODO: What would happen here if a non-numpy array is passed in? Should we add validation for that?
+    def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, tra_or_occ=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
         self.epochs = epochs
         self.mid_transit_times = mid_transit_times
         if mid_transit_times_uncertainties is None:
             # Make an array of 1s in the same shape of epochs and mid_transit_times
-            mid_transit_times_uncertainties = np.ones_like(self.epochs, dtype=float)
+            mid_transit_times_uncertainties =  np.ones_like(self.epochs, dtype=float)
         self.mid_transit_times_uncertainties = mid_transit_times_uncertainties
         # Check that timing system and scale are JD and TDB
         if time_format != 'jd' or time_scale != 'tdb':
@@ -74,6 +83,10 @@ class TransitTimes(object):
             self._validate_times(mid_transit_times_obj, mid_transit_times_uncertainties_obj, (object_ra, object_dec), (observatory_lon, observatory_lat))
         # Call validation function
         self._validate()
+        # Once everything is validated and corrected, we can separate into transits and occultations if we are given the tra_or_occ data
+        # if tra_or_occ is not None:
+        #     for epoch, mtt, mtt_err in zip(self.epochs, self.mid_transit_times, self.mid_transit_times_uncertainties):
+        #         foiwehf
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.

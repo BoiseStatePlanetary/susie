@@ -1,20 +1,20 @@
 Traceback (most recent call last):
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
     executenb(
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 1314, in execute
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 1314, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
     return loop.run_until_complete(inner)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\holly\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 684, in run_until_complete
+  File "/opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
     return future.result()
            ^^^^^^^^^^^^^^^
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 709, in async_execute
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 709, in async_execute
     await self.async_execute_cell(
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 1062, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
@@ -23,11 +23,11 @@ linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
 ------------------
 
 
-[1;31m---------------------------------------------------------------------------[0m
-[1;31mNameError[0m                                 Traceback (most recent call last)
-Cell [1;32mIn[1], line 2[0m
-[0;32m      1[0m [38;5;66;03m# Getting a linear model will solve for period and conjuction time (and their respective errors)[39;00m
-[1;32m----> 2[0m linear_model_data [38;5;241m=[39m [43mephemeris_obj1[49m[38;5;241m.[39mget_model_ephemeris([38;5;124m'[39m[38;5;124mlinear[39m[38;5;124m'[39m)
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[1], line 2[0m
+[1;32m      1[0m [38;5;66;03m# Getting a linear model will solve for period and conjuction time (and their respective errors)[39;00m
+[0;32m----> 2[0m linear_model_data [38;5;241m=[39m [43mephemeris_obj1[49m[38;5;241m.[39mget_model_ephemeris([38;5;124m'[39m[38;5;124mlinear[39m[38;5;124m'[39m)
 
-[1;31mNameError[0m: name 'ephemeris_obj1' is not defined
+[0;31mNameError[0m: name 'ephemeris_obj1' is not defined
 
