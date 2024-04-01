@@ -14,7 +14,7 @@ About
 -----
 
 Susie works by fitting your transit mid-times (or occultation mid-times if given) to both a linear and quadratic model, 
-then calculating a modified :math:`\chi ^2` metric called :math:`BIC` for both models to determine which model 
+then calculating a modified :math:`\chi ^2` metric called :math:`\rm BIC` for both models to determine which model 
 best represents your data. Whichever model has a larger value of :math:`BIC` will be the model that best represents 
 your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay. 
 If a quadratic model provides a better fit, your system is assumed to be exhibiting tidal decay. Metrics are simplified 
