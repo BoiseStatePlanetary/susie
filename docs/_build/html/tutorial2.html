@@ -7,9 +7,9 @@
 <meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
 <meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🔷 STEP 1: Add your transit data to the TransitTimes object. | Susie Sept. 2023 documentation</title>
-<meta content="🔷 STEP 1: Add your transit data to the TransitTimes object. | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🔷 STEP 1: Add your transit data to the TransitTimes object. | Susie Sept. 2023 documentation" name="twitter:title"/>
+<title>🔷 STEP 1: Setting up the TransitTimes object. | Susie Sept. 2023 documentation</title>
+<meta content="🔷 STEP 1: Setting up the TransitTimes object. | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="🔷 STEP 1: Setting up the TransitTimes object. | Susie Sept. 2023 documentation" name="twitter:title"/>
 <link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
 <link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
@@ -97,11 +97,11 @@
 <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
 </svg>
 </a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.</span>
+<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 1:</strong> Setting up the TransitTimes object.</span>
 </nav>
 <div id="content" role="main">
-<section id="step-1-add-your-transit-data-to-the-transittimes-object">
-<h1>🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.<a class="headerlink" href="#step-1-add-your-transit-data-to-the-transittimes-object" title="Link to this heading">¶</a></h1>
+<section id="step-1-setting-up-the-transittimes-object">
+<h1>🔷 <strong>STEP 1:</strong> Setting up the TransitTimes object.<a class="headerlink" href="#step-1-setting-up-the-transittimes-object" title="Link to this heading">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -143,33 +143,20 @@
 </div>
 </div>
 </div>
-<p>❗️<strong>IMPORTANT:</strong> Use either code block below depending on your data needs. The first code block contains values pulled from a CSV file. The second has hard coded values.</p>
-<p><small>NOTE: You can use any method and/or file type to upload your data. Just make sure the resulting variables (epoch, mid transit times, and mid transit time errors) are numpy arrays</small></p>
-<p>Can use this code block if you have the <strong>CSV file</strong></p>
+<p>❗️<strong>IMPORTANT:</strong> Use either code block below depending on your data needs. The first code block contains values pulled from a CSV file. If you wish to use a text file instead, change the delimiter value to the symbol used as the field seperator. The second code block has hard coded values.</p>
+<p>Can use this code block if you have a <strong>CSV file</strong> or a <strong>TXT file</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 1: Upload data</span>
 </span><span id="line-2"><span class="n">filepath</span> <span class="o">=</span> <span class="s2">"./WASP12b_transit_ephemeris.csv"</span> <span class="c1"># IMPORTANT: Change to your own filepath</span>
 </span><span id="line-3"><span class="c1"># filepath = "ENTER YOUR FILEPATH HERE"</span>
-</span><span id="line-4"><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">','</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-4"><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">','</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#IMPORTANT: Change delimiter to match field seperator if filepath is txt file</span>
 </span><span id="line-5"><span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
 </span><span id="line-6"><span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"epoch"</span><span class="p">]</span>
 </span><span id="line-7"><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"transit_time"</span><span class="p">]</span>
 </span><span id="line-8"><span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"sigma_transit_time"</span><span class="p">]</span>
 </span><span id="line-9"><span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
 </span><span id="line-10"><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="nb">type</span><span class="p">(</span><span class="n">mid_transit_times</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">numpy.ndarray
 </span></code></pre></div>
 </div>
 </div>
@@ -192,8 +179,21 @@
 </div>
 </div>
 </div>
+<p><small>NOTE: You can use any method and/or file type to upload your data. Just make sure the resulting variables (epoch, mid transit times, and mid transit time errors) are numpy arrays</small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="nb">type</span><span class="p">(</span><span class="n">mid_transit_times</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">numpy.ndarray
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <p>❗️ <strong>IMPORTANT</strong>: Our timing data is going to be in JD TDB timing system and scale (AKA Barycentric Julian Date).</p>
-<p>We <strong>can</strong> input data with a different timing scale and system, and the TransitTimes object will automatically correct it to JD TDB. HOWEVER, we will have to put in the coordinates of the object (RA and Dec in degrees) and the observatory the observations were taken from (in lon and lat in degrees). You have the option to omit observatory coordinates if you do not know them, the function will use the gravitational center of the Earth (x, y, x=0, 0, 0).</p>
+<p>We <strong>can</strong> input data with a different timing scale and system, and the TransitTimes object will automatically correct it to JD TDB. HOWEVER, we will have to put in the coordinates of the object (RA and Dec in degrees) and coordinates of the observatory where the observations were taken from (in lon and lat in degrees). You have the option to omit observatory coordinates if you do not know them, the function will use the gravitational center of the Earth (x, y, x=0, 0, 0).</p>
 <p>Example with JD TDB timing system and scale.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -201,6 +201,33 @@
 </span><span id="line-2"><span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
 </span><span id="line-3"><span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
 </span><span id="line-4"><span class="c1"># print(vars(transit_times_obj1))</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-5"><span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
+</span><span id="line-6"><span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
+</span><span id="line-7"><span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># print(vars(transit_times_obj1))</span>
+</span><span id="line-8">
+</span><span id="line-9"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:66,</span> in <span class="ni">TransitTimes.__init__</span><span class="nt">(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties, time_scale, object_ra, object_dec, observatory_lon, observatory_lat)</span>
+</span><span id="line-10"><span class="g g-Whitespace">     </span><span class="mi">64</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
+</span><span id="line-11"><span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="c1"># Call validation function</span>
+</span><span id="line-12"><span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+</span><span id="line-13"><span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="c1"># Shift epochs and mid transit times</span>
+</span><span id="line-14"><span class="g g-Whitespace">     </span><span class="mi">68</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+</span><span id="line-15">
+</span><span id="line-16"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:184,</span> in <span class="ni">TransitTimes._validate</span><span class="nt">(self)</span>
+</span><span id="line-17"><span class="g g-Whitespace">    </span><span class="mi">182</span> <span class="c1"># Check that all values in arrays are correct</span>
+</span><span id="line-18"><span class="g g-Whitespace">    </span><span class="mi">183</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="line-19"><span class="ne">--&gt; </span><span class="mi">184</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'epochs' must be of type int."</span><span class="p">)</span>
+</span><span id="line-20"><span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">):</span>
+</span><span id="line-21"><span class="g g-Whitespace">    </span><span class="mi">186</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'mid_transit_times' must be of type float."</span><span class="p">)</span>
+</span><span id="line-22">
+</span><span id="line-23"><span class="ne">TypeError</span>: All values in 'epochs' must be of type int.
 </span></code></pre></div>
 </div>
 </div>
@@ -233,13 +260,108 @@
 </div>
 </div>
 </div>
+<p>Example with JD UTC timing system and scale, without observatory coordinates provided. (NOTE: Don’t be scared of the warnings, nothing is wrong.)</p>
+<p><small>Using RA and Dec of WASP 12-b, gravitational center of earth is used as observatory coordinates.</small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-2"><span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">WARNING:root:Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.
+</span><span id="line-2">WARNING:root:Unable to process observatory coordinates (None, None). Using gravitational center of Earth.
+</span><span id="line-3">WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (0.0, 90.0) for time correction.
+</span><span id="line-4">WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]
+</span><span id="line-5">WARNING:astropy:Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.
+</span><span id="line-6">c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "utctai" yielded 139 of "dubious year (Note 3)"
+</span><span id="line-7">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
+</span><span id="line-8">c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "utcut1" yielded 139 of "dubious year (Note 3)"
+</span><span id="line-9">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
+</span><span id="line-10">c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "taiutc" yielded 139 of "dubious year (Note 4)"
+</span><span id="line-11">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
+</span><span id="line-12">c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "epv00" yielded 139 of "warning: date outsidethe range 1900-2100 AD"
+</span><span id="line-13">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
+</span></code></pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-5"><span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">)</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:66,</span> in <span class="ni">TransitTimes.__init__</span><span class="nt">(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties, time_scale, object_ra, object_dec, observatory_lon, observatory_lat)</span>
+</span><span id="line-8"><span class="g g-Whitespace">     </span><span class="mi">64</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
+</span><span id="line-9"><span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="c1"># Call validation function</span>
+</span><span id="line-10"><span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+</span><span id="line-11"><span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="c1"># Shift epochs and mid transit times</span>
+</span><span id="line-12"><span class="g g-Whitespace">     </span><span class="mi">68</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+</span><span id="line-13">
+</span><span id="line-14"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:184,</span> in <span class="ni">TransitTimes._validate</span><span class="nt">(self)</span>
+</span><span id="line-15"><span class="g g-Whitespace">    </span><span class="mi">182</span> <span class="c1"># Check that all values in arrays are correct</span>
+</span><span id="line-16"><span class="g g-Whitespace">    </span><span class="mi">183</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="line-17"><span class="ne">--&gt; </span><span class="mi">184</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'epochs' must be of type int."</span><span class="p">)</span>
+</span><span id="line-18"><span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">):</span>
+</span><span id="line-19"><span class="g g-Whitespace">    </span><span class="mi">186</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'mid_transit_times' must be of type float."</span><span class="p">)</span>
+</span><span id="line-20">
+</span><span id="line-21"><span class="ne">TypeError</span>: All values in 'epochs' must be of type int.
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>Example with JD TDB timing system and scale, but without mid-transit times uncertainites.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-2"><span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-5"><span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:66,</span> in <span class="ni">TransitTimes.__init__</span><span class="nt">(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties, time_scale, object_ra, object_dec, observatory_lon, observatory_lat)</span>
+</span><span id="line-8"><span class="g g-Whitespace">     </span><span class="mi">64</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
+</span><span id="line-9"><span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="c1"># Call validation function</span>
+</span><span id="line-10"><span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+</span><span id="line-11"><span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="c1"># Shift epochs and mid transit times</span>
+</span><span id="line-12"><span class="g g-Whitespace">     </span><span class="mi">68</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+</span><span id="line-13">
+</span><span id="line-14"><span class="nn">File c:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:184,</span> in <span class="ni">TransitTimes._validate</span><span class="nt">(self)</span>
+</span><span id="line-15"><span class="g g-Whitespace">    </span><span class="mi">182</span> <span class="c1"># Check that all values in arrays are correct</span>
+</span><span id="line-16"><span class="g g-Whitespace">    </span><span class="mi">183</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="line-17"><span class="ne">--&gt; </span><span class="mi">184</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'epochs' must be of type int."</span><span class="p">)</span>
+</span><span id="line-18"><span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">):</span>
+</span><span id="line-19"><span class="g g-Whitespace">    </span><span class="mi">186</span>     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"All values in 'mid_transit_times' must be of type float."</span><span class="p">)</span>
+</span><span id="line-20">
+</span><span id="line-21"><span class="ne">TypeError</span>: All values in 'epochs' must be of type int.
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+</span><span id="line-4"><span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
+</span><span id="line-5">
+</span><span id="line-6"><span class="ne">NameError</span>: name 'ephemeris_obj1' is not defined
+</span></code></pre></div>
 </div>
+</div>
+</div>
+<p><strong>Coming Soon!</strong> Lists of transits and occultation analysis to be added.</p>
 </section>
 </div></div>
 </main>
