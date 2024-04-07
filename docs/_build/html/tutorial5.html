@@ -15,7 +15,8 @@
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="tutorial3.html" rel="prev" title="🔷 STEP 2: Creating the Ephemeris object and adding your TransitTimes object. (models and data)"/>
+<link href="tutorial6.html" rel="next" title="🔷 STEP 4: Models and Visulaizations"/>
+<link href="tutorial4.html" rel="prev" title="🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’."/>
 <script>
     <!-- Prevent Flash of wrong theme -->
       const userPreference = localStorage.getItem('darkMode');
@@ -76,7 +77,9 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Object</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Fitting Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Fitting Transit Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating Ephemeris Models and Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial6.html">Creating Ephemeris Visualizations</a></li>
 </ul>
 </nav>
 </div>
@@ -103,19 +106,41 @@
 <h1>🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="line-2"><span class="kn">from</span> <span class="nn">susie.transit_times</span> <span class="kn">import</span> <span class="n">TransitTimes</span>
+</span><span id="line-3"><span class="kn">from</span> <span class="nn">susie.ephemeris</span> <span class="kn">import</span> <span class="n">Ephemeris</span>
+</span><span id="line-4"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span><span id="line-5"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coords</span>
+</span><span id="line-6"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+</span><span id="line-7"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>Create the Ephemeris object and pass in the data created by TransitTimes object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">transit_times_obj1</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
 </span><span id="line-2"><span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-5"><span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
-</span><span id="line-6">
-</span><span id="line-7"><span class="ne">NameError</span>: name 'ephemeris_obj1' is not defined
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+</span><span id="line-4"><span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">transit_times_obj1</span><span class="p">)</span>
+</span><span id="line-5">
+</span><span id="line-6"><span class="ne">NameError</span>: name 'transit_times_obj1' is not defined
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>With the ephemeris object, you have can create linear and quadratic models for your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay. If a quadratic model provides a better fit, your system is assumed to be exhibiting tidal decay.</p>
+<p><strong>The Linear Method:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
+</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -183,6 +208,7 @@
 <img alt="_images/d408c1e00ddfa7020599f7ed283595c3de60354882ead1e7e58f4e05e0bd934f.png" src="_images/d408c1e00ddfa7020599f7ed283595c3de60354882ead1e7e58f4e05e0bd934f.png"/>
 </div>
 </div>
+<p><strong>The Quadratic Method:</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
@@ -254,6 +280,7 @@
 <img alt="_images/36389867eed56bc0a50001f3e2f75f64b5fd23401985328a1d51e3e30eaaeb3d.png" src="_images/36389867eed56bc0a50001f3e2f75f64b5fd23401985328a1d51e3e30eaaeb3d.png"/>
 </div>
 </div>
+<p><strong>Uncertainties:</strong></p>
 <p>We can also plot the model uncertainties with the <code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -275,6 +302,8 @@
 <img alt="_images/0873f357374c7926195d6e5fb39700ea309b2a0355b887468391be9f52322c02.png" src="_images/0873f357374c7926195d6e5fb39700ea309b2a0355b887468391be9f52322c02.png"/>
 </div>
 </div>
+<p><strong>BIC and Delta BIC:</strong></p>
+<p>The BIC value is a $\Chi^2$ metric which is used to determine which model (linear or quadratic) is a better model for your data. A larger BIC value represents a better fit.</p>
 <p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -292,7 +321,7 @@
 </div>
 </div>
 </div>
-<p>And we can also get a delta BIC value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC and delta BIC values. However, it <strong>ONLY returns the delta BIC value</strong> and not the other data calculated.</p>
+<p>We can streamline this comparison by calculating the $\Delta BIC$ value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC and $\Delta BIC$ values. However, it <strong>ONLY returns the delta BIC value</strong> and not the other data calculated. The higher (NOTE: More positive??) your $\Delta BIC$ value, the more likely your system is exhibiting tidal decay.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
@@ -303,26 +332,6 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Delta BIC: 116.99471456396566
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<p>The last two methods accessible to the user are an OC plotting method and a running delta BIC plotting method.</p>
-<p>The OC plot for now just plots the observed minus calculated points (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$ and a curve with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/ac91508c3601967ec7dea262d07123cffc8b491ad2ecf798b83639c48ab34335.png" src="_images/ac91508c3601967ec7dea262d07123cffc8b491ad2ecf798b83639c48ab34335.png"/>
-</div>
-</div>
-<p>This is the <code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code> method. This is a work in progress, but the basic data is in there.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>

@@ -75,6 +75,8 @@ Tutorials
    Adding Transit Data <tutorial2>
    Creating Ephemeris Object <tutorial3>
    Fitting Transit Data <tutorial4>
+   Creating Ephemeris Models and Data <tutorial5> 
+   Creating Ephemeris Visualizations <tutorial6> 
 
 
 Indices and tables

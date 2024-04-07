@@ -15,7 +15,7 @@
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="tutorial2.html" rel="next" title="🔷 STEP 1: Add your transit data to the TransitTimes object."/>
+<link href="tutorial2.html" rel="next" title="🔷 STEP 1: Setting up the TransitTimes object."/>
 <link href="FAQ.html" rel="prev" title="Frequently Asked Questions"/>
 <script>
     <!-- Prevent Flash of wrong theme -->
@@ -124,34 +124,6 @@
 </span><span id="line-5"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coords</span>
 </span><span id="line-6"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 </span><span id="line-7"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
-</span><span id="line-8"><span class="kn">import</span> <span class="nn">pandoc</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
-</span><span id="line-2"><span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">8</span>
-</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
-</span><span id="line-5"><span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
-</span><span id="line-6"><span class="ne">----&gt; </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">pandoc</span>
-</span><span id="line-7">
-</span><span id="line-8"><span class="n">File</span> <span class="o">~</span>\<span class="n">OneDrive</span>\<span class="n">Desktop</span>\<span class="n">BSUResearch</span>\<span class="n">susie</span>\<span class="n">venv</span>\<span class="n">Lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">pandoc</span>\<span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">20</span>
-</span><span id="line-9"><span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># Pandoc</span>
-</span><span id="line-10"><span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="kn">import</span> <span class="nn">pandoc.about</span>
-</span><span id="line-11"><span class="ne">---&gt; </span><span class="mi">20</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
-</span><span id="line-12"><span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="c1"># Filesystem Helper</span>
-</span><span id="line-13"><span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="c1"># ------------------------------------------------------------------------------</span>
-</span><span id="line-14"><span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="k">def</span> <span class="nf">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-</span><span id="line-15">
-</span><span id="line-16"><span class="n">File</span> <span class="o">~</span>\<span class="n">OneDrive</span>\<span class="n">Desktop</span>\<span class="n">BSUResearch</span>\<span class="n">susie</span>\<span class="n">venv</span>\<span class="n">Lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">pandoc</span>\<span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">6</span>
-</span><span id="line-17"><span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">warnings</span>
-</span><span id="line-18"><span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Third-Party Libraries</span>
-</span><span id="line-19"><span class="ne">----&gt; </span><span class="mi">6</span> <span class="kn">import</span> <span class="nn">pkg_resources</span>
-</span><span id="line-20"><span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">import</span> <span class="nn">ply.lex</span> <span class="k">as</span> <span class="nn">lex</span>
-</span><span id="line-21"><span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">ply.yacc</span> <span class="k">as</span> <span class="nn">yacc</span>
-</span><span id="line-22">
-</span><span id="line-23"><span class="ne">ModuleNotFoundError</span>: No module named 'pkg_resources'
 </span></code></pre></div>
 </div>
 </div>
