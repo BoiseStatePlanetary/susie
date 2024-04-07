@@ -18,14 +18,14 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-ephemeris_obj1 = Ephemeris(transit_times_obj1)
+ephemeris_obj1.plot_oc_plot()
 ------------------
 
 
 [1;31m---------------------------------------------------------------------------[0m
 [1;31mNameError[0m                                 Traceback (most recent call last)
 Cell [1;32mIn[2], line 1[0m
-[1;32m----> 1[0m ephemeris_obj1 [38;5;241m=[39m Ephemeris([43mtransit_times_obj1[49m)
+[1;32m----> 1[0m [43mephemeris_obj1[49m[38;5;241m.[39mplot_oc_plot()
 
-[1;31mNameError[0m: name 'transit_times_obj1' is not defined
+[1;31mNameError[0m: name 'ephemeris_obj1' is not defined
 
