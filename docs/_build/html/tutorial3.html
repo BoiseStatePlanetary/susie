@@ -7,15 +7,15 @@
 <meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
 <meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🔷 STEP 2: Creating the Ephemeris object and adding your TransitTimes object. (models and data) | Susie Sept. 2023 documentation</title>
-<meta content="🔷 STEP 2: Creating the Ephemeris object and adding your TransitTimes object. (models and data) | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🔷 STEP 2: Creating the Ephemeris object and adding your TransitTimes object. (models and data) | Susie Sept. 2023 documentation" name="twitter:title"/>
+<title>🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’. | Susie Sept. 2023 documentation</title>
+<meta content="🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’. | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’. | Susie Sept. 2023 documentation" name="twitter:title"/>
 <link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
 <link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="tutorial4.html" rel="next" title="🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’."/>
+<link href="tutorial4.html" rel="next" title="🔷 STEP 4: Models and Visulaizations"/>
 <link href="tutorial2.html" rel="prev" title="🔷 STEP 1: Setting up the TransitTimes object."/>
 <script>
     <!-- Prevent Flash of wrong theme -->
@@ -76,8 +76,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating Ephemeris Object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Fitting Transit Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating Ephemeris Models and Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>
 </nav>
 </div>
@@ -97,11 +97,11 @@
 <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
 </svg>
 </a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 2:</strong> Creating the Ephemeris object and adding your TransitTimes object. (models and data)</span>
+<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</span>
 </nav>
 <div id="content" role="main">
-<section id="step-2-creating-the-ephemeris-object-and-adding-your-transittimes-object-models-and-data">
-<h1>🔷 <strong>STEP 2:</strong> Creating the Ephemeris object and adding your TransitTimes object. (models and data)<a class="headerlink" href="#step-2-creating-the-ephemeris-object-and-adding-your-transittimes-object-models-and-data" title="Link to this heading">¶</a></h1>
+<section id="step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
+<h1>🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -134,6 +134,206 @@
 </div>
 </div>
 <p>With the ephemeris object, you have can create linear and quadratic models for your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay. If a quadratic model provides a better fit, your system is assumed to be exhibiting tidal decay.</p>
+<p><strong>The Linear Method:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
+</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. You can view the data returned from this if you run <code class="docutils literal notranslate"><span class="pre">print(linear_model_data)</span></code>. Now you can use the linear_model_data dictionary for plotting methods, such as the ones below. You can use the same process for a quadratic model ephemeris (shown below).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_model_data</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">{'period': 1.0914196486248962,
+</span><span id="line-2"> 'period_err': 3.187601645504582e-07,
+</span><span id="line-3"> 'conjunction_time': 0.0030928415054687353,
+</span><span id="line-4"> 'conjunction_time_err': 0.0007184099304791794,
+</span><span id="line-5"> 'model_type': 'linear',
+</span><span id="line-6"> 'model_data': array([3.09284151e-03, 3.20880470e+02, 3.25246148e+02, 6.25386552e+02,
+</span><span id="line-7">        6.31935069e+02, 6.48306364e+02, 6.57037721e+02, 6.94145989e+02,
+</span><span id="line-8">        6.95237409e+02, 7.14882963e+02, 7.38894195e+02, 9.79006518e+02,
+</span><span id="line-9">        9.83372196e+02, 9.94286393e+02, 9.95377812e+02, 1.00301775e+03,
+</span><span id="line-10">        1.02702898e+03, 1.02702898e+03, 1.05104021e+03, 1.07505145e+03,
+</span><span id="line-11">        1.08269138e+03, 1.08487422e+03, 1.08596564e+03, 1.08814848e+03,
+</span><span id="line-12">        1.10779404e+03, 1.36100339e+03, 1.37191759e+03, 1.37300901e+03,
+</span><span id="line-13">        1.37519185e+03, 1.38828889e+03, 1.40466018e+03, 1.40793444e+03,
+</span><span id="line-14">        1.43085425e+03, 1.43194567e+03, 1.43303709e+03, 1.43631135e+03,
+</span><span id="line-15">        1.43740277e+03, 1.44395129e+03, 1.44504271e+03, 1.45486548e+03,
+</span><span id="line-16">        1.45595690e+03, 1.46687110e+03, 1.46796252e+03, 1.46905394e+03,
+</span><span id="line-17">        1.47014536e+03, 1.48105956e+03, 1.48979091e+03, 1.49088233e+03,
+</span><span id="line-18">        1.72990324e+03, 1.73426891e+03, 1.75828015e+03, 1.76701150e+03,
+</span><span id="line-19">        1.76919434e+03, 1.78229138e+03, 1.78665706e+03, 1.78993132e+03,
+</span><span id="line-20">        1.80411977e+03, 1.81285113e+03, 1.81394255e+03, 2.08898030e+03,
+</span><span id="line-21">        2.09007172e+03, 2.09116314e+03, 2.09225456e+03, 2.11408295e+03,
+</span><span id="line-22">        2.11517437e+03, 2.13918560e+03, 2.14355128e+03, 2.14682554e+03,
+</span><span id="line-23">        2.14791696e+03, 2.14900838e+03, 2.15883116e+03, 2.16210542e+03,
+</span><span id="line-24">        2.17301961e+03, 2.17847671e+03, 2.18829949e+03, 2.19593943e+03,
+</span><span id="line-25">        2.20357936e+03, 2.20576220e+03, 2.20685362e+03, 2.47097718e+03,
+</span><span id="line-26">        2.49498841e+03, 2.49717125e+03, 2.52991384e+03, 2.53100526e+03,
+</span><span id="line-27">        2.54410229e+03, 2.54519371e+03, 2.55174223e+03, 2.55283365e+03,
+</span><span id="line-28">        2.58775908e+03, 2.83005424e+03, 2.87480245e+03, 2.87589387e+03,
+</span><span id="line-29">        2.91081930e+03, 2.91191072e+03, 2.93592195e+03, 3.15638872e+03,
+</span><span id="line-30">        3.17603427e+03, 3.18803989e+03, 3.19131415e+03, 3.21095970e+03,
+</span><span id="line-31">        3.21205112e+03, 3.25025081e+03, 3.25134223e+03, 3.25679932e+03,
+</span><span id="line-32">        3.25789074e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
+</span><span id="line-33">        3.27098778e+03, 3.27317062e+03, 3.28517624e+03, 3.29281617e+03,
+</span><span id="line-34">        3.29390759e+03, 3.29499901e+03, 3.51110010e+03, 3.53511133e+03,
+</span><span id="line-35">        3.54493411e+03, 3.55803115e+03, 3.55912257e+03, 3.56239683e+03,
+</span><span id="line-36">        3.60823645e+03, 3.60932787e+03, 3.61696781e+03, 3.61915065e+03,
+</span><span id="line-37">        3.62133349e+03, 3.63988762e+03, 3.63988762e+03, 3.64097904e+03,
+</span><span id="line-38">        3.64425330e+03, 3.64643614e+03, 3.64643614e+03, 3.64752756e+03,
+</span><span id="line-39">        3.64752756e+03, 3.65080182e+03, 3.66280743e+03, 3.89637124e+03,
+</span><span id="line-40">        3.95639932e+03, 3.97931913e+03, 3.99132475e+03])}
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
+</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d408c1e00ddfa7020599f7ed283595c3de60354882ead1e7e58f4e05e0bd934f.png" src="_images/d408c1e00ddfa7020599f7ed283595c3de60354882ead1e7e58f4e05e0bd934f.png"/>
+</div>
+</div>
+<p><strong>The Quadratic Method:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
+</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">quadratic_model_data</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">{'conjunction_time': 0.0016704341826483176,
+</span><span id="line-2"> 'conjunction_time_err': 0.0014642050906115362,
+</span><span id="line-3"> 'period': 1.0914213749985644,
+</span><span id="line-4"> 'period_err': 1.5818372240135891e-06,
+</span><span id="line-5"> 'period_change_by_epoch': -8.367463423862439e-10,
+</span><span id="line-6"> 'period_change_by_epoch_err': 7.510573769001014e-10,
+</span><span id="line-7"> 'model_type': 'quadratic',
+</span><span id="line-8"> 'model_data': array([1.67043418e-03, 3.20879519e+02, 3.25245203e+02, 6.25385981e+02,
+</span><span id="line-9">        6.31934506e+02, 6.48305820e+02, 6.57037187e+02, 6.94145496e+02,
+</span><span id="line-10">        6.95236917e+02, 7.14882492e+02, 7.38893750e+02, 9.79006307e+02,
+</span><span id="line-11">        9.83371990e+02, 9.94286196e+02, 9.95377616e+02, 1.00301756e+03,
+</span><span id="line-12">        1.02702881e+03, 1.02702881e+03, 1.05104007e+03, 1.07505132e+03,
+</span><span id="line-13">        1.08269126e+03, 1.08487410e+03, 1.08596552e+03, 1.08814837e+03,
+</span><span id="line-14">        1.10779394e+03, 1.36100347e+03, 1.37191768e+03, 1.37300910e+03,
+</span><span id="line-15">        1.37519194e+03, 1.38828898e+03, 1.40466029e+03, 1.40793455e+03,
+</span><span id="line-16">        1.43085437e+03, 1.43194579e+03, 1.43303721e+03, 1.43631148e+03,
+</span><span id="line-17">        1.43740290e+03, 1.44395142e+03, 1.44504284e+03, 1.45486562e+03,
+</span><span id="line-18">        1.45595704e+03, 1.46687124e+03, 1.46796266e+03, 1.46905408e+03,
+</span><span id="line-19">        1.47014550e+03, 1.48105971e+03, 1.48979107e+03, 1.49088249e+03,
+</span><span id="line-20">        1.72990350e+03, 1.73426918e+03, 1.75828042e+03, 1.76701178e+03,
+</span><span id="line-21">        1.76919462e+03, 1.78229166e+03, 1.78665734e+03, 1.78993160e+03,
+</span><span id="line-22">        1.80412006e+03, 1.81285142e+03, 1.81394284e+03, 2.08898065e+03,
+</span><span id="line-23">        2.09007207e+03, 2.09116349e+03, 2.09225491e+03, 2.11408330e+03,
+</span><span id="line-24">        2.11517472e+03, 2.13918596e+03, 2.14355164e+03, 2.14682590e+03,
+</span><span id="line-25">        2.14791732e+03, 2.14900874e+03, 2.15883151e+03, 2.16210577e+03,
+</span><span id="line-26">        2.17301997e+03, 2.17847707e+03, 2.18829985e+03, 2.19593978e+03,
+</span><span id="line-27">        2.20357972e+03, 2.20576256e+03, 2.20685398e+03, 2.47097752e+03,
+</span><span id="line-28">        2.49498875e+03, 2.49717159e+03, 2.52991417e+03, 2.53100559e+03,
+</span><span id="line-29">        2.54410262e+03, 2.54519404e+03, 2.55174256e+03, 2.55283398e+03,
+</span><span id="line-30">        2.58775940e+03, 2.83005448e+03, 2.87480267e+03, 2.87589409e+03,
+</span><span id="line-31">        2.91081950e+03, 2.91191092e+03, 2.93592214e+03, 3.15638879e+03,
+</span><span id="line-32">        3.17603433e+03, 3.18803994e+03, 3.19131419e+03, 3.21095973e+03,
+</span><span id="line-33">        3.21205115e+03, 3.25025081e+03, 3.25134223e+03, 3.25679933e+03,
+</span><span id="line-34">        3.25789075e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
+</span><span id="line-35">        3.27098777e+03, 3.27317061e+03, 3.28517622e+03, 3.29281615e+03,
+</span><span id="line-36">        3.29390757e+03, 3.29499899e+03, 3.51109990e+03, 3.53511111e+03,
+</span><span id="line-37">        3.54493388e+03, 3.55803091e+03, 3.55912233e+03, 3.56239658e+03,
+</span><span id="line-38">        3.60823616e+03, 3.60932758e+03, 3.61696751e+03, 3.61915035e+03,
+</span><span id="line-39">        3.62133319e+03, 3.63988730e+03, 3.63988730e+03, 3.64097872e+03,
+</span><span id="line-40">        3.64425298e+03, 3.64643581e+03, 3.64643581e+03, 3.64752723e+03,
+</span><span id="line-41">        3.64752723e+03, 3.65080149e+03, 3.66280709e+03, 3.89637065e+03,
+</span><span id="line-42">        3.95639866e+03, 3.97931844e+03, 3.99132404e+03])}
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/36389867eed56bc0a50001f3e2f75f64b5fd23401985328a1d51e3e30eaaeb3d.png" src="_images/36389867eed56bc0a50001f3e2f75f64b5fd23401985328a1d51e3e30eaaeb3d.png"/>
+</div>
+</div>
+<p><strong>Uncertainties:</strong></p>
+<p>We can also plot the model uncertainties with the <code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code> method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/c9ae10b64ba510615b3068832a28184d5205bfbffaa2fbe2cbf5ac1001e942e8.png" src="_images/c9ae10b64ba510615b3068832a28184d5205bfbffaa2fbe2cbf5ac1001e942e8.png"/>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/0873f357374c7926195d6e5fb39700ea309b2a0355b887468391be9f52322c02.png" src="_images/0873f357374c7926195d6e5fb39700ea309b2a0355b887468391be9f52322c02.png"/>
+</div>
+</div>
+<p><strong>BIC and Delta BIC:</strong></p>
+<p>The <span class="math notranslate nohighlight">\(BIC\)</span> value is a <span class="math notranslate nohighlight">\(\chi^2\)</span> metric which is used to determine which model (linear or quadratic) is a better model for your data. A larger <span class="math notranslate nohighlight">\(BIC\)</span> value represents a better fit.</p>
+<p>We can get the <span class="math notranslate nohighlight">\(BIC\)</span> value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
+</span><span id="line-3">
+</span><span id="line-4"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear Model BIC: 30.715948366661767
+</span><span id="line-2">Quadratic Model BIC: 34.417185157879864
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>We can streamline this comparison by calculating the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the <span class="math notranslate nohighlight">\(BIC\)</span> and <span class="math notranslate nohighlight">\(\Delta BIC\)</span> values. However, it <strong>ONLY returns the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value</strong> and not the other data calculated. The higher (NOTE: More positive??) your <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value, the more likely your system is exhibiting tidal decay.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
+</span><span id="line-2">
+</span><span id="line-3"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Delta BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Delta BIC: 116.99471456396566
+</span></code></pre></div>
+</div>
+</div>
+</div>
 </section>
 </div></div>
 </main>
@@ -150,5 +350,6 @@
 <script src="_static/doctools.js?v=888ff710"></script>
 <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
 <script defer="defer" src="_static/theme.js?v=40b7bc71"></script>
+<script async="async" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
