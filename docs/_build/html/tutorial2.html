@@ -15,7 +15,7 @@
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="tutorial3.html" rel="next" title="🔷 STEP 2: Creating the Ephemeris object and adding your TransitTimes object. (models and data)"/>
+<link href="tutorial3.html" rel="next" title="🔷 STEP 2: Fit your transit time data to an ephemeris model (linear or quadratic)."/>
 <link href="tutorial1.html" rel="prev" title="🔷 Import the necessary python libraries and Susie objects."/>
 <script>
     <!-- Prevent Flash of wrong theme -->
@@ -76,8 +76,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Adding Transit Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Fitting Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>
 </nav>
 </div>
@@ -165,7 +165,7 @@
 </div>
 </div>
 <p>❗️ <strong>IMPORTANT</strong>: Our timing data is going to be in JD TDB timing system and scale (AKA Barycentric Julian Date).</p>
-<p>We <strong>can</strong> input data with a different timing scale and system, and the TransitTimes object will automatically correct it to JD TDB. HOWEVER, we will have to put in the coordinates of the object (RA and Dec in degrees) and coordinates of the observatory where the observations were taken from (in lon and lat in degrees). You have the option to omit observatory coordinates if you do not know them, the function will use the gravitational center of the Earth (x, y, x=0, 0, 0).</p>
+<p>We <strong>can</strong> input data with a different timing scale and system, and the TransitTimes object will automatically correct it to JD TDB. HOWEVER, we will have to put in the coordinates of the object (Right Ascension and Declination in degrees) and coordinates of the observatory where the observations were taken from (in longitude and lattitude in degrees). You have the option to omit observatory coordinates if you do not know them, the function will use the gravitational center of the Earth (x, y, x=0, 0, 0).</p>
 <p>Example with JD TDB timing system and scale.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

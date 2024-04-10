@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### 🔷 **STEP 3:** Fit your transit time data to an ephemeris model. You can specify what type of model with the options 'linear' or 'quadratic'."
+    "### 🔷 **STEP 2:** Fit your transit time data to an ephemeris model (linear or quadratic)."
    ]
   },
   {

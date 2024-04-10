@@ -7,15 +7,15 @@
 <meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
 <meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🔷 STEP 4: Models and Visulaizations | Susie Sept. 2023 documentation</title>
-<meta content="🔷 STEP 4: Models and Visulaizations | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🔷 STEP 4: Models and Visulaizations | Susie Sept. 2023 documentation" name="twitter:title"/>
+<title>🔷 STEP 3: Create more models and visulaizations. | Susie Sept. 2023 documentation</title>
+<meta content="🔷 STEP 3: Create more models and visulaizations. | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="🔷 STEP 3: Create more models and visulaizations. | Susie Sept. 2023 documentation" name="twitter:title"/>
 <link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
 <link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="tutorial3.html" rel="prev" title="🔷 STEP 3: Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’."/>
+<link href="tutorial3.html" rel="prev" title="🔷 STEP 2: Fit your transit time data to an ephemeris model (linear or quadratic)."/>
 <script>
     <!-- Prevent Flash of wrong theme -->
       const userPreference = localStorage.getItem('darkMode');
@@ -96,11 +96,11 @@
 <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
 </svg>
 </a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 4:</strong> Models and Visulaizations</span>
+<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🔷 <strong>STEP 3:</strong> Create more models and visulaizations.</span>
 </nav>
 <div id="content" role="main">
-<section id="step-4-models-and-visulaizations">
-<h1>🔷 <strong>STEP 4:</strong> Models and Visulaizations<a class="headerlink" href="#step-4-models-and-visulaizations" title="Link to this heading">¶</a></h1>
+<section id="step-3-create-more-models-and-visulaizations">
+<h1>🔷 <strong>STEP 3:</strong> Create more models and visulaizations.<a class="headerlink" href="#step-3-create-more-models-and-visulaizations" title="Link to this heading">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -115,7 +115,8 @@
 </div>
 </div>
 <p>The last two methods accessible to the user are an OC plotting method and a running delta BIC plotting method.</p>
-<p>The OC plot for now just plots the observed minus calculated points (calculated with <span class="math notranslate nohighlight">\(x=E, y=T_0-PE, y_{\rm err}=\sigma T_0\)</span> and a curve with the quadratic term <span class="math notranslate nohighlight">\((x=E, y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2)\)</span>).</p>
+<p><strong>The OC Plot Method:</strong></p>
+<p>The OC (Observed - Calculated) Plot method just plots the observed minus calculated values of mid transit times for the linear and quadratic models. This is calculated with <span class="math notranslate nohighlight">\(x=E, y=T_0-PE, y_{\rm err}=\sigma T_0\)</span> and a curve with the quadratic term <span class="math notranslate nohighlight">\((x=E, y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
@@ -133,10 +134,21 @@
 </div>
 </div>
 </div>
-<p>This is the <code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code> method. This is a work in progress, but the basic data is in there.</p>
+<p><strong>Plot running Delta BIC Method:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code> method plots the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for each epoch, so you can see the evolution of the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value over time.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+</span><span id="line-4"><span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
+</span><span id="line-5">
+</span><span id="line-6"><span class="ne">NameError</span>: name 'ephemeris_obj1' is not defined
 </span></code></pre></div>
 </div>
 </div>
