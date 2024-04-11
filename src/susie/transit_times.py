@@ -200,7 +200,7 @@ class TransitTimes():
         if self.epochs.shape != self.mid_transit_times.shape != self.mid_transit_times_uncertainties.shape:
             raise ValueError("Shapes of 'epochs', 'mid_transit_times', and 'mid_transit_times_uncertainties' arrays do not match.")
         # Check that all values in arrays are correct
-        if not all(isinstance(value, (int, np.int64)) for value in self.epochs):
+        if not all(isinstance(value, (int, np.int64)) for value in self.epochs) or not all(isinstance(value, (int, np.int32)) for value in self.epochs):
             raise TypeError("All values in 'epochs' must be of type int.")
         if not all(isinstance(value, float) for value in self.mid_transit_times):
             raise TypeError("All values in 'mid_transit_times' must be of type float.")
