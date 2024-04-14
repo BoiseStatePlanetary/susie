@@ -9,7 +9,7 @@ Welcome to Susie's documentation!
 Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their 
 extrasolar system. 
 
-.. figure:: /images/sp_susie.png
+.. image:: /images/sp_susie.png
 
 About
 -----
