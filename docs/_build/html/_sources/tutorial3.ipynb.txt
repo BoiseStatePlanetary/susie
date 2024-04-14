@@ -327,7 +327,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "We can streamline this comparison by calculating the {math}`\\Delta BIC` value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the {math}`BIC` and {math}`\\Delta BIC` values. However, it **ONLY returns the {math}`\\Delta BIC` value** and not the other data calculated. The higher (NOTE: More positive??) your {math}`\\Delta BIC` value, the more likely your system is exhibiting tidal decay."
+    "We can streamline this comparison by calculating the {math}`\\Delta BIC` value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the {math}`BIC` and {math}`\\Delta BIC` values. However, it **ONLY returns the {math}`\\Delta BIC` value** and not the other data calculated. Since the {math}`\\Delta BIC` value is subtracting the quadratic {math}`BIC` vlaue from the linear {math}`BIC` value, a higher {math}`\\Delta BIC` value indicates a higher likelihood that your system is exhibiting tidal decay. A {math}`\\Delta BIC` value, over 100 is a good indication that the apparent tidal decay is statistically significant."
    ]
   },
   {
@@ -348,13 +348,6 @@
     "\n",
     "print(f\"Delta BIC: {delta_bic_value}\")"
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
