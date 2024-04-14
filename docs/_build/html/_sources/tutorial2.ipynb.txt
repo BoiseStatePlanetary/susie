@@ -301,7 +301,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "**Coming Soon!** Lists of transits and occultation analysis to be added."
+    "**Coming Soon!** Future transit observing schedules and precession detection to be added.\n"
    ]
   }
  ],
