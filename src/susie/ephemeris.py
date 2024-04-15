@@ -695,7 +695,7 @@ class Ephemeris(object):
 
         STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from 'transit_times.py'.
 
-        STEP 2: Create a list of the delta bic values. For the first 3 epochs, the :math:`\\Delta BIC` value is zero. For the subsequent epochs\\
+        STEP 2: Create a list of the :math:`\\Delta BIC` values. For the first 3 epochs, the :math:`\\Delta BIC` value is zero. For the subsequent epochs\\
         call 'calc_delta_bic' and append the returned value to the list of delta bic values.
 
         STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.

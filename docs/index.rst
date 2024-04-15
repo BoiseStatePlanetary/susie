@@ -9,6 +9,7 @@ Welcome to Susie's documentation!
 Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their 
 extrasolar system. 
 
+.. image:: /images/sp_susie.png
 
 About
 -----
@@ -73,8 +74,8 @@ Tutorials
 
    Installation <tutorial1>
    Adding Transit Data <tutorial2>
-   Creating Ephemeris Object <tutorial3>
-   Fitting Transit Data <tutorial4>
+   Creating Ephemeris Models and Data <tutorial3> 
+   Creating Ephemeris Visualizations <tutorial4> 
 
 
 Indices and tables
