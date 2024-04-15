@@ -55,8 +55,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
                 A linear function calculated with TransitTimes object data to be used with curve_fit.
         """
         return P*x + T0
-    
     def fit_model(self, x, y, yerr, **kwargs):
+    
         """Fits a linear model to ephemeris data.
 
         Compares the model ephemieris data to the linear fit created by data in TransitTimes object calculated 
