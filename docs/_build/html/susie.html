@@ -76,8 +76,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Fitting Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>
 </nav>
 </div>
@@ -278,7 +278,7 @@ All subclasses must implement this method.</p>
 <span class="sig-name descname"><span class="pre">plot_running_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_running_delta_bic'">¶</a></dt>
 <dd><p>Returns a MatPlotlib scatterplot of epochs vs. <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for each epoch.</p>
 <p>STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from ‘transit_times.py’.</p>
-<p>STEP 2: Create a list of the delta bic values. For the first 3 epochs, the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value is zero. For the subsequent epochscall ‘calc_delta_bic’ and append the returned value to the list of delta bic values.</p>
+<p>STEP 2: Create a list of the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> values. For the first 3 epochs, the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value is zero. For the subsequent epochscall ‘calc_delta_bic’ and append the returned value to the list of delta bic values.</p>
 <p>STEP 3: Plot a scatterplot of the epochs vs. the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> values.</p>
 <p>STEP 4: Save the plot if indicated by the user.</p>
 <dl class="field-list simple">
