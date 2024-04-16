@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-# from transit_times import TransitTimes
-from susie.transit_times import TransitTimes
+from transit_times import TimingData
+# from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -736,18 +736,21 @@ class Ephemeris(object):
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
-    filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
-    data = np.genfromtxt(filepath, delimiter=',', names=True)
+    filepath = "../../wasp12b_tra_occ.csv"
+    # filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
+    data = np.genfromtxt(filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # STEP 2: Break data up into epochs, mid transit times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
+    tra_or_occs = data["tra_or_occ"]
     epochs = data["epoch"].astype('int')
     mid_transit_times = data["transit_time"]
     mid_transit_times_err = data["sigma_transit_time"]
     # STEP 3: Create new transit times object with above data
     # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    # print(vars(transit_times_obj1))
-    transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-
+    times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb', tra_or_occ=tra_or_occs)
+    print(vars(times_obj1.transits))
+    print('\n\n')
+    print(vars(times_obj1.occultations))
 
     # print(f"EPOCHS: {transit_times_obj1.epochs}\n")
     # print(f"MID TRANSIT TIMES: {transit_times_obj1.mid_transit_times}\n")
