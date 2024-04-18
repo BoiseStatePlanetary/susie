@@ -5,6 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="User Guide" href="susie.html" />
 
+<<<<<<< HEAD
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>Susie Sept. 2023 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
@@ -32,6 +33,34 @@
         --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
+=======
+<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Welcome to Susie’s documentation! | Susie Sept. 2023 documentation</title>
+<meta content="Welcome to Susie’s documentation! | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="Welcome to Susie’s documentation! | Susie Sept. 2023 documentation" name="twitter:title"/>
+<link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
+<link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
+<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx_paramlinks.css?v=dd72e65a" rel="stylesheet" type="text/css"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="susie.html" rel="next" title="User Guide"/>
+<script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
       }
     }
   }
@@ -202,7 +231,16 @@
 <h1>Welcome to Susie’s documentation!<a class="headerlink" href="#welcome-to-susie-s-documentation" title="Link to this heading">#</a></h1>
 <p>Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their
 extrasolar system.</p>
+<<<<<<< HEAD
 <img alt="A placeholder image" src="_images/sp_susie.png" />
+=======
+<img alt="susie/docs/images/sp_susie.png" src="susie/docs/images/sp_susie.png"/>
+<p>Here I am testing to see if the absolute path method will work</p>
+<img alt="_images/SP_ObservingGrid.png" src="_images/SP_ObservingGrid.png"/>
+<p>Here I am testing if moving the image into the docs folder will work</p>
+<img alt="A placeholder image" src="_images/sp_susie.png"/>
+<p>Here I have the original path</p>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 <section id="about">
 <h2>About<a class="headerlink" href="#about" title="Link to this heading">#</a></h2>
 <p>Susie works by fitting your transit mid-times (or occultation mid-times if given) to both a linear and quadratic model,
@@ -284,8 +322,11 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="susie.html#module-src.susie.transit_times">Transit Times module</a><ul>
+<<<<<<< HEAD
 <li class="toctree-l3"><a class="reference internal" href="susie.html#src.susie.transit_times.OccultationTimes"><code class="docutils literal notranslate"><span class="pre">OccultationTimes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="susie.html#src.susie.transit_times.TimingData"><code class="docutils literal notranslate"><span class="pre">TimingData</span></code></a></li>
+=======
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 <li class="toctree-l3"><a class="reference internal" href="susie.html#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
 </ul>
 </li>

@@ -156,6 +156,7 @@
 </span><span id="line-4"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 </span><span id="line-5"><span class="kn">import</span> <span class="nn">logging</span>
 </span><span id="line-6">
+<<<<<<< HEAD
 </span><span id="line-7">
 <div class="viewcode-block" id="TransitTimes">
 <a class="viewcode-back" href="../../../susie.html#src.susie.transit_times.TransitTimes">[docs]</a>
@@ -454,6 +455,230 @@
 </span><span id="line-294">            <span class="c1"># TODO import warning that we are minimizing their epochs and transit times</span>
 </span><span id="line-295">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="line-296">            <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span><span class="p">)</span></div>
+=======
+</span><span id="line-7"><span class="c1"># TESTING</span>
+</span><span id="line-8">
+</span><span id="line-9"><span class="c1"># class TransitTimes():</span>
+</span><span id="line-10"><span class="c1">#     def __init__(self):</span>
+</span><span id="line-11"><span class="c1">#         # pass in all the same stuff for transit times</span>
+</span><span id="line-12"><span class="c1">#         pass</span>
+</span><span id="line-13">
+</span><span id="line-14"><span class="c1"># class OccultationTimes():</span>
+</span><span id="line-15"><span class="c1">#     def __init__(self):</span>
+</span><span id="line-16"><span class="c1">#         # pass in all the same stuff for occultation times</span>
+</span><span id="line-17"><span class="c1">#         pass</span>
+</span><span id="line-18">
+<div class="viewcode-block" id="TransitTimes">
+<a class="viewcode-back" href="../../../susie.html#src.susie.transit_times.TransitTimes">[docs]</a>
+</span><span id="line-19"><span class="k">class</span> <span class="nc">TransitTimes</span><span class="p">():</span>
+</span><span id="line-20"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</span>
+</span><span id="line-21"><span class="sd">    </span>
+</span><span id="line-22"><span class="sd">    The transit_times object is a class which formats user data to be passed to the ephemeris.py object. \</span>
+</span><span id="line-23"><span class="sd">        This object creates and/or formats the array of uncertainties in mid_transit_times. This object \</span>
+</span><span id="line-24"><span class="sd">            will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric \</span>
+</span><span id="line-25"><span class="sd">                Dynamical time as the time scale.</span>
+</span><span id="line-26">
+</span><span id="line-27"><span class="sd">    STEP 1: Make an array of 1&#39;s to be the uncertainities in the same shape as epochs and mid_transit_times.</span>
+</span><span id="line-28">
+</span><span id="line-29"><span class="sd">    STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.</span>
+</span><span id="line-30">
+</span><span id="line-31"><span class="sd">    STEP 3: Check that the array&#39;s are formatted properly. The appropriate Type or Value Error is raised if there are any issues.</span>
+</span><span id="line-32"><span class="sd"> </span>
+</span><span id="line-33"><span class="sd">    Parameters</span>
+</span><span id="line-34"><span class="sd">    ------------</span>
+</span><span id="line-35"><span class="sd">        time_format: str </span>
+</span><span id="line-36"><span class="sd">            An abbreviation of the data&#39;s timing system. Abbreviations for systems can be found on [Astropy&#39;s Time documentation](https://docs.astropy.org/en/stable/time/#id3).</span>
+</span><span id="line-37"><span class="sd">        epochs: numpy.ndarray(int)</span>
+</span><span id="line-38"><span class="sd">            List of reference points for transit observations represented in the transit times data.</span>
+</span><span id="line-39"><span class="sd">        mid_transit_times: numpy.ndarray(float)</span>
+</span><span id="line-40"><span class="sd">            List of observed transit midpoints in days corresponding with epochs.</span>
+</span><span id="line-41"><span class="sd">        mid_transit_times_uncertainties: Optional(numpy.ndarray[float])</span>
+</span><span id="line-42"><span class="sd">            List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
+</span><span id="line-43"><span class="sd">        time_scale: Optional(str)</span>
+</span><span id="line-44"><span class="sd">            An abbreviation of the data&#39;s timing scale. Abbreviations for scales can be found on [Astropy&#39;s Time documentation](https://docs.astropy.org/en/stable/time/#id6).</span>
+</span><span id="line-45"><span class="sd">        object_ra: Optional(float)</span>
+</span><span id="line-46"><span class="sd">            The right ascension in degrees of observed object represented by data.</span>
+</span><span id="line-47"><span class="sd">        object_dec: Optional(float)</span>
+</span><span id="line-48"><span class="sd">            The declination in degrees of observed object represented by data.</span>
+</span><span id="line-49"><span class="sd">        observatory_lon: Optional(float)</span>
+</span><span id="line-50"><span class="sd">            The longitude in degrees of observatory data was collected from.</span>
+</span><span id="line-51"><span class="sd">        observatory_lat: Optional(float) </span>
+</span><span id="line-52"><span class="sd">            The latitude in degrees of observatory data was collected from.</span>
+</span><span id="line-53"><span class="sd">    Raises</span>
+</span><span id="line-54"><span class="sd">    ------</span>
+</span><span id="line-55"><span class="sd">        Error raised if  </span>
+</span><span id="line-56"><span class="sd">            * parameters are not NumPy Arrays </span>
+</span><span id="line-57"><span class="sd">            * parameters are not the same shape of array </span>
+</span><span id="line-58"><span class="sd">            * the values of epochs are not all ints</span>
+</span><span id="line-59"><span class="sd">            * the values of mid_transit_times and unertainites are not all floats</span>
+</span><span id="line-60"><span class="sd">            * values of uncertainities are not all positive.</span>
+</span><span id="line-61">
+</span><span id="line-62"><span class="sd">    Side Effects</span>
+</span><span id="line-63"><span class="sd">    -------------</span>
+</span><span id="line-64"><span class="sd">        Variables epochs and mid_transit_times are shifted to start at zero by subtracting the minimum number from each value.</span>
+</span><span id="line-65"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="line-66">    <span class="c1"># def __init__(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties=None, tra_or_occ=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):</span>
+</span><span id="line-67">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_format</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-68">        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
+</span><span id="line-69">        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">mid_transit_times</span>
+</span><span id="line-70">        <span class="k">if</span> <span class="n">mid_transit_times_uncertainties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-71">            <span class="c1"># Make an array of 1s in the same shape of epochs and mid_transit_times</span>
+</span><span id="line-72">            <span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span><span id="line-73">        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">mid_transit_times_uncertainties</span>
+</span><span id="line-74">        <span class="c1"># Check that timing system and scale are JD and TDB</span>
+</span><span id="line-75">        <span class="k">if</span> <span class="n">time_format</span> <span class="o">!=</span> <span class="s1">&#39;jd&#39;</span> <span class="ow">or</span> <span class="n">time_scale</span> <span class="o">!=</span> <span class="s1">&#39;tdb&#39;</span><span class="p">:</span>
+</span><span id="line-76">            <span class="c1"># TODO: Make sure they know default scale is UTC</span>
+</span><span id="line-77">            <span class="c1"># If not correct time format and scale, create time objects and run corrections</span>
+</span><span id="line-78">            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recieved time format </span><span class="si">{</span><span class="n">time_format</span><span class="si">}</span><span class="s2"> and time scale </span><span class="si">{</span><span class="n">time_scale</span><span class="si">}</span><span class="s2">. &quot;</span> 
+</span><span id="line-79">                            <span class="s2">&quot;Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.&quot;</span><span class="p">)</span>
+</span><span id="line-80">            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-81">            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-82">            <span class="n">mid_transit_times_obj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">mid_transit_times</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">time_format</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">time_scale</span><span class="p">)</span>
+</span><span id="line-83">            <span class="n">mid_transit_times_uncertainties_obj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">time_format</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">time_scale</span><span class="p">)</span>
+</span><span id="line-84">            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
+</span><span id="line-85">        <span class="c1"># Call validation function</span>
+</span><span id="line-86">        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+</span><span id="line-87">        <span class="c1"># Once everything is validated and corrected, we can separate into transits and occultations if we are given the tra_or_occ data</span>
+</span><span id="line-88">        <span class="c1"># if tra_or_occ is not None:</span>
+</span><span id="line-89">        <span class="c1">#     for epoch, mtt, mtt_err in zip(self.epochs, self.mid_transit_times, self.mid_transit_times_uncertainties):</span>
+</span><span id="line-90">        <span class="c1">#         foiwehf</span>
+</span><span id="line-91">
+</span><span id="line-92">    <span class="k">def</span> <span class="nf">_calc_barycentric_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">):</span>
+</span><span id="line-93"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.</span>
+</span><span id="line-94">
+</span><span id="line-95"><span class="sd">        STEP 1: Checks if given placeholder values of 1. If given placeholder values, no correction needed and array of 1&#39;s returned.</span>
+</span><span id="line-96">
+</span><span id="line-97"><span class="sd">        STEP 2: If given actual values, correct the values to be Barycentric Julian Date in TDB time scale. Return corrected values.</span>
+</span><span id="line-98">
+</span><span id="line-99"><span class="sd">        Parameters</span>
+</span><span id="line-100"><span class="sd">        ----------</span>
+</span><span id="line-101"><span class="sd">            time_obj : numpy.ndarray[float]</span>
+</span><span id="line-102"><span class="sd">                List to be corrected to the Barycentric Julian Date in TDB time scale.</span>
+</span><span id="line-103"><span class="sd">            obj_location : numpy.ndarray[float]</span>
+</span><span id="line-104"><span class="sd">                List of the RA and DEC in degrees of the object being observed.</span>
+</span><span id="line-105"><span class="sd">            obs_location : Optional(numpy.ndarray[float])                           NOTE considered optional only if keyword argument - check for these</span>
+</span><span id="line-106"><span class="sd">                List of the longitude and latitude in degrees of the site of observation. If None given, uses gravitational center of Earth at North Pole.</span>
+</span><span id="line-107"><span class="sd">       </span>
+</span><span id="line-108"><span class="sd">        Returns</span>
+</span><span id="line-109"><span class="sd">        -------</span>
+</span><span id="line-110"><span class="sd">            time_obj.value : numpy.ndarray[float]</span>
+</span><span id="line-111"><span class="sd">                Returned only if no correction needed. Placeholder array of 1s with same shape as `mid_transit_times`.</span>
+</span><span id="line-112"><span class="sd">            corrected_time_vals : numpy.ndarray[float]</span>
+</span><span id="line-113"><span class="sd">                List now corrected to Barycentric Julian Date in TDB time scale.</span>
+</span><span id="line-114"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-115">        <span class="c1"># If given uncertainties, check they are actual values and not placeholders vals of 1</span>
+</span><span id="line-116">        <span class="c1"># If they are placeholder vals, no correction needed, just return array of 1s</span>
+</span><span id="line-117">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_obj</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="line-118">            <span class="k">return</span> <span class="n">time_obj</span><span class="o">.</span><span class="n">value</span>
+</span><span id="line-119">        <span class="n">time_obj</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">obs_location</span>
+</span><span id="line-120">        <span class="n">ltt_bary</span> <span class="o">=</span> <span class="n">time_obj</span><span class="o">.</span><span class="n">light_travel_time</span><span class="p">(</span><span class="n">obj_location</span><span class="p">)</span>
+</span><span id="line-121">        <span class="n">corrected_time_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_obj</span><span class="o">.</span><span class="n">tdb</span><span class="o">+</span><span class="n">ltt_bary</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+</span><span id="line-122">        <span class="k">return</span> <span class="n">corrected_time_vals</span>
+</span><span id="line-123">    
+</span><span id="line-124">    <span class="k">def</span> <span class="nf">_validate_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_coords</span><span class="p">,</span> <span class="n">obs_coords</span><span class="p">):</span>
+</span><span id="line-125"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that object and observatory coordinates are in correct format for correction function, passes the observed transit midpoints and the uncertainties in observed transit midpoints to the correction function. </span>
+</span><span id="line-126"><span class="sd">    </span>
+</span><span id="line-127"><span class="sd">        STEP 1: Checks if there are object coordinates (right ascension and declination). Raises a ValueError if not.</span>
+</span><span id="line-128">
+</span><span id="line-129"><span class="sd">        STEP 2: Checks if there are observatory coordinates (latitude and longitude). Raises a warning and uses the gravitational center of Earth at the North Pole if not.</span>
+</span><span id="line-130">
+</span><span id="line-131"><span class="sd">        STEP 3: Performs corrections to &#39;mid_transit_times_obj&#39; and &#39;mid_transit_times_uncertainties_obj&#39; by calling &#39;_calc_barycentric_time&#39;</span>
+</span><span id="line-132">
+</span><span id="line-133"><span class="sd">        Parameters</span>
+</span><span id="line-134"><span class="sd">        ----------</span>
+</span><span id="line-135"><span class="sd">            mid_transit_times_obj : (astropy.time.Time[array, string, string])         </span>
+</span><span id="line-136"><span class="sd">                List of transit midpoints, time_format, and time_scale </span>
+</span><span id="line-137"><span class="sd">            mid_trnasit_times_uncertainties_obj : Optional(astropy.time.Time[array, string, string])      NOTE also not really uncertainties in strings - maybe reformat the description</span>
+</span><span id="line-138"><span class="sd">                List of uncertainties corresponding with transit midpoints, time_format, and time_scale. If given None initailly, have been replaced with array of 1&#39;s with same shape as `mid_transit_times`.</span>
+</span><span id="line-139"><span class="sd">            obj_coords : numpy.ndarray[float]</span>
+</span><span id="line-140"><span class="sd">                List of the RA and DEC in degrees of the object being observed.</span>
+</span><span id="line-141"><span class="sd">            obs_coords : Optional(numpy.ndarray[float])             </span>
+</span><span id="line-142"><span class="sd">                List of the longitude and latitude in degrees of the site of observation. If None given, use gravitational center of Earth at North Pole.</span>
+</span><span id="line-143">
+</span><span id="line-144"><span class="sd">        Raises</span>
+</span><span id="line-145"><span class="sd">            ValueError :</span>
+</span><span id="line-146"><span class="sd">                Error if None recieved for object_ra or object_dec.</span>
+</span><span id="line-147"><span class="sd">        ------</span>
+</span><span id="line-148">
+</span><span id="line-149"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-150">        <span class="c1"># check if there are objects coords, raise error if not</span>
+</span><span id="line-151">        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obj_coords</span><span class="p">):</span>
+</span><span id="line-152">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Recieved None for object right ascension and/or declination. &quot;</span> 
+</span><span id="line-153">                             <span class="s2">&quot;Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.&quot;</span><span class="p">)</span>
+</span><span id="line-154">        <span class="c1"># Check if there are observatory coords, raise warning and use earth grav center coords if not</span>
+</span><span id="line-155">        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obs_coords</span><span class="p">):</span>
+</span><span id="line-156">            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to process observatory coordinates </span><span class="si">{</span><span class="n">obs_coords</span><span class="si">}</span><span class="s2">. &quot;</span>
+</span><span id="line-157">                             <span class="s2">&quot;Using gravitational center of Earth.&quot;</span><span class="p">)</span>
+</span><span id="line-158">            <span class="n">obs_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geocentric</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+</span><span id="line-159">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-160">            <span class="n">obs_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geodetic</span><span class="p">(</span><span class="n">obs_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">obs_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="line-161">        <span class="n">obj_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dec</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
+</span><span id="line-162">        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using ICRS coordinates in degrees of RA and Dec </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction. &quot;</span>
+</span><span id="line-163">                        <span class="sa">f</span><span class="s2">&quot;Using geodetic Earth coordinates in degrees of longitude and latitude </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction.&quot;</span><span class="p">)</span>
+</span><span id="line-164">        <span class="c1"># Perform correction, will return array of corrected times</span>
+</span><span id="line-165">        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_transit_times_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
+</span><span id="line-166">        <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_transit_times_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
+</span><span id="line-167">
+</span><span id="line-168">    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-169"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that all object attributes are of correct types and within value constraints.</span>
+</span><span id="line-170"><span class="sd">        STEP 1: Check all object attributes are of type array.</span>
+</span><span id="line-171">
+</span><span id="line-172"><span class="sd">        STEP 2: Check all object attributes are of same shape.</span>
+</span><span id="line-173">
+</span><span id="line-174"><span class="sd">        STEP 3: Check all object attributes contain correct value type.</span>
+</span><span id="line-175">
+</span><span id="line-176"><span class="sd">        STEP 4: Check all object attributes contain no null values.</span>
+</span><span id="line-177">
+</span><span id="line-178"><span class="sd">        STEP 5: Check &#39;mid_transit_times_uncertainties&#39; contains non-negative and non-zero values.</span>
+</span><span id="line-179">
+</span><span id="line-180"><span class="sd">        Raises</span>
+</span><span id="line-181"><span class="sd">        ------</span>
+</span><span id="line-182"><span class="sd">            TypeError :</span>
+</span><span id="line-183"><span class="sd">                Error if &#39;epochs&#39;, &#39;mid_traisit_times&#39;, or &#39;mid_transit_times_uncertainties&#39; are not NumPy arrays.</span>
+</span><span id="line-184"><span class="sd">            ValueError :</span>
+</span><span id="line-185"><span class="sd">                Error if shapes of &#39;epochs&#39;, &#39;mid_transit_times&#39;, and &#39;mid_transit_times_uncertainties&#39; arrays do not match.</span>
+</span><span id="line-186"><span class="sd">            TypeError :</span>
+</span><span id="line-187"><span class="sd">                Error if values in &#39;epochs&#39; are not ints, values in &#39;mid_transit_times&#39; or &#39;mid_transit_times_uncertainties&quot; are not floats. </span>
+</span><span id="line-188"><span class="sd">            ValueError :</span>
+</span><span id="line-189"><span class="sd">                Error if &#39;epochs&#39;, &#39;mid_transit_times&#39;, or &#39;mid_transit_times_uncertainties&#39; contain a NaN (Not-a-Number) value.</span>
+</span><span id="line-190"><span class="sd">            ValueError :</span>
+</span><span id="line-191"><span class="sd">                Error if &#39;mid_transit_times_uncertainties&#39; contains a negative or zero value.</span>
+</span><span id="line-192"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-193">        <span class="c1"># Check that all are of type array</span>
+</span><span id="line-194">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-195">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;epochs&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
+</span><span id="line-196">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-197">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;mid_transit_times&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
+</span><span id="line-198">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-199">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;mid_transit_times_uncertainties&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
+</span><span id="line-200">        <span class="c1"># Check that all are same shape</span>
+</span><span id="line-201">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+</span><span id="line-202">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Shapes of &#39;epochs&#39;, &#39;mid_transit_times&#39;, and &#39;mid_transit_times_uncertainties&#39; arrays do not match.&quot;</span><span class="p">)</span>
+</span><span id="line-203">        <span class="c1"># Check that all values in arrays are correct</span>
+</span><span id="line-204">        <span class="c1"># if not all(isinstance(value, (int, np.int64)) for value in self.epochs) or not all(isinstance(value, (int, np.int32)) for value in self.epochs):</span>
+</span><span id="line-205">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="line-206">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values in &#39;epochs&#39; must be of type int, numpy.int64, or numpy.int32.&quot;</span><span class="p">)</span>
+</span><span id="line-207">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">):</span>
+</span><span id="line-208">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values in &#39;mid_transit_times&#39; must be of type float.&quot;</span><span class="p">)</span>
+</span><span id="line-209">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">):</span>
+</span><span id="line-210">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All values in &#39;mid_transit_times_uncertainties&#39; must be of type float.&quot;</span><span class="p">)</span>
+</span><span id="line-211">        <span class="c1"># Check that there are no null values</span>
+</span><span id="line-212">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)):</span>
+</span><span id="line-213">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;epochs&#39; array contains NaN (Not-a-Number) values.&quot;</span><span class="p">)</span>
+</span><span id="line-214">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">)):</span>
+</span><span id="line-215">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times&#39; array contains NaN (Not-a-Number) values.&quot;</span><span class="p">)</span>
+</span><span id="line-216">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">)):</span>
+</span><span id="line-217">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times_uncertainties&#39; array contains NaN (Not-a-Number) values.&quot;</span><span class="p">)</span>
+</span><span id="line-218">        <span class="c1"># Check that mid_transit_times_uncertainties are positive and non-zero (greater than zero)</span>
+</span><span id="line-219">        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span id="line-220">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;mid_transit_times_uncertainties&#39; array must contain non-negative and non-zero values.&quot;</span><span class="p">)</span>
+</span><span id="line-221">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-222">            <span class="c1"># Shift epochs and mid transit times</span>
+</span><span id="line-223">            <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
+</span><span id="line-224">            <span class="c1"># TODO import warning that we are minimizing their epochs and transit times</span>
+</span><span id="line-225">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-226">            <span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_transit_times</span><span class="p">)</span></div>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 
 </span></code></pre></div>
     </div></div>

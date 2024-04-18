@@ -944,6 +944,7 @@
 </span><span id="line-737">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </div>
 
+<<<<<<< HEAD
 </span><span id="line-738">
 </span><span id="line-739"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span><span id="line-740">    <span class="c1"># STEP 1: Upload datra from file</span>
@@ -989,6 +990,50 @@
 </span><span id="line-780">    <span class="c1"># # ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
 </span><span id="line-781">
 </span><span id="line-782">    <span class="c1"># # ephemeris_obj1.plot_oc_plot(False)</span>
+=======
+</span><span id="line-736">
+</span><span id="line-737"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span id="line-738">    <span class="c1"># STEP 1: Upload datra from file</span>
+</span><span id="line-739">    <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;../../malia_examples/WASP12b_transit_ephemeris.csv&quot;</span>
+</span><span id="line-740">    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-741">    <span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
+</span><span id="line-742">    <span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
+</span><span id="line-743">    <span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+</span><span id="line-744">    <span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">]</span>
+</span><span id="line-745">    <span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">]</span>
+</span><span id="line-746">    <span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-747">    <span class="c1"># transit_times_obj1 = TransitTimes(&#39;jd&#39;, epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)</span>
+</span><span id="line-748">    <span class="c1"># print(vars(transit_times_obj1))</span>
+</span><span id="line-749">    <span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</span><span id="line-750">
+</span><span id="line-751">
+</span><span id="line-752">    <span class="c1"># print(f&quot;EPOCHS: {transit_times_obj1.epochs}\n&quot;)</span>
+</span><span id="line-753">    <span class="c1"># print(f&quot;MID TRANSIT TIMES: {transit_times_obj1.mid_transit_times}\n&quot;)</span>
+</span><span id="line-754">    <span class="c1"># # STEP 4: Create new ephemeris object with transit times object</span>
+</span><span id="line-755">    <span class="c1"># ephemeris_obj1 = Ephemeris(transit_times_obj1)</span>
+</span><span id="line-756">    <span class="c1"># # STEP 5: Get model ephemeris data</span>
+</span><span id="line-757">    <span class="c1"># linear_model_data = ephemeris_obj1.get_model_ephemeris(&#39;linear&#39;)</span>
+</span><span id="line-758">    <span class="c1"># quad_model_data = ephemeris_obj1.get_model_ephemeris(&#39;quadratic&#39;)</span>
+</span><span id="line-759">    <span class="c1"># print(linear_model_data)</span>
+</span><span id="line-760">    <span class="c1"># print(quad_model_data)</span>
+</span><span id="line-761">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(linear_model_data)</span>
+</span><span id="line-762">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(quad_model_data)</span>
+</span><span id="line-763">    <span class="c1"># ephemeris_obj1.plot_oc_plot()</span>
+</span><span id="line-764">    <span class="c1"># model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(model_data)</span>
+</span><span id="line-765">    <span class="c1"># print(model_uncertainties)</span>
+</span><span id="line-766">    <span class="c1"># # STEP 6: Show a plot of the model ephemeris data</span>
+</span><span id="line-767">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)</span>
+</span><span id="line-768">    <span class="c1"># # # STEP 7: Uncertainties plot</span>
+</span><span id="line-769">    <span class="c1"># # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)</span>
+</span><span id="line-770">    <span class="c1"># # bic = ephemeris_obj1.calc_bic(model_data)</span>
+</span><span id="line-771">    <span class="c1"># # print(bic)</span>
+</span><span id="line-772">
+</span><span id="line-773">    <span class="c1"># # print(ephemeris_obj1.calc_delta_bic())</span>
+</span><span id="line-774">    <span class="c1"># print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))</span>
+</span><span id="line-775">    <span class="c1"># # ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
+</span><span id="line-776">
+</span><span id="line-777">    <span class="c1"># # ephemeris_obj1.plot_oc_plot(False)</span>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 </span></code></pre></div>
     </div></div>
         </main>

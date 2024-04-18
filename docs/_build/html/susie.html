@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
@@ -32,6 +33,37 @@
         --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
+=======
+<!DOCTYPE html>
+
+<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>User Guide | Susie Sept. 2023 documentation</title>
+<meta content="User Guide | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="User Guide | Susie Sept. 2023 documentation" name="twitter:title"/>
+<link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
+<link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
+<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx_paramlinks.css?v=dd72e65a" rel="stylesheet" type="text/css"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="FAQ.html" rel="next" title="Frequently Asked Questions"/>
+<link href="index.html" rel="prev" title="Welcome to Susie's documentation!"/>
+<script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
       }
     }
   }
@@ -216,9 +248,9 @@ All subclasses must implement this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.BaseModelEphemeris.fit_model.x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.BaseModelEphemeris.fit_model.y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.BaseModelEphemeris.fit_model.yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -236,7 +268,7 @@ All subclasses must implement this method.</p>
 <p>Represents the model ephemeris using transit midpoint data over epochs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transit_times</strong> (<em>TransitTimes obj</em>) – A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.</p>
+<dd class="field-odd"><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.transit_times</strong> (<em>TransitTimes obj</em>) – A successfully instantiated TransitTimes object holding epochs, mid transit times, and uncertainties.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError:</strong> – Raised if transit_times is not an instance of the TransitTimes object.</p>
@@ -254,7 +286,7 @@ All subclasses must implement this method.</p>
 <p>where <span class="math notranslate nohighlight">\(\chi^2=\sum{  \frac{(\text{observed mid transit times - model mid transit times})}{\text{(observed mid transit time uncertainties})^2}   },\)</span>  k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
+<dd class="field-odd"><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.calc_bic.model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>A float value representing the BIC value for this model ephemeris.</p>
@@ -296,7 +328,7 @@ All subclasses must implement this method.</p>
 <p>for quadratic models (where <span class="math notranslate nohighlight">\(\sigma(T_0) =\)</span> conjunction time error, <span class="math notranslate nohighlight">\(E=\)</span> epoch, <span class="math notranslate nohighlight">\(\sigma(P)=\)</span> period error, and <span class="math notranslate nohighlight">\(\sigma(\frac{dP}{dE})=\)</span> period change by epoch error) to calculate the uncertainties between the model data and actual data over epochs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_params</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
+<dd class="field-odd"><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties.model_params</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -320,7 +352,7 @@ All subclasses must implement this method.</p>
 <dd><p>Fits the transit data to a specified model using scipy.optimize.curve_fit function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_type</strong> (<em>str</em>) – Either ‘linear’ or ‘quadratic’. Represents the type of ephemeris to fit the data to.</p>
+<dd class="field-odd"><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.get_model_ephemeris.model_type</strong> (<em>str</em>) – Either ‘linear’ or ‘quadratic’. Represents the type of ephemeris to fit the data to.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -353,9 +385,9 @@ All subclasses must implement this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p></li>
-<li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
-<li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_model_ephemeris.model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_model_ephemeris.save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_model_ephemeris.save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -375,8 +407,8 @@ All subclasses must implement this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
-<li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_oc_plot.save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_oc_plot.save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -396,8 +428,8 @@ All subclasses must implement this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
-<li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_running_delta_bic.save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_running_delta_bic.save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -417,9 +449,9 @@ All subclasses must implement this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p></li>
-<li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
-<li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_timing_uncertainties.model_data_dict</strong> (<em>dict</em>) – A dictionary of model ephemeris parameters recieved from <cite>Ephemeris.get_model_ephemeris</cite>.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_timing_uncertainties.save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.Ephemeris.plot_timing_uncertainties.save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -446,10 +478,10 @@ and their respective errors. These parameters are returned in a dictionary to th
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>**kwargs</strong> – Any key word arguments to be used in the scipy.optimize.curve_fit method.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.fit_model.x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.fit_model.y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.fit_model.yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.fit_model.**kwargs</strong> – Any key word arguments to be used in the scipy.optimize.curve_fit method.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -480,9 +512,9 @@ curve_fit method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid-transit times.</p></li>
-<li><p><strong>P</strong> (<em>float</em>) – The exoplanet transit period.</p></li>
-<li><p><strong>T0</strong> (<em>float</em>) – The initial epoch associated with a mid-transit time.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.lin_fit.x</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid-transit times.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.lin_fit.P</strong> (<em>float</em>) – The exoplanet transit period.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.LinearModelEphemeris.lin_fit.T0</strong> (<em>float</em>) – The initial epoch associated with a mid-transit time.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -511,11 +543,11 @@ ephemeris return data dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_type</strong> (<em>str</em>) – The name of the model ephemeris to create, either ‘linear’ or ‘quadratic’.</p></li>
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>**kwargs</strong> – Any keyword arguments to be used in the scipy.optimize.curve_fit method.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.ModelEphemerisFactory.create_model.model_type</strong> (<em>str</em>) – The name of the model ephemeris to create, either ‘linear’ or ‘quadratic’.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.ModelEphemerisFactory.create_model.x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.ModelEphemerisFactory.create_model.y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.ModelEphemerisFactory.create_model.yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.ModelEphemerisFactory.create_model.**kwargs</strong> – Any keyword arguments to be used in the scipy.optimize.curve_fit method.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -563,10 +595,10 @@ and their respective errors. These parameters are returned in a dictionary to th
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
-<li><p><strong>**kwargs</strong> – Any key word arguments to be used in the scipy.optimize.curve_fit method.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.fit_model.x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The epoch data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.fit_model.y</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.fit_model.yerr</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – The mid transit time error data as recieved from the TransitTimes object.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.fit_model.**kwargs</strong> – Any key word arguments to be used in the scipy.optimize.curve_fit method.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -599,10 +631,10 @@ as a quadratic function for SciPy’s curve_fit method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The mid-transit times.</p></li>
-<li><p><strong>dPdE</strong> (<em>float</em>) – Change in period with respect to epoch.</p></li>
-<li><p><strong>P</strong> (<em>float</em>) – The exoplanet transit period.</p></li>
-<li><p><strong>T0</strong> (<em>float</em>) – The initial epoch associated with a mid-transit time.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.quad_fit.x</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – The mid-transit times.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.quad_fit.dPdE</strong> (<em>float</em>) – Change in period with respect to epoch.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.quad_fit.P</strong> (<em>float</em>) – The exoplanet transit period.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.ephemeris.QuadraticModelEphemeris.quad_fit.T0</strong> (<em>float</em>) – The initial epoch associated with a mid-transit time.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -621,6 +653,7 @@ used with curve_fit.</p>
 <section id="module-src.susie.transit_times">
 <span id="transit-times-module"></span><span id="transit-times-label"></span><h2>Transit Times module<a class="headerlink" href="#module-src.susie.transit_times" title="Link to this heading">#</a></h2>
 <dl class="py class">
+<<<<<<< HEAD
 <dt class="sig sig-object py" id="src.susie.transit_times.OccultationTimes">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">OccultationTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_time_uncertainties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#OccultationTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.OccultationTimes" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -639,6 +672,10 @@ used with curve_fit.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="src.susie.transit_times.TimingData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TimingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_time_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tra_or_occ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TimingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TimingData" title="Link to this definition">#</a></dt>
+=======
+<dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.transit_times.TransitTimes'">¶</a></dt>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.</p>
 <p>The TimingData object processes, formats, and holds user data to be passed to the ephemeris object.</p>
@@ -655,6 +692,7 @@ will be separated according to the order of the tra_or_occ array and stored in t
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<<<<<<< HEAD
 <li><p><strong>time_format</strong> (<em>str</em>) – An abbreviation of the data’s time system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
 <li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – List of orbit number reference points for timing observations</p></li>
 <li><p><strong>mid_times</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of observed timing mid points corresponding with epochs, in timing units given by time_format</p></li>
@@ -664,6 +702,17 @@ will be separated according to the order of the tra_or_occ array and stored in t
 <li><p><strong>object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination of observed object represented by data, in degrees</p></li>
 <li><p><strong>observatory_lon</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The longitude of observatory data was collected from, in degrees</p></li>
 <li><p><strong>observatory_lat</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The latitude of observatory data was collected from, in degrees</p></li>
+=======
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.time_format</strong> (<em>str</em>) – An abbreviation of the data’s timing system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.epochs</strong> (<em>numpy.ndarray</em><em>(</em><em>int</em><em>)</em>) – List of reference points for transit observations represented in the transit times data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.mid_transit_times</strong> (<em>numpy.ndarray</em><em>(</em><em>float</em><em>)</em>) – List of observed transit midpoints in days corresponding with epochs.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.mid_transit_times_uncertainties</strong> (<em>Optional</em><em>(</em><em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em><em>)</em>) – List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1’s with same shape as <cite>mid_transit_times</cite>.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.time_scale</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – An abbreviation of the data’s timing scale. Abbreviations for scales can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id6">https://docs.astropy.org/en/stable/time/#id6</a>).</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.object_ra</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The right ascension in degrees of observed object represented by data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination in degrees of observed object represented by data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.observatory_lon</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The longitude in degrees of observatory data was collected from.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.observatory_lat</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The latitude in degrees of observatory data was collected from.</p></li>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -797,10 +846,15 @@ will be separated according to the order of the tra_or_occ array and stored in t
 </li>
 </ul>
 </li>
+<<<<<<< HEAD
 <li><a class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
 <li><a class="reference internal" href="#src.susie.transit_times.OccultationTimes"><code class="docutils literal notranslate"><span class="pre">OccultationTimes</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.transit_times.TimingData"><code class="docutils literal notranslate"><span class="pre">TimingData</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
+=======
+<li><a :data-current="activeSection === '#module-src.susie.transit_times'" class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
+<li><a :data-current="activeSection === '#src.susie.transit_times.TransitTimes'" class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 </ul>
 </li>
 <li><a class="reference internal" href="#module-src.susie">Module contents</a></li>
