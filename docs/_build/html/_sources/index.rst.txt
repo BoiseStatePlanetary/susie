@@ -10,6 +10,7 @@ Susie is a package built for astronomers to estimate rates of orbital decay due 
 extrasolar system. 
 
 .. image:: /images/sp_susie.png
+   :alt: A placeholder image
 
 About
 -----
