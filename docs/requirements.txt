@@ -18,6 +18,7 @@ docutils==0.20.1
 executing==2.0.1
 fastjsonschema==2.19.1
 fonttools==4.50.0
+furo==2024.1.29
 idna==3.6
 imagesize==1.4.1
 importlib_metadata==7.1.0
@@ -66,6 +67,7 @@ six==1.16.0
 snowballstemmer==2.2.0
 soupsieve==2.5
 Sphinx==7.2.6
+sphinx-basic-ng==1.0.0b2
 sphinx-mathjax-offline==0.0.2
 sphinx-rtd-theme==2.0.0
 sphinxawesome-theme==5.1.1
