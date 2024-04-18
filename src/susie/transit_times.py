@@ -22,6 +22,7 @@ class TransitTimes():
         self.mid_times = mid_times
         self.mid_time_uncertainties = mid_time_uncertainties
 
+
 class OccultationTimes():
     """Represents the pre-processed occultation mid point timing data over observations.
     
@@ -38,6 +39,7 @@ class OccultationTimes():
         self.epochs = epochs
         self.mid_times = mid_times
         self.mid_time_uncertainties = mid_time_uncertainties
+
 
 class TimingData():
     """Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.
