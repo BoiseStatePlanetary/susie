@@ -58,3 +58,5 @@ old_dist
 env
 .env
 beep.ipynb
+docs copy
+./docs copy
