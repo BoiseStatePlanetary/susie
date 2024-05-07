@@ -154,7 +154,7 @@
 </span><span id="line-2"><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
 </span><span id="line-3"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="line-4"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</span><span id="line-5"><span class="c1"># from transit_times import TransitTimes</span>
+</span><span id="line-5"><span class="c1"># from transit_times import TimingData</span>
 </span><span id="line-6"><span class="kn">from</span> <span class="nn">susie.transit_times</span> <span class="kn">import</span> <span class="n">TransitTimes</span>
 </span><span id="line-7">
 <div class="viewcode-block" id="BaseModelEphemeris">
@@ -836,112 +836,161 @@
 </span><span id="line-635">        <span class="n">model_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ephemeris_uncertainties</span><span class="p">(</span><span class="n">model_data_dict</span><span class="p">)</span>
 </span><span id="line-636">        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span>
 </span><span id="line-637">        <span class="c1"># get T(E) - T0 - PE</span>
-</span><span id="line-638">        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">))</span>
-</span><span id="line-639">        <span class="c1"># plot the y line, then the line +- the uncertainties</span>
-</span><span id="line-640">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE$&#39;</span><span class="p">)</span>
-</span><span id="line-641">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">model_uncertainties</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$(t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE) + σ_{t^</span><span class="si">{pred}</span><span class="s1">_</span><span class="si">{tra}</span><span class="s1">}$&#39;</span><span class="p">)</span>
-</span><span id="line-642">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">model_uncertainties</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$(t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE) - σ_{t^</span><span class="si">{pred}</span><span class="s1">_</span><span class="si">{tra}</span><span class="s1">}$&#39;</span><span class="p">)</span>
-</span><span id="line-643">        <span class="c1"># Add labels and show legend</span>
-</span><span id="line-644">        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
-</span><span id="line-645">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Days&#39;</span><span class="p">)</span>
-</span><span id="line-646">        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span id="line-647">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-648">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
-</span><span id="line-649">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</span><span id="line-638">        <span class="c1"># TODO: Make this calculation a separate function</span>
+</span><span id="line-639">        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">))</span>
+</span><span id="line-640">        <span class="c1"># plot the y line, then the line +- the uncertainties</span>
+</span><span id="line-641">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE$&#39;</span><span class="p">)</span>
+</span><span id="line-642">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">model_uncertainties</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$(t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE) + σ_{t^</span><span class="si">{pred}</span><span class="s1">_</span><span class="si">{tra}</span><span class="s1">}$&#39;</span><span class="p">)</span>
+</span><span id="line-643">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">model_uncertainties</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$(t(E) - T_</span><span class="si">{0}</span><span class="s1"> - PE) - σ_{t^</span><span class="si">{pred}</span><span class="s1">_</span><span class="si">{tra}</span><span class="s1">}$&#39;</span><span class="p">)</span>
+</span><span id="line-644">        <span class="c1"># Add labels and show legend</span>
+</span><span id="line-645">        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
+</span><span id="line-646">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Days&#39;</span><span class="p">)</span>
+</span><span id="line-647">        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span id="line-648">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="line-649">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-650">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-</span><span id="line-650">
+</span><span id="line-651">
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
-</span><span id="line-651">    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="line-652"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
-</span><span id="line-653">
-</span><span id="line-654"><span class="sd">        STEP 1: Call &#39;get_model_ephemeris&#39; for both the linear and quadratic model types. </span>
-</span><span id="line-655">
-</span><span id="line-656"><span class="sd">        STEP 2: Calculate the quadratic model curve, which follows the formula :math:`y = 0.5 \\frac{dP_0}{dE} * (E - \\text{median} E)^2.`</span>
-</span><span id="line-657">
-</span><span id="line-658"><span class="sd">        STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the \\</span>
-</span><span id="line-659"><span class="sd">        &#39;mid_transit_times_uncertainties&#39; from transit_times.py.</span>
-</span><span id="line-660">
-</span><span id="line-661"><span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
-</span><span id="line-662">
-</span><span id="line-663"><span class="sd">        Parameters</span>
-</span><span id="line-664"><span class="sd">        ----------</span>
-</span><span id="line-665"><span class="sd">            save_plot: bool </span>
-</span><span id="line-666"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-667"><span class="sd">            save_filepath: Optional(str)</span>
-</span><span id="line-668"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
-</span><span id="line-669"><span class="sd">        </span>
-</span><span id="line-670"><span class="sd">        Returns</span>
-</span><span id="line-671"><span class="sd">        -------</span>
-</span><span id="line-672"><span class="sd">            A MatplotLib plot of observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
-</span><span id="line-673"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-674">        <span class="c1"># y = T0 - PE - 0.5 dP/dE E^2</span>
-</span><span id="line-675">        <span class="n">lin_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
-</span><span id="line-676">        <span class="n">quad_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
-</span><span id="line-677">        <span class="c1"># y = 0.5 dP/dE * (E - median E)^2</span>
-</span><span id="line-678">        <span class="n">quad_model_curve</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">quad_model</span><span class="p">[</span><span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">])</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-</span><span id="line-679">        <span class="c1"># plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0</span>
-</span><span id="line-680">        <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-</span> <span class="n">lin_model</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">lin_model</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">)),</span> 
-</span><span id="line-681">                    <span class="n">yerr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span>
-</span><span id="line-682">                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$t(E) - T_0 - P E$&#39;</span><span class="p">)</span>
-</span><span id="line-683">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span>
-</span><span id="line-684">                 <span class="p">(</span><span class="n">quad_model_curve</span><span class="p">),</span>
-</span><span id="line-685">                 <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#D64309&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\frac</span><span class="si">{1}{2}</span><span class="s1">(\frac</span><span class="si">{dP}{dE}</span><span class="s1">)E^2$&#39;</span><span class="p">)</span>
-</span><span id="line-686">        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span id="line-687">        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;E - Median E&#39;</span><span class="p">)</span>
-</span><span id="line-688">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;O-C (seconds)&#39;</span><span class="p">)</span>
-</span><span id="line-689">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-690">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
-</span><span id="line-691">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</span><span id="line-652">    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-653"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
+</span><span id="line-654">
+</span><span id="line-655"><span class="sd">        STEP 1: Call &#39;get_model_ephemeris&#39; for both the linear and quadratic model types. </span>
+</span><span id="line-656">
+</span><span id="line-657"><span class="sd">        STEP 2: Calculate the quadratic model curve, which follows the formula :math:`y = 0.5 \\frac{dP_0}{dE} * (E - \\text{median} E)^2.`</span>
+</span><span id="line-658">
+</span><span id="line-659"><span class="sd">        STEP 3: Plot the quadratic model curve vs. epochs from transit_times.py. Plot the error bars at each data point using the \\</span>
+</span><span id="line-660"><span class="sd">        &#39;mid_transit_times_uncertainties&#39; from transit_times.py.</span>
+</span><span id="line-661">
+</span><span id="line-662"><span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+</span><span id="line-663">
+</span><span id="line-664"><span class="sd">        Parameters</span>
+</span><span id="line-665"><span class="sd">        ----------</span>
+</span><span id="line-666"><span class="sd">            save_plot: bool </span>
+</span><span id="line-667"><span class="sd">                If True, will save the plot as a figure.</span>
+</span><span id="line-668"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-669"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
+</span><span id="line-670"><span class="sd">        </span>
+</span><span id="line-671"><span class="sd">        Returns</span>
+</span><span id="line-672"><span class="sd">        -------</span>
+</span><span id="line-673"><span class="sd">            A MatplotLib plot of observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.</span>
+</span><span id="line-674"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-675">        <span class="c1"># y = T0 - PE - 0.5 dP/dE E^2</span>
+</span><span id="line-676">        <span class="n">lin_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+</span><span id="line-677">        <span class="n">quad_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
+</span><span id="line-678">        <span class="c1"># y = 0.5 dP/dE * (E - median E)^2</span>
+</span><span id="line-679">        <span class="c1"># TODO: Make this calculation a separate function</span>
+</span><span id="line-680">        <span class="n">quad_model_curve</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">quad_model</span><span class="p">[</span><span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">])</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="line-681">        <span class="c1"># plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0</span>
+</span><span id="line-682">        <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">-</span> <span class="n">lin_model</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">lin_model</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">)),</span> 
+</span><span id="line-683">                    <span class="n">yerr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span>
+</span><span id="line-684">                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$t(E) - T_0 - P E$&#39;</span><span class="p">)</span>
+</span><span id="line-685">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span>
+</span><span id="line-686">                 <span class="p">(</span><span class="n">quad_model_curve</span><span class="p">),</span>
+</span><span id="line-687">                 <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#D64309&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$\frac</span><span class="si">{1}{2}</span><span class="s1">(\frac</span><span class="si">{dP}{dE}</span><span class="s1">)E^2$&#39;</span><span class="p">)</span>
+</span><span id="line-688">        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span id="line-689">        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;E - Median E&#39;</span><span class="p">)</span>
+</span><span id="line-690">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;O-C (seconds)&#39;</span><span class="p">)</span>
+</span><span id="line-691">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="line-692">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-693">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-</span><span id="line-692">
+</span><span id="line-694">
 <div class="viewcode-block" id="Ephemeris.plot_running_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic">[docs]</a>
-</span><span id="line-693">    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="line-694"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatPlotlib scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
-</span><span id="line-695">
-</span><span id="line-696"><span class="sd">        STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from &#39;transit_times.py&#39;.</span>
+</span><span id="line-695">    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-696"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a MatPlotlib scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
 </span><span id="line-697">
-</span><span id="line-698"><span class="sd">        STEP 2: Create a list of the :math:`\\Delta BIC` values. For the first 3 epochs, the :math:`\\Delta BIC` value is zero. For the subsequent epochs\\</span>
-</span><span id="line-699"><span class="sd">        call &#39;calc_delta_bic&#39; and append the returned value to the list of delta bic values.</span>
-</span><span id="line-700">
-</span><span id="line-701"><span class="sd">        STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.</span>
+</span><span id="line-698"><span class="sd">        STEP 1: Get the epochs, mid transit times and mid transit times uncertainties from &#39;transit_times.py&#39;.</span>
+</span><span id="line-699">
+</span><span id="line-700"><span class="sd">        STEP 2: Create a list of the :math:`\\Delta BIC` values. For the first 3 epochs, the :math:`\\Delta BIC` value is zero. For the subsequent epochs\\</span>
+</span><span id="line-701"><span class="sd">        call &#39;calc_delta_bic&#39; and append the returned value to the list of delta bic values.</span>
 </span><span id="line-702">
-</span><span id="line-703"><span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+</span><span id="line-703"><span class="sd">        STEP 3: Plot a scatterplot of the epochs vs. the :math:`\\Delta BIC` values.</span>
 </span><span id="line-704">
-</span><span id="line-705"><span class="sd">        Parameters</span>
-</span><span id="line-706"><span class="sd">        ----------</span>
-</span><span id="line-707"><span class="sd">            save_plot: bool </span>
-</span><span id="line-708"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-709"><span class="sd">            save_filepath: Optional(str)</span>
-</span><span id="line-710"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
-</span><span id="line-711"><span class="sd">                </span>
-</span><span id="line-712"><span class="sd">        Returns</span>
-</span><span id="line-713"><span class="sd">        -------</span>
-</span><span id="line-714"><span class="sd">            A MatplotLib scatter plot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
-</span><span id="line-715"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-716">        <span class="n">delta_bics</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="line-717">        <span class="n">all_epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span>
-</span><span id="line-718">        <span class="n">all_mid_transit_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span>
-</span><span id="line-719">        <span class="n">all_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span>
-</span><span id="line-720">        <span class="c1"># for each epoch (starting at 3?), calculate the delta bic, plot delta bics over epoch</span>
-</span><span id="line-721">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_epochs</span><span class="p">)):</span>
-</span><span id="line-722">            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-</span><span id="line-723">                <span class="n">delta_bics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-</span><span id="line-724">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-725">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">all_mid_transit_times</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="line-726">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">all_uncertainties</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="line-727">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">all_epochs</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="line-728">                <span class="n">delta_bic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
-</span><span id="line-729">                <span class="n">delta_bics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_bic</span><span class="p">)</span>
-</span><span id="line-730">        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">delta_bics</span><span class="p">)</span>
-</span><span id="line-731">        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-732">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="p">)</span>
-</span><span id="line-733">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-734">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
-</span><span id="line-735">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</span><span id="line-705"><span class="sd">        STEP 4: Save the plot if indicated by the user. </span>
+</span><span id="line-706">
+</span><span id="line-707"><span class="sd">        Parameters</span>
+</span><span id="line-708"><span class="sd">        ----------</span>
+</span><span id="line-709"><span class="sd">            save_plot: bool </span>
+</span><span id="line-710"><span class="sd">                If True, will save the plot as a figure.</span>
+</span><span id="line-711"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-712"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
+</span><span id="line-713"><span class="sd">                </span>
+</span><span id="line-714"><span class="sd">        Returns</span>
+</span><span id="line-715"><span class="sd">        -------</span>
+</span><span id="line-716"><span class="sd">            A MatplotLib scatter plot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
+</span><span id="line-717"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-718">        <span class="n">delta_bics</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="line-719">        <span class="n">all_epochs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span>
+</span><span id="line-720">        <span class="n">all_mid_transit_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span>
+</span><span id="line-721">        <span class="n">all_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span>
+</span><span id="line-722">        <span class="c1"># for each epoch (starting at 3?), calculate the delta bic, plot delta bics over epoch</span>
+</span><span id="line-723">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_epochs</span><span class="p">)):</span>
+</span><span id="line-724">            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="line-725">                <span class="n">delta_bics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span><span id="line-726">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-727">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">all_mid_transit_times</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-728">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">mid_transit_times_uncertainties</span> <span class="o">=</span> <span class="n">all_uncertainties</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-729">                <span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">all_epochs</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-730">                <span class="n">delta_bic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
+</span><span id="line-731">                <span class="n">delta_bics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_bic</span><span class="p">)</span>
+</span><span id="line-732">        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">delta_bics</span><span class="p">)</span>
+</span><span id="line-733">        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-734">        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transit_times</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="p">)</span>
+</span><span id="line-735">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="line-736">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-737">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </div>
 
+<<<<<<< HEAD
+</span><span id="line-738">
+</span><span id="line-739"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span id="line-740">    <span class="c1"># STEP 1: Upload datra from file</span>
+</span><span id="line-741">    <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;../../wasp12b_tra_occ.csv&quot;</span>
+</span><span id="line-742">    <span class="c1"># filepath = &quot;../../malia_examples/WASP12b_transit_ephemeris.csv&quot;</span>
+</span><span id="line-743">    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="line-744">    <span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
+</span><span id="line-745">    <span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
+</span><span id="line-746">    <span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">]</span>
+</span><span id="line-747">    <span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+</span><span id="line-748">    <span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">]</span>
+</span><span id="line-749">    <span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">]</span>
+</span><span id="line-750">    <span class="c1"># STEP 3: Create new transit times object with above data</span>
+</span><span id="line-751">    <span class="n">times_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+</span><span id="line-752">    <span class="c1"># times_obj1 = TimingData(&#39;jd&#39;, epochs, mid_transit_times, mid_transit_times_err, time_scale=&#39;tdb&#39;, tra_or_occ=tra_or_occs)</span>
+</span><span id="line-753">    <span class="nb">print</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">times_obj1</span><span class="o">.</span><span class="n">transits</span><span class="p">))</span>
+</span><span id="line-754">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="line-755">    <span class="nb">print</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">times_obj1</span><span class="o">.</span><span class="n">occultations</span><span class="p">))</span>
+</span><span id="line-756">
+</span><span id="line-757">    <span class="c1"># print(f&quot;EPOCHS: {transit_times_obj1.epochs}\n&quot;)</span>
+</span><span id="line-758">    <span class="c1"># print(f&quot;MID TRANSIT TIMES: {transit_times_obj1.mid_transit_times}\n&quot;)</span>
+</span><span id="line-759">    <span class="c1"># # STEP 4: Create new ephemeris object with transit times object</span>
+</span><span id="line-760">    <span class="c1"># ephemeris_obj1 = Ephemeris(transit_times_obj1)</span>
+</span><span id="line-761">    <span class="c1"># # STEP 5: Get model ephemeris data</span>
+</span><span id="line-762">    <span class="c1"># linear_model_data = ephemeris_obj1.get_model_ephemeris(&#39;linear&#39;)</span>
+</span><span id="line-763">    <span class="c1"># quad_model_data = ephemeris_obj1.get_model_ephemeris(&#39;quadratic&#39;)</span>
+</span><span id="line-764">    <span class="c1"># print(linear_model_data)</span>
+</span><span id="line-765">    <span class="c1"># print(quad_model_data)</span>
+</span><span id="line-766">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(linear_model_data)</span>
+</span><span id="line-767">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(quad_model_data)</span>
+</span><span id="line-768">    <span class="c1"># ephemeris_obj1.plot_oc_plot()</span>
+</span><span id="line-769">    <span class="c1"># model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(model_data)</span>
+</span><span id="line-770">    <span class="c1"># print(model_uncertainties)</span>
+</span><span id="line-771">    <span class="c1"># # STEP 6: Show a plot of the model ephemeris data</span>
+</span><span id="line-772">    <span class="c1"># # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)</span>
+</span><span id="line-773">    <span class="c1"># # # STEP 7: Uncertainties plot</span>
+</span><span id="line-774">    <span class="c1"># # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)</span>
+</span><span id="line-775">    <span class="c1"># # bic = ephemeris_obj1.calc_bic(model_data)</span>
+</span><span id="line-776">    <span class="c1"># # print(bic)</span>
+</span><span id="line-777">
+</span><span id="line-778">    <span class="c1"># # print(ephemeris_obj1.calc_delta_bic())</span>
+</span><span id="line-779">    <span class="c1"># print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))</span>
+</span><span id="line-780">    <span class="c1"># # ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
+</span><span id="line-781">
+</span><span id="line-782">    <span class="c1"># # ephemeris_obj1.plot_oc_plot(False)</span>
+=======
 </span><span id="line-736">
 </span><span id="line-737"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span><span id="line-738">    <span class="c1"># STEP 1: Upload datra from file</span>
@@ -984,6 +1033,7 @@
 </span><span id="line-775">    <span class="c1"># # ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
 </span><span id="line-776">
 </span><span id="line-777">    <span class="c1"># # ephemeris_obj1.plot_oc_plot(False)</span>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 </span></code></pre></div>
     </div></div>
         </main>

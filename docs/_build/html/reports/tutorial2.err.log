@@ -1,51 +1,31 @@
 Traceback (most recent call last):
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
     executenb(
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 1314, in execute
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 1314, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
     return loop.run_until_complete(inner)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\holly\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 684, in run_until_complete
+  File "/opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
     return future.result()
            ^^^^^^^^^^^^^^^
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 709, in async_execute
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 709, in async_execute
     await self.async_execute_cell(
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 1062, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+  File "/Users/maliabarker/Desktop/main/susie/docs/venv/lib/python3.11/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# STEP 3: Create new transit times object with above data
-transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-# STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:
-# print(vars(transit_times_obj1))
+ephemeris_obj1.plot_running_delta_bic()
 ------------------
 
 
-[1;31m---------------------------------------------------------------------------[0m
-[1;31mTypeError[0m                                 Traceback (most recent call last)
-Cell [1;32mIn[5], line 2[0m
-[0;32m      1[0m [38;5;66;03m# STEP 3: Create new transit times object with above data[39;00m
-[1;32m----> 2[0m transit_times_obj1 [38;5;241m=[39m [43mTransitTimes[49m[43m([49m[38;5;124;43m'[39;49m[38;5;124;43mjd[39;49m[38;5;124;43m'[39;49m[43m,[49m[43m [49m[43mepochs[49m[43m,[49m[43m [49m[43mmid_transit_times[49m[43m,[49m[43m [49m[43mmid_transit_times_err[49m[43m,[49m[43m [49m[43mtime_scale[49m[38;5;241;43m=[39;49m[38;5;124;43m'[39;49m[38;5;124;43mtdb[39;49m[38;5;124;43m'[39;49m[43m)[49m
-[0;32m      3[0m [38;5;66;03m# STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:[39;00m
-[0;32m      4[0m [38;5;66;03m# print(vars(transit_times_obj1))[39;00m
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[9], line 1[0m
+[0;32m----> 1[0m [43mephemeris_obj1[49m[38;5;241m.[39mplot_running_delta_bic()
 
-File [1;32m~\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:66[0m, in [0;36mTransitTimes.__init__[1;34m(self, time_format, epochs, mid_transit_times, mid_transit_times_uncertainties, time_scale, object_ra, object_dec, observatory_lon, observatory_lat)[0m
-[0;32m     64[0m     [38;5;28mself[39m[38;5;241m.[39m_validate_times(mid_transit_times_obj, mid_transit_times_uncertainties_obj, (object_ra, object_dec), (observatory_lon, observatory_lat))
-[0;32m     65[0m [38;5;66;03m# Call validation function[39;00m
-[1;32m---> 66[0m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_validate[49m[43m([49m[43m)[49m
-[0;32m     67[0m [38;5;66;03m# Shift epochs and mid transit times[39;00m
-[0;32m     68[0m [38;5;28mself[39m[38;5;241m.[39mepochs [38;5;241m=[39m [38;5;28mself[39m[38;5;241m.[39mepochs [38;5;241m-[39m np[38;5;241m.[39mmin([38;5;28mself[39m[38;5;241m.[39mepochs)
-
-File [1;32m~\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\susie\transit_times.py:184[0m, in [0;36mTransitTimes._validate[1;34m(self)[0m
-[0;32m    182[0m [38;5;66;03m# Check that all values in arrays are correct[39;00m
-[0;32m    183[0m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28mall[39m([38;5;28misinstance[39m(value, ([38;5;28mint[39m, np[38;5;241m.[39mint64)) [38;5;28;01mfor[39;00m value [38;5;129;01min[39;00m [38;5;28mself[39m[38;5;241m.[39mepochs):
-[1;32m--> 184[0m     [38;5;28;01mraise[39;00m [38;5;167;01mTypeError[39;00m([38;5;124m"[39m[38;5;124mAll values in [39m[38;5;124m'[39m[38;5;124mepochs[39m[38;5;124m'[39m[38;5;124m must be of type int.[39m[38;5;124m"[39m)
-[0;32m    185[0m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28mall[39m([38;5;28misinstance[39m(value, [38;5;28mfloat[39m) [38;5;28;01mfor[39;00m value [38;5;129;01min[39;00m [38;5;28mself[39m[38;5;241m.[39mmid_transit_times):
-[0;32m    186[0m     [38;5;28;01mraise[39;00m [38;5;167;01mTypeError[39;00m([38;5;124m"[39m[38;5;124mAll values in [39m[38;5;124m'[39m[38;5;124mmid_transit_times[39m[38;5;124m'[39m[38;5;124m must be of type float.[39m[38;5;124m"[39m)
-
-[1;31mTypeError[0m: All values in 'epochs' must be of type int.
+[0;31mNameError[0m: name 'ephemeris_obj1' is not defined
 
