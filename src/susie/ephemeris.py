@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-# from transit_times import TransitTimes
+from transit_times import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
@@ -12,7 +12,7 @@ class BaseModelEphemeris(ABC):
         """Fits a model ephemeris to transit data.
 
         Defines the structure for fitting a model (linear or quadratic) to transit data. 
-        All subclasses must implement this method.
+        All sub0classes must implement this method.
 
         Parameters
         ----------
@@ -635,6 +635,7 @@ class Ephemeris(object):
         model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
         x = self.transit_times.epochs
         # get T(E) - T0 - PE
+        # TODO: Make this calculation a separate function
         y = (model_data_dict['model_data'] - model_data_dict['conjunction_time'] - (model_data_dict['period']*self.transit_times.epochs))
         # plot the y line, then the line +- the uncertainties
         plt.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
@@ -675,6 +676,7 @@ class Ephemeris(object):
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
         # y = 0.5 dP/dE * (E - median E)^2
+        # TODO: Make this calculation a separate function
         quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.transit_times.epochs - np.median(self.transit_times.epochs))**2)
         # plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0
         plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['conjunction_time'] - (lin_model['period']*self.transit_times.epochs)), 
@@ -736,18 +738,21 @@ class Ephemeris(object):
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
-    filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
-    data = np.genfromtxt(filepath, delimiter=',', names=True)
+    filepath = "../../wasp12b_tra_occ.csv"
+    # filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
+    data = np.genfromtxt(filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # STEP 2: Break data up into epochs, mid transit times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
+    tra_or_occs = data["tra_or_occ"]
     epochs = data["epoch"].astype('int')
     mid_transit_times = data["transit_time"]
     mid_transit_times_err = data["sigma_transit_time"]
     # STEP 3: Create new transit times object with above data
-    # transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    # print(vars(transit_times_obj1))
-    transit_times_obj1 = TransitTimes('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-
+    times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb', tra_or_occ=tra_or_occs)
+    print(vars(times_obj1.transits))
+    print('\n\n')
+    print(vars(times_obj1.occultations))
 
     # print(f"EPOCHS: {transit_times_obj1.epochs}\n")
     # print(f"MID TRANSIT TIMES: {transit_times_obj1.mid_transit_times}\n")

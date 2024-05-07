@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
@@ -32,6 +36,40 @@
         --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
+<<<<<<< HEAD
+=======
+<!DOCTYPE html>
+
+<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>User Guide | Susie Sept. 2023 documentation</title>
+<meta content="User Guide | Susie Sept. 2023 documentation" property="og:title"/>
+<meta content="User Guide | Susie Sept. 2023 documentation" name="twitter:title"/>
+<link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
+<link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
+<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx_paramlinks.css?v=dd72e65a" rel="stylesheet" type="text/css"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="FAQ.html" rel="next" title="Frequently Asked Questions"/>
+<link href="index.html" rel="prev" title="Welcome to Susie's documentation!"/>
+<script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
+=======
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
       }
     }
   }
@@ -620,18 +658,76 @@ used with curve_fit.</p>
 </section>
 <section id="module-src.susie.transit_times">
 <span id="transit-times-module"></span><span id="transit-times-label"></span><h2>Transit Times module<a class="headerlink" href="#module-src.susie.transit_times" title="Link to this heading">#</a></h2>
+<<<<<<< HEAD
 <dl class="py class">
-<dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition">#</a></dt>
+<<<<<<< HEAD
+<dt class="sig sig-object py" id="src.susie.transit_times.OccultationTimes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">OccultationTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_time_uncertainties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#OccultationTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.OccultationTimes" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents transit midpoint data over time. Holds data to be accessed by Ephemeris class.</p>
-<p>The transit_times object is a class which formats user data to be passed to the ephemeris.py object.         This object creates and/or formats the array of uncertainties in mid_transit_times. This object             will also correct user data to use the Barycentric Julian Date as the timing system and Barycentric                 Dynamical time as the time scale.</p>
-<p>STEP 1: Make an array of 1’s to be the uncertainities in the same shape as epochs and mid_transit_times.</p>
-<p>STEP 2: Check that the time system and scale are correct, and if not correct them to be JD and TBD.</p>
-<p>STEP 3: Check that the array’s are formatted properly. The appropriate Type or Value Error is raised if there are any issues.</p>
+<p>Represents the pre-processed occultation mid point timing data over observations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – List of orbit number reference points for occultation timing observations</p></li>
+<li><p><strong>mid_times</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of observed occultation timing mid points corresponding with epochs</p></li>
+<li><p><strong>mid_time_uncertainties</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of uncertainties corresponding to occultation mid-times</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+=======
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
+<dl class="py class">
+<dt class="sig sig-object py" id="src.susie.transit_times.TimingData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TimingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_time_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tra_or_occ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TimingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TimingData" title="Link to this definition">#</a></dt>
+=======
+<dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
+<<<<<<< HEAD
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.transit_times.TransitTimes'">¶</a></dt>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
+=======
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_transit_times_uncertainties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observatory_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition">#</a></dt>
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.</p>
+<p>The TimingData object processes, formats, and holds user data to be passed to the ephemeris object.</p>
+<p>Timing conversions are applied to ensure that all data is processed correctly and users are aware of
+timing formats and scales, which can give rise to false calculations in our metrics. If data is not specified
+to be in Barycentric Julian Date format with the TDB time scale, timing data will be corrected for barycentric
+light travel time using the Astropy Time utilities.</p>
+<p>If mid time uncertainties are not provided, we will generate placeholder values of 1.</p>
+<p>Our implementations rely on Numpy functions. This object implements checks to ensure that data are stored in
+Numpy arrays and are of correct data types. The appropriate Type or Value Error is raised if there are any issues.</p>
+<p>If timing data contains both transit mid times and occultation mid times, users can pass in an array of ‘tra’
+and ‘occ’ strings that correspond to the epochs, mid time, and uncertainty timing data. If passed in, timing data
+will be separated according to the order of the tra_or_occ array and stored in their corresponding objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<<<<<<< HEAD
+<<<<<<< HEAD
+<li><p><strong>time_format</strong> (<em>str</em>) – An abbreviation of the data’s time system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
+<li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – List of orbit number reference points for timing observations</p></li>
+<li><p><strong>mid_times</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of observed timing mid points corresponding with epochs, in timing units given by time_format</p></li>
+<li><p><strong>mid_time_uncertainties</strong> (<em>Optional</em><em>(</em><em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em><em>)</em>) – List of uncertainties corresponding to timing mid points, in timing units given by time_format. If given None, will be replaced with array of 1’s with same shape as <cite>mid_times</cite>.</p></li>
+<li><p><strong>time_scale</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – An abbreviation of the data’s time scale. Abbreviations for scales can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id6">https://docs.astropy.org/en/stable/time/#id6</a>).</p></li>
+<li><p><strong>object_ra</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The right ascension of observed object represented by data, in degrees</p></li>
+<li><p><strong>object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination of observed object represented by data, in degrees</p></li>
+<li><p><strong>observatory_lon</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The longitude of observatory data was collected from, in degrees</p></li>
+<li><p><strong>observatory_lat</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The latitude of observatory data was collected from, in degrees</p></li>
+=======
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.time_format</strong> (<em>str</em>) – An abbreviation of the data’s timing system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.epochs</strong> (<em>numpy.ndarray</em><em>(</em><em>int</em><em>)</em>) – List of reference points for transit observations represented in the transit times data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.mid_transit_times</strong> (<em>numpy.ndarray</em><em>(</em><em>float</em><em>)</em>) – List of observed transit midpoints in days corresponding with epochs.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.mid_transit_times_uncertainties</strong> (<em>Optional</em><em>(</em><em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em><em>)</em>) – List of uncertainties in days corresponding with transit midpoints. If given None, will be replaced with array of 1’s with same shape as <cite>mid_transit_times</cite>.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.time_scale</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – An abbreviation of the data’s timing scale. Abbreviations for scales can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id6">https://docs.astropy.org/en/stable/time/#id6</a>).</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.object_ra</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The right ascension in degrees of observed object represented by data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination in degrees of observed object represented by data.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.observatory_lon</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The longitude in degrees of observatory data was collected from.</p></li>
+<li><p><strong>_sphinx_paramlinks_src.susie.transit_times.TransitTimes.observatory_lat</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The latitude in degrees of observatory data was collected from.</p></li>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
+=======
 <li><p><strong>time_format</strong> (<em>str</em>) – An abbreviation of the data’s timing system. Abbreviations for systems can be found on [Astropy’s Time documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/time/#id3">https://docs.astropy.org/en/stable/time/#id3</a>).</p></li>
 <li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>(</em><em>int</em><em>)</em>) – List of reference points for transit observations represented in the transit times data.</p></li>
 <li><p><strong>mid_transit_times</strong> (<em>numpy.ndarray</em><em>(</em><em>float</em><em>)</em>) – List of observed transit midpoints in days corresponding with epochs.</p></li>
@@ -641,15 +737,17 @@ used with curve_fit.</p>
 <li><p><strong>object_dec</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The declination in degrees of observed object represented by data.</p></li>
 <li><p><strong>observatory_lon</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The longitude in degrees of observatory data was collected from.</p></li>
 <li><p><strong>observatory_lat</strong> (<em>Optional</em><em>(</em><em>float</em><em>)</em>) – The latitude in degrees of observatory data was collected from.</p></li>
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Error raised if</strong> – <ul class="simple">
 <li><p>parameters are not NumPy Arrays
-    * parameters are not the same shape of array
+    * timing data arrays are not the same shape
     * the values of epochs are not all ints
-    * the values of mid_transit_times and unertainites are not all floats
-    * values of uncertainities are not all positive.</p></li>
+    * the values of mid_times and uncertainites are not all floats
+    * values of uncertainities are not all positive
+    * values of transit or occultation array or not all ‘tra’ or ‘occ’</p></li>
 </ul>
 </p>
 </dd>
@@ -657,11 +755,30 @@ used with curve_fit.</p>
 <section id="side-effects">
 <h3>Side Effects<a class="headerlink" href="#side-effects" title="Link to this heading">#</a></h3>
 <blockquote>
-<div><p>Variables epochs and mid_transit_times are shifted to start at zero by subtracting the minimum number from each value.</p>
+<div><p>Variables epochs and mid_times are shifted to start at zero by subtracting the minimum number from each value</p>
 </div></blockquote>
 </section>
 </dd></dl>
 
+<<<<<<< HEAD
+<dl class="py class">
+<dt class="sig sig-object py" id="src.susie.transit_times.TransitTimes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.transit_times.</span></span><span class="sig-name descname"><span class="pre">TransitTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_time_uncertainties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/transit_times.html#TransitTimes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.transit_times.TransitTimes" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the pre-processed transit mid point timing data over observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epochs</strong> (<em>numpy.ndarray</em><em>[</em><em>int</em><em>]</em>) – List of orbit number reference points for transit timing observations</p></li>
+<li><p><strong>mid_times</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of observed transit timing mid points corresponding with epochs</p></li>
+<li><p><strong>mid_time_uncertainties</strong> (<em>numpy.ndarray</em><em>[</em><em>float</em><em>]</em>) – List of uncertainties corresponding to transit mid-times</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+=======
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
 </section>
 <section id="module-src.susie">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.susie" title="Link to this heading">#</a></h2>
@@ -757,8 +874,20 @@ used with curve_fit.</p>
 </li>
 </ul>
 </li>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<li><a class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
+<li><a class="reference internal" href="#src.susie.transit_times.OccultationTimes"><code class="docutils literal notranslate"><span class="pre">OccultationTimes</span></code></a></li>
+<li><a class="reference internal" href="#src.susie.transit_times.TimingData"><code class="docutils literal notranslate"><span class="pre">TimingData</span></code></a></li>
+<li><a class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
+=======
+<li><a :data-current="activeSection === '#module-src.susie.transit_times'" class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
+<li><a :data-current="activeSection === '#src.susie.transit_times.TransitTimes'" class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
+=======
 <li><a class="reference internal" href="#module-src.susie.transit_times">Transit Times module</a><ul>
 <li><a class="reference internal" href="#src.susie.transit_times.TransitTimes"><code class="docutils literal notranslate"><span class="pre">TransitTimes</span></code></a></li>
+>>>>>>> 0cd16cd6b699b1ba4d35254b29a10abd7b5731ba
 </ul>
 </li>
 <li><a class="reference internal" href="#module-src.susie">Module contents</a></li>

@@ -9,6 +9,10 @@ Welcome to Susie's documentation!
 Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their 
 extrasolar system. 
 
+<<<<<<< HEAD
+.. image:: /images/sp_susie.png
+   :alt: A placeholder image
+=======
 .. image:: susie/docs/images/sp_susie.png
 Here I am testing to see if the absolute path method will work
 
@@ -18,6 +22,7 @@ Here I am testing if moving the image into the docs folder will work
 .. image:: images/sp_susie.png
    :alt: A placeholder image
 Here I have the original path 
+>>>>>>> b8d942c6a20d9772e9dd39d0a2a25b3513fa5156
 
 About
 -----
