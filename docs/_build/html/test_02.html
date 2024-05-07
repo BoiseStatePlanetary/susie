@@ -1,73 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
-<head>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta charset="utf-8"/>
-<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🐷 Susie Package Test Notebook | Susie Sept. 2023 documentation</title>
-<meta content="🐷 Susie Package Test Notebook | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🐷 Susie Package Test Notebook | Susie Sept. 2023 documentation" name="twitter:title"/>
-<link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
-<link href="_static/theme.css?v=5b4133db" rel="stylesheet" type="text/css"/>
-<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
-<link href="search.html" rel="search" title="Search"/>
-<link href="genindex.html" rel="index" title="Index"/>
-<script>
-    <!-- Prevent Flash of wrong theme -->
-      const userPreference = localStorage.getItem('darkMode');
-      let mode;
-      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mode = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        mode = 'light';
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>🐷 Susie Package Test Notebook - Susie Sept. 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
       }
-      if (!userPreference) {localStorage.setItem('darkMode', mode)}
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
-</head>
-<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false }">
-<div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
-      Skip to content
-    </a><header class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
-<div class="hidden mr-4 md:flex">
-<a class="flex items-center mr-6" href="index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
-</a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
-<svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
 </svg>
-<span class="sr-only">Toggle navigation menu</span>
-</button>
-<div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
-<div class="flex-1 w-full md:w-auto md:flex-none"><form @keydown.k.window.meta="$refs.search.focus()" action="search.html" class="relative flex items-center group" id="searchbox" method="get">
-<input aria-label="Search the docs" class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" id="search-input" name="q" placeholder="Search ..." type="search" x-ref="search"/>
-<kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
-<span class="text-xs">⌘</span>
-    K
-  </kbd>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Susie Sept. 2023 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Susie Sept. 2023 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
 </form>
-</div>
-<nav class="flex items-center space-x-1">
-<button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'" class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button">
-<svg class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z"></path>
-</svg>
-<svg class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z"></path>
-</svg>
-</button>
-</nav>
-</div>
-</div>
-</header>
-<div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
-<a class="!justify-start text-sm md:!hidden bg-background" href="index.html"><span class="font-bold text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
-</a>
-<div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
-<div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
-<ul>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
@@ -77,126 +165,138 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>
-</nav>
+
 </div>
 </div>
-<button @click="showSidebar = false" class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100" type="button">
-<svg class="h-4 w-4" fill="currentColor" height="24" stroke="none" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z"></path>
-</svg>
-</button>
-</aside>
-<main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
-<div class="w-full min-w-0 mx-auto">
-<nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
-<a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="index.html">
-<span class="hidden md:inline">Susie Sept. 2023 documentation</span>
-<svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
-<path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
-</svg>
-</a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🐷 Susie Package Test Notebook</span>
-</nav>
-<div id="content" role="main">
-<section id="susie-package-test-notebook">
-<h1>🐷 Susie Package Test Notebook<a class="headerlink" href="#susie-package-test-notebook" title="Link to this heading">¶</a></h1>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="susie-package-test-notebook">
+<h1>🐷 Susie Package Test Notebook<a class="headerlink" href="#susie-package-test-notebook" title="Link to this heading">#</a></h1>
 <section id="import-the-necessary-python-libraries-and-susie-objects">
-<h2>🔷 Import the necessary python libraries and Susie objects.<a class="headerlink" href="#import-the-necessary-python-libraries-and-susie-objects" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#import-the-necessary-python-libraries-and-susie-objects'">¶</a></h2>
+<h2>🔷 Import the necessary python libraries and Susie objects.<a class="headerlink" href="#import-the-necessary-python-libraries-and-susie-objects" title="Link to this heading">#</a></h2>
 <p>Importing the package from Test PyPi</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="o">%</span><span class="k">pip</span> install susie==1.0.8
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install susie==1.0.8
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Requirement already satisfied: susie==1.0.8 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (1.0.8)
-</span><span id="line-2">Requirement already satisfied: numpy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.26.3)
-</span><span id="line-3">Requirement already satisfied: scipy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.12.0)
-</span><span id="line-4">Requirement already satisfied: matplotlib in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (3.8.2)
-</span><span id="line-5">Requirement already satisfied: astropy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (6.0.0)
-</span><span id="line-6">Requirement already satisfied: pyerfa&gt;=2.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (2.0.1.1)
-</span><span id="line-7">Requirement already satisfied: astropy-iers-data&gt;=0.2023.10.30.0.29.53 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (0.2024.2.5.0.30.52)
-</span><span id="line-8">Requirement already satisfied: PyYAML&gt;=3.13 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (6.0.1)
-</span><span id="line-9">Requirement already satisfied: packaging&gt;=19.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (23.2)
-</span><span id="line-10">Requirement already satisfied: contourpy&gt;=1.0.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (1.2.0)
-</span><span id="line-11">Requirement already satisfied: cycler&gt;=0.10 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (0.12.1)
-</span><span id="line-12">Requirement already satisfied: fonttools&gt;=4.22.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (4.47.2)
-</span><span id="line-13">Requirement already satisfied: kiwisolver&gt;=1.3.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (1.4.5)
-</span><span id="line-14">Requirement already satisfied: pillow&gt;=8 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (10.2.0)
-</span><span id="line-15">Requirement already satisfied: pyparsing&gt;=2.3.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
-</span><span id="line-16">Requirement already satisfied: python-dateutil&gt;=2.7 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
-</span><span id="line-17">Requirement already satisfied: six&gt;=1.5 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
-</span><span id="line-18">Note: you may need to restart the kernel to use updated packages.
-</span></code></pre></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: susie==1.0.8 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (1.0.8)
+Requirement already satisfied: numpy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.26.3)
+Requirement already satisfied: scipy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (1.12.0)
+Requirement already satisfied: matplotlib in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (3.8.2)
+Requirement already satisfied: astropy in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from susie==1.0.8) (6.0.0)
+Requirement already satisfied: pyerfa&gt;=2.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (2.0.1.1)
+Requirement already satisfied: astropy-iers-data&gt;=0.2023.10.30.0.29.53 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (0.2024.2.5.0.30.52)
+Requirement already satisfied: PyYAML&gt;=3.13 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (6.0.1)
+Requirement already satisfied: packaging&gt;=19.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from astropy-&gt;susie==1.0.8) (23.2)
+Requirement already satisfied: contourpy&gt;=1.0.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (1.2.0)
+Requirement already satisfied: cycler&gt;=0.10 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (0.12.1)
+Requirement already satisfied: fonttools&gt;=4.22.0 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (4.47.2)
+Requirement already satisfied: kiwisolver&gt;=1.3.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (1.4.5)
+Requirement already satisfied: pillow&gt;=8 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (10.2.0)
+Requirement already satisfied: pyparsing&gt;=2.3.1 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (3.1.1)
+Requirement already satisfied: python-dateutil&gt;=2.7 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from matplotlib-&gt;susie==1.0.8) (2.8.2)
+Requirement already satisfied: six&gt;=1.5 in c:\users\holly\onedrive\desktop\bsuresearch\susie\venv\lib\site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib-&gt;susie==1.0.8) (1.16.0)
+Note: you may need to restart the kernel to use updated packages.
+</pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="line-2"><span class="kn">from</span> <span class="nn">susie.transit_times</span> <span class="kn">import</span> <span class="n">TransitTimes</span>
-</span><span id="line-3"><span class="kn">from</span> <span class="nn">susie.ephemeris</span> <span class="kn">import</span> <span class="n">Ephemeris</span>
-</span><span id="line-4"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</span><span id="line-5"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coords</span>
-</span><span id="line-6"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
-</span><span id="line-7"><span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">susie.transit_times</span> <span class="kn">import</span> <span class="n">TransitTimes</span>
+<span class="kn">from</span> <span class="nn">susie.ephemeris</span> <span class="kn">import</span> <span class="n">Ephemeris</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coords</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">time</span>
+</pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="step-1-add-your-transit-data-to-the-transittimes-object">
-<h2>🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.<a class="headerlink" href="#step-1-add-your-transit-data-to-the-transittimes-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-add-your-transit-data-to-the-transittimes-object'">¶</a></h2>
+<h2>🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.<a class="headerlink" href="#step-1-add-your-transit-data-to-the-transittimes-object" title="Link to this heading">#</a></h2>
 <p>❗️<strong>IMPORTANT:</strong> Use either code block below depending on your data needs. The first code block contains values pulled from a CSV file. The second has hard coded values.</p>
 <p><small>NOTE: You can use any method and/or file type to upload your data. Just make sure the resulting variables (epoch, mid transit times, and mid transit time errors) are numpy arrays</small></p>
 <p>Can use this code block if you have the <strong>CSV file</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 1: Upload data</span>
-</span><span id="line-2"><span class="n">filepath</span> <span class="o">=</span> <span class="s2">"./WASP12b_transit_ephemeris.csv"</span> <span class="c1"># IMPORTANT: Change to your own filepath</span>
-</span><span id="line-3"><span class="c1"># filepath = "ENTER YOUR FILEPATH HERE"</span>
-</span><span id="line-4"><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">','</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-5"><span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
-</span><span id="line-6"><span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"epoch"</span><span class="p">]</span>
-</span><span id="line-7"><span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"transit_time"</span><span class="p">]</span>
-</span><span id="line-8"><span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"sigma_transit_time"</span><span class="p">]</span>
-</span><span id="line-9"><span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
-</span><span id="line-10"><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># STEP 1: Upload data</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;./WASP12b_transit_ephemeris.csv&quot;</span> <span class="c1"># IMPORTANT: Change to your own filepath</span>
+<span class="c1"># filepath = &quot;ENTER YOUR FILEPATH HERE&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span>
+<span class="n">mid_transit_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">]</span>
+<span class="n">mid_transit_times_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">]</span>
+<span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <p>Can use this code block if you do not have CSV file, this is <strong>hard coded</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Hard Coded Data</span>
-</span><span id="line-2"><span class="c1"># STEP 1: Upload data from file</span>
-</span><span id="line-3"><span class="n">epoch_data</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1640.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1346.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1342.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1067.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1061.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1046.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1038.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1004.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1003.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">985.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">963.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">743.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">739.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">729.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">728.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">721.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">699.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">699.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">677.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">655.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">648.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">646.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">645.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">643.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">625.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">393.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">383.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">382.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">380.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">368.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">353.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">350.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">329.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">328.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">327.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">324.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">323.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">317.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">316.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">307.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">306.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">296.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">295.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">294.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">293.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">283.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">275.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">274.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">51.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">29.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">21.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">22.0</span><span class="p">,</span> <span class="mf">274.0</span><span class="p">,</span> <span class="mf">275.0</span><span class="p">,</span> <span class="mf">276.0</span><span class="p">,</span> <span class="mf">277.0</span><span class="p">,</span> <span class="mf">297.0</span><span class="p">,</span> <span class="mf">298.0</span><span class="p">,</span> <span class="mf">320.0</span><span class="p">,</span> <span class="mf">324.0</span><span class="p">,</span> <span class="mf">327.0</span><span class="p">,</span> <span class="mf">328.0</span><span class="p">,</span> <span class="mf">329.0</span><span class="p">,</span> <span class="mf">338.0</span><span class="p">,</span> <span class="mf">341.0</span><span class="p">,</span> <span class="mf">351.0</span><span class="p">,</span> <span class="mf">356.0</span><span class="p">,</span> <span class="mf">365.0</span><span class="p">,</span> <span class="mf">372.0</span><span class="p">,</span> <span class="mf">379.0</span><span class="p">,</span> <span class="mf">381.0</span><span class="p">,</span> <span class="mf">382.0</span><span class="p">,</span> <span class="mf">624.0</span><span class="p">,</span> <span class="mf">646.0</span><span class="p">,</span> <span class="mf">648.0</span><span class="p">,</span> <span class="mf">678.0</span><span class="p">,</span> <span class="mf">679.0</span><span class="p">,</span> <span class="mf">691.0</span><span class="p">,</span> <span class="mf">692.0</span><span class="p">,</span> <span class="mf">698.0</span><span class="p">,</span> <span class="mf">699.0</span><span class="p">,</span> <span class="mf">731.0</span><span class="p">,</span> <span class="mf">953.0</span><span class="p">,</span> <span class="mf">994.0</span><span class="p">,</span> <span class="mf">995.0</span><span class="p">,</span> <span class="mf">1027.0</span><span class="p">,</span> <span class="mf">1028.0</span><span class="p">,</span> <span class="mf">1050.0</span><span class="p">,</span> <span class="mf">1252.0</span><span class="p">,</span> <span class="mf">1270.0</span><span class="p">,</span> <span class="mf">1281.0</span><span class="p">,</span> <span class="mf">1284.0</span><span class="p">,</span> <span class="mf">1302.0</span><span class="p">,</span> <span class="mf">1303.0</span><span class="p">,</span> <span class="mf">1338.0</span><span class="p">,</span> <span class="mf">1339.0</span><span class="p">,</span> <span class="mf">1344.0</span><span class="p">,</span> <span class="mf">1345.0</span><span class="p">,</span> <span class="mf">1348.0</span><span class="p">,</span> <span class="mf">1352.0</span><span class="p">,</span> <span class="mf">1352.0</span><span class="p">,</span> <span class="mf">1357.0</span><span class="p">,</span> <span class="mf">1359.0</span><span class="p">,</span> <span class="mf">1370.0</span><span class="p">,</span> <span class="mf">1377.0</span><span class="p">,</span> <span class="mf">1378.0</span><span class="p">,</span> <span class="mf">1379.0</span><span class="p">,</span> <span class="mf">1577.0</span><span class="p">,</span> <span class="mf">1599.0</span><span class="p">,</span> <span class="mf">1608.0</span><span class="p">,</span> <span class="mf">1620.0</span><span class="p">,</span> <span class="mf">1621.0</span><span class="p">,</span> <span class="mf">1624.0</span><span class="p">,</span> <span class="mf">1666.0</span><span class="p">,</span> <span class="mf">1667.0</span><span class="p">,</span> <span class="mf">1674.0</span><span class="p">,</span> <span class="mf">1676.0</span><span class="p">,</span> <span class="mf">1678.0</span><span class="p">,</span> <span class="mf">1695.0</span><span class="p">,</span> <span class="mf">1695.0</span><span class="p">,</span> <span class="mf">1696.0</span><span class="p">,</span> <span class="mf">1699.0</span><span class="p">,</span> <span class="mf">1701.0</span><span class="p">,</span> <span class="mf">1701.0</span><span class="p">,</span> <span class="mf">1702.0</span><span class="p">,</span> <span class="mf">1702.0</span><span class="p">,</span> <span class="mf">1705.0</span><span class="p">,</span> <span class="mf">1716.0</span><span class="p">,</span> <span class="mf">1930.0</span><span class="p">,</span> <span class="mf">1985.0</span><span class="p">,</span> <span class="mf">2006.0</span><span class="p">,</span> <span class="mf">2017.0</span><span class="p">]</span>
-</span><span id="line-4"><span class="n">mid_transit_time_data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2454515.525</span><span class="p">,</span> <span class="mf">2454836.403</span><span class="p">,</span> <span class="mf">2454840.769</span><span class="p">,</span> <span class="mf">2455140.91</span><span class="p">,</span> <span class="mf">2455147.459</span><span class="p">,</span> <span class="mf">2455163.831</span><span class="p">,</span> <span class="mf">2455172.561</span><span class="p">,</span> <span class="mf">2455209.669</span><span class="p">,</span> <span class="mf">2455210.762</span><span class="p">,</span> <span class="mf">2455230.407</span><span class="p">,</span> <span class="mf">2455254.419</span><span class="p">,</span> <span class="mf">2455494.53</span><span class="p">,</span> <span class="mf">2455498.896</span><span class="p">,</span> <span class="mf">2455509.81</span><span class="p">,</span> <span class="mf">2455510.902</span><span class="p">,</span> <span class="mf">2455518.541</span><span class="p">,</span> <span class="mf">2455542.552</span><span class="p">,</span> <span class="mf">2455542.553</span><span class="p">,</span> <span class="mf">2455566.564</span><span class="p">,</span> <span class="mf">2455590.576</span><span class="p">,</span> <span class="mf">2455598.216</span><span class="p">,</span> <span class="mf">2455600.398</span><span class="p">,</span> <span class="mf">2455601.49</span><span class="p">,</span> <span class="mf">2455603.673</span><span class="p">,</span> <span class="mf">2455623.318</span><span class="p">,</span> <span class="mf">2455876.528</span><span class="p">,</span> <span class="mf">2455887.442</span><span class="p">,</span> <span class="mf">2455888.533</span><span class="p">,</span> <span class="mf">2455890.716</span><span class="p">,</span> <span class="mf">2455903.814</span><span class="p">,</span> <span class="mf">2455920.184</span><span class="p">,</span> <span class="mf">2455923.459</span><span class="p">,</span> <span class="mf">2455946.378</span><span class="p">,</span> <span class="mf">2455947.47</span><span class="p">,</span> <span class="mf">2455948.561</span><span class="p">,</span> <span class="mf">2455951.835</span><span class="p">,</span> <span class="mf">2455952.927</span><span class="p">,</span> <span class="mf">2455959.475</span><span class="p">,</span> <span class="mf">2455960.567</span><span class="p">,</span> <span class="mf">2455970.389</span><span class="p">,</span> <span class="mf">2455971.481</span><span class="p">,</span> <span class="mf">2455982.395</span><span class="p">,</span> <span class="mf">2455983.487</span><span class="p">,</span> <span class="mf">2455984.578</span><span class="p">,</span> <span class="mf">2455985.67</span><span class="p">,</span> <span class="mf">2455996.584</span><span class="p">,</span> <span class="mf">2456005.315</span><span class="p">,</span> <span class="mf">2456006.406</span><span class="p">,</span> <span class="mf">2456245.427</span><span class="p">,</span> <span class="mf">2456249.794</span><span class="p">,</span> <span class="mf">2456273.805</span><span class="p">,</span> <span class="mf">2456282.536</span><span class="p">,</span> <span class="mf">2456284.719</span><span class="p">,</span> <span class="mf">2456297.816</span><span class="p">,</span> <span class="mf">2456302.182</span><span class="p">,</span> <span class="mf">2456305.455</span><span class="p">,</span> <span class="mf">2456319.644</span><span class="p">,</span> <span class="mf">2456328.376</span><span class="p">,</span> <span class="mf">2456329.467</span><span class="p">,</span> <span class="mf">2456604.505</span><span class="p">,</span> <span class="mf">2456605.596</span><span class="p">,</span> <span class="mf">2456606.688</span><span class="p">,</span> <span class="mf">2456607.779</span><span class="p">,</span> <span class="mf">2456629.607</span><span class="p">,</span> <span class="mf">2456630.699</span><span class="p">,</span> <span class="mf">2456654.71</span><span class="p">,</span> <span class="mf">2456659.076</span><span class="p">,</span> <span class="mf">2456662.35</span><span class="p">,</span> <span class="mf">2456663.441</span><span class="p">,</span> <span class="mf">2456664.533</span><span class="p">,</span> <span class="mf">2456674.356</span><span class="p">,</span> <span class="mf">2456677.63</span><span class="p">,</span> <span class="mf">2456688.544</span><span class="p">,</span> <span class="mf">2456694.002</span><span class="p">,</span> <span class="mf">2456703.824</span><span class="p">,</span> <span class="mf">2456711.464</span><span class="p">,</span> <span class="mf">2456719.104</span><span class="p">,</span> <span class="mf">2456721.287</span><span class="p">,</span> <span class="mf">2456722.378</span><span class="p">,</span> <span class="mf">2456986.502</span><span class="p">,</span> <span class="mf">2457010.513</span><span class="p">,</span> <span class="mf">2457012.696</span><span class="p">,</span> <span class="mf">2457045.438</span><span class="p">,</span> <span class="mf">2457046.53</span><span class="p">,</span> <span class="mf">2457059.627</span><span class="p">,</span> <span class="mf">2457060.718</span><span class="p">,</span> <span class="mf">2457067.267</span><span class="p">,</span> <span class="mf">2457068.358</span><span class="p">,</span> <span class="mf">2457103.284</span><span class="p">,</span> <span class="mf">2457345.579</span><span class="p">,</span> <span class="mf">2457390.327</span><span class="p">,</span> <span class="mf">2457391.418</span><span class="p">,</span> <span class="mf">2457426.343</span><span class="p">,</span> <span class="mf">2457427.435</span><span class="p">,</span> <span class="mf">2457451.446</span><span class="p">,</span> <span class="mf">2457671.913</span><span class="p">,</span> <span class="mf">2457691.559</span><span class="p">,</span> <span class="mf">2457703.564</span><span class="p">,</span> <span class="mf">2457706.838</span><span class="p">,</span> <span class="mf">2457726.484</span><span class="p">,</span> <span class="mf">2457727.575</span><span class="p">,</span> <span class="mf">2457765.775</span><span class="p">,</span> <span class="mf">2457766.866</span><span class="p">,</span> <span class="mf">2457772.324</span><span class="p">,</span> <span class="mf">2457773.415</span><span class="p">,</span> <span class="mf">2457776.689</span><span class="p">,</span> <span class="mf">2457781.054</span><span class="p">,</span> <span class="mf">2457781.056</span><span class="p">,</span> <span class="mf">2457786.512</span><span class="p">,</span> <span class="mf">2457788.695</span><span class="p">,</span> <span class="mf">2457800.7</span><span class="p">,</span> <span class="mf">2457808.34</span><span class="p">,</span> <span class="mf">2457809.432</span><span class="p">,</span> <span class="mf">2457810.523</span><span class="p">,</span> <span class="mf">2458026.624</span><span class="p">,</span> <span class="mf">2458050.635</span><span class="p">,</span> <span class="mf">2458060.459</span><span class="p">,</span> <span class="mf">2458073.555</span><span class="p">,</span> <span class="mf">2458074.647</span><span class="p">,</span> <span class="mf">2458077.921</span><span class="p">,</span> <span class="mf">2458123.76</span><span class="p">,</span> <span class="mf">2458124.852</span><span class="p">,</span> <span class="mf">2458132.491</span><span class="p">,</span> <span class="mf">2458134.675</span><span class="p">,</span> <span class="mf">2458136.858</span><span class="p">,</span> <span class="mf">2458155.41</span><span class="p">,</span> <span class="mf">2458155.412</span><span class="p">,</span> <span class="mf">2458156.503</span><span class="p">,</span> <span class="mf">2458159.778</span><span class="p">,</span> <span class="mf">2458161.96</span><span class="p">,</span> <span class="mf">2458161.96</span><span class="p">,</span> <span class="mf">2458163.051</span><span class="p">,</span> <span class="mf">2458163.051</span><span class="p">,</span> <span class="mf">2458166.326</span><span class="p">,</span> <span class="mf">2458178.331</span><span class="p">,</span> <span class="mf">2458411.895</span><span class="p">,</span> <span class="mf">2458471.923</span><span class="p">,</span> <span class="mf">2458494.843</span><span class="p">,</span> <span class="mf">2458506.848</span><span class="p">]</span>
-</span><span id="line-5"><span class="n">mid_transit_times_uncertainties_data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00062</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00041</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00072</span><span class="p">,</span> <span class="mf">0.00079</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00068</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00018</span><span class="p">,</span> <span class="mf">0.00017</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00011</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.00017</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00038</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00071</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00025</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00049</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00049</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00055</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00025</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.00048</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00018</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00056</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00091</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00038</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00044</span><span class="p">]</span>
-</span><span id="line-6"><span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
-</span><span id="line-7"><span class="c1"># epochs = epoch_data - np.min(epoch_data)</span>
-</span><span id="line-8"><span class="c1"># mid_transit_times = mid_transit_time_data - np.min(mid_transit_time_data)</span>
-</span><span id="line-9"><span class="c1"># mid_transit_times_err = np.array(mid_transit_times_uncertainties_data) #added np.array HV</span>
-</span><span id="line-10"><span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
-</span><span id="line-11"><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hard Coded Data</span>
+<span class="c1"># STEP 1: Upload data from file</span>
+<span class="n">epoch_data</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1640.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1346.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1342.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1067.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1061.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1046.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1038.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1004.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1003.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">985.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">963.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">743.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">739.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">729.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">728.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">721.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">699.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">699.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">677.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">655.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">648.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">646.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">645.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">643.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">625.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">393.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">383.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">382.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">380.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">368.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">353.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">350.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">329.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">328.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">327.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">324.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">323.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">317.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">316.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">307.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">306.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">296.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">295.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">294.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">293.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">283.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">275.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">274.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">51.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">29.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">21.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">22.0</span><span class="p">,</span> <span class="mf">274.0</span><span class="p">,</span> <span class="mf">275.0</span><span class="p">,</span> <span class="mf">276.0</span><span class="p">,</span> <span class="mf">277.0</span><span class="p">,</span> <span class="mf">297.0</span><span class="p">,</span> <span class="mf">298.0</span><span class="p">,</span> <span class="mf">320.0</span><span class="p">,</span> <span class="mf">324.0</span><span class="p">,</span> <span class="mf">327.0</span><span class="p">,</span> <span class="mf">328.0</span><span class="p">,</span> <span class="mf">329.0</span><span class="p">,</span> <span class="mf">338.0</span><span class="p">,</span> <span class="mf">341.0</span><span class="p">,</span> <span class="mf">351.0</span><span class="p">,</span> <span class="mf">356.0</span><span class="p">,</span> <span class="mf">365.0</span><span class="p">,</span> <span class="mf">372.0</span><span class="p">,</span> <span class="mf">379.0</span><span class="p">,</span> <span class="mf">381.0</span><span class="p">,</span> <span class="mf">382.0</span><span class="p">,</span> <span class="mf">624.0</span><span class="p">,</span> <span class="mf">646.0</span><span class="p">,</span> <span class="mf">648.0</span><span class="p">,</span> <span class="mf">678.0</span><span class="p">,</span> <span class="mf">679.0</span><span class="p">,</span> <span class="mf">691.0</span><span class="p">,</span> <span class="mf">692.0</span><span class="p">,</span> <span class="mf">698.0</span><span class="p">,</span> <span class="mf">699.0</span><span class="p">,</span> <span class="mf">731.0</span><span class="p">,</span> <span class="mf">953.0</span><span class="p">,</span> <span class="mf">994.0</span><span class="p">,</span> <span class="mf">995.0</span><span class="p">,</span> <span class="mf">1027.0</span><span class="p">,</span> <span class="mf">1028.0</span><span class="p">,</span> <span class="mf">1050.0</span><span class="p">,</span> <span class="mf">1252.0</span><span class="p">,</span> <span class="mf">1270.0</span><span class="p">,</span> <span class="mf">1281.0</span><span class="p">,</span> <span class="mf">1284.0</span><span class="p">,</span> <span class="mf">1302.0</span><span class="p">,</span> <span class="mf">1303.0</span><span class="p">,</span> <span class="mf">1338.0</span><span class="p">,</span> <span class="mf">1339.0</span><span class="p">,</span> <span class="mf">1344.0</span><span class="p">,</span> <span class="mf">1345.0</span><span class="p">,</span> <span class="mf">1348.0</span><span class="p">,</span> <span class="mf">1352.0</span><span class="p">,</span> <span class="mf">1352.0</span><span class="p">,</span> <span class="mf">1357.0</span><span class="p">,</span> <span class="mf">1359.0</span><span class="p">,</span> <span class="mf">1370.0</span><span class="p">,</span> <span class="mf">1377.0</span><span class="p">,</span> <span class="mf">1378.0</span><span class="p">,</span> <span class="mf">1379.0</span><span class="p">,</span> <span class="mf">1577.0</span><span class="p">,</span> <span class="mf">1599.0</span><span class="p">,</span> <span class="mf">1608.0</span><span class="p">,</span> <span class="mf">1620.0</span><span class="p">,</span> <span class="mf">1621.0</span><span class="p">,</span> <span class="mf">1624.0</span><span class="p">,</span> <span class="mf">1666.0</span><span class="p">,</span> <span class="mf">1667.0</span><span class="p">,</span> <span class="mf">1674.0</span><span class="p">,</span> <span class="mf">1676.0</span><span class="p">,</span> <span class="mf">1678.0</span><span class="p">,</span> <span class="mf">1695.0</span><span class="p">,</span> <span class="mf">1695.0</span><span class="p">,</span> <span class="mf">1696.0</span><span class="p">,</span> <span class="mf">1699.0</span><span class="p">,</span> <span class="mf">1701.0</span><span class="p">,</span> <span class="mf">1701.0</span><span class="p">,</span> <span class="mf">1702.0</span><span class="p">,</span> <span class="mf">1702.0</span><span class="p">,</span> <span class="mf">1705.0</span><span class="p">,</span> <span class="mf">1716.0</span><span class="p">,</span> <span class="mf">1930.0</span><span class="p">,</span> <span class="mf">1985.0</span><span class="p">,</span> <span class="mf">2006.0</span><span class="p">,</span> <span class="mf">2017.0</span><span class="p">]</span>
+<span class="n">mid_transit_time_data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2454515.525</span><span class="p">,</span> <span class="mf">2454836.403</span><span class="p">,</span> <span class="mf">2454840.769</span><span class="p">,</span> <span class="mf">2455140.91</span><span class="p">,</span> <span class="mf">2455147.459</span><span class="p">,</span> <span class="mf">2455163.831</span><span class="p">,</span> <span class="mf">2455172.561</span><span class="p">,</span> <span class="mf">2455209.669</span><span class="p">,</span> <span class="mf">2455210.762</span><span class="p">,</span> <span class="mf">2455230.407</span><span class="p">,</span> <span class="mf">2455254.419</span><span class="p">,</span> <span class="mf">2455494.53</span><span class="p">,</span> <span class="mf">2455498.896</span><span class="p">,</span> <span class="mf">2455509.81</span><span class="p">,</span> <span class="mf">2455510.902</span><span class="p">,</span> <span class="mf">2455518.541</span><span class="p">,</span> <span class="mf">2455542.552</span><span class="p">,</span> <span class="mf">2455542.553</span><span class="p">,</span> <span class="mf">2455566.564</span><span class="p">,</span> <span class="mf">2455590.576</span><span class="p">,</span> <span class="mf">2455598.216</span><span class="p">,</span> <span class="mf">2455600.398</span><span class="p">,</span> <span class="mf">2455601.49</span><span class="p">,</span> <span class="mf">2455603.673</span><span class="p">,</span> <span class="mf">2455623.318</span><span class="p">,</span> <span class="mf">2455876.528</span><span class="p">,</span> <span class="mf">2455887.442</span><span class="p">,</span> <span class="mf">2455888.533</span><span class="p">,</span> <span class="mf">2455890.716</span><span class="p">,</span> <span class="mf">2455903.814</span><span class="p">,</span> <span class="mf">2455920.184</span><span class="p">,</span> <span class="mf">2455923.459</span><span class="p">,</span> <span class="mf">2455946.378</span><span class="p">,</span> <span class="mf">2455947.47</span><span class="p">,</span> <span class="mf">2455948.561</span><span class="p">,</span> <span class="mf">2455951.835</span><span class="p">,</span> <span class="mf">2455952.927</span><span class="p">,</span> <span class="mf">2455959.475</span><span class="p">,</span> <span class="mf">2455960.567</span><span class="p">,</span> <span class="mf">2455970.389</span><span class="p">,</span> <span class="mf">2455971.481</span><span class="p">,</span> <span class="mf">2455982.395</span><span class="p">,</span> <span class="mf">2455983.487</span><span class="p">,</span> <span class="mf">2455984.578</span><span class="p">,</span> <span class="mf">2455985.67</span><span class="p">,</span> <span class="mf">2455996.584</span><span class="p">,</span> <span class="mf">2456005.315</span><span class="p">,</span> <span class="mf">2456006.406</span><span class="p">,</span> <span class="mf">2456245.427</span><span class="p">,</span> <span class="mf">2456249.794</span><span class="p">,</span> <span class="mf">2456273.805</span><span class="p">,</span> <span class="mf">2456282.536</span><span class="p">,</span> <span class="mf">2456284.719</span><span class="p">,</span> <span class="mf">2456297.816</span><span class="p">,</span> <span class="mf">2456302.182</span><span class="p">,</span> <span class="mf">2456305.455</span><span class="p">,</span> <span class="mf">2456319.644</span><span class="p">,</span> <span class="mf">2456328.376</span><span class="p">,</span> <span class="mf">2456329.467</span><span class="p">,</span> <span class="mf">2456604.505</span><span class="p">,</span> <span class="mf">2456605.596</span><span class="p">,</span> <span class="mf">2456606.688</span><span class="p">,</span> <span class="mf">2456607.779</span><span class="p">,</span> <span class="mf">2456629.607</span><span class="p">,</span> <span class="mf">2456630.699</span><span class="p">,</span> <span class="mf">2456654.71</span><span class="p">,</span> <span class="mf">2456659.076</span><span class="p">,</span> <span class="mf">2456662.35</span><span class="p">,</span> <span class="mf">2456663.441</span><span class="p">,</span> <span class="mf">2456664.533</span><span class="p">,</span> <span class="mf">2456674.356</span><span class="p">,</span> <span class="mf">2456677.63</span><span class="p">,</span> <span class="mf">2456688.544</span><span class="p">,</span> <span class="mf">2456694.002</span><span class="p">,</span> <span class="mf">2456703.824</span><span class="p">,</span> <span class="mf">2456711.464</span><span class="p">,</span> <span class="mf">2456719.104</span><span class="p">,</span> <span class="mf">2456721.287</span><span class="p">,</span> <span class="mf">2456722.378</span><span class="p">,</span> <span class="mf">2456986.502</span><span class="p">,</span> <span class="mf">2457010.513</span><span class="p">,</span> <span class="mf">2457012.696</span><span class="p">,</span> <span class="mf">2457045.438</span><span class="p">,</span> <span class="mf">2457046.53</span><span class="p">,</span> <span class="mf">2457059.627</span><span class="p">,</span> <span class="mf">2457060.718</span><span class="p">,</span> <span class="mf">2457067.267</span><span class="p">,</span> <span class="mf">2457068.358</span><span class="p">,</span> <span class="mf">2457103.284</span><span class="p">,</span> <span class="mf">2457345.579</span><span class="p">,</span> <span class="mf">2457390.327</span><span class="p">,</span> <span class="mf">2457391.418</span><span class="p">,</span> <span class="mf">2457426.343</span><span class="p">,</span> <span class="mf">2457427.435</span><span class="p">,</span> <span class="mf">2457451.446</span><span class="p">,</span> <span class="mf">2457671.913</span><span class="p">,</span> <span class="mf">2457691.559</span><span class="p">,</span> <span class="mf">2457703.564</span><span class="p">,</span> <span class="mf">2457706.838</span><span class="p">,</span> <span class="mf">2457726.484</span><span class="p">,</span> <span class="mf">2457727.575</span><span class="p">,</span> <span class="mf">2457765.775</span><span class="p">,</span> <span class="mf">2457766.866</span><span class="p">,</span> <span class="mf">2457772.324</span><span class="p">,</span> <span class="mf">2457773.415</span><span class="p">,</span> <span class="mf">2457776.689</span><span class="p">,</span> <span class="mf">2457781.054</span><span class="p">,</span> <span class="mf">2457781.056</span><span class="p">,</span> <span class="mf">2457786.512</span><span class="p">,</span> <span class="mf">2457788.695</span><span class="p">,</span> <span class="mf">2457800.7</span><span class="p">,</span> <span class="mf">2457808.34</span><span class="p">,</span> <span class="mf">2457809.432</span><span class="p">,</span> <span class="mf">2457810.523</span><span class="p">,</span> <span class="mf">2458026.624</span><span class="p">,</span> <span class="mf">2458050.635</span><span class="p">,</span> <span class="mf">2458060.459</span><span class="p">,</span> <span class="mf">2458073.555</span><span class="p">,</span> <span class="mf">2458074.647</span><span class="p">,</span> <span class="mf">2458077.921</span><span class="p">,</span> <span class="mf">2458123.76</span><span class="p">,</span> <span class="mf">2458124.852</span><span class="p">,</span> <span class="mf">2458132.491</span><span class="p">,</span> <span class="mf">2458134.675</span><span class="p">,</span> <span class="mf">2458136.858</span><span class="p">,</span> <span class="mf">2458155.41</span><span class="p">,</span> <span class="mf">2458155.412</span><span class="p">,</span> <span class="mf">2458156.503</span><span class="p">,</span> <span class="mf">2458159.778</span><span class="p">,</span> <span class="mf">2458161.96</span><span class="p">,</span> <span class="mf">2458161.96</span><span class="p">,</span> <span class="mf">2458163.051</span><span class="p">,</span> <span class="mf">2458163.051</span><span class="p">,</span> <span class="mf">2458166.326</span><span class="p">,</span> <span class="mf">2458178.331</span><span class="p">,</span> <span class="mf">2458411.895</span><span class="p">,</span> <span class="mf">2458471.923</span><span class="p">,</span> <span class="mf">2458494.843</span><span class="p">,</span> <span class="mf">2458506.848</span><span class="p">]</span>
+<span class="n">mid_transit_times_uncertainties_data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00062</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00041</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00072</span><span class="p">,</span> <span class="mf">0.00079</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00068</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00018</span><span class="p">,</span> <span class="mf">0.00017</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00011</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.00017</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00038</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00071</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00019</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00025</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00049</span><span class="p">,</span> <span class="mf">0.00046</span><span class="p">,</span> <span class="mf">0.00049</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00042</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.00055</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00025</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00037</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00039</span><span class="p">,</span> <span class="mf">0.00024</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00029</span><span class="p">,</span> <span class="mf">0.00043</span><span class="p">,</span> <span class="mf">0.00036</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.00048</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00018</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00056</span><span class="p">,</span> <span class="mf">0.00023</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00022</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00028</span><span class="p">,</span> <span class="mf">0.00027</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00033</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.00031</span><span class="p">,</span> <span class="mf">0.00032</span><span class="p">,</span> <span class="mf">0.00091</span><span class="p">,</span> <span class="mf">0.00035</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.00021</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00034</span><span class="p">,</span> <span class="mf">0.00038</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.00026</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.00044</span><span class="p">]</span>
+<span class="c1"># STEP 2: Break data up into epochs, mid transit times, and error</span>
+<span class="c1"># epochs = epoch_data - np.min(epoch_data)</span>
+<span class="c1"># mid_transit_times = mid_transit_time_data - np.min(mid_transit_time_data)</span>
+<span class="c1"># mid_transit_times_err = np.array(mid_transit_times_uncertainties_data) #added np.array HV</span>
+<span class="c1"># STEP 2.5 (Optional): Make sure the epochs are integers and not floats</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="nb">type</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">epochs</span><span class="o">.</span><span class="n">dtype</span>
-</span><span id="line-3"><span class="nb">type</span><span class="p">(</span><span class="n">epochs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="line-4"><span class="c1">#error here with epochs not having int values ut we're only giving it int values. Look at on 4/11 - HV, creates a cascade of objects not being defined</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span>
+<span class="n">epochs</span><span class="o">.</span><span class="n">dtype</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">epochs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1">#error here with epochs not having int values ut we&#39;re only giving it int values. Look at on 4/11 - HV, creates a cascade of objects not being defined</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">numpy.int64
-</span></code></pre></div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>numpy.int64
+</pre></div>
 </div>
 </div>
 </div>
@@ -205,11 +305,11 @@
 <p>Example with JD TDB timing system and scale.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 3: Create new transit times object with above data</span>
-</span><span id="line-2"><span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
-</span><span id="line-3"><span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
-</span><span id="line-4"><span class="c1"># print(vars(transit_times_obj1))</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># STEP 3: Create new transit times object with above data</span>
+<span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+<span class="c1"># STEP 4 (Optional): To check that the resulting data is correct, you can print each variable and the corresponding data using this command:</span>
+<span class="c1"># print(vars(transit_times_obj1))</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -217,239 +317,239 @@
 <p><small>Using RA and Dec of WASP 12-b and lon, lat of Boise State for observatory.</small></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># STEP 3: Create new transit times object with above data</span>
-</span><span id="line-2"><span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># STEP 3: Create new transit times object with above data</span>
+<span class="n">transit_times_obj1</span> <span class="o">=</span> <span class="n">TransitTimes</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_transit_times</span><span class="p">,</span> <span class="n">mid_transit_times_err</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">WARNING:root:Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:root:Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If this is incorrect, please set the time format and time scale for TransitTime object.
+</pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
+</pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]
-</span><span id="line-2">WARNING:astropy:Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]
+WARNING:astropy:Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.
+</pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "utctai" yielded 139 of "dubious year (Note 3)"
-</span><span id="line-2">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
-</span><span id="line-3">C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "utcut1" yielded 139 of "dubious year (Note 3)"
-</span><span id="line-4">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
-</span><span id="line-5">C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "taiutc" yielded 139 of "dubious year (Note 4)"
-</span><span id="line-6">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
-</span><span id="line-7">C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function "epv00" yielded 139 of "warning: date outsidethe range 1900-2100 AD"
-</span><span id="line-8">  warnings.warn('ERFA function "{}" yielded {}'.format(func_name, wmsg),
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function &quot;utctai&quot; yielded 139 of &quot;dubious year (Note 3)&quot;
+  warnings.warn(&#39;ERFA function &quot;{}&quot; yielded {}&#39;.format(func_name, wmsg),
+C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function &quot;utcut1&quot; yielded 139 of &quot;dubious year (Note 3)&quot;
+  warnings.warn(&#39;ERFA function &quot;{}&quot; yielded {}&#39;.format(func_name, wmsg),
+C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function &quot;taiutc&quot; yielded 139 of &quot;dubious year (Note 4)&quot;
+  warnings.warn(&#39;ERFA function &quot;{}&quot; yielded {}&#39;.format(func_name, wmsg),
+C:\Users\holly\OneDrive\Desktop\BSUResearch\susie\venv\Lib\site-packages\erfa\core.py:154: ErfaWarning: ERFA function &quot;epv00&quot; yielded 139 of &quot;warning: date outsidethe range 1900-2100 AD&quot;
+  warnings.warn(&#39;ERFA function &quot;{}&quot; yielded {}&#39;.format(func_name, wmsg),
+</pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="step-2-create-the-ephemeris-object-and-add-your-transittimes-object">
-<h2>🔷 <strong>STEP 2:</strong> Create the Ephemeris object and add your TransitTimes object.<a class="headerlink" href="#step-2-create-the-ephemeris-object-and-add-your-transittimes-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-2-create-the-ephemeris-object-and-add-your-transittimes-object'">¶</a></h2>
+<h2>🔷 <strong>STEP 2:</strong> Create the Ephemeris object and add your TransitTimes object.<a class="headerlink" href="#step-2-create-the-ephemeris-object-and-add-your-transittimes-object" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">transit_times_obj1</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">transit_times_obj1</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
-<h2>🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'">¶</a></h2>
+<h2>🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
+<span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. You can view the data returned from this if you run <code class="docutils literal notranslate"><span class="pre">print(linear_model_data)</span></code>. Now you can use the linear_model_data dictionary for plotting methods, such as the ones below. You can use the same process for a quadratic model ephemeris (shown below).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_model_data</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_model_data</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">{'period': 1.0914196485982803,
-</span><span id="line-2"> 'period_err': 3.1496749422701027e-07,
-</span><span id="line-3"> 'conjunction_time': 0.003092872392577495,
-</span><span id="line-4"> 'conjunction_time_err': 0.0007128109688698606,
-</span><span id="line-5"> 'model_type': 'linear',
-</span><span id="line-6"> 'model_data': array([3.09287239e-03, 3.20880470e+02, 3.25246148e+02, 6.25386552e+02,
-</span><span id="line-7">        6.31935069e+02, 6.48306364e+02, 6.57037721e+02, 6.94145989e+02,
-</span><span id="line-8">        6.95237409e+02, 7.14882963e+02, 7.38894195e+02, 9.79006518e+02,
-</span><span id="line-9">        9.83372196e+02, 9.94286393e+02, 9.95377812e+02, 1.00301775e+03,
-</span><span id="line-10">        1.02702898e+03, 1.02702898e+03, 1.05104021e+03, 1.07505145e+03,
-</span><span id="line-11">        1.08269138e+03, 1.08487422e+03, 1.08596564e+03, 1.08814848e+03,
-</span><span id="line-12">        1.10779404e+03, 1.36100339e+03, 1.37191759e+03, 1.37300901e+03,
-</span><span id="line-13">        1.37519185e+03, 1.38828889e+03, 1.40466018e+03, 1.40793444e+03,
-</span><span id="line-14">        1.43085425e+03, 1.43194567e+03, 1.43303709e+03, 1.43631135e+03,
-</span><span id="line-15">        1.43740277e+03, 1.44395129e+03, 1.44504271e+03, 1.45486548e+03,
-</span><span id="line-16">        1.45595690e+03, 1.46687110e+03, 1.46796252e+03, 1.46905394e+03,
-</span><span id="line-17">        1.47014536e+03, 1.48105956e+03, 1.48979091e+03, 1.49088233e+03,
-</span><span id="line-18">        1.72990324e+03, 1.73426891e+03, 1.75828015e+03, 1.76701150e+03,
-</span><span id="line-19">        1.76919434e+03, 1.78229138e+03, 1.78665706e+03, 1.78993132e+03,
-</span><span id="line-20">        1.80411977e+03, 1.81285113e+03, 1.81394255e+03, 2.08898030e+03,
-</span><span id="line-21">        2.09007172e+03, 2.09116314e+03, 2.09225456e+03, 2.11408295e+03,
-</span><span id="line-22">        2.11517437e+03, 2.13918560e+03, 2.14355128e+03, 2.14682554e+03,
-</span><span id="line-23">        2.14791696e+03, 2.14900838e+03, 2.15883116e+03, 2.16210542e+03,
-</span><span id="line-24">        2.17301961e+03, 2.17847671e+03, 2.18829949e+03, 2.19593943e+03,
-</span><span id="line-25">        2.20357936e+03, 2.20576220e+03, 2.20685362e+03, 2.47097718e+03,
-</span><span id="line-26">        2.49498841e+03, 2.49717125e+03, 2.52991384e+03, 2.53100526e+03,
-</span><span id="line-27">        2.54410229e+03, 2.54519371e+03, 2.55174223e+03, 2.55283365e+03,
-</span><span id="line-28">        2.58775908e+03, 2.83005424e+03, 2.87480245e+03, 2.87589387e+03,
-</span><span id="line-29">        2.91081930e+03, 2.91191072e+03, 2.93592195e+03, 3.15638872e+03,
-</span><span id="line-30">        3.17603427e+03, 3.18803989e+03, 3.19131415e+03, 3.21095970e+03,
-</span><span id="line-31">        3.21205112e+03, 3.25025081e+03, 3.25134223e+03, 3.25679932e+03,
-</span><span id="line-32">        3.25789074e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
-</span><span id="line-33">        3.27098778e+03, 3.27317062e+03, 3.28517624e+03, 3.29281617e+03,
-</span><span id="line-34">        3.29390759e+03, 3.29499901e+03, 3.51110010e+03, 3.53511133e+03,
-</span><span id="line-35">        3.54493411e+03, 3.55803115e+03, 3.55912257e+03, 3.56239683e+03,
-</span><span id="line-36">        3.60823645e+03, 3.60932787e+03, 3.61696781e+03, 3.61915065e+03,
-</span><span id="line-37">        3.62133349e+03, 3.63988762e+03, 3.63988762e+03, 3.64097904e+03,
-</span><span id="line-38">        3.64425330e+03, 3.64643614e+03, 3.64643614e+03, 3.64752756e+03,
-</span><span id="line-39">        3.64752756e+03, 3.65080182e+03, 3.66280743e+03, 3.89637124e+03,
-</span><span id="line-40">        3.95639932e+03, 3.97931913e+03, 3.99132475e+03])}
-</span></code></pre></div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;period&#39;: 1.0914196485982803,
+ &#39;period_err&#39;: 3.1496749422701027e-07,
+ &#39;conjunction_time&#39;: 0.003092872392577495,
+ &#39;conjunction_time_err&#39;: 0.0007128109688698606,
+ &#39;model_type&#39;: &#39;linear&#39;,
+ &#39;model_data&#39;: array([3.09287239e-03, 3.20880470e+02, 3.25246148e+02, 6.25386552e+02,
+        6.31935069e+02, 6.48306364e+02, 6.57037721e+02, 6.94145989e+02,
+        6.95237409e+02, 7.14882963e+02, 7.38894195e+02, 9.79006518e+02,
+        9.83372196e+02, 9.94286393e+02, 9.95377812e+02, 1.00301775e+03,
+        1.02702898e+03, 1.02702898e+03, 1.05104021e+03, 1.07505145e+03,
+        1.08269138e+03, 1.08487422e+03, 1.08596564e+03, 1.08814848e+03,
+        1.10779404e+03, 1.36100339e+03, 1.37191759e+03, 1.37300901e+03,
+        1.37519185e+03, 1.38828889e+03, 1.40466018e+03, 1.40793444e+03,
+        1.43085425e+03, 1.43194567e+03, 1.43303709e+03, 1.43631135e+03,
+        1.43740277e+03, 1.44395129e+03, 1.44504271e+03, 1.45486548e+03,
+        1.45595690e+03, 1.46687110e+03, 1.46796252e+03, 1.46905394e+03,
+        1.47014536e+03, 1.48105956e+03, 1.48979091e+03, 1.49088233e+03,
+        1.72990324e+03, 1.73426891e+03, 1.75828015e+03, 1.76701150e+03,
+        1.76919434e+03, 1.78229138e+03, 1.78665706e+03, 1.78993132e+03,
+        1.80411977e+03, 1.81285113e+03, 1.81394255e+03, 2.08898030e+03,
+        2.09007172e+03, 2.09116314e+03, 2.09225456e+03, 2.11408295e+03,
+        2.11517437e+03, 2.13918560e+03, 2.14355128e+03, 2.14682554e+03,
+        2.14791696e+03, 2.14900838e+03, 2.15883116e+03, 2.16210542e+03,
+        2.17301961e+03, 2.17847671e+03, 2.18829949e+03, 2.19593943e+03,
+        2.20357936e+03, 2.20576220e+03, 2.20685362e+03, 2.47097718e+03,
+        2.49498841e+03, 2.49717125e+03, 2.52991384e+03, 2.53100526e+03,
+        2.54410229e+03, 2.54519371e+03, 2.55174223e+03, 2.55283365e+03,
+        2.58775908e+03, 2.83005424e+03, 2.87480245e+03, 2.87589387e+03,
+        2.91081930e+03, 2.91191072e+03, 2.93592195e+03, 3.15638872e+03,
+        3.17603427e+03, 3.18803989e+03, 3.19131415e+03, 3.21095970e+03,
+        3.21205112e+03, 3.25025081e+03, 3.25134223e+03, 3.25679932e+03,
+        3.25789074e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
+        3.27098778e+03, 3.27317062e+03, 3.28517624e+03, 3.29281617e+03,
+        3.29390759e+03, 3.29499901e+03, 3.51110010e+03, 3.53511133e+03,
+        3.54493411e+03, 3.55803115e+03, 3.55912257e+03, 3.56239683e+03,
+        3.60823645e+03, 3.60932787e+03, 3.61696781e+03, 3.61915065e+03,
+        3.62133349e+03, 3.63988762e+03, 3.63988762e+03, 3.64097904e+03,
+        3.64425330e+03, 3.64643614e+03, 3.64643614e+03, 3.64752756e+03,
+        3.64752756e+03, 3.65080182e+03, 3.66280743e+03, 3.89637124e+03,
+        3.95639932e+03, 3.97931913e+03, 3.99132475e+03])}
+</pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
-</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can plot this model</span>
+<span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1cf9207398343ed1267f1801da66f0cb26a44e69ab481728a421515503aa9f79.png" src="_images/1cf9207398343ed1267f1801da66f0cb26a44e69ab481728a421515503aa9f79.png"/>
+<img alt="_images/1cf9207398343ed1267f1801da66f0cb26a44e69ab481728a421515503aa9f79.png" src="_images/1cf9207398343ed1267f1801da66f0cb26a44e69ab481728a421515503aa9f79.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">quadratic_model_data</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">{'conjunction_time': 0.0016682851583146132,
-</span><span id="line-2"> 'conjunction_time_err': 0.0014595461023369455,
-</span><span id="line-3"> 'period': 1.0914213783138003,
-</span><span id="line-4"> 'period_err': 1.5856377650608515e-06,
-</span><span id="line-5"> 'period_change_by_epoch': -8.385455056387949e-10,
-</span><span id="line-6"> 'period_change_by_epoch_err': 7.542908911207996e-10,
-</span><span id="line-7"> 'model_type': 'quadratic',
-</span><span id="line-8"> 'model_data': array([1.66828516e-03, 3.20879517e+02, 3.25245202e+02, 6.25385980e+02,
-</span><span id="line-9">        6.31934506e+02, 6.48305819e+02, 6.57037186e+02, 6.94145495e+02,
-</span><span id="line-10">        6.95236916e+02, 7.14882491e+02, 7.38893749e+02, 9.79006307e+02,
-</span><span id="line-11">        9.83371990e+02, 9.94286196e+02, 9.95377617e+02, 1.00301756e+03,
-</span><span id="line-12">        1.02702881e+03, 1.02702881e+03, 1.05104007e+03, 1.07505132e+03,
-</span><span id="line-13">        1.08269126e+03, 1.08487410e+03, 1.08596552e+03, 1.08814837e+03,
-</span><span id="line-14">        1.10779394e+03, 1.36100348e+03, 1.37191768e+03, 1.37300910e+03,
-</span><span id="line-15">        1.37519194e+03, 1.38828898e+03, 1.40466029e+03, 1.40793455e+03,
-</span><span id="line-16">        1.43085437e+03, 1.43194579e+03, 1.43303722e+03, 1.43631148e+03,
-</span><span id="line-17">        1.43740290e+03, 1.44395142e+03, 1.44504284e+03, 1.45486562e+03,
-</span><span id="line-18">        1.45595704e+03, 1.46687124e+03, 1.46796266e+03, 1.46905408e+03,
-</span><span id="line-19">        1.47014550e+03, 1.48105971e+03, 1.48979107e+03, 1.49088249e+03,
-</span><span id="line-20">        1.72990350e+03, 1.73426918e+03, 1.75828042e+03, 1.76701178e+03,
-</span><span id="line-21">        1.76919462e+03, 1.78229166e+03, 1.78665734e+03, 1.78993160e+03,
-</span><span id="line-22">        1.80412006e+03, 1.81285142e+03, 1.81394284e+03, 2.08898065e+03,
-</span><span id="line-23">        2.09007207e+03, 2.09116349e+03, 2.09225491e+03, 2.11408330e+03,
-</span><span id="line-24">        2.11517472e+03, 2.13918596e+03, 2.14355164e+03, 2.14682590e+03,
-</span><span id="line-25">        2.14791732e+03, 2.14900874e+03, 2.15883151e+03, 2.16210577e+03,
-</span><span id="line-26">        2.17301997e+03, 2.17847707e+03, 2.18829985e+03, 2.19593978e+03,
-</span><span id="line-27">        2.20357972e+03, 2.20576256e+03, 2.20685398e+03, 2.47097752e+03,
-</span><span id="line-28">        2.49498875e+03, 2.49717159e+03, 2.52991417e+03, 2.53100559e+03,
-</span><span id="line-29">        2.54410262e+03, 2.54519404e+03, 2.55174256e+03, 2.55283398e+03,
-</span><span id="line-30">        2.58775940e+03, 2.83005448e+03, 2.87480267e+03, 2.87589409e+03,
-</span><span id="line-31">        2.91081950e+03, 2.91191092e+03, 2.93592214e+03, 3.15638879e+03,
-</span><span id="line-32">        3.17603433e+03, 3.18803994e+03, 3.19131419e+03, 3.21095973e+03,
-</span><span id="line-33">        3.21205115e+03, 3.25025081e+03, 3.25134223e+03, 3.25679933e+03,
-</span><span id="line-34">        3.25789075e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
-</span><span id="line-35">        3.27098777e+03, 3.27317061e+03, 3.28517622e+03, 3.29281615e+03,
-</span><span id="line-36">        3.29390757e+03, 3.29499899e+03, 3.51109990e+03, 3.53511111e+03,
-</span><span id="line-37">        3.54493388e+03, 3.55803091e+03, 3.55912232e+03, 3.56239658e+03,
-</span><span id="line-38">        3.60823616e+03, 3.60932758e+03, 3.61696751e+03, 3.61915035e+03,
-</span><span id="line-39">        3.62133319e+03, 3.63988730e+03, 3.63988730e+03, 3.64097872e+03,
-</span><span id="line-40">        3.64425298e+03, 3.64643581e+03, 3.64643581e+03, 3.64752723e+03,
-</span><span id="line-41">        3.64752723e+03, 3.65080149e+03, 3.66280709e+03, 3.89637065e+03,
-</span><span id="line-42">        3.95639866e+03, 3.97931844e+03, 3.99132404e+03])}
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
+<span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">quadratic_model_data</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d7f025a3e48a3caefd5995b7b858a5154dcb1ca87e6328920f1c2c211eb48792.png" src="_images/d7f025a3e48a3caefd5995b7b858a5154dcb1ca87e6328920f1c2c211eb48792.png"/>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;conjunction_time&#39;: 0.0016682851583146132,
+ &#39;conjunction_time_err&#39;: 0.0014595461023369455,
+ &#39;period&#39;: 1.0914213783138003,
+ &#39;period_err&#39;: 1.5856377650608515e-06,
+ &#39;period_change_by_epoch&#39;: -8.385455056387949e-10,
+ &#39;period_change_by_epoch_err&#39;: 7.542908911207996e-10,
+ &#39;model_type&#39;: &#39;quadratic&#39;,
+ &#39;model_data&#39;: array([1.66828516e-03, 3.20879517e+02, 3.25245202e+02, 6.25385980e+02,
+        6.31934506e+02, 6.48305819e+02, 6.57037186e+02, 6.94145495e+02,
+        6.95236916e+02, 7.14882491e+02, 7.38893749e+02, 9.79006307e+02,
+        9.83371990e+02, 9.94286196e+02, 9.95377617e+02, 1.00301756e+03,
+        1.02702881e+03, 1.02702881e+03, 1.05104007e+03, 1.07505132e+03,
+        1.08269126e+03, 1.08487410e+03, 1.08596552e+03, 1.08814837e+03,
+        1.10779394e+03, 1.36100348e+03, 1.37191768e+03, 1.37300910e+03,
+        1.37519194e+03, 1.38828898e+03, 1.40466029e+03, 1.40793455e+03,
+        1.43085437e+03, 1.43194579e+03, 1.43303722e+03, 1.43631148e+03,
+        1.43740290e+03, 1.44395142e+03, 1.44504284e+03, 1.45486562e+03,
+        1.45595704e+03, 1.46687124e+03, 1.46796266e+03, 1.46905408e+03,
+        1.47014550e+03, 1.48105971e+03, 1.48979107e+03, 1.49088249e+03,
+        1.72990350e+03, 1.73426918e+03, 1.75828042e+03, 1.76701178e+03,
+        1.76919462e+03, 1.78229166e+03, 1.78665734e+03, 1.78993160e+03,
+        1.80412006e+03, 1.81285142e+03, 1.81394284e+03, 2.08898065e+03,
+        2.09007207e+03, 2.09116349e+03, 2.09225491e+03, 2.11408330e+03,
+        2.11517472e+03, 2.13918596e+03, 2.14355164e+03, 2.14682590e+03,
+        2.14791732e+03, 2.14900874e+03, 2.15883151e+03, 2.16210577e+03,
+        2.17301997e+03, 2.17847707e+03, 2.18829985e+03, 2.19593978e+03,
+        2.20357972e+03, 2.20576256e+03, 2.20685398e+03, 2.47097752e+03,
+        2.49498875e+03, 2.49717159e+03, 2.52991417e+03, 2.53100559e+03,
+        2.54410262e+03, 2.54519404e+03, 2.55174256e+03, 2.55283398e+03,
+        2.58775940e+03, 2.83005448e+03, 2.87480267e+03, 2.87589409e+03,
+        2.91081950e+03, 2.91191092e+03, 2.93592214e+03, 3.15638879e+03,
+        3.17603433e+03, 3.18803994e+03, 3.19131419e+03, 3.21095973e+03,
+        3.21205115e+03, 3.25025081e+03, 3.25134223e+03, 3.25679933e+03,
+        3.25789075e+03, 3.26116500e+03, 3.26553068e+03, 3.26553068e+03,
+        3.27098777e+03, 3.27317061e+03, 3.28517622e+03, 3.29281615e+03,
+        3.29390757e+03, 3.29499899e+03, 3.51109990e+03, 3.53511111e+03,
+        3.54493388e+03, 3.55803091e+03, 3.55912232e+03, 3.56239658e+03,
+        3.60823616e+03, 3.60932758e+03, 3.61696751e+03, 3.61915035e+03,
+        3.62133319e+03, 3.63988730e+03, 3.63988730e+03, 3.64097872e+03,
+        3.64425298e+03, 3.64643581e+03, 3.64643581e+03, 3.64752723e+03,
+        3.64752723e+03, 3.65080149e+03, 3.66280709e+03, 3.89637065e+03,
+        3.95639866e+03, 3.97931844e+03, 3.99132404e+03])}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d7f025a3e48a3caefd5995b7b858a5154dcb1ca87e6328920f1c2c211eb48792.png" src="_images/d7f025a3e48a3caefd5995b7b858a5154dcb1ca87e6328920f1c2c211eb48792.png" />
 </div>
 </div>
 <p>We can also plot the model uncertainties with the <code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1bb482537ad723c062299f96e529fd21b1105682bf01a6dc0781a871bbc02f6e.png" src="_images/1bb482537ad723c062299f96e529fd21b1105682bf01a6dc0781a871bbc02f6e.png"/>
+<img alt="_images/1bb482537ad723c062299f96e529fd21b1105682bf01a6dc0781a871bbc02f6e.png" src="_images/1bb482537ad723c062299f96e529fd21b1105682bf01a6dc0781a871bbc02f6e.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1a200b1ea1b4619c3f4059bba1ef7ef55412cc6e59b1eaf210bce64a0078e635.png" src="_images/1a200b1ea1b4619c3f4059bba1ef7ef55412cc6e59b1eaf210bce64a0078e635.png"/>
+<img alt="_images/1a200b1ea1b4619c3f4059bba1ef7ef55412cc6e59b1eaf210bce64a0078e635.png" src="_images/1a200b1ea1b4619c3f4059bba1ef7ef55412cc6e59b1eaf210bce64a0078e635.png" />
 </div>
 </div>
 <p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
-</span><span id="line-3">
-</span><span id="line-4"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
+<span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear Model BIC: 30.715948345791855
-</span><span id="line-2">Quadratic Model BIC: 34.41719407684216
-</span></code></pre></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Linear Model BIC: 30.715948345791855
+Quadratic Model BIC: 34.41719407684216
+</pre></div>
 </div>
 </div>
 </div>
 <p>And we can also get a delta BIC value. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC and delta BIC values. However, it <strong>ONLY returns the delta BIC value</strong> and not the other data calculated.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Delta BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Delta BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Delta BIC: -3.701245731050303
-</span></code></pre></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Delta BIC: -3.701245731050303
+</pre></div>
 </div>
 </div>
 </div>
@@ -457,50 +557,84 @@
 <p>The OC plot for now just plots the observed minus calculated points (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$ and a curve with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/92af5713eaafcd93918df082927fae1d567de60e121215a8b2917985032d41dc.png" src="_images/92af5713eaafcd93918df082927fae1d567de60e121215a8b2917985032d41dc.png"/>
+<img alt="_images/92af5713eaafcd93918df082927fae1d567de60e121215a8b2917985032d41dc.png" src="_images/92af5713eaafcd93918df082927fae1d567de60e121215a8b2917985032d41dc.png" />
 </div>
 </div>
 <p>This is the <code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code> method. This is a work in progress, but the basic data is in there.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/54ab2bf4003a9a00268d5786f598b9a28ad6f3914f7fcc4816f6a67e8a8b8fa4.png" src="_images/54ab2bf4003a9a00268d5786f598b9a28ad6f3914f7fcc4816f6a67e8a8b8fa4.png"/>
+<img alt="_images/54ab2bf4003a9a00268d5786f598b9a28ad6f3914f7fcc4816f6a67e8a8b8fa4.png" src="_images/54ab2bf4003a9a00268d5786f598b9a28ad6f3914f7fcc4816f6a67e8a8b8fa4.png" />
 </div>
 </div>
 </section>
 </section>
-</div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
-<div class="sticky top-16 -mt-10 max-h-[calc(var(100vh)-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
-<ul>
-<li><a :data-current="activeSection === '#import-the-necessary-python-libraries-and-susie-objects'" class="reference internal" href="#import-the-necessary-python-libraries-and-susie-objects">🔷 Import the necessary python libraries and Susie objects.</a></li>
-<li><a :data-current="activeSection === '#step-1-add-your-transit-data-to-the-transittimes-object'" class="reference internal" href="#step-1-add-your-transit-data-to-the-transittimes-object">🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.</a></li>
-<li><a :data-current="activeSection === '#step-2-create-the-ephemeris-object-and-add-your-transittimes-object'" class="reference internal" href="#step-2-create-the-ephemeris-object-and-add-your-transittimes-object">🔷 <strong>STEP 2:</strong> Create the Ephemeris object and add your TransitTimes object.</a></li>
-<li><a :data-current="activeSection === '#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'" class="reference internal" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a></li>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Holly VanLooy
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">🐷 Susie Package Test Notebook</a><ul>
+<li><a class="reference internal" href="#import-the-necessary-python-libraries-and-susie-objects">🔷 Import the necessary python libraries and Susie objects.</a></li>
+<li><a class="reference internal" href="#step-1-add-your-transit-data-to-the-transittimes-object">🔷 <strong>STEP 1:</strong> Add your transit data to the TransitTimes object.</a></li>
+<li><a class="reference internal" href="#step-2-create-the-ephemeris-object-and-add-your-transittimes-object">🔷 <strong>STEP 2:</strong> Create the Ephemeris object and add your TransitTimes object.</a></li>
+<li><a class="reference internal" href="#step-3-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 3:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a></li>
 </ul>
-</div>
-</aside>
-</main>
-</div>
-</div><footer class="py-6 border-t border-border md:py-0">
-<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-<div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2023, Holly VanLooy Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 7.2.6</a></p>
-</div>
-</div>
-</footer>
-</div>
-<script src="_static/documentation_options.js?v=cc8b8c85"></script>
-<script src="_static/doctools.js?v=888ff710"></script>
-<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-<script defer="defer" src="_static/theme.js?v=40b7bc71"></script>
-</body>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=cc8b8c85"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
 </html>
