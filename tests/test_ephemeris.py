@@ -179,7 +179,8 @@ class TestEphemeris(unittest.TestCase):
     def test_get_model_parameters_linear(self):
         """ Tests the creation of the linear model parameters
 
-            With the input of a linear model type
+            With the input of a linear model type, the linear model parameters dictionary is created
+            The dictionary is the same one from fit_model in the LinearModelEphemeris
         """
         test_model_type= 'linear'
         model_parameters = self.ephemeris._get_model_parameters(test_model_type)
@@ -192,6 +193,11 @@ class TestEphemeris(unittest.TestCase):
         self.assertDictEqual(model_parameters,expected_result)   
 
     def test_get_model_parameters_quad(self):
+        """ Tests the creation of the quadratic model parameters
+
+            With the input of a quadratic model type, the quadratic model parameters dictionary is created
+            The dictionary is the same one from fit_model in the QuadraticModelEphemeris
+        """
         test_model_type = 'quadratic'
         model_parameters = self.ephemeris._get_model_parameters(test_model_type)   
         expected_result = {
@@ -206,12 +212,20 @@ class TestEphemeris(unittest.TestCase):
 
 
     def test_k_value_linear(self):
+        """ Tests the correct k value is returned given the linear model type
+
+            The k value for a linear model is 2
+        """
         test_model_type = 'linear'
         expected_result = 2
         result = self.ephemeris._get_k_value(test_model_type)
         self.assertEqual(result,expected_result)
     
     def test_k_value_quad(self):
+        """ Tests the correct k value is returned given the quadratic model type
+
+            The k value for a quadratic model is 3
+        """
         test_model_type = 'quadratic'
         expected_result = 3
         result = self.ephemeris._get_k_value(test_model_type)
@@ -219,27 +233,47 @@ class TestEphemeris(unittest.TestCase):
 
     
     def test_calc_linear_model_uncertainties(self):
+        """ Tests that the correct array of linear uncertainties are produced
+
+            Produces a numpy array with the length of the epochs
+        """
         expected_result = np.array([0.0003503 , 0.00045729, 0.00045988, 0.00067152])
         result = self.ephemeris._calc_linear_model_uncertainties(test_T0_err_linear, test_P_err_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_calc_quad_model_uncertainties(self):
+        """ Tests that the correct array of quadratic uncertainties are produced
+
+            Produces a numpy array with the length of the epochs
+        """
         expected_result = np.array([0.00042941, 0.00305304, 0.00310238, 0.00742118])
         result = self.ephemeris._calc_quadratic_model_uncertainties(test_T0_err_quad, test_P_err_quad,test_dPdE_err)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_calc_linear_ephemeris(self):
-        expected_result = np.array([-6.73466620e-05, 3.20878101e+02, 3.25243790e+02, 6.25384934e+02])#model data linear
+        """ Tests that the correct linear model data is produced
+
+            The model data is a numpy array of calcuated mid transit times
+        """
+        expected_result = np.array([-6.73466620e-05, 3.20878101e+02, 3.25243790e+02, 6.25384934e+02])#test model data linear
         result = self.ephemeris._calc_linear_ephemeris(test_epochs, test_P_linear, test_T0_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_calc_quadratic_ephemeris(self):
-        expected_result = np.array([-1.41514356e-06,  3.20878053e+02,  3.25243743e+02,  6.25385000e+02])#model data quad
+        """ Tests that the correct quadratic model data is produced
+
+            The model data is a numpy array of calcuated mid transit times
+        """
+        expected_result = np.array([-1.41514356e-06,  3.20878053e+02,  3.25243743e+02,  6.25385000e+02])#test model data quad
         result = self.ephemeris._calc_quadratic_ephemeris(test_epochs,test_P_quad,test_T0_quad,test_dPdE)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
 
     def test_calc_chi_squared_linear(self):
+        """ Tests the calculated chi squared value
+
+            The linear chi squared value is a float that is calculated with the model data produced by test_calc_linear_ephemeris 
+        """
         test_linear_model_data = np.array([-6.73466620e-05, 3.20878101e+02, 3.25243790e+02, 6.25384934e+02])
         expected_result = 0.29406284565290114
         result = self.ephemeris._calc_chi_squared(test_linear_model_data)
@@ -247,12 +281,28 @@ class TestEphemeris(unittest.TestCase):
 
 
     def test_calc_chi_squared_quad(self):
+        """ Tests the calculated chi squared value
+
+            The quadratic chi squared value is a float that is calculated with the model data produced by test_calc_quadratic_ephemeris 
+        """
         test_quad_model_data = np.array([-1.41514356e-06,  3.20878053e+02,  3.25243743e+02,  6.25385000e+02])
         expected_result = 0.20766342879185204
         result = self.ephemeris._calc_chi_squared(test_quad_model_data)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
     
     def test_get_model_ephemeris_linear(self):
+        """ Tests that the linear model type produces the linear model parameters with the linear model type and linear model data included
+
+            Uses the test_get_model_parameters_linear and test_calc_linear_ephemeris to produce a dictionary with:
+            {
+            'period': float,  
+            'period_err': float,
+            'conjunction_time': float,
+            'conjunction_time_err':  float,
+            'model_type': 'linear', 
+            'model_data': np.array
+        }
+        """
         test_model_type = 'linear'
         model_parameters_linear = {
             'period': 1.0914223408652188,  
@@ -266,6 +316,20 @@ class TestEphemeris(unittest.TestCase):
         self.assertDictAlmostEqual(result, model_parameters_linear)
 
     def test_get_model_ephemeris_quad(self):
+        """ Tests that the quadratic model type produces the quadratic model parameters with the quadratic model type and quadratic model data included
+
+            Uses the test_get_model_parameters_linear and test_calc_linear_ephemeris to produce a dictionary with:
+            {
+            'period': float,  
+            'period_err': float,
+            'conjunction_time': float,
+            'conjunction_time_err':  float,
+            'period_change_by_epoch': float,
+            'period_change_by_epoch_err': float,
+            'model_type': 'quadratic', 
+            'model_data': np.array
+        }
+        """
         test_model_type = 'quadratic'
         model_parameters_quad = {
             'conjunction_time': -1.415143555084551e-06,
@@ -281,6 +345,10 @@ class TestEphemeris(unittest.TestCase):
         self.assertDictAlmostEqual(result, model_parameters_quad)
 
     def test_get_ephemeris_uncertainites_model_type_err(self):
+        """ Unsuccessful test to calculate uncertainties
+
+            Model type is needed
+        """
         model_parameters_linear = {
             'period': 1.0914223408652188,  
             'period_err': 9.998517417992763e-07,
@@ -292,6 +360,10 @@ class TestEphemeris(unittest.TestCase):
             self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
     
     def test_get_ephemeris_uncertainties_lin_err(self):
+        """ Unsuccessful test to calculate uncertainties
+
+            Period error and conjunction time error values are needed
+        """
         model_parameters_linear = {
             'period': 1.0914223408652188,  
             'conjunction_time': -6.734666196939187e-05, 
@@ -303,6 +375,10 @@ class TestEphemeris(unittest.TestCase):
 
 
     def test_get_ephemeris_uncertainties_quad_err(self):
+        """ Unsuccessful test to calculate uncertainties
+
+            Conjunction time error, period error and period change by epoch error is needed
+        """
         model_parameters_quad = {
             'conjunction_time': -1.415143555084551e-06,
             'period': 1.0914215464474404,
@@ -316,6 +392,10 @@ class TestEphemeris(unittest.TestCase):
     
    
     def test_get_ephemeris_uncertainites_linear(self):
+        """ Sucessful test to calculate linear uncertainties
+
+            Expected result is the numpy array produced by test_calc_linear_model_uncertaintie
+        """
         model_parameters_linear = {
             'period': 1.0914223408652188,  
             'period_err': 9.998517417992763e-07,
@@ -330,6 +410,10 @@ class TestEphemeris(unittest.TestCase):
         self.assertTrue(np.allclose(expected_result, results, rtol=1e-05, atol=1e-08)) 
          
     def test_get_ephemeris_uncertainites_quad(self):
+        """ Sucessful test to calculate quadratic uncertainties
+
+            Expected result is the numpy array produced by test_calc_quadratic_model_uncertaintie
+        """
         model_parameters_quad = {
             'conjunction_time': -1.415143555084551e-06,
             'conjunction_time_err': 0.00042940561938685084,
@@ -346,6 +430,10 @@ class TestEphemeris(unittest.TestCase):
         self.assertTrue(np.allclose(expected_result, results, rtol=1e-05, atol=1e-08)) 
          
     def test_calc_bic_lin(self):
+        """ Tests the calculation of the linear bic
+
+            Uses the linear k value and linear chi squared value
+        """
         model_parameters_linear = {
             'period': 1.0914223408652188,  
             'period_err': 9.998517417992763e-07,
@@ -354,13 +442,17 @@ class TestEphemeris(unittest.TestCase):
             'model_type': 'linear', 
             'model_data': ([-6.73466620e-05,  3.20878101e+02,  3.25243790e+02,  6.25384934e+02])
         }
-        k_value = 2
-        chi_squared = 0.29406284565290114
+        # k_value = 2
+        # linear_chi_squared = 0.29406284565290114
         expected_result = 3.0666515678926825
         result = self.ephemeris.calc_bic(model_parameters_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
         
     def test_calc_bic_quad(self):
+        """ Tests the calculation of the quadratic bic
+
+            Uses the quadratic k value and quadratic chi squared value
+        """
         model_parameters_quad = {
             'conjunction_time': -1.415143555084551e-06,
             'conjunction_time_err': 0.00042940561938685084,
@@ -371,20 +463,21 @@ class TestEphemeris(unittest.TestCase):
             'model_type': 'quadratic',
             'model_data': ([-1.41514356e-06,  3.20878053e+02,  3.25243743e+02,  6.25385000e+02])
         }
-        k_value = 3
-        chi_squared = 0.20766342879185204
+        # k_value = 3
+        # quad_chi_squared = 0.20766342879185204
         expected_result = 4.3665465121515235
         result = self.ephemeris.calc_bic(model_parameters_quad)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08)) 
     
     def test_calc_delta_bic(self):
-        # LINEAR BIC: 3.066081626051758
-        # QUAD BIC: 4.367257200279945
-        linear_bic = 3.0666515678926825
-        quad_bic = 4.3665465121515235
+        """ Tests the calulation of the delta bic
+
+            Uses both the quadratic bic and linear bic
+        """
+        # linear_bic = 3.0666515678926825
+        # quad_bic = 4.3665465121515235
         expected_result = -1.299894944258841
-        result = self.ephemeris.calc_delta_bic() ##.-1.301175574228187
-        print(result)
+        result = self.ephemeris.calc_delta_bic() 
         self.assertTrue(expected_result, result)
 
     def test_plot_model_ephemeris(self):
