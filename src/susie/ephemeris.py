@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
-# from transit_times import TimingData
+from transit_times import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
@@ -12,7 +12,7 @@ class BaseModelEphemeris(ABC):
         """Fits a model ephemeris to transit data.
 
         Defines the structure for fitting a model (linear or quadratic) to transit data. 
-        All subclasses must implement this method.
+        All sub0classes must implement this method.
 
         Parameters
         ----------

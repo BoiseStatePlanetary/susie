@@ -4,7 +4,6 @@ from astropy import coordinates as coord
 from astropy import units as u
 import logging
 
-
 class TransitTimes():
     """Represents the pre-processed transit mid point timing data over observations.
     
@@ -128,11 +127,18 @@ class TimingData():
             # All data are transit data
             self.transits = TransitTimes(self.epochs, self.mid_times, self.mid_time_uncertainties)
         else:
+            self._validate_tra_or_occ()
             tra_or_occ = np.char.strip(tra_or_occ) # Strip any whitespace
             # Check if any values are not valid in tra_or_occ array
             if any(val not in ['tra', 'occ'] for val in tra_or_occ):
                 raise ValueError("tra_or_occ array cannot contain string values other than 'tra' or 'occ'")
             # Separate epochs, mid times, and uncertainties into their respective lists
+            
+            # t_epochs = []
+            # for i in range(len(tra_or_occ)):
+            #     if tra_or_occ[i] == 'tra':
+            #         t_epochs.append(self.epochs[i])
+
             t_epochs = np.array([self.epochs[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
             t_mid_times = np.array([self.mid_times[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
             t_mid_time_uncertainties = np.array([self.mid_time_uncertainties[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
@@ -232,6 +238,10 @@ class TimingData():
         # Perform correction, will return array of corrected times
         self.mid_time_uncertainties = self._calc_barycentric_time(mid_time_uncertainties_obj, obj_location, obs_location)
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
+
+    def _validate_tra_or_occ(self):
+        #... ADD IN TESTS
+        pass
 
     def _validate(self):
         """Checks that all object attributes are of correct types and within value constraints.
