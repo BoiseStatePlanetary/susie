@@ -39,12 +39,10 @@ class TestTransitTimes(unittest.TestCase):
        
     # Test instantiating with correct and incorrect timescales
     def test_successful_instantiation_jd_tdb_timescale(self):
-        """
-            Testing successful instantiation of Transit Times object with the given parameters:
-                epochs: 
-                mid_transit_times:
-                mid_transit_time_errors:
+        """Successful creation of the TimingData object with proper timescale
 
+            Creating the TimingData object with the proper timescale of JD TDB which is
+            barycentric Julian Date. Also including uncertainties.
         """
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
         self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
