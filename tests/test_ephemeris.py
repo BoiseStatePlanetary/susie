@@ -159,8 +159,8 @@ class TestEphemeris(unittest.TestCase):
 
     def setUp(self):
        """ Sets up the intantiation of TransitTimes object and Ephemeris object
-            
-            Runs before every test in the TestEphemeris class
+
+           Runs before every test in the TestEphemeris class
        """
        self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
        self.assertIsInstance(self.transit_times, TransitTimes)
@@ -480,29 +480,6 @@ class TestEphemeris(unittest.TestCase):
         result = self.ephemeris.calc_delta_bic() 
         self.assertTrue(expected_result, result)
 
-    def test_plot_model_ephemeris(self):
-        pass
-   
-    # ## can see if the plots were saved 
-    # ##def test_save_plot(self):
-    #     # Generate some sample data for testing
-    #     epochs = np.linspace(0, 10, 100)
-    #     model_data_dict = {
-    #         'model_data': np.sin(epochs),  # Sample model data
-    #         'model_type': 'linear'  # Sample model type
-    #     }
-
-    #     # Define the file path to save the plot
-    #     save_filepath = 'test_plot_model_ephemeris.png'
-
-    #     # Call the method to generate and save the plot
-    #     self.ephemeris.plot_model_ephemeris(model_data_dict, save_plot=True, save_filepath=save_filepath)
-
-    #     # Check if the plot is saved successfully
-    #     self.assertTrue(os.path.exists(save_filepath))
-
-    #     # Clean up: remove the saved plot
-    #     os.remove(save_filepath)
     
 
     if __name__ == '__main__':
