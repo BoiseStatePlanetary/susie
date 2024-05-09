@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from src.susie.transit_times import TimingData
+from src.susie.transit_times import TimingData, TransitTimes
 import unittest
 import numpy as np
 
@@ -76,7 +76,7 @@ class TestTimingData(unittest.TestCase):
              TimingData('jd', string_test_epochs_arr, test_mtts, test_mtts_err, time_scale='tdb')
      
     def test_us_mtts_arr_type_str(self):
-        # midtransitstimes are strings instead of numpy array
+        # mid transits times are strings instead of numpy array
         string_test_mtts_arr = str(test_mtts)
         with self.assertRaises(TypeError, msg="The variable 'mid_transit_times' expected a NumPy array (np.ndarray) but received a different data type"):
              TimingData('jd', test_epochs, string_test_mtts_arr, test_mtts_err, time_scale='tdb')
@@ -103,7 +103,7 @@ class TestTimingData(unittest.TestCase):
              TimingData('jd', float_test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
     
     def test_us_mtts_value_types_int(self):
-        # mid transit times are int error is not being raised
+        # mid transit times are int
         int_test_mtts= test_mtts.astype(int)
         with self.assertRaises(TypeError, msg="All values in 'mid_transit_times' must be of type float."):
              TimingData('jd', test_epochs, int_test_mtts, test_mtts_err, time_scale='tdb')
@@ -240,6 +240,47 @@ class TestTimingData(unittest.TestCase):
     def calc_bary_time_uncertinties(self):
        test_mtts_err=np.array([1.0, 1.0, 1.0, 1.0])
        self.transit =  TimingData('jd', test_epochs, test_mtts,test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+
+    # test for if tra_or_occ is None
+    def test_tra_or_occ_None(self):
+        self.transit = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb', tra_or_occ = None)
+        pass
+
+
+    # Tests for validate tra_or_occ
+    tra_or_occ = np.array(['tra','occ','tra','occ'])
+    # only 'tra' or 'occ'
+    def test_only_tra_or_occ_value(self):
+        not_tra_or_occ = np.array(['tra','occ','trac','oc'])
+        with self.assertRaises(ValueError, msg="tra_or_occ array cannot contain string values other than 'tra' or 'occ'"):
+             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
+
+    # numpy array
+    def test_tra_or_occ_array(self):
+        not_tra_or_occ = (['tra','occ','tra','occ'])
+        with self.assertRaises(TypeError, msg= "The variable 'tra_or_occ' expected a NumPy array (np.ndarray) but received a different data type"):
+             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
+
+    # shape
+    def test_tra_or_occ_shape(self):
+        not_tra_or_occ = np.array(['occ','tra','occ'])
+        with self.assertRaises(ValueError, msg= "Shapes of 'tra_or_occ', 'mid_time_uncertainties', and 'mid_times' arrays do not match."):
+             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
+
+    # strings
+    def test_tra_or_occ_str(self):
+        not_tra_or_occ = np.array([1,2,3,4])
+        with self.assertRaises(TypeError, msg= "All values in 'tra_or_occ' must be of type string."):
+             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
+    
+    # no null
+    
+
+    # tests for the validate data
+    # numpy array
+    # shape
+
+
     
     # def test_successful_instantiation_jd_no_timescale(self):
     #     transit_times = TransitTimes('jd', )
