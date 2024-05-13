@@ -3,7 +3,8 @@ sys.path.append(".")
 import unittest
 import numpy as np
 import matplotlib.pyplot as plt
-from susie.transit_times import TransitTimes
+
+from susie.transit_times import TimingData
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
 from scipy.optimize import curve_fit
 test_epochs = np.array([0, 294, 298, 573])
@@ -32,7 +33,7 @@ class TestLinearModelEphemeris(unittest.TestCase):
         """ Tests that ephemeris is an instance of LinearModelEphemeris
         """
         self.ephemeris = LinearModelEphemeris()
-        self.assertIsInstance(self.emphemeris, LinearModelEphemeris)
+        self.assertIsInstance(self.ephemeris, LinearModelEphemeris)
     
     def test_linear_fit(self):
         """Tests that the lin_fit function works
@@ -74,7 +75,7 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
         """ Tests that ephemeris is an instance of QuadraticModelEphemeris
         """
         self.ephemeris = QuadraticModelEphemeris()
-        self.assertIsInstance(self.emphemeris, QuadraticModelEphemeris)
+        self.assertIsInstance(self.ephemeris, QuadraticModelEphemeris)
 
     def test_quad_fit(self):
         """ Tests that the quad_fit function works
@@ -162,9 +163,9 @@ class TestEphemeris(unittest.TestCase):
 
            Runs before every test in the TestEphemeris class
        """
-       self.transit_times = TransitTimes('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-       self.assertIsInstance(self.transit_times, TransitTimes)
-       self.ephemeris = Ephemeris(self.transit_times)
+       self.transit = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+       self.assertIsInstance(self.transit, TimingData)
+       self.ephemeris = Ephemeris(self.transit)
       
 
     def test_us_transit_times_instantiation(self):

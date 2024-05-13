@@ -46,12 +46,12 @@ class TestTimingData(unittest.TestCase):
             barycentric Julian Date. Also including uncertainties.
         """
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
-        self.transit = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertIsInstance(self.transit, TimingData)  # Check if the object is an instance of TransitTimes
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertIsInstance(self.timing_data, TimingData)  # Check if the object is an instance of TransitTimes
         shifted_epochs = test_epochs - np.min(test_epochs) 
-        self.assertTrue(np.array_equal(self.transit.epochs, shifted_epochs))  # Check if epochs remain unchanged
-        self.assertTrue(np.array_equal(self.transit.mid_times, test_mtts))  # Check mid_transit_times
-        self.assertTrue(np.array_equal(self.transit.mid_time_uncertainties, test_mtts_err))  # Check uncertainties
+        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs))  # Check if epochs remain unchanged
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, test_mtts))  # Check mid_transit_times
+        self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties, test_mtts_err))  # Check uncertainties
 
     def test_s_init_jd_tdb_no_uncertainties(self):
         """ Successful creation of the TimingData object with proper timescale
@@ -60,14 +60,14 @@ class TestTimingData(unittest.TestCase):
             barycentric Julian Date. Not including uncertainties.
         """
         # Should not get any errors, the epochs and transit times should be the same as they are inputted
-        self.transit = TimingData('jd', test_epochs, test_mtts, time_scale='tdb')
-        self.assertIsInstance(self.transit, TimingData )  # Check if the object is an instance of TransitTimes
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, time_scale='tdb')
+        self.assertIsInstance(self.timing_data, TimingData )  # Check if the object is an instance of TransitTimes
         shifted_epochs = test_epochs - np.min(test_epochs)
         shifted_mtt = test_mtts - np.min(test_mtts)
         new_uncertainties = np.ones_like(test_epochs, dtype=float)
-        self.assertTrue(np.array_equal(self.transit.epochs, shifted_epochs))  # Check if epochs remain unchanged
-        self.assertTrue(np.array_equal(self.transit.mid_times, shifted_mtt))  # Check mid_transit_times
-        self.assertTrue(np.array_equal(self.transit.mid_time_uncertainties, new_uncertainties))  # Check uncertainties chage this back!!!
+        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs))  # Check if epochs remain unchanged
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtt))  # Check mid_transit_times
+        self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties, new_uncertainties))  # Check uncertainties chage this back!!!
 
     
 
@@ -75,6 +75,14 @@ class TestTimingData(unittest.TestCase):
 
 
     # Test successful np.arrays
+    def test_suc_arrays(self):
+        """ Successful test to check that epochs, mid times and mid time uncertainties are all type np.arrays
+
+        """
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.epochs))
+        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_times))
+        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_time_uncertainties))  
 
     # Tests for unsucessful np.arrays
     def test_us_epochs_arr_type_str(self):
@@ -111,10 +119,10 @@ class TestTimingData(unittest.TestCase):
 
             Epochs should be integers, mid times should be floats, and mid time uncertainties should be floats.
         """
-        self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(all(isinstance(value, (int, np.int64)) for value in self.transit.epochs))
-        self.assertTrue(all(isinstance(value, float) for value in self.transit.mid_times))
-        self.assertTrue(all(isinstance(value, float) for value in self.transit.mid_time_uncertainties))
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(all(isinstance(value, (int, np.int64)) for value in self.timing_data.epochs))
+        self.assertTrue(all(isinstance(value, float) for value in self.timing_data.mid_times))
+        self.assertTrue(all(isinstance(value, float) for value in self.timing_data.mid_time_uncertainties))
    
     # Test for unsuccessful data value type validation
     def test_us_epochs_value_types_float(self):
@@ -153,8 +161,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
         shifted_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
-        self.transit =  TimingData('jd', test_epochs_zero, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.epochs, shifted_epochs_zero))
+        self.timing_data =  TimingData('jd', test_epochs_zero, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_zero))
     
     def test_shifted_epochs_pos(self):
         """ Successful test to check the shifted epochs function works when the epochs start with a positive number.
@@ -163,8 +171,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_epochs_pos = np.array([1, 294, 298, 573]).astype(int)
         shifted_epochs_pos = np.array([0, 293, 297, 572]).astype(int)
-        self.transit =  TimingData('jd', test_epochs_pos, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.epochs, shifted_epochs_pos))
+        self.timing_data =  TimingData('jd', test_epochs_pos, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_pos))
 
     def test_shifted_epochs_neg(self):
         """ Successful test to check the shifted epochs function works when the epochs start with a negative number.
@@ -173,8 +181,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_epochs_neg = np.array([-1, 294, 298, 573]).astype(int)
         shifted_epochs_neg = np.array([0, 295, 299, 574]).astype(int)
-        self.transit =  TimingData('jd', test_epochs_neg, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.epochs, shifted_epochs_neg))
+        self.timing_data =  TimingData('jd', test_epochs_neg, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_neg))
 
 
     # Checks that mid transit times work with positive, negative and 0 values when shifted 
@@ -185,8 +193,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_mtts_zero = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
         shifted_mtts_zero = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-        self.transit =  TimingData('jd', test_epochs, test_mtts_zero, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.mid_times, shifted_mtts_zero))
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts_zero, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_zero))
 
     def test_shifted_mtts_pos(self):
         """ Successful test to check the shifted mid times function works when the mid times start with a positive number.
@@ -195,8 +203,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_mtts_pos = np.array([1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
         shifted_mtts_pos = np.array([0.0, 319.8780000000261, 324.24399999994785, 624.3850000002421])
-        self.transit =  TimingData('jd', test_epochs, test_mtts_pos, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.mid_times, shifted_mtts_pos))
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts_pos, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_pos))
     
     def test_shifted_mtts_neg(self):
         """ Successful test to check the shifted mid times function works when the mid times start with a negative number.
@@ -205,8 +213,8 @@ class TestTimingData(unittest.TestCase):
         """
         test_mtts_neg = np.array([-1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
         shifted_mtts_neg = np.array([0.0, 321.8780000000261, 326.24399999994785, 626.3850000002421])
-        self.transit =  TimingData('jd', test_epochs, test_mtts_neg, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.mid_times, shifted_mtts_neg))
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts_neg, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_neg))
 
 #<————————————————————————————————————————————————————————————————————————————————————————>
     def test_no_mtts_err(self):
@@ -215,7 +223,7 @@ class TestTimingData(unittest.TestCase):
             If no mid time uncertainties are given the certainties will be an array ones with a data type of floats and the length of the mid times array.
         """
         test_mtts_err = None
-        self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         if test_mtts_err is None:
             new_uncertainities= np.ones_like(test_epochs,dtype=float)
             self.assertTrue(np.all(new_uncertainities==np.ones_like(test_epochs,dtype=float)))
@@ -225,8 +233,8 @@ class TestTimingData(unittest.TestCase):
         
         """
         new_test_mtts_err=np.ones_like(test_mtts_err)
-        self.transit= TimingData('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.mid_time_uncertainties,new_test_mtts_err))
+        self.timing_data= TimingData('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties,new_test_mtts_err))
 
     def test_mid_transit_err_neg(self):
         """ Unsuccessful test for when the mid time uncertainties are negative.
@@ -251,15 +259,15 @@ class TestTimingData(unittest.TestCase):
         """ Successful test for postive and greater than zero mid time uncertainties.
 
         """
-        self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit.mid_time_uncertainties, test_mtts_err))
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties, test_mtts_err))
 
     # Tests for the same shape of arrays
     def test_variable_shape(self):
         """ Successful test to check that all of the varibles have the same shape.
 
         """
-        self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertEqual(test_epochs.shape, test_mtts.shape, test_mtts_err.shape)
 
     def test_variable_shape_fail(self):
@@ -278,7 +286,7 @@ class TestTimingData(unittest.TestCase):
 
             No NaN values in epochs, mid times and mid times uncertainties.
         """
-        self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertNotIn(np.nan,test_epochs)
         self.assertNotIn(np.nan,test_mtts)
         self.assertNotIn(np.nan,test_mtts_err)
@@ -309,20 +317,22 @@ class TestTimingData(unittest.TestCase):
     # test_obs_locations=np.array([2.0,3.0])
     # #check uncertainties arent ones
     # def calc_bary_time_instantiation(self):
-    #     self.transit =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    #     self.assertIsInstance(self.transit,  TimingData)
+    #     self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    #     self.assertIsInstance(self.timing_data,  TimingData)
     
     # def calc_bary_time_uncertinties(self):
     #    test_mtts_err=np.array([1.0, 1.0, 1.0, 1.0])
-    #    self.transit =  TimingData('jd', test_epochs, test_mtts,test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    #    self.timing_data =  TimingData('jd', test_epochs, test_mtts,test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
 
 
     # Tests for validate tra_or_occ
      # test for if tra_or_occ is None
     def test_tra_or_occ_None(self):
-        self.transit = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb', tra_or_occ = None)
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb', tra_or_occ = None)
         pass
 
+    
+    
     
     def test_only_tra_or_occ_value(self):
         """ Unsuccessful test to check if the tra_or_occ array contains values other than 'tra' or 'occ'.
