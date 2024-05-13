@@ -106,7 +106,7 @@ class TimingData():
         Parameters
         ----------
             time_obj : numpy.ndarray[float]
-                List of timing data to be corrected to the Barycentric Julian Date time format in the TDB time scale.
+               List of timing data to be corrected to the Barycentric Julian Date time format in the TDB time scale.
             obj_location : Astropy.coordinates.SkyCoord obj
                 The RA and DEC in degrees of the object being observed, stored as an Astropy coordinates.SkyCoord object.
             obs_location : Astropy.coordinates.EarthLocation obj
