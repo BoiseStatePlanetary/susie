@@ -33,11 +33,10 @@ class BaseModelEphemeris(ABC):
 
 
 class LinearModelEphemeris(BaseModelEphemeris):
-    # TODO: Needs to change
     """Subclass of BaseModelEphemeris that implements a linear fit."""
     def lin_fit(self, E, P, T0, tra_or_occ):
         """Calculates a linear function with given data.
-
+        TODO: This needs to be updated for the new fit & occultations
         Uses the equation (Period * epochs + initial mid time) as a linear function for SciPy's 
         curve_fit method.
         
@@ -46,15 +45,17 @@ class LinearModelEphemeris(BaseModelEphemeris):
 
             E: numpy.ndarray[float]
                 The epochs.
-            P : float
+            P: float
                 The exoplanet transit period.
-            T0 : float
+            T0: float
                 The initial mid time.
         
         Returns
         -------
-            P*x + T0 : numpy.ndarray[float]
-                A linear function calculated with TransitTimes object data to be used with curve_fit.
+            result: numpy.ndarray[float]
+                A linear function calculated with the TimingData object, returned as:
+                    P*E + T0 if the data point is an observed transit (denoted by 0)
+                    P*E + (T0 + 0.5*P) if the data point is an observed occultation (denoted by 1)
         """
         if tra_or_occ is None:
             # All values are transits
@@ -68,12 +69,13 @@ class LinearModelEphemeris(BaseModelEphemeris):
                     result[i] = P*E[i] + T0
                 elif t_type == 1:
                     # occultation data
-                    result[i] = (T0 + 0.5*P) + P*E[i]
+                    result[i] = P*E[i] + (T0 + 0.5*P)
             return result
     
     def fit_model(self, x, y, yerr, tra_or_occ, **kwargs):
         """Fits a linear model to ephemeris data.
 
+        TODO: This needs to be updated for the new fit & occultations
         Compares the model ephemieris data to the linear fit created by data in TransitTimes object calculated 
         with lin_fit method. Then creates a curve fit which minimizes the difference between the two sets of data.
         Curve fit then returns the parameters of the linear function corresponding to period, conjunction time, 
@@ -103,6 +105,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=['E', 'tra_or_occ'])
+        # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
         params = model.make_params(T0=0., P=1.091423, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
@@ -113,12 +116,10 @@ class LinearModelEphemeris(BaseModelEphemeris):
         }
         return(return_data)
 
-# TODO: Check the units for each thing in here (are times given in days, seconds?)
-
 class QuadraticModelEphemeris(BaseModelEphemeris):
     # TODO: Needs to change
     """Subclass of BaseModelEphemeris that implements a quadratic fit."""
-    def quad_fit(self, x, dPdE, P, T0):
+    def quad_fit(self, E, dPdE, P, T0, tra_or_occ):
         """Calculates a quadratic function with given data.
 
         Uses the equation (0.5 * change in period over epoch * mid transit times^2 + Period * mid transit times + initial epoch) 
@@ -141,7 +142,20 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
                 A list of quadratic function values calculated with TransitTimes object data to be 
                 used with curve_fit.
         """
-        return 0.5*dPdE*x*x + P*x + T0
+        if tra_or_occ is None:
+            # All values are transits
+            return 0.5*dPdE*E*E + P*E + T0
+        else:
+            # Have both transits and occultations, calculate different value for each
+            result = np.zeros_like(E)
+            for i, t_type in enumerate(tra_or_occ):
+                if t_type == 0:
+                    # transit data
+                    result[i] = T0 + P*E[i] + 0.5*dPdE*E[i]*E[i] 
+                elif t_type == 1:
+                    # occultation data
+                    result[i] = (T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i] 
+        return result
     
     def fit_model(self, x, y, yerr, **kwargs):
         """Fits a quadratic model to ephemeris data.
