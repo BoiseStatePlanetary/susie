@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
@@ -402,7 +401,7 @@ class Ephemeris(object):
             elif t_type == 'occ':
                 # occultation data
                 result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
-        return result
+        return np.array(result)
     
     def _calc_quadratic_model_uncertainties(self, T0_err, P_err, dPdE_err):
         """Calculates the uncertainties of a given quadratic model when compared to actual data in TransitTimes.
@@ -435,58 +434,74 @@ class Ephemeris(object):
             elif t_type == 'occ':
                 # occultation data
                 result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
-        return result
+        return np.array(result)
     
-    def _calc_linear_ephemeris(self, epochs, period, conjunction_time):
-        # TODO: Need to change this, how do we calculate with occultations introduced? 
+    def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates the mid transit times using parameters from a linear model ephemeris.
         
+        TODO: Update docstring
         Uses the equation (T0 + PE) to calculate the mid transit times over each epoch where T0 is 
         conjunction time, P is period, and E is epoch.
 
         Parameters
         ----------
-            epochs: numpy.ndarray[int]
+            E: numpy.ndarray[int]
                 The epochs pulled from the TransitTimes object.
-            period: float
+            P: float
                 The period of the exoplanet transit as calculated by the linear ephemeris model.
-            conjunction_time: float
+            T0: float
                 The conjunction time of the exoplanet transit as calculated by the linear ephemeris model.
 
         Returns
         -------
             A numpy array of mid transit times calculated over each epoch using the equation above.
         """
-        return ((period*epochs) + conjunction_time)
+        result = []
+        for i, t_type in enumerate(self.timing_data.tra_or_occ):
+            if t_type == 'tra':
+                # transit data
+                result.append(T0 + (P*E[i]))
+            elif t_type == 'occ':
+                # occultation data
+                result.append((T0 + 0.5*P) + (P*E[i]))
+        return np.array(result)
     
-    def _calc_quadratic_ephemeris(self, epochs, period, conjunction_time, period_change_by_epoch):
-        # TODO: Need to change this, how do we calculate with occultations introduced? 
+    def _calc_quadratic_ephemeris(self, E, P, T0, dPdE):
         """Calculates the mid transit times using parameters from a quadratic model ephemeris.
 
+        TODO: Update docstring
         Uses the equation (T0 + PE + 0.5 * dPdE * E^2) to calculate the mid transit times over each epoch 
         where T0 is conjunction time, P is period, E is epoch, and dPdE is period change with respect to epoch.
 
         Parameters
         ----------
-            epochs: numpy.ndarray[int]
+            E: numpy.ndarray[int]
                 The epochs pulled from the TransitTimes object.
-            period: float
+            P: float
                 The period of the exoplanet transit as calculated by the linear ephemeris model.
-            conjunction_time: float
+            T0: float
                 The conjunction time of the exoplanet transit as calculated by the linear ephemeris model.
-            period_change_by_epoch: float
+            dPdE: float
                 The period change with respect to epoch as calculated by the linear ephemeris model.
 
         Returns
         -------
             A numpy array of mid transit times calculated over each epoch using the equation above.
         """
-        return((0.5*period_change_by_epoch*(epochs**2)) + (period*epochs) + conjunction_time)
+        result = []
+        for i, t_type in enumerate(self.timing_data.tra_or_occ):
+            if t_type == 'tra':
+                # transit data
+                result.append(T0 + P*E[i] + 0.5*dPdE*E[i]*E[i])
+            elif t_type == 'occ':
+                # occultation data
+                result.append((T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i])
+        return np.array(result)
     
     def _calc_chi_squared(self, model_data):
-        # TODO: Need to change this, how do we calculate with occultations introduced?
         """Calculates the residual chi squared values for the model ephemeris.
 
+        TODO: Update docstring
         STEP 1: Get the observed transit times and observed transit times uncertainties from transit_times.py.
 
         STEP 2: Calculate the chi-squared value for the observed and model data, then return this value.
@@ -503,15 +518,25 @@ class Ephemeris(object):
                 The chi-squared value calculated from the observed and model data.
         """
         # STEP 1: Get observed transit times
-        observed_data = self.transit_times.mid_transit_times
-        uncertainties = self.transit_times.mid_transit_times_uncertainties
+        observed_data = self.timing_data.mid_times
+        uncertainties = self.timing_data.mid_time_uncertainties
         # STEP 2: calculate X2 with observed data and model data
         return np.sum(((observed_data - model_data)/uncertainties)**2)
     
+    def _subtract_plotting_parameters(self, model_data, T0, P, E):
+        result = []
+        for i, t_type in enumerate(self.timing_data.tra_or_occ):
+            if t_type == 'tra':
+                # transit data
+                result.append(model_data[i] - T0 - (P*E[i]))
+            elif t_type == 'occ':
+                # occultation data
+                result.append(model_data[i] - T0 - (0.5*P) - (P*E[i]))
+        return np.array(result)
+    
     def get_model_ephemeris(self, model_type):
-        # TODO: Need to change this, need to change the parameters that get passed in
         """Fits the transit data to a specified model using scipy.optimize.curve_fit function.
-        
+        TODO: Update docstring
         Parameters
         ----------
             model_type: str
@@ -543,7 +568,7 @@ class Ephemeris(object):
     
     def get_ephemeris_uncertainties(self, model_params):
         """Calculates the uncertainties of a specific model data when compared to the actual data. 
-        
+        TODO: Update docstring
         Uses the equation 
         
         .. math::
@@ -633,10 +658,9 @@ class Ephemeris(object):
         return delta_bic
     
     def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
-        # TODO: Need to change this, how do we plot with occultations introduced? 
-        # Maybe we still keep all epochs as a variable?
         """Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
 
+        TODO: Update docstring
         STEP 1: Plot a scatterplot of epochs (from transit_times.py) vs model_data, which is an array of floats that is a value of 'model_data_dict'.
 
         STEP 2: Save the plot if indicated by the user.
@@ -654,20 +678,17 @@ class Ephemeris(object):
         ------- 
             A MatplotLib plot of epochs vs. model predicted mid-transit times.
         """
-        plt.scatter(x=self.transit_times.epochs, y=model_data_dict['model_data'])
+        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'])
         plt.xlabel('Epochs')
-        plt.ylabel('Model Predicted Mid-Transit Times (units)')
-        plt.title(f'Predicted {model_data_dict["model_type"]} Model Mid Transit Times over Epochs')
+        plt.ylabel('Model Predicted Mid-Times (units)')
+        plt.title(f'Predicted {model_data_dict["model_type"].capitalize()} Model Mid Times over Epochs')
         if save_plot == True:
             plt.savefig(save_filepath)
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
-        # TODO: Need to change this, how do we plot with occultations introduced? 
-        # Maybe we still keep all epochs as a variable?
-
         """Returns a MatplotLib scatter plot showing timing uncertainties over epochs.
-
+        TODO: Update docstring, hwo do we label the lines now that we have additional way of calculating y for occultations?
         STEP 1: Get the uncertianies from the model data dictionary.
 
         STEP 2: Get the model data, which is an arrary of floats representing the predicted mid-transit time data, the conjunction time and the inital period. Subtract the conjunction time and the initial period from this array.
@@ -691,30 +712,27 @@ class Ephemeris(object):
         """
         # get uncertainties
         model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
-        x = self.transit_times.epochs
-        # get T(E) - T0 - PE
+        x = self.timing_data.epochs
+        # get T(E) - T0 - PE  OR  T(E) - T0 - 0.5P - PE
         # TODO: Make this calculation a separate function
-        y = (model_data_dict['model_data'] - model_data_dict['conjunction_time'] - (model_data_dict['period']*self.transit_times.epochs))
+        y = self._subtract_plotting_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs)
         # plot the y line, then the line +- the uncertainties
         plt.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
         plt.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
         plt.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
         # Add labels and show legend
         plt.xlabel('Epochs')
-        plt.ylabel('Days')
+        plt.ylabel('Seconds') # TODO: Are these days or seconds?
+        plt.title(f'Uncertainties of Predicted {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid Times')
         plt.legend()
         if save_plot is True:
             plt.savefig(save_filepath)
         plt.show()
 
     def plot_oc_plot(self, save_plot=False, save_filepath=None):
-        # TODO: Need to change this, how do we plot with occultations introduced? 
-        # Maybe we still keep all epochs as a variable?
-        # We also use mid times and uncertainties, so we will have to figure out how to account 
-        # for the occultation data in here
-
         """Returns a MatplotLib scatter plot showing observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.
 
+        TODO: Update docstring
         STEP 1: Call 'get_model_ephemeris' for both the linear and quadratic model types. 
 
         STEP 2: Calculate the quadratic model curve, which follows the formula :math:`y = 0.5 \\frac{dP_0}{dE} * (E - \\text{median} E)^2.`
@@ -740,17 +758,19 @@ class Ephemeris(object):
         quad_model = self.get_model_ephemeris('quadratic')
         # y = 0.5 dP/dE * (E - median E)^2
         # TODO: Make this calculation a separate function
-        quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.transit_times.epochs - np.median(self.transit_times.epochs))**2)
-        # plot points w/ x=epoch, y=T0-PE, yerr=sigmaT0
-        plt.errorbar(self.transit_times.epochs, (self.transit_times.mid_transit_times - lin_model['conjunction_time'] - (lin_model['period']*self.transit_times.epochs)), 
-                    yerr=self.transit_times.mid_transit_times_uncertainties, marker='o', ls='', color='#0033A0',
+        quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2)
+        # plot points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
+        y = self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)
+        plt.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties, 
+                    marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
-        plt.plot(self.transit_times.epochs,
+        plt.plot(self.timing_data.epochs,
                  (quad_model_curve),
                  color='#D64309', label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
         plt.legend()
         plt.xlabel('E - Median E')
         plt.ylabel('O-C (seconds)')
+        plt.title('Observed Minus Caluclated Plot')
         if save_plot is True:
             plt.savefig(save_filepath)
         plt.show()
@@ -784,22 +804,27 @@ class Ephemeris(object):
             A MatplotLib scatter plot of epochs vs. :math:`\\Delta BIC` for each epoch.
         """
         delta_bics = []
-        all_epochs = self.transit_times.epochs
-        all_mid_transit_times = self.transit_times.mid_transit_times
-        all_uncertainties = self.transit_times.mid_transit_times_uncertainties
+        all_epochs = self.timing_data.epochs
+        all_mid_times = self.timing_data.mid_times
+        all_uncertainties = self.timing_data.mid_time_uncertainties
+        all_tra_or_occ = self.timing_data.tra_or_occ
         # for each epoch (starting at 3?), calculate the delta bic, plot delta bics over epoch
         for i in range(0, len(all_epochs)):
             if i < 2:
                 delta_bics.append(int(0))
             else:
-                self.transit_times.mid_transit_times = all_mid_transit_times[:i+1]
-                self.transit_times.mid_transit_times_uncertainties = all_uncertainties[:i+1]
-                self.transit_times.epochs = all_epochs[:i+1]
+                self.timing_data.epochs = all_epochs[:i+1]
+                self.timing_data.mid_times = all_mid_times[:i+1]
+                self.timing_data.mid_time_uncertainties = all_uncertainties[:i+1]
+                self.timing_data.tra_or_occ = all_tra_or_occ[:i+1]
                 delta_bic = self.calc_delta_bic()
                 delta_bics.append(delta_bic)
-        plt.scatter(x=self.transit_times.epochs, y=delta_bics)
+        plt.scatter(x=self.timing_data.epochs, y=delta_bics)
         plt.grid(True)
-        plt.plot(self.transit_times.epochs, delta_bics)
+        plt.plot(self.timing_data.epochs, delta_bics)
+        plt.xlabel('Epoch')
+        plt.ylabel('$\Delta$BIC')
+        plt.title("Value of $\Delta$BIC as Observational Epochs Increase")
         if save_plot is True:
             plt.savefig(save_filepath)
         plt.show()
@@ -821,31 +846,36 @@ if __name__ == '__main__':
     times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb', tra_or_occ=tra_or_occs)
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
-    # STEP 5: Get model ephemeris data
-    # LINEAR MODEL
+    # STEP 5: Get model ephemeris data & BIC values
+    # # LINEAR MODEL
     linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
-    print(linear_model_data)
+    # print(linear_model_data)
     linear_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_model_data)
-    print(linear_model_uncertainties)
+    # print(linear_model_uncertainties)
+    lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
+    # print(lin_bic)
     # # QUADRATIC MODEL
-    # quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
+    quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
     # print(quad_model_data)
-    # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
+    quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
     # print(quad_model_uncertainties)
+    quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
+    # print(quad_bic)
+    # STEP 5.5: Get the delta BIC value for both models
+    delta_bic = ephemeris_obj1.calc_delta_bic()
+    # print(delta_bic)
 
-    # # ephemeris_obj1.plot_model_ephemeris(linear_model_data)
-    # # ephemeris_obj1.plot_model_ephemeris(quad_model_data)
-    # ephemeris_obj1.plot_oc_plot()
+    # STEP 6: Show a plot of the model ephemeris data
+    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
 
-    # # STEP 6: Show a plot of the model ephemeris data
-    # # ephemeris_obj1.plot_model_ephemeris(model_data, save_plot=False)
-    # # # STEP 7: Uncertainties plot
-    # # ephemeris_obj1.plot_timing_uncertainties(model_data, save_plot=False)
-    # # bic = ephemeris_obj1.calc_bic(model_data)
-    # # print(bic)
+    # STEP 7: Uncertainties plot
+    # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
+    # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
+    
+    # STEP 8: O-C Plot
+    # ephemeris_obj1.plot_oc_plot(save_plot=False)
 
-    # # print(ephemeris_obj1.calc_delta_bic())
-    # print(ephemeris_obj1.plot_running_delta_bic(save_plot=False))
-    # # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-
-    # # ephemeris_obj1.plot_oc_plot(False)
+    # STEP 9: Running delta BIC plot
+    ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+    
