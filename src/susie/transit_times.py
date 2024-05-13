@@ -127,7 +127,7 @@ class TimingData():
             # All data are transit data
             self.transits = TransitTimes(self.epochs, self.mid_times, self.mid_time_uncertainties)
         else:
-            self._validate_tra_or_occ()
+            self._validate_tra_or_occ(tra_or_occ)
             tra_or_occ = np.char.strip(tra_or_occ) # Strip any whitespace
             # Separate epochs, mid times, and uncertainties into their respective lists
             # t_epochs = []
@@ -237,22 +237,22 @@ class TimingData():
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
 
     def _validate_tra_or_occ(self,tra_or_occ):
-        # Check if any values are not valid in tra_or_occ array
-        if any(val not in ['tra', 'occ'] for val in tra_or_occ):
-            raise ValueError("tra_or_occ array cannot contain string values other than 'tra' or 'occ'")
         # Check that all are of type array
         if not isinstance(tra_or_occ, np.ndarray):
             raise TypeError("The variable 'tra_or_occ' expected a NumPy array (np.ndarray) but received a different data type")
+        # Check if any values are not valid in tra_or_occ array
+        if any(val not in ['tra', 'occ'] for val in tra_or_occ):
+            raise ValueError("tra_or_occ array cannot contain string values other than 'tra' or 'occ'")
         # Check the shape 
-        if tra_or_occ.shape != self.mid_time_uncertainties.shape != self.mid_times.shape:
+        if tra_or_occ.shape != self.mid_time_uncertainties.shape or tra_or_occ.shape != self.mid_times.shape:
             raise ValueError("Shapes of 'tra_or_occ', 'mid_time_uncertainties', and 'mid_times' arrays do not match.")
         # strings
         if not all(isinstance(value, str) for value in tra_or_occ):
             raise TypeError("All values in 'tra_or_occ' must be of type string.")
         # null values
-        if np.any(np.isnan(tra_or_occ)):
+        if np.issubdtype(tra_or_occ.dtype, np.number) and np.any(np.isnan(tra_or_occ)):
             raise ValueError("The 'tra_or_occ' array contains NaN (Not-a-Number) values.")
-
+        
     def _validate_tra_or_occ_data(self,t_epochs,t_mid_times,t_mid_time_uncertainties,o_epochs, o_mid_times, o_mid_time_uncertainties):
         # Check that all are of type array
         if not isinstance(t_mid_times, np.ndarray):
