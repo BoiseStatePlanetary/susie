@@ -196,7 +196,7 @@ class TestTimingData(unittest.TestCase):
         test_mtts_pos = np.array([1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
         shifted_mtts_pos = np.array([0.0, 319.8780000000261, 324.24399999994785, 624.3850000002421])
         self.transit =  TimingData('jd', test_epochs, test_mtts_pos, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.transit_times.mid_transit_times, shifted_mtts_pos))
+        self.assertTrue(np.array_equal(self.transit.mid_times, shifted_mtts_pos))
     
     def test_shifted_mtts_neg(self):
         """ Successful test to check the shifted mid times function works when the mid times start with a negative number.
@@ -356,7 +356,7 @@ class TestTimingData(unittest.TestCase):
             The data values must be a string and will raise an error if not.
         """
         not_tra_or_occ = np.array([1,2,3,4])
-        with self.assertRaises(TypeError, msg= "All values in 'tra_or_occ' must be of type string."):
+        with self.assertRaises(ValueError, msg= "All values in 'tra_or_occ' must be of type string."):
              TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
     
 
