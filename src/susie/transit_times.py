@@ -127,13 +127,9 @@ class TimingData():
             # All data are transit data
             self.transits = TransitTimes(self.epochs, self.mid_times, self.mid_time_uncertainties)
         else:
-            self._validate_tra_or_occ()
+            self._validate_tra_or_occ(tra_or_occ)
             tra_or_occ = np.char.strip(tra_or_occ) # Strip any whitespace
-            # Check if any values are not valid in tra_or_occ array
-            if any(val not in ['tra', 'occ'] for val in tra_or_occ):
-                raise ValueError("tra_or_occ array cannot contain string values other than 'tra' or 'occ'")
             # Separate epochs, mid times, and uncertainties into their respective lists
-            
             # t_epochs = []
             # for i in range(len(tra_or_occ)):
             #     if tra_or_occ[i] == 'tra':
@@ -145,6 +141,7 @@ class TimingData():
             o_epochs = np.array([self.epochs[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
             o_mid_times = np.array([self.mid_times[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
             o_mid_time_uncertainties = np.array([self.mid_time_uncertainties[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
+            self._validate_tra_or_occ_data(self,t_epochs,t_mid_times,t_mid_time_uncertainties,o_epochs, o_mid_times, o_mid_time_uncertainties)
             # Create transit and occultation objects
             self.transits = TransitTimes(t_epochs, t_mid_times, t_mid_time_uncertainties)
             self.occultations = OccultationTimes(o_epochs, o_mid_times, o_mid_time_uncertainties)
@@ -239,10 +236,41 @@ class TimingData():
         self.mid_time_uncertainties = self._calc_barycentric_time(mid_time_uncertainties_obj, obj_location, obs_location)
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
 
-    def _validate_tra_or_occ(self):
-        #... ADD IN TESTS
-        pass
-
+    def _validate_tra_or_occ(self,tra_or_occ):
+        # Check that all are of type array
+        if not isinstance(tra_or_occ, np.ndarray):
+            raise TypeError("The variable 'tra_or_occ' expected a NumPy array (np.ndarray) but received a different data type")
+        # Check if any values are not valid in tra_or_occ array
+        if any(val not in ['tra', 'occ'] for val in tra_or_occ):
+            raise ValueError("tra_or_occ array cannot contain string values other than 'tra' or 'occ'")
+        # Check the shape 
+        if tra_or_occ.shape != self.mid_time_uncertainties.shape or tra_or_occ.shape != self.mid_times.shape:
+            raise ValueError("Shapes of 'tra_or_occ', 'mid_time_uncertainties', and 'mid_times' arrays do not match.")
+        # strings
+        if not all(isinstance(value, str) for value in tra_or_occ):
+            raise TypeError("All values in 'tra_or_occ' must be of type string.")
+        # null values
+        if np.issubdtype(tra_or_occ.dtype, np.number) and np.any(np.isnan(tra_or_occ)):
+            raise ValueError("The 'tra_or_occ' array contains NaN (Not-a-Number) values.")
+        
+    def _validate_tra_or_occ_data(self,t_epochs,t_mid_times,t_mid_time_uncertainties,o_epochs, o_mid_times, o_mid_time_uncertainties):
+        # Check that all are of type array
+        if not isinstance(t_mid_times, np.ndarray):
+            raise TypeError("The variable 't_mid_times' expected a NumPy array (np.ndarray) but received a different data type")
+        if not isinstance(t_mid_time_uncertainties, np.ndarray):
+            raise TypeError("The variable 't_mid_time_uncertainties' expected a NumPy array (np.ndarray) but received a different data type")
+        if not isinstance(o_epochs, np.ndarray):
+            raise TypeError("The variable 'o_epochs' expected a NumPy array (np.ndarray) but received a different data type")
+        if not isinstance(o_mid_times, np.ndarray):
+            raise TypeError("The variable 'o_mid_times' expected a NumPy array (np.ndarray) but received a different data type")
+        if not isinstance(o_mid_time_uncertainties, np.ndarray):
+            raise TypeError("The variable 'o_mid_time_uncertainties' expected a NumPy array (np.ndarray) but received a different data type")
+        # Check that all are same shape
+        if t_epochs.shape != t_mid_times.shape != t_mid_time_uncertainties.shape:
+            raise ValueError("Shapes of 't_epochs', 't_mid_times', and 't_mid_time_uncertainties' arrays do not match.")
+        if o_epochs.shape != o_mid_times.shape != o_mid_time_uncertainties.shape:
+            raise ValueError("Shapes of 'o_epochs', 'o_mid_times', and 'o_mid_time_uncertainties' arrays do not match.")
+   
     def _validate(self):
         """Checks that all object attributes are of correct types and within value constraints.
 
@@ -304,3 +332,6 @@ class TimingData():
             # TODO import warning that we are minimizing their epochs and transit times
         if self.mid_times[0] != 0:
             self.mid_times -= np.min(self.mid_times)
+
+
+        
