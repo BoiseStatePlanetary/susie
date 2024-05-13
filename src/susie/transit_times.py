@@ -256,6 +256,9 @@ class TimingData():
             # TODO import warning that we are minimizing their epochs and transit times
         if self.mid_times[0] != 0:
             self.mid_times -= np.min(self.mid_times)
+        if self.tra_or_occ is None:
+            # Create list of just 'tra'
+            self.tra_or_occ = np.array(['tra' for element in self.epochs])
         if self.tra_or_occ is not None:
             self._validate_tra_or_occ()
 
