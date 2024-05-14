@@ -399,7 +399,7 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
             elif t_type == 'occ':
                 # occultation data
-                result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
+                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2))))
         return np.array(result)
     
     def _calc_quadratic_model_uncertainties(self, T0_err, P_err, dPdE_err):
@@ -432,7 +432,7 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
             elif t_type == 'occ':
                 # occultation data
-                result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
+                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
         return np.array(result)
     
     def _calc_linear_ephemeris(self, E, P, T0):
