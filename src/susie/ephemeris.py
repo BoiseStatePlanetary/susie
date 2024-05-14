@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
 from susie.timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
-# from susie.transit_times import TransitTimes
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
