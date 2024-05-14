@@ -11,12 +11,14 @@ authors:
   - name: Holly VanLooy
     # equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
-  - name: Rachel Huchmala
+  - name: Adrienne Kirk
     affiliation: 1
   - name: Brian Jackson
     affiliation: 1
   - name: Elisabeth Adams
     affiliation: 2
+  - name: Rachel Huchmala
+    affiliation: 1
 affiliations:
  - name: Boise State University, USA
    index: 1
