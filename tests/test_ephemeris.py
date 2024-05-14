@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 
-from susie.transit_times import TimingData
+from susie.timing_data import TimingData
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
 from scipy.optimize import curve_fit
 test_epochs = np.array([0, 294, 298, 573])

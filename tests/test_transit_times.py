@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from src.susie.transit_times import TimingData, TransitTimes
+from susie.timing_data import TimingData, TransitTimes
 import unittest
 import numpy as np
 
