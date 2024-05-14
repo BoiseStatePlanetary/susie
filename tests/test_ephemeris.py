@@ -4,13 +4,13 @@ import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 
-from susie.timing_data import TimingData
+from src.susie.timing_data import TimingData
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
 from scipy.optimize import curve_fit
 test_epochs = np.array([0, 294, 298, 573])
 test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
 test_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
-
+test_tra_or_occ = np.array(['tra','occ','tra','occ'])
 test_P_linear = 1.0914223408652188 # period linear
 test_P_err_linear = 9.998517417992763e-07 # period error linear
 test_T0_linear =  -6.734666196939187e-05 # conjunction time
@@ -41,8 +41,9 @@ class TestLinearModelEphemeris(unittest.TestCase):
             Creates a numpy.ndarray[float] with the length of the test data
         """
         linear_model = LinearModelEphemeris()
+        # recalculate
         expected_result = np.array([-6.73466620e-05,  3.50213351e+02,  3.54978500e+02,  6.82559093e+02])
-        result = linear_model.lin_fit(test_mtts, test_P_linear, test_T0_linear)
+        result = linear_model.lin_fit(test_mtts, test_P_linear, test_T0_linear, test_tra_or_occ)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_lin_fit_model(self):
@@ -259,6 +260,7 @@ class TestEphemeris(unittest.TestCase):
         expected_result = np.array([-6.73466620e-05, 3.20878101e+02, 3.25243790e+02, 6.25384934e+02])#test model data linear
         result = self.ephemeris._calc_linear_ephemeris(test_epochs, test_P_linear, test_T0_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
+
 
     def test_calc_quadratic_ephemeris(self):
         """ Tests that the correct quadratic model data is produced
