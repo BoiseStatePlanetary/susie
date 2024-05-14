@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from src.susie.transit_times import TimingData, TransitTimes
+from src.susie.timing_data import TimingData
 import unittest
 import numpy as np
 
@@ -69,20 +69,19 @@ class TestTimingData(unittest.TestCase):
         self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtt))  # Check mid_transit_times
         self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties, new_uncertainties))  # Check uncertainties chage this back!!!
 
-    
 
-    # Test instantiating with incorrect timescales
 
 
     # Test successful np.arrays
     def test_suc_arrays(self):
-        """ Successful test to check that epochs, mid times and mid time uncertainties are all type np.arrays
+        """ Successful test to check that epochs, mid times, mid time uncertainties, and tra_or_occ are all type np.arrays
 
         """
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, time_scale='tdb')
         self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.epochs))
         self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_times))
         self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_time_uncertainties))  
+        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.tra_or_occ))  
 
     # Tests for unsucessful np.arrays
     def test_us_epochs_arr_type_str(self):
@@ -117,12 +116,13 @@ class TestTimingData(unittest.TestCase):
     def test_s_vars_value_types(self):
         """ Successful test to check the correct data type
 
-            Epochs should be integers, mid times should be floats, and mid time uncertainties should be floats.
+            Epochs should be integers, mid times should be floats, mid time uncertainties should be floats and tra_or_occ should be strings.
         """
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, time_scale='tdb')
         self.assertTrue(all(isinstance(value, (int, np.int64)) for value in self.timing_data.epochs))
         self.assertTrue(all(isinstance(value, float) for value in self.timing_data.mid_times))
         self.assertTrue(all(isinstance(value, float) for value in self.timing_data.mid_time_uncertainties))
+        self.assertTrue(all(isinstance(value, str) for value in self.timing_data.tra_or_occ))
    
     # Test for unsuccessful data value type validation
     def test_us_epochs_value_types_float(self):
@@ -267,8 +267,8 @@ class TestTimingData(unittest.TestCase):
         """ Successful test to check that all of the varibles have the same shape.
 
         """
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertEqual(test_epochs.shape, test_mtts.shape, test_mtts_err.shape)
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, time_scale='tdb')
+        self.assertEqual(test_epochs.shape, test_mtts.shape, test_mtts_err.shape, tra_or_occ.shape)
 
     def test_variable_shape_fail(self):
         """ Unsuccessful test of the varibles shape.
@@ -277,8 +277,9 @@ class TestTimingData(unittest.TestCase):
         """
         new_test_epochs= np.array([0, 298, 573])  
         new_test_mtts= np.array([0.0, 625.3850000002421])
+        new_tra_or_occ = np.array(['tra','tra','occ','occ','occ'])
         with self.assertRaises(ValueError, msg="Shapes of 'epochs', 'mid_transit_times', and 'mid_transit_times_uncertainties' arrays do not match."):
-             TimingData('jd', new_test_epochs, new_test_mtts, test_mtts_err, time_scale='tdb')  
+             TimingData('jd', new_test_epochs, new_test_mtts, test_mtts_err, new_tra_or_occ, time_scale='tdb')  
     
    # Tests for NaN values
     def successful_no_nan_values(self):
@@ -326,13 +327,13 @@ class TestTimingData(unittest.TestCase):
 
 
     # Tests for validate tra_or_occ
-     # test for if tra_or_occ is None
+    ###### NEED TO FINISH ######
     def test_tra_or_occ_None(self):
         self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb', tra_or_occ = None)
-        pass
+        expected_result = np.array(['tra','tra','tra','tra'])
+        result = self.timing_data._validate()
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
-    
-    
     
     def test_only_tra_or_occ_value(self):
         """ Unsuccessful test to check if the tra_or_occ array contains values other than 'tra' or 'occ'.
