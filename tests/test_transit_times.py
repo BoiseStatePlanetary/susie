@@ -3,6 +3,8 @@ sys.path.append(".")
 from src.susie.timing_data import TimingData
 import unittest
 import numpy as np
+from numpy.testing import assert_array_equal
+
 
 # test_epochs = [0, 294, 298, 573, 579, 594, 602, 636, 637, 655, 677, 897, 901, 911, 912, 919, 941, 941, 963, 985, 992, 994, 995, 997, 1015, 1247, 1257, 1258, 1260, 1272, 1287, 1290, 1311, 1312, 1313, 1316, 1317, 1323, 1324, 1333, 1334, 1344, 1345, 1346, 1347, 1357, 1365, 1366, 1585, 1589, 1611, 1619, 1621, 1633, 1637, 1640, 1653, 1661, 1662, 1914, 1915, 1916, 1917, 1937, 1938, 1960, 1964, 1967, 1968, 1969, 1978, 1981, 1991, 1996, 2005, 2012, 2019, 2021, 2022, 2264, 2286, 2288, 2318, 2319, 2331, 2332, 2338, 2339, 2371, 2593, 2634, 2635, 2667, 2668, 2690, 2892, 2910, 2921, 2924, 2942, 2943, 2978, 2979, 2984, 2985, 2988, 2992, 2992, 2997, 2999, 3010, 3017, 3018, 3019, 3217, 3239, 3248, 3260, 3261, 3264, 3306, 3307, 3314, 3316, 3318, 3335, 3335, 3336, 3339, 3341, 3341, 3342, 3342, 3345, 3356, 3570, 3625, 3646, 3657]
 # test_mtts = [0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421, 631.933999999892, 648.3059999998659, 657.0360000003129, 694.1440000003204, 695.2370000001974, 714.8820000002161, 738.8940000003204, 979.0049999998882, 983.3710000002757, 994.285000000149, 995.3769999998622, 1003.0160000002943, 1027.0270000002347, 1027.027999999933, 1051.0389999998733, 1075.0509999999776, 1082.691000000108, 1084.8730000001378, 1085.9650000003166, 1088.1480000000447, 1107.7930000000633, 1361.003000000026, 1371.9169999998994, 1373.0079999999143, 1375.191000000108, 1388.2889999998733, 1404.658999999985, 1407.933999999892, 1430.8530000001192, 1431.945000000298, 1433.036000000313, 1436.3100000000559, 1437.4020000002347, 1443.9500000001863, 1445.0419999998994, 1454.8640000000596, 1455.9560000002384, 1466.8700000001118, 1467.9620000002906, 1469.0530000003055, 1470.1450000000186, 1481.058999999892, 1489.7900000000373, 1490.8810000000522, 1729.9020000002347, 1734.2690000003204, 1758.2800000002608, 1767.0109999999404, 1769.194000000134, 1782.2910000002012, 1786.657000000123, 1789.9300000001676, 1804.1189999999478, 1812.851000000257, 1813.942000000272, 2088.9799999999814, 2090.0709999999963, 2091.163000000175, 2092.25400000019, 2114.0819999999367, 2115.1740000001155, 2139.185000000056, 2143.5509999999776, 2146.8250000001863, 2147.916000000201, 2149.0079999999143, 2158.8310000002384, 2162.1049999999814, 2173.0190000003204, 2178.4769999999553, 2188.2990000001155, 2195.939000000246, 2203.5789999999106, 2205.7620000001043, 2206.853000000119, 2470.9769999999553, 2494.9879999998957, 2497.1710000000894, 2529.913000000175, 2531.0049999998882, 2544.1019999999553, 2545.19299999997, 2551.7420000000857, 2552.8330000001006, 2587.7590000000782, 2830.0540000000037, 2874.8020000001416, 2875.8930000001565, 2910.81799999997, 2911.910000000149, 2935.9210000000894, 3156.388000000268, 3176.033999999985, 3188.0389999998733, 3191.313000000082, 3210.9590000002645, 3212.0500000002794, 3250.25, 3251.341000000015, 3256.7990000001155, 3257.8900000001304, 3261.1639999998733, 3265.529000000097, 3265.530999999959, 3270.9870000001974, 3273.1699999999255, 3285.1750000002794, 3292.814999999944, 3293.907000000123, 3294.998000000138, 3511.098999999929, 3535.1099999998696, 3544.933999999892, 3558.0300000002608, 3559.121999999974, 3562.3960000001825, 3608.2349999998696, 3609.3270000000484, 3616.966000000015, 3619.149999999907, 3621.3330000001006, 3639.885000000242, 3639.8870000001043, 3640.978000000119, 3644.253000000026, 3646.435000000056, 3646.435000000056, 3647.526000000071, 3647.526000000071, 3650.8009999999776, 3662.805999999866, 3896.3700000001118, 3956.3980000000447, 3979.31799999997, 3991.323000000324]
@@ -78,10 +80,10 @@ class TestTimingData(unittest.TestCase):
 
         """
         self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, time_scale='tdb')
-        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.epochs))
-        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_times))
-        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.mid_time_uncertainties))  
-        self.assertTrue(all(isinstance(value, np.ndarray) for value in self.timing_data.tra_or_occ))  
+        self.assertTrue(isinstance( self.timing_data.epochs, np.ndarray))
+        self.assertTrue(isinstance(self.timing_data.mid_times, np.ndarray))
+        self.assertTrue(isinstance(self.timing_data.mid_time_uncertainties, np.ndarray))
+        self.assertTrue(isinstance(self.timing_data.tra_or_occ, np.ndarray))
 
     # Tests for unsucessful np.arrays
     def test_us_epochs_arr_type_str(self):
@@ -268,7 +270,9 @@ class TestTimingData(unittest.TestCase):
 
         """
         self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, time_scale='tdb')
-        self.assertEqual(test_epochs.shape, test_mtts.shape, test_mtts_err.shape, tra_or_occ.shape)
+        self.assertEqual(test_epochs.shape, test_mtts.shape)
+        self.assertEqual(test_epochs.shape, test_mtts_err.shape)
+        self.assertEqual(test_epochs.shape, tra_or_occ.shape)
 
     def test_variable_shape_fail(self):
         """ Unsuccessful test of the varibles shape.
@@ -327,12 +331,11 @@ class TestTimingData(unittest.TestCase):
 
 
     # Tests for validate tra_or_occ
-    ###### NEED TO FINISH ######
     def test_tra_or_occ_None(self):
-        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb', tra_or_occ = None)
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ = None, time_scale='tdb')
         expected_result = np.array(['tra','tra','tra','tra'])
-        result = self.timing_data._validate()
-        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
+        result = self.timing_data.tra_or_occ
+        assert_array_equal(expected_result, result)
 
     
     def test_only_tra_or_occ_value(self):
@@ -357,9 +360,11 @@ class TestTimingData(unittest.TestCase):
 
             The tra_or_occ array must be the same length as the epochs. mid times and mid time uncertainties arrays.
         """
+        not_test_epochs = np.array([0,1])
+        not_test_mtts = np.array([0.,1.0,3.0,4.0,5.0])
         not_tra_or_occ = np.array(['occ','tra','occ'])
         with self.assertRaises(ValueError, msg= "Shapes of 'tra_or_occ', 'mid_time_uncertainties', and 'mid_times' arrays do not match."):
-             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
+             TimingData('jd', not_test_epochs, not_test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
 
     def test_tra_or_occ_str(self):
         """ Unsuccessful test to check the data values within the tra_or_occ array.
