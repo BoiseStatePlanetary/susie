@@ -59,12 +59,6 @@ class TimingData():
         Variables epochs and mid_times are shifted to start at zero by subtracting the minimum number from each value
     """
     def __init__(self, time_format, epochs, mid_times, mid_time_uncertainties=None, tra_or_occ=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
-        # In ephemeris, we would probably check if we had both transits and occultations
-        # If so, we would need to account for that (maybe just in the fitting implementation? anywhere else?)
-        # If not, then we just assign our data to the transit times data and let it run!
-        # Although, need to look into this still. Might just have this implemented in model fits and plotting?
-        self.transits = None
-        self.occultations = None
         self.epochs = epochs
         self.mid_times = mid_times
         self.tra_or_occ = tra_or_occ
@@ -261,84 +255,3 @@ class TimingData():
             self.tra_or_occ = np.array(['tra' for element in self.epochs])
         if self.tra_or_occ is not None:
             self._validate_tra_or_occ()
-
-
-"""———————————————————— OLD CODE, MAY NOT BE NEEDED ————————————————————"""
-
-
-# class TransitTimes():
-#     """Represents the pre-processed transit mid point timing data over observations.
-    
-#     Parameters
-#     ------------
-#         epochs: numpy.ndarray[int]
-#             List of orbit number reference points for transit timing observations
-#         mid_times: numpy.ndarray[float]
-#             List of observed transit timing mid points corresponding with epochs
-#         mid_time_uncertainties: numpy.ndarray[float]
-#             List of uncertainties corresponding to transit mid-times
-#     """
-#     def __init__(self, epochs, mid_times, mid_time_uncertainties):
-#         self.epochs = epochs
-#         self.mid_times = mid_times
-#         self.mid_time_uncertainties = mid_time_uncertainties
-
-
-# class OccultationTimes():
-#     """Represents the pre-processed occultation mid point timing data over observations.
-    
-#     Parameters
-#     ------------
-#         epochs: numpy.ndarray[int]
-#             List of orbit number reference points for occultation timing observations
-#         mid_times: numpy.ndarray[float]
-#             List of observed occultation timing mid points corresponding with epochs
-#         mid_time_uncertainties: numpy.ndarray[float]
-#             List of uncertainties corresponding to occultation mid-times
-#     """
-#     def __init__(self, epochs, mid_times, mid_time_uncertainties):
-#         self.epochs = epochs
-#         self.mid_times = mid_times
-#         self.mid_time_uncertainties = mid_time_uncertainties
-
-# def _validate_tra_or_occ_data(self,t_epochs,t_mid_times,t_mid_time_uncertainties,o_epochs, o_mid_times, o_mid_time_uncertainties):
-    #     # Check that all are of type array
-    #     if not isinstance(t_mid_times, np.ndarray):
-    #         raise TypeError("The variable 't_mid_times' expected a NumPy array (np.ndarray) but received a different data type")
-    #     if not isinstance(t_mid_time_uncertainties, np.ndarray):
-    #         raise TypeError("The variable 't_mid_time_uncertainties' expected a NumPy array (np.ndarray) but received a different data type")
-    #     if not isinstance(o_epochs, np.ndarray):
-    #         raise TypeError("The variable 'o_epochs' expected a NumPy array (np.ndarray) but received a different data type")
-    #     if not isinstance(o_mid_times, np.ndarray):
-    #         raise TypeError("The variable 'o_mid_times' expected a NumPy array (np.ndarray) but received a different data type")
-    #     if not isinstance(o_mid_time_uncertainties, np.ndarray):
-    #         raise TypeError("The variable 'o_mid_time_uncertainties' expected a NumPy array (np.ndarray) but received a different data type")
-    #     # Check that all are same shape
-    #     if t_epochs.shape != t_mid_times.shape != t_mid_time_uncertainties.shape:
-    #         raise ValueError("Shapes of 't_epochs', 't_mid_times', and 't_mid_time_uncertainties' arrays do not match.")
-    #     if o_epochs.shape != o_mid_times.shape != o_mid_time_uncertainties.shape:
-    #         raise ValueError("Shapes of 'o_epochs', 'o_mid_times', and 'o_mid_time_uncertainties' arrays do not match.")
-
-# # Once everything is validated and corrected, we can separate into transits and occultations if we are given the tra_or_occ data
-        # if self.tra_or_occ is None:
-        #     # All data are transit data
-        #     self.transits = TransitTimes(self.epochs, self.mid_times, self.mid_time_uncertainties)
-        # else:
-        #     self._validate_tra_or_occ(tra_or_occ)
-        #     tra_or_occ = np.char.strip(tra_or_occ) # Strip any whitespace
-        #     # Separate epochs, mid times, and uncertainties into their respective lists
-        #     # t_epochs = []
-        #     # for i in range(len(tra_or_occ)):
-        #     #     if tra_or_occ[i] == 'tra':
-        #     #         t_epochs.append(self.epochs[i])
-
-        #     t_epochs = np.array([self.epochs[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
-        #     t_mid_times = np.array([self.mid_times[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
-        #     t_mid_time_uncertainties = np.array([self.mid_time_uncertainties[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'tra'])
-        #     o_epochs = np.array([self.epochs[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
-        #     o_mid_times = np.array([self.mid_times[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
-        #     o_mid_time_uncertainties = np.array([self.mid_time_uncertainties[i] for i in range(len(tra_or_occ)) if tra_or_occ[i] == 'occ'])
-        #     self._validate_tra_or_occ_data(self,t_epochs,t_mid_times,t_mid_time_uncertainties,o_epochs, o_mid_times, o_mid_time_uncertainties)
-        #     # Create transit and occultation objects
-        #     self.transits = TransitTimes(t_epochs, t_mid_times, t_mid_time_uncertainties)
-        #     self.occultations = OccultationTimes(o_epochs, o_mid_times, o_mid_time_uncertainties)
