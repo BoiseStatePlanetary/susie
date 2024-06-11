@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
-# from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
+# from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -400,7 +400,7 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
             elif t_type == 'occ':
                 # occultation data
-                result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
+                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2))))
         return np.array(result)
     
     def _calc_quadratic_model_uncertainties(self, T0_err, P_err, dPdE_err):
@@ -433,7 +433,7 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
             elif t_type == 'occ':
                 # occultation data
-                result.append(np.sqrt(((T0_err**2) + (0.5 * (P_err**2))) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
+                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
         return np.array(result)
     
     def _calc_linear_ephemeris(self, E, P, T0):
@@ -678,7 +678,7 @@ class Ephemeris(object):
         ------- 
             A MatplotLib plot of epochs vs. model predicted mid-transit times.
         """
-        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'])
+        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0')
         plt.xlabel('Epochs')
         plt.ylabel('Model Predicted Mid-Times (units)')
         plt.title(f'Predicted {model_data_dict["model_type"].capitalize()} Model Mid Times over Epochs')
@@ -819,9 +819,9 @@ class Ephemeris(object):
                 self.timing_data.tra_or_occ = all_tra_or_occ[:i+1]
                 delta_bic = self.calc_delta_bic()
                 delta_bics.append(delta_bic)
-        plt.scatter(x=self.timing_data.epochs, y=delta_bics)
+        plt.scatter(x=self.timing_data.epochs, y=delta_bics, color='#0033A0')
         plt.grid(True)
-        plt.plot(self.timing_data.epochs, delta_bics)
+        plt.plot(self.timing_data.epochs, delta_bics, color='#0033A0')
         plt.xlabel('Epoch')
         plt.ylabel('$\Delta$BIC')
         plt.title("Value of $\Delta$BIC as Observational Epochs Increase")
@@ -866,7 +866,7 @@ if __name__ == '__main__':
     # print(delta_bic)
 
     # STEP 6: Show a plot of the model ephemeris data
-    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
 
     # STEP 7: Uncertainties plot
@@ -877,5 +877,5 @@ if __name__ == '__main__':
     # ephemeris_obj1.plot_oc_plot(save_plot=False)
 
     # STEP 9: Running delta BIC plot
-    ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+    # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
     
