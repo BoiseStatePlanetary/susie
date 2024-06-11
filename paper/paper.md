@@ -36,7 +36,18 @@ bibliography: paper.bib
 
 # Summary
 <!-- A summary describing the high-level functionality and purpose of the software for a diverse, non-specialist audience. -->
-The goal of this package is to take transit-timing observational data and give users access to different methods and visualization to learn more about the possible tidal decay of the exoplanet. The package consists of two main objects: transit time and ephemeris. Users insert observational data into the transit time object. 
+The Susie package allows users to find timing variations from timing observations of extrasolar systems that may indicate tidal interactions within the system. 
+
+Hot Jupiters are planets outside of our solar system that orbit extremely fast and close to their star. Due to their proximity, hot Jupiters experience gravitational forces from their stars, and are large enough to also exhibit gravitational forces ON their stars. These forces are called tidal interactions, and are similar to the tidal interactions we see between our moon and Earth. The tidal interactions between a hot Jupiter and its star gradually pull the hot Jupiter closer to the star. As the hot Jupiter gets closer to the star, the planet completes a full orbit around its star faster. Therefore, the time it takes for the planet to complete an orbit—which we call the orbital period—decreases. We can find these hot Jupiters by looking for these decreasing orbital periods using observations of the orbits. 
+
+![Illustration of an exoplanet transit. As the planet passes in front of its host star, the total amount of light coming from the star drops, as seen in the U-shaped curve. The time between the middle of each transit curve equals the planet’s orbital period.\label{fig:lightcurve}](./paper_imgs/Transit_Illustration.png)
+
+A common way of observing an exoplanet's orbit is by observing a transit. An exoplanet 'transits' its star when it passes in front of the star, blocking out some of the light. We can collect the amount of light coming from the star over time, and when the exoplanet transits the star, we see the amount of light decrease. By looking at a graph of amount of star light vs. time, such as \autoref{fig:lightcurve} above, we can record the duration of the transit and find the moment an exoplanet is exactly halfway through the transit, called the transit mid-time. By comparing one mid time to the next, we can measure an orbital period. By observing transits over time, we can find changes in mid-times and therefore the changes in orbital periods that would indicate hot Jupiters experiencing tidal interactions with their stars. However, these changes in orbital period are incredibly small, with timing variations of milliseconds per Earth year, making an unguided search for these systems inefficient. 
+
+
+
+
+The goal of this package is to take transit-timing observational data and give users access to different methods and visualizations to learn more about the possible tidal decay of the exoplanet. The package consists of two main objects: transit time and ephemeris. Users insert observational data into the transit time object. 
 
 Transit time data consists of a string denoting the time format and time scale of the data and Numpy lists of epochs, mid-transit times, and uncertainties for the mid-transit times. The object will always default to using the Barycentric Julian Date (BJD) time format with the Barycentric Dynamical Time (TDB) scale. (This following is a maybe; I still need to talk to Elisabeth) If the user indicates their times are not corrected for barycentric light travel times, the Astropy time, coordinates, and unit packages will be used for corrections. 
 
@@ -93,6 +104,8 @@ Figure sizes can be customized by adding an optional second parameter:
 
 # Acknowledgements
 <!-- Mentions (if applicable) of any ongoing research projects using the software or recent scholarly publications enabled by it. NOTE: Don't know if this would be put here. -->
+
+<!-- Mention funding sources in here -->
 
 # References
 <!-- A list of key references including a link to the software archive. -->
