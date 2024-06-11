@@ -4,6 +4,10 @@ from src.susie.timing_data import TimingData
 import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
+import logging
+from astropy import time
+from astropy import coordinates
+
 
 
 # test_epochs = [0, 294, 298, 573, 579, 594, 602, 636, 637, 655, 677, 897, 901, 911, 912, 919, 941, 941, 963, 985, 992, 994, 995, 997, 1015, 1247, 1257, 1258, 1260, 1272, 1287, 1290, 1311, 1312, 1313, 1316, 1317, 1323, 1324, 1333, 1334, 1344, 1345, 1346, 1347, 1357, 1365, 1366, 1585, 1589, 1611, 1619, 1621, 1633, 1637, 1640, 1653, 1661, 1662, 1914, 1915, 1916, 1917, 1937, 1938, 1960, 1964, 1967, 1968, 1969, 1978, 1981, 1991, 1996, 2005, 2012, 2019, 2021, 2022, 2264, 2286, 2288, 2318, 2319, 2331, 2332, 2338, 2339, 2371, 2593, 2634, 2635, 2667, 2668, 2690, 2892, 2910, 2921, 2924, 2942, 2943, 2978, 2979, 2984, 2985, 2988, 2992, 2992, 2997, 2999, 3010, 3017, 3018, 3019, 3217, 3239, 3248, 3260, 3261, 3264, 3306, 3307, 3314, 3316, 3318, 3335, 3335, 3336, 3339, 3341, 3341, 3342, 3342, 3345, 3356, 3570, 3625, 3646, 3657]
@@ -315,20 +319,91 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(ValueError, msg="The 'mid_transit_times_uncertainties' array contains NaN (Not-a-Number) values."):
              TimingData('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')  
 
-    # #tests for calc_barycentric_time
-    # test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
-    # test_time_obj=np.array([0.00034,0.0006,0.0005,0.0008])
-    # test_obj_location= np.array([1.0,2.0])
-    # test_obs_locations=np.array([2.0,3.0])
-    # #check uncertainties arent ones
-    # def calc_bary_time_instantiation(self):
-    #     self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    #     self.assertIsInstance(self.timing_data,  TimingData)
-    
-    # def calc_bary_time_uncertinties(self):
-    #    test_mtts_err=np.array([1.0, 1.0, 1.0, 1.0])
-    #    self.timing_data =  TimingData('jd', test_epochs, test_mtts,test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # Timing Format tests
+    # test for logging.warning
+    def timing_system_logging_err(self,mock_warning):
+        self.timing_data = TimingData('isot', test_epochs, test_mtts, test_mtts_err, time_scale='tt')
+        self.assertEqual(mock_warning.call_count,1)
+        expected_message = ("Recieved time format isot and time scale tt. " 
+                            "Correcting all times to BJD timing system with TDB time scale. \
+                             If no time scale is given, default is automatically assigned to UTC. \
+                             If this is incorrect, please set the time format and time scale for TransitTime object.")
+        mock_warning.assert_called_with(expected_message)
 
+ 
+
+    # ######## IDK IF THIS IS RIGHT?????????#####
+    # ### trying to check if the time.Time produces the correct result
+    # gets errors with importing time module
+    # test to check creation of the mid_times_obj
+    # gets a warning but still runs
+    def creation_of_mid_times_obj(self):
+        test_mid_times = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+        test_time_format = 'jd'  
+        test_time_scale = 'tdb' 
+        timing_data = TimingData(test_time_format, test_mid_times, test_time_scale)
+        expected_mid_times_obj = time.Time(test_mid_times,format='jd',scale = 'tdb')
+        actual_mid_times_obj = timing_data.mid_times_obj
+        self.assertEqual(expected_mid_times_obj,actual_mid_times_obj)
+
+    
+    # test to check creation of the mid_time_uncertainties_obj
+    def creation_of_mid_times_uncertainties_obj(self):
+        test_mid_times =  np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+        test_mid_times_uncertainties = np.array([0.00043, 0.00028, 0.00062, 0.00042])
+        test_time_format = 'jd'  
+        test_time_scale = 'tdb' 
+        timing_data = TimingData(test_time_format, test_mid_times, test_mid_times_uncertainties, test_time_scale)
+        expected_mid_time_uncertainties = time.Time(test_mid_times_uncertainties,format='jd',scale = 'tdb')
+        actual_mid_time_uncertainties = timing_data.mid_time_uncertainties_obj
+        self.assertEqual(expected_mid_time_uncertainties,actual_mid_time_uncertainties)
+   
+   
+
+    def validate_times_obj_coords_err(self):
+        test_mid_times = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+        test_mid_times_uncertainties = np.array([0.00043, 0.00028, 0.00062, 0.00042])
+        timing_data = TimingData()
+        test_mid_times_obj = time.Time(test_mid_times,format='jd',scale = 'tdb')
+        test_mid_time_uncertainties_obj = time.Time(test_mid_times_uncertainties,format='jd',scale = 'tdb')
+        test_obj_coords = (150.0, 2.5)
+        test_obs_coords = (-70.0, -30.0)
+        new_obj_coords = None
+        with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. " 
+                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
+                             timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
+        
+    def validate_times_obj_coords_err(self):
+        test_mid_times = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+        test_mid_times_uncertainties = np.array([0.00043, 0.00028, 0.00062, 0.00042])
+        timing_data = TimingData()
+        test_mid_times_obj = time.Time(test_mid_times,format='jd',scale = 'tdb')
+        test_mid_time_uncertainties_obj = time.Time(test_mid_times_uncertainties,format='jd',scale = 'tdb')
+        test_obj_coords = (150.0, 2.5)
+        test_obs_coords = (-70.0, -30.0)
+        new_obj_coords = None
+        with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. " 
+                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
+                             timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
+    
+    #tests for calc_barycentric_time
+    test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
+    test_time_obj=np.array([0.00034,0.0006,0.0005,0.0008])
+    test_obj_location= np.array([1.0,2.0])
+    test_obs_locations=np.array([2.0,3.0])
+    #check uncertainties arent ones
+    def test_calc_bary_time_instantiation(self):
+        self.timing_data =  TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        self.assertIsInstance(self.timing_data,  TimingData)
+    
+    def test_calc_bary_time_uncertainties(self):
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        self.time_obj = time.Time(np.array([1.0,1.0]),format = 'jd',scale = 'utc')
+        self.obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
+        self.obs_location = coordinates.EarthLocation(lat = 43.60, lon = 116.21)
+        expected_result = ([1.0,1.0])
+        actual_result = self.timing_data._calc_barycentric_time(self.time_obj,self.obj_location,self.obs_location)
+        np.testing.assert_array_equal(expected_result,actual_result)
 
     # Tests for validate tra_or_occ
     def test_tra_or_occ_None(self):

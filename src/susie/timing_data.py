@@ -94,7 +94,7 @@ class TimingData():
         travel time to each original value in the given timing data. If the given Astropy timing object time data 
         contains a list of 1s, which means this is placeholder timing uncertainty data, no timing correction will 
         be applied as this is not real data. If the timing correction proceeds, the `light_travel_time` function 
-        from Astropy will be applied and added to the original timing data. Timing data corrected for Barycentric 
+        from Astropy will be applied and added to the original timing data. Timing data corrected for Barycentric  
         light travel time will be returned.
 
         Parameters
