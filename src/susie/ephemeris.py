@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+# from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -831,19 +832,23 @@ class Ephemeris(object):
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
-    filepath = "../../wasp12b_tra_occ.csv"
+    filepath = "../../example_data/wasp12b_tra_occ.csv"
     # filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
     data = np.genfromtxt(filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # STEP 2: Break data up into epochs, mid transit times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"]
     epochs = data["epoch"].astype('int')
-    mid_transit_times = data["transit_time"]
-    mid_transit_times_err = data["sigma_transit_time"]
+    mid_times = data["transit_time"]
+    mid_time_errs = data["sigma_transit_time"]
+    print(f"epochs: {list(epochs)}")
+    print(f"mid_times: {list(mid_times)}")
+    print(f"mid_time_errs: {list(mid_time_errs)}")
+    print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
     # times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     # times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb')
-    times_obj1 = TimingData('jd', epochs, mid_transit_times, mid_transit_times_err, time_scale='tdb', tra_or_occ=tra_or_occs)
+    times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
@@ -866,7 +871,7 @@ if __name__ == '__main__':
     # print(delta_bic)
 
     # STEP 6: Show a plot of the model ephemeris data
-    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
 
     # STEP 7: Uncertainties plot
@@ -874,7 +879,7 @@ if __name__ == '__main__':
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
     
     # STEP 8: O-C Plot
-    # ephemeris_obj1.plot_oc_plot(save_plot=False)
+    ephemeris_obj1.plot_oc_plot(save_plot=False)
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
