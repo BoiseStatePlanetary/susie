@@ -1,0 +1,916 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
+        <title>🐷 Susie Package Test Notebook - Susie Sept. 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" /
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Susie Sept. 2023 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Susie Sept. 2023 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/examples.ipynb.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="susie-package-test-notebook">
+<h1>🐷 Susie Package Test Notebook<a class="headerlink" href="#susie-package-test-notebook" title="Link to this heading">¶</a></h1>
+<section id="import-the-necessary-python-libraries-and-susie-objects">
+<h2>🔵 Import the necessary python libraries and Susie objects.<a class="headerlink" href="#import-the-necessary-python-libraries-and-susie-objects" title="Link to this heading">¶</a></h2>
+<p>Importing any packages and libraries needed, as well as the package from Test PyPi</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install -q susie==1.1.2
+<span class="o">%</span><span class="k">pip</span> install -q pandas
+<span class="c1">#%pip install -q numpy # INCLUDE THIS IF YOU DO NOT HAVE NUMPY</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.3.2</span> -&gt; <span class=" -Color -Color-Green">24.0</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">python3.11 -m pip install --upgrade pip</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: you may need to restart the kernel to use updated packages.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">23.3.2</span> -&gt; <span class=" -Color -Color-Green">24.0</span>
+<span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> To update, run: <span class=" -Color -Color-Green">python3.11 -m pip install --upgrade pip</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: you may need to restart the kernel to use updated packages.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">susie.timing_data</span> <span class="kn">import</span> <span class="n">TimingData</span>
+<span class="kn">from</span> <span class="nn">susie.ephemeris</span> <span class="kn">import</span> <span class="n">Ephemeris</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"></section>
+<section id="basic-usage">
+<h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
+<p>The basic creation and usage of the <strong>TimingData</strong> and <strong>Ephemeris</strong> objects. This will assume the following:</p>
+<ol class="arabic simple">
+<li><p>Your data is in JD TDB timing format and system</p></li>
+<li><p>You have both transit and occultation data</p></li>
+<li><p>You have mid time uncertainties included in your data</p></li>
+</ol>
+<p>We will pull this data from the repository below.</p>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">
+<h3>🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/wasp12b_tra_occ.csv&#39;</span>
+
+<span class="c1"># Read the CSV file directly from the URL</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">])</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">))</span>
+<span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">])</span>
+<span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">HTTPError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/wasp12b_tra_occ.csv&#39;</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># Read the CSV file directly from the URL</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">])</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">))</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/parsers/readers.py:1026,</span> in <span class="ni">read_csv</span><span class="nt">(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1013</span> <span class="n">kwds_defaults</span> <span class="o">=</span> <span class="n">_refine_defaults_read</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1014</span>     <span class="n">dialect</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1015</span>     <span class="n">delimiter</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1022</span>     <span class="n">dtype_backend</span><span class="o">=</span><span class="n">dtype_backend</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1023</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1024</span> <span class="n">kwds</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwds_defaults</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1026</span> <span class="k">return</span> <span class="n">_read</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="n">kwds</span><span class="p">)</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/parsers/readers.py:620,</span> in <span class="ni">_read</span><span class="nt">(filepath_or_buffer, kwds)</span>
+<span class="g g-Whitespace">    </span><span class="mi">617</span> <span class="n">_validate_names</span><span class="p">(</span><span class="n">kwds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">619</span> <span class="c1"># Create the parser.</span>
+<span class="ne">--&gt; </span><span class="mi">620</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">TextFileReader</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">622</span> <span class="k">if</span> <span class="n">chunksize</span> <span class="ow">or</span> <span class="n">iterator</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">623</span>     <span class="k">return</span> <span class="n">parser</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/parsers/readers.py:1620,</span> in <span class="ni">TextFileReader.__init__</span><span class="nt">(self, f, engine, **kwds)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1617</span>     <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;has_index_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwds</span><span class="p">[</span><span class="s2">&quot;has_index_names&quot;</span><span class="p">]</span>
+<span class="g g-Whitespace">   </span><span class="mi">1619</span> <span class="bp">self</span><span class="o">.</span><span class="n">handles</span><span class="p">:</span> <span class="n">IOHandles</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="ne">-&gt; </span><span class="mi">1620</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_engine</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">)</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/parsers/readers.py:1880,</span> in <span class="ni">TextFileReader._make_engine</span><span class="nt">(self, f, engine)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1878</span>     <span class="k">if</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1879</span>         <span class="n">mode</span> <span class="o">+=</span> <span class="s2">&quot;b&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">1880</span> <span class="bp">self</span><span class="o">.</span><span class="n">handles</span> <span class="o">=</span> <span class="n">get_handle</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1881</span>     <span class="n">f</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1882</span>     <span class="n">mode</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1883</span>     <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;encoding&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1884</span>     <span class="n">compression</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;compression&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1885</span>     <span class="n">memory_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory_map&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1886</span>     <span class="n">is_text</span><span class="o">=</span><span class="n">is_text</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1887</span>     <span class="n">errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;encoding_errors&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1888</span>     <span class="n">storage_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_options&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+<span class="g g-Whitespace">   </span><span class="mi">1889</span> <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1890</span> <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">handles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="g g-Whitespace">   </span><span class="mi">1891</span> <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handles</span><span class="o">.</span><span class="n">handle</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/common.py:728,</span> in <span class="ni">get_handle</span><span class="nt">(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)</span>
+<span class="g g-Whitespace">    </span><span class="mi">725</span>     <span class="n">codecs</span><span class="o">.</span><span class="n">lookup_error</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">727</span> <span class="c1"># open URLs</span>
+<span class="ne">--&gt; </span><span class="mi">728</span> <span class="n">ioargs</span> <span class="o">=</span> <span class="n">_get_filepath_or_buffer</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">729</span>     <span class="n">path_or_buf</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">730</span>     <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">731</span>     <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">732</span>     <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">733</span>     <span class="n">storage_options</span><span class="o">=</span><span class="n">storage_options</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">734</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">736</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">ioargs</span><span class="o">.</span><span class="n">filepath_or_buffer</span>
+<span class="g g-Whitespace">    </span><span class="mi">737</span> <span class="n">handles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseBuffer</span><span class="p">]</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/common.py:384,</span> in <span class="ni">_get_filepath_or_buffer</span><span class="nt">(filepath_or_buffer, encoding, compression, mode, storage_options)</span>
+<span class="g g-Whitespace">    </span><span class="mi">382</span> <span class="c1"># assuming storage_options is to be interpreted as headers</span>
+<span class="g g-Whitespace">    </span><span class="mi">383</span> <span class="n">req_info</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">storage_options</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">384</span> <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req_info</span><span class="p">)</span> <span class="k">as</span> <span class="n">req</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">385</span>     <span class="n">content_encoding</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Encoding&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">386</span>     <span class="k">if</span> <span class="n">content_encoding</span> <span class="o">==</span> <span class="s2">&quot;gzip&quot;</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">387</span>         <span class="c1"># Override compression based on Content-Encoding header</span>
+
+<span class="nn">File /opt/homebrew/lib/python3.11/site-packages/pandas/io/common.py:289,</span> in <span class="ni">urlopen</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">283</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">284</span><span class="sd"> Lazy-import wrapper for stdlib urlopen, as that imports a big chunk of</span>
+<span class="g g-Whitespace">    </span><span class="mi">285</span><span class="sd"> the stdlib.</span>
+<span class="g g-Whitespace">    </span><span class="mi">286</span><span class="sd"> &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">287</span> <span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="ne">--&gt; </span><span class="mi">289</span> <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:216,</span> in <span class="ni">urlopen</span><span class="nt">(url, data, timeout, cafile, capath, cadefault, context)</span>
+<span class="g g-Whitespace">    </span><span class="mi">214</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">215</span>     <span class="n">opener</span> <span class="o">=</span> <span class="n">_opener</span>
+<span class="ne">--&gt; </span><span class="mi">216</span> <span class="k">return</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:525,</span> in <span class="ni">OpenerDirector.open</span><span class="nt">(self, fullurl, data, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">523</span> <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="p">[]):</span>
+<span class="g g-Whitespace">    </span><span class="mi">524</span>     <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">meth_name</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">525</span>     <span class="n">response</span> <span class="o">=</span> <span class="n">meth</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">527</span> <span class="k">return</span> <span class="n">response</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:634,</span> in <span class="ni">HTTPErrorProcessor.http_response</span><span class="nt">(self, request, response)</span>
+<span class="g g-Whitespace">    </span><span class="mi">631</span> <span class="c1"># According to RFC 2616, &quot;2xx&quot; code indicates that the client&#39;s</span>
+<span class="g g-Whitespace">    </span><span class="mi">632</span> <span class="c1"># request was successfully received, understood, and accepted.</span>
+<span class="g g-Whitespace">    </span><span class="mi">633</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">200</span> <span class="o">&lt;=</span> <span class="n">code</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">634</span>     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">635</span>         <span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">637</span> <span class="k">return</span> <span class="n">response</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:563,</span> in <span class="ni">OpenerDirector.error</span><span class="nt">(self, proto, *args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">561</span> <span class="k">if</span> <span class="n">http_err</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">562</span>     <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;http_error_default&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">orig_args</span>
+<span class="ne">--&gt; </span><span class="mi">563</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:496,</span> in <span class="ni">OpenerDirector._call_chain</span><span class="nt">(self, chain, kind, meth_name, *args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">494</span> <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">495</span>     <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">meth_name</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">496</span>     <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">497</span>     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">498</span>         <span class="k">return</span> <span class="n">result</span>
+
+<span class="nn">File /opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/request.py:643,</span> in <span class="ni">HTTPDefaultErrorHandler.http_error_default</span><span class="nt">(self, req, fp, code, msg, hdrs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">642</span> <span class="k">def</span> <span class="nf">http_error_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">643</span>     <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">full_url</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">hdrs</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+
+<span class="ne">HTTPError</span>: HTTP Error 404: Not Found
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">
+<h3>🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.<a class="headerlink" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="step-3-create-the-ephemeris-object-and-add-your-timingdata-object">
+<h3>🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.<a class="headerlink" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">timing_obj1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
+<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading">¶</a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="the-linear-model">
+<h4>🔹 The <strong>Linear</strong> Model<a class="headerlink" href="#the-linear-model" title="Link to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
+<span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example">
+<h4>🟢  EXAMPLE<a class="headerlink" href="#example" title="Link to this heading">¶</a></h4>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
+ <span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
+ <span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
+
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in linear_model_data.items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="the-quadratic-model">
+<h4>🔹 The <strong>Quadratic</strong> Model<a class="headerlink" href="#the-quadratic-model" title="Link to this heading">¶</a></h4>
+<p>We can do the same process for a quadratic model by specifying ‘quadratic’ for the model type instead of linear. The same process above is shown below for the quadratic model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
+<span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h4>🟢  EXAMPLE<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_model_data</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
+<span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
+<span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
+<span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
+<span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
+<span class="s1">&#39;period_change_by_epoch_err&#39;</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
+<span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">,</span>
+<span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in quadratic_model_data.items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+</section>
+<section id="step-5-get-bic-values">
+<h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading">¶</a></h3>
+<p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
+<span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Linear Model BIC: 386.7189816462825
+Quadratic Model BIC: 184.97948383585023
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we can also get a $\Delta$ BIC value using the method <code class="docutils literal notranslate"><span class="pre">calc_delta_bic</span></code>. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC values for each model, then calculate the $\Delta$ BIC value.</p>
+<p>Keep in mind, it <span style="color: #4BA5DD;"><strong>ONLY returns the $\Delta$ BIC value</strong></span> and not the other data calculated.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Δ BIC: 201.73949781043225
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="step-6-plot-your-data">
+<h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading">¶</a></h3>
+<p>Now you can use the linear_model_data and quadratic_model_data dictionaries for plotting methods. Available plotting methods include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_model_ephemeris</span></code>: This will plot the model predicted mid-times. This takes in a model data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code>: This will plot the range of uncertainties for the model predicted mid-times. This takes in a model data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_oc_plot</span></code>: This will plot the observed mid-times minus the model predicted mid-times (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$) and a curve with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$). This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code>: This will plot how the $\Delta$ BIC value changes over time. This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
+</ul>
+<!-- You can use the same process for a quadratic model ephemeris (shown below). --><hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="plot-the-ephemeris">
+<h4>🔹 Plot the ephemeris<a class="headerlink" href="#plot-the-ephemeris" title="Link to this heading">¶</a></h4>
+<p>🔹 For the Linear Ephemeris</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can plot this model</span>
+<span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/16e783514ab51bf258cb90aceb06b8aae57c14c27e87d866548b3440e7aba7bd.png" src="_images/16e783514ab51bf258cb90aceb06b8aae57c14c27e87d866548b3440e7aba7bd.png" />
+</div>
+</div>
+<p>🔹 For the Quadratic Ephemeris</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can plot this model</span>
+<span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/59059e7dd848dffbebdff11ae81caee6bb95d91eeb4876d64be49a3b7017e0e0.png" src="_images/59059e7dd848dffbebdff11ae81caee6bb95d91eeb4876d64be49a3b7017e0e0.png" />
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="plot-the-ephemeris-uncertainties">
+<h4>🔹 Plot the ephemeris uncertainties<a class="headerlink" href="#plot-the-ephemeris-uncertainties" title="Link to this heading">¶</a></h4>
+<p>🔹 For the Linear Ephemeris</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4a1c0694a02bf88db5af0d2d1591b0b19c0994fdffe383ad2f9a78abb0c04f67.png" src="_images/4a1c0694a02bf88db5af0d2d1591b0b19c0994fdffe383ad2f9a78abb0c04f67.png" />
+</div>
+</div>
+<p>🔹 For the Quadratic Ephemeris</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d979f7642d9476f5a9a4952294b1bf1089dc0f823175c66aadbb5c11b18a440b.png" src="_images/d979f7642d9476f5a9a4952294b1bf1089dc0f823175c66aadbb5c11b18a440b.png" />
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="the-o-c-plot">
+<h4>🔹 The O-C Plot<a class="headerlink" href="#the-o-c-plot" title="Link to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f8ab979fde67a570d31a3f14b92e70281ed08434f78d8ea97dca561a79b73305.png" src="_images/f8ab979fde67a570d31a3f14b92e70281ed08434f78d8ea97dca561a79b73305.png" />
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="plot-the-running-delta-bic">
+<h4>🔹 Plot the running $\Delta$ BIC<a class="headerlink" href="#plot-the-running-delta-bic" title="Link to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7b16ebe7b305a1e8178531d5fe30b7dfc7f74adc80afd9fa43ac720d06550929.png" src="_images/7b16ebe7b305a1e8178531d5fe30b7dfc7f74adc80afd9fa43ac720d06550929.png" />
+</div>
+</div>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"></section>
+</section>
+</section>
+<section id="other-timing-data-formats-and-options">
+<h2>🔵 Other Timing Data Formats and Options<a class="headerlink" href="#other-timing-data-formats-and-options" title="Link to this heading">¶</a></h2>
+<p>The default option (shown in the example above) for timing data:</p>
+<ul class="simple">
+<li><p>Is in JD TDB timing format and system</p></li>
+<li><p>Includes mid-time uncertainties</p></li>
+<li><p>Includes both transits AND occultations</p></li>
+</ul>
+<p>However, there are a number of options you have for creating timing objects. A few include:</p>
+<ul>
+<li><p>Timing formats and systems different from JD TDB. For example, you can specify that your data is in JD with UTC timing system. If you do not specify the timing system, the code will default to UTC and will automatically correct for barycentric light travel time.</p>
+<p><small> NOTE: If you choose to specify a different timing format and/or systems, or if you choose not to specify the timing system, REMEMBER the code will automatically convert your time to JD TDB timing format and system. If this happens, you will need to include some additional information including the position of your object in the sky (in RA and Dec) and the position of your observing location on Earth (in longitude and latitude). You ARE REQUIRED to input the coordinates of your object. You ARE NOT REQUIRED to specify your location on Earth, but this will generate a default position on Earth that corresponds to the North Pole.</small></p>
+</li>
+<li><p>No mid-time uncertainties. In this case, a placeholder list of 1s will be generated for functional purposes.</p></li>
+<li><p>No list specifying transits and occultations. If you do not include a list specifying if the data included is a transit or occultation (this will be the tra_or_occ parameter), then the code defaults to transits and will generate a list of ‘tra’ that has a number of values equal to the number of values of your epochs array.</p></li>
+</ul>
+<p>Below are examples of how these options would work.</p>
+<hr style="color: #D64309;"><section id="using-timing-data-that-is-not-in-jd-tdb-format-and-system">
+<h3>🔷 Using Timing Data that is NOT in JD TDB Format and System<a class="headerlink" href="#using-timing-data-that-is-not-in-jd-tdb-format-and-system" title="Link to this heading">¶</a></h3>
+<p>Using timing data that is not corrected for barcentric light travel time and is in a timing format and system other than JD TDB. For example, we will assume this data is in the JD timing format with the UTC time scale.</p>
+<p><small>NOTE: If you do not include a timing system parameter when you create the TimingData object, it will default to UTC and correct for barycentric light travel time</small></p>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="option-1-including-both-object-coordinates-and-observatory-coordinates">
+<h3>🔹 Option 1: Including BOTH Object Coordinates and Observatory Coordinates<a class="headerlink" href="#option-1-including-both-object-coordinates-and-observatory-coordinates" title="Link to this heading">¶</a></h3>
+<p>For this example, we show creating the object:</p>
+<ul class="simple">
+<li><p>WITHOUT specifying the timing system, which will default to UTC</p></li>
+<li><p>WITH specifying the timing system as UTC</p></li>
+</ul>
+<p><small>Note: These will both be the exact same because if the object is not given a timing system, it will default to UTC.</small></p>
+<p>We also include positional data for both:</p>
+<ul class="simple">
+<li><p>the <strong>object coordinates</strong>, which includes the right ascension and declination of WASP 12-b</p></li>
+<li><p>the <strong>location of the observatory</strong>, which includes the latitude and longitude of the Boise State observatory.</p></li>
+</ul>
+<p><small>Note: This data was not collected from the BSU observatory, we just use this as an example. Also note, this data is already corrected for barycentric light travel time, so the resulting data is not actually correct. This is JUST AN EXAMPLE. </small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Not including time scale. Will default to UTC</span>
+<span class="n">timing_obj2</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+<span class="c1"># OR including time scale as UTC</span>
+<span class="n">timing_obj2</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:root:Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale.                              If no time scale is given, default is automatically assigned to UTC.                              If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
+/Users/maliabarker/Desktop/Research/susie/notebook_env/lib/python3.11/site-packages/susie/timing_data.py:121: FutureWarning: Setting the location attribute post initialization will be disallowed in a future version of Astropy. Instead you should set the location when creating the Time object. In the future, this will raise an AttributeError.
+  time_obj.location = obs_location
+WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]
+WARNING:astropy:Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.
+/Users/maliabarker/Desktop/Research/susie/notebook_env/lib/python3.11/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;utctai&quot; yielded 158 of &quot;dubious year (Note 3)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/Research/susie/notebook_env/lib/python3.11/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;utcut1&quot; yielded 158 of &quot;dubious year (Note 3)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/Research/susie/notebook_env/lib/python3.11/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;taiutc&quot; yielded 158 of &quot;dubious year (Note 4)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/Research/susie/notebook_env/lib/python3.11/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;epv00&quot; yielded 158 of &quot;warning: date outsidethe range 1900-2100 AD&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+WARNING:root:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale.                              If no time scale is given, default is automatically assigned to UTC.                              If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now the TimingData object contains the corrected mid-times and mid-time uncertainties. To see these corrected values, you can print the variables of the object by running the code below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj2).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="option-2-including-only-object-coordinates">
+<h3>🔹 Option 2: Including ONLY Object Coordinates<a class="headerlink" href="#option-2-including-only-object-coordinates" title="Link to this heading">¶</a></h3>
+<p>We can also opt to <strong>not include any observatory coordinates</strong> (due to not knowing where to data was taken, for example). If this is not passed in, the object will default to the gravitational center of the Earth at x=0, y=0, z=0.</p>
+<p>We include positional data for the <strong>object coordinates</strong>, which includes the right ascension and declination of WASP 12-b.</p>
+<p><small>Note: This data is already corrected for barycentric light travel time, so the resulting data is not actually correct. This is JUST AN EXAMPLE. </small></p>
+<p><small style="color: #D64309;"><b> Don’t be scared of the warnings! These are just warnings, nothing is wrong.</b></small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Including time scale as UTC. NOT passing in observatory coordinates</span>
+<span class="n">timing_obj3</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:root:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale.                              If no time scale is given, default is automatically assigned to UTC.                              If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING:root:Unable to process observatory coordinates (None, None). Using gravitational center of Earth.
+WARNING:root:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (0.0, 90.0) for time correction.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj3).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"></section>
+<section id="using-timing-data-that-does-not-include-uncertainties">
+<h3>🔷 Using Timing Data that does NOT include uncertainties<a class="headerlink" href="#using-timing-data-that-does-not-include-uncertainties" title="Link to this heading">¶</a></h3>
+<p>We do not have to include uncertainties for our mid-time data. If no uncertainties are given, the object will generate a default placeholder of 1’s with the same number of values that are in your <code class="docutils literal notranslate"><span class="pre">epochs</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj4</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj4).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"></section>
+<section id="using-timing-data-that-does-not-include-a-transit-or-occultation-array">
+<h3>🔷 Using Timing Data that does NOT include a transit or occultation array<a class="headerlink" href="#using-timing-data-that-does-not-include-a-transit-or-occultation-array" title="Link to this heading">¶</a></h3>
+<p>We also do not need to include a <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code> array. For example, if you only have transit data, you most likely would not include a <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code> array because all of your data are transits. If we do not provide an array for <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code>, then the object will generate a default placeholder of ‘tra’ with the same number of values that are in your <code class="docutils literal notranslate"><span class="pre">epochs</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj5</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj5).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"><p>There are many different ways to create your TimingData object. Once you have created the TimingData object with as much information as you can provide, continue with the <strong>🔵 Basic Usage</strong> workflow from Step 3.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Holly VanLooy
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">🐷 Susie Package Test Notebook</a><ul>
+<li><a class="reference internal" href="#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a></li>
+<li><a class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
+<li><a class="reference internal" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
+<li><a class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
+<li><a class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
+<li><a class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
+<li><a class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li><a class="reference internal" href="#example">🟢  EXAMPLE</a></li>
+<li><a class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
+<li><a class="reference internal" href="#id1">🟢  EXAMPLE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
+<li><a class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
+<li><a class="reference internal" href="#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
+<li><a class="reference internal" href="#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
+<li><a class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
+<li><a class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-timing-data-formats-and-options">🔵 Other Timing Data Formats and Options</a><ul>
+<li><a class="reference internal" href="#using-timing-data-that-is-not-in-jd-tdb-format-and-system">🔷 Using Timing Data that is NOT in JD TDB Format and System</a></li>
+<li><a class="reference internal" href="#option-1-including-both-object-coordinates-and-observatory-coordinates">🔹 Option 1: Including BOTH Object Coordinates and Observatory Coordinates</a></li>
+<li><a class="reference internal" href="#option-2-including-only-object-coordinates">🔹 Option 2: Including ONLY Object Coordinates</a></li>
+<li><a class="reference internal" href="#using-timing-data-that-does-not-include-uncertainties">🔷 Using Timing Data that does NOT include uncertainties</a></li>
+<li><a class="reference internal" href="#using-timing-data-that-does-not-include-a-transit-or-occultation-array">🔷 Using Timing Data that does NOT include a transit or occultation array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=cc8b8c85"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
+    </body>
+</html>
