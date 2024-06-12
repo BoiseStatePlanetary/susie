@@ -26,16 +26,16 @@ This package uses numpy, scipy, matplotlib, and astropy software. These packages
 Represents a collection of mid transit and/or occultation times. Holds data to be accessed by Ephemeris class.
 
 **Arguments:**
- - **`time_format`** (str): An abbreviation of the data's timing system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
- - **`epochs`** (numpy.ndarray[int]): List of reference points for transit observations represented in the transit times data.
- - **`mid_times`** (numpy.ndarray[float]): List of observed transit and/or occultation mid-times corresponding with epochs.
- - **`mid_time_uncertainties`** (Optional[numpy.ndarray[float]]): List of uncertainties corresponding with mid-times. If given None, will be replaced with array of 1's with same shape as `mid_times`.
- - **`tra_or_occ`** (Optional[numpy.ndarray[str]]): A list of strings corresponding to each point of mid-time data to indicate whether the data came from a transit or an occultations. Will default to transits if not given.
- - **`time_scale`** (Optional[str]): An abbreviation of the data's timing scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
- - **`object_ra`** (Optional[float]): The right ascension in degrees of observed object represented by data.
- - **`object_dec`** (Optional[float]): The declination in degrees of observed object represented by data.
- - **`observatory_lon`** (Optional[float]): The longitude in degrees of observatory data was collected from.
- - **`observatory_lat`** (Optional[float]): The latitude in degrees of observatory data was collected from.
+ - `time_format` (str): An abbreviation of the data's timing system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
+ - `epochs` (numpy.ndarray[int]): List of reference points for transit observations represented in the transit times data.
+ - `mid_times` (numpy.ndarray[float]): List of observed transit and/or occultation mid-times corresponding with epochs.
+ - `mid_time_uncertainties` (Optional[numpy.ndarray[float]]): List of uncertainties corresponding with mid-times. If given None, will be replaced with array of 1's with same shape as `mid_times`.
+ - `tra_or_occ` (Optional[numpy.ndarray[str]]): A list of strings corresponding to each point of mid-time data to indicate whether the data came from a transit or an occultations. Will default to transits if not given.
+ - `time_scale` (Optional[str]): An abbreviation of the data's timing scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
+ - `object_ra` (Optional[float]): The right ascension in degrees of observed object represented by data.
+ - `object_dec` (Optional[float]): The declination in degrees of observed object represented by data.
+ - `observatory_lon` (Optional[float]): The longitude in degrees of observatory data was collected from.
+ - `observatory_lat` (Optional[float]): The latitude in degrees of observatory data was collected from.
 
 
 ### Ephemeris
@@ -45,11 +45,11 @@ Represents the model ephemeris using timing midpoint data over epochs.
  - `timing_data` (TimingData): A successfully instantiated TimingData object holding epochs, mid transit times, and uncertainties.
 
 **Methods:**
-`get_model_ephemeris`
+ - `get_model_ephemeris`
     Fits the timing data to a specified model using an [LMfit Model](https://pypi.org/project/lmfit/).
-    **Parameters**:
+     - **Parameters**:
         `model_type` (str): Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
-    **Returns**:
+     - **Returns**:
         A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
         {
             'period': An array of exoplanet periods over time corresponding to epochs,
@@ -63,54 +63,54 @@ Represents the model ephemeris using timing midpoint data over epochs.
             'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch,
         }
 
-`get_ephemeris_uncertainties`
-    Calculates the uncertainties of a specific model data when compared to the actual data. Uses the equation $σ_t_tra^pred = \sqrt{σ_T0^2 + (E^2 * σ_P^2)}$ for linear models and $σ_t_tra^pred = \sqrt{σ_T0^2 + (E^2 * σ_P^2) + (1/4 * σ_dP/dE^2 * E^4)}$ for quadratic models (where $σ_T0 = conjunction time error, E = epoch, σ_P = period error, and σ_dP/dE = period change by epoch error$).
-    **Parameters**: 
+ - `get_ephemeris_uncertainties`
+    Calculates the uncertainties of a specific model data when compared to the actual data. Uses the equation $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2)}$ for linear models and $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2) + (1/4 * σ_{dP/dE}^2 * E^4)}$ for quadratic models (where $σ_T0$ = conjunction time error, E = epoch, $σ_P$ = period error, and $σ_{dP/dE}$ = period change by epoch error).
+     - **Parameters**: 
         `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
-    **Returns**:
+     - **Returns**:
         A list of uncertainties associated with the model ephemeris passed in, calculated with the equations above and the passed in model data.
 
-`calc_bic`
-    Calculates the BIC value for a given model ephemeris. Uses the equation $ 𝜒^2 + (k * \log(N))$ where $𝜒^2=\sum ((observed mid transit times - model ephemeris mid transit times)/observed mid transit time uncertainties)^2$, k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.
-    **Parameters**:
+ - `calc_bic`
+    Calculates the BIC value for a given model ephemeris. Uses the equation $\chi^2 + (k * \log(N))$ where $𝜒^2=\sum(\frac{(\texttt{observed mid transit times} - \texttt{model ephemeris mid transit times})}{\texttt{observed mid transit time uncertainties}})^2$, k = number of fit parameters (2 for linear models, 3 for quadratic models), and N = total number of data points.
+     - **Parameters**:
         `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
-    **Returns**:
+     - **Returns**:
         A float value representing the BIC value for this model ephemeris.
     
-`calc_delta_bic`
+ - `calc_delta_bic`
     Calculates the ΔBIC value between linear and quadratic model ephemerides using the given transit data. 
-    **Returns**:
+     - **Returns**:
         A float value representing the ΔBIC value for this transit data.
     
-`plot_model_ephemeris`
+ - `plot_model_ephemeris`
     Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
-    **Parameters**:
+     - **Parameters**:
         - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
-    **Returns**:
+     - **Returns**:
         A MatplotLib plot of epochs vs. model predicted mid-transit times.
     
-`plot_timing_uncertainties`
-    **Parameters**:
+ - `plot_timing_uncertainties`
+     - **Parameters**:
         - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
-    **Returns**:
+     - **Returns**:
         A MatplotLib plot of timing uncertainties.
     
-`plot_oc_plot`
-    **Parameters**:
+ - `plot_oc_plot`
+     - **Parameters**:
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
-    **Returns**:
+     - **Returns**:
         A MatplotLib plot of observed vs. calculated values of mid transit times for linear and quadratic model ephemerides over epochs.
     
-`plot_running_delta_bic`
-    **Parameters**:
+ - `plot_running_delta_bic`
+     - **Parameters**:
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
-    **Returns**:
+     - **Returns**:
         A MatplotLib scatter plot of epochs vs. ΔBIC for each epoch.
     
 
@@ -131,9 +131,8 @@ epochs = [-1640, -1408, -1404, -1346, -1342, -1067, -1061, -1046, -1038, -1018, 
 mid_times = [2454515.52496, 2454769.2819, 2454773.6481, 2454836.4034, 2454840.76893, 2455140.90981, 2455147.45861, 2455163.83061, 2455172.56138, 2455194.9344, 2455202.57625, 2455209.66895, 2455210.76151, 2455230.40669, 2455254.41871, 2455494.52999, 2455498.8959, 2455509.80971, 2455510.90218, 2455517.99514, 2455518.5407, 2455542.5521, 2455542.55273, 2455566.56385, 2455576.932, 2455587.8473, 2455590.57561, 2455598.21552, 2455600.398, 2455601.4901, 2455603.67261, 2455623.31829, 2455876.52786, 2455887.44198, 2455888.5334, 2455890.71635, 2455903.81357, 2455910.909, 2455920.18422, 2455923.4585, 2455924.0047, 2455946.37823, 2455946.9229, 2455947.47015, 2455948.56112, 2455951.83534, 2455952.9272, 2455959.47543, 2455960.56686, 2455970.38941, 2455971.48111, 2455982.39509, 2455983.48695, 2455984.57797, 2455985.66975, 2455996.58378, 2456005.31533, 2456006.40637, 2456245.42729, 2456249.79404, 2456273.80514, 2456282.53584, 2456284.71857, 2456297.81605, 2456302.18179, 2456305.45536, 2456319.64424, 2456328.37556, 2456329.46733, 2456604.50489, 2456605.59624, 2456606.6876, 2456607.77938, 2456629.60726, 2456630.69917, 2456638.88589, 2456642.15907, 2456654.71047, 2456659.07598, 2456662.35014, 2456663.44136, 2456664.53256, 2456674.3556, 2456677.63039, 2456688.54384, 2456694.00161, 2456703.82417, 2456711.46415, 2456719.10428, 2456721.28692, 2456722.37807, 2456986.50195, 2457010.51298, 2457012.69617, 2457045.43831, 2457046.53019, 2457059.62713, 2457060.71839, 2457067.26715, 2457068.35834, 2457103.28423, 2457345.57867, 2457390.32708, 2457391.41818, 2457426.34324, 2457427.43496, 2457451.44617, 2457671.91324, 2457691.55888, 2457703.56388, 2457706.83791, 2457726.484, 2457727.57547, 2457765.77515, 2457766.86633, 2457769.59573, 2457772.32407, 2457773.41517, 2457776.68869, 2457781.05418, 2457781.05566, 2457786.5121, 2457788.69464, 2457800.69978, 2457808.3402, 2457809.4319, 2457810.52327, 2457830.71389, 2458026.62368, 2458050.63519, 2458060.4587, 2458073.55509, 2458074.64651, 2458077.92107, 2458123.76011, 2458124.85183, 2458132.49121, 2458134.67471, 2458136.8576, 2458155.4104, 2458155.41152, 2458156.50267, 2458159.77773, 2458161.95991, 2458161.95964, 2458163.05125, 2458163.05089, 2458166.32575, 2458178.33104, 2458411.89495, 2458471.92257, 2458485.56424, 2458494.8427, 2458499.75572, 2458504.11988, 2458506.84758, 2458508.48459, 2458517.21641]
 mid_time_uncertainties = [0.00043, 0.0008, 0.0006, 0.00028, 0.00062, 0.00042, 0.00043, 0.00032, 0.00036, 0.001, 0.0022, 0.00046, 0.00041, 0.00019, 0.00043, 0.00072, 0.00079, 0.00037, 0.00031, 0.00118, 0.0004, 0.0004, 0.00028, 0.00028, 0.0009, 0.0017, 0.00068, 0.00035, 0.00029, 0.00024, 0.00029, 0.00039, 0.00027, 0.00021, 0.00027, 0.00024, 0.00032, 0.0013, 0.00031, 0.00022, 0.0021, 0.00018, 0.0018, 0.00017, 0.00033, 0.00011, 0.0001, 0.00017, 0.00032, 0.00039, 0.00035, 0.00034, 0.00035, 0.00032, 0.00042, 0.00037, 0.00037, 0.00031, 0.00033, 0.00039, 0.0003, 0.0003, 0.0003, 0.0003, 0.00046, 0.00024, 0.00038, 0.00027, 0.00029, 0.00021, 0.0003, 0.00033, 0.00071, 0.00019, 0.00043, 0.0011, 0.00141, 0.00034, 0.00034, 0.00019, 0.00019, 0.00031, 0.00028, 0.00032, 0.0004, 0.00029, 0.00029, 0.00025, 0.00034, 0.00034, 0.00046, 0.00043, 0.00039, 0.00049, 0.00046, 0.00049, 0.00035, 0.00036, 0.00022, 0.0002, 0.00031, 0.00042, 0.00033, 0.00033, 0.00055, 0.00023, 0.00021, 0.00035, 0.00025, 0.00034, 0.00037, 0.00028, 0.00023, 0.00028, 0.00039, 0.00136, 0.00024, 0.00022, 0.00029, 0.00043, 0.00036, 0.00026, 0.00048, 0.00032, 0.0004, 0.00018, 0.00021, 0.0011, 0.00056, 0.00023, 0.0003, 0.00022, 0.00034, 0.00028, 0.00027, 0.00035, 0.00031, 0.00032, 0.00033, 0.0005, 0.00031, 0.00032, 0.00091, 0.00035, 0.00026, 0.00021, 0.00034, 0.00034, 0.00038, 0.0004, 0.00026, 0.0014, 0.0003, 0.00077, 0.00087, 0.00044, 0.00091, 0.00074]
 tra_or_occs = ['tra', 'occ', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'tra', 'tra', 'tra', 'tra', 'occ', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'tra', 'tra', 'occ', 'tra', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'tra', 'occ', 'tra', 'occ', 'occ', 'tra', 'occ', 'occ']
-
-This data is pulled from [Yee et. al.](https://iopscience.iop.org/article/10.3847/2041-8213/ab5c16#apjlab5c16t5) and can be downloaded in a CSV format [here](https://content.cld.iop.org/journals/2041-8205/888/1/L5/revision1/apjlab5c16t5_mrt.txt). The data represents observations of the hot Jupiter WASP 12-b.
 ```
+This data is pulled from [Yee et. al.](https://iopscience.iop.org/article/10.3847/2041-8213/ab5c16#apjlab5c16t5) and can be downloaded in a CSV format [here](https://content.cld.iop.org/journals/2041-8205/888/1/L5/revision1/apjlab5c16t5_mrt.txt). The data represents observations of the hot Jupiter WASP 12-b.
 
 ### Instantiate TimingData
 Then, we can instantiate our TimingData object. There are a few ways we can do this, some common ways are included below...
@@ -153,7 +152,7 @@ With times NOT corrected for barycentric light travel times:
 With times NOT corrected for barycentric light travel times and no observatory coordinates given:
     `timing_data = TimingData('jd', epochs, mid_times, mid_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67)`
 
-There are many different ways to import your data, and you can use any mix of options mentioned above. Ideally, include as much information as you can.
+There are many different ways to import your data, and you can use any mix of options mentioned above. Ideally, include as much information as you can. More examples are included on our [ReadTheDocs page](https://susie.readthedocs.io/en/latest).
 
 ### Instantiate Ephemeris
 Now, we can instantiate our Ephemeris class using our TimingData object and perform some function calls.
@@ -174,7 +173,7 @@ Here is an example of an OC plot returned by the data above.
 
 <small>NOTE: You also have the option to save this plot by setting `save_plot` to True and including a `file_path` parameter. This option is available for ALL plotting methods.</small>
 
-For more detailed data and visualizations, check out our documentation linked at the top of this ReadMe!
+For more details on methods, data, visualizations, and examples, check out our [ReadTheDocs page](https://susie.readthedocs.io/en/latest)!
 
 ## API documentation
 Documentation can be accessed on our public [ReadTheDocs page](https://susie.readthedocs.io/en/latest).
