@@ -42,7 +42,7 @@ Represents a collection of mid transit and/or occultation times. Holds data to b
 Represents the model ephemeris using timing midpoint data over epochs.
 
 **Arguments:**
- - `timing_data` (TimingData): A successfully instantiated TimingData object holding epochs, mid transit times, and uncertainties.
+ - `timing_data` (TimingData): A successfully instantiated TimingData object holding epochs, mid times, and uncertainties.
 
 **Methods:**
  - `get_model_ephemeris`
@@ -71,7 +71,7 @@ Represents the model ephemeris using timing midpoint data over epochs.
         A list of uncertainties associated with the model ephemeris passed in, calculated with the equations above and the passed in model data.
 
  - `calc_bic`
-    Calculates the BIC value for a given model ephemeris. Uses the equation $\chi^2 + (k * \log(N))$ where $𝜒^2=\sum(\frac{(\texttt{observed mid transit times} - \texttt{model ephemeris mid transit times})}{\texttt{observed mid transit time uncertainties}})^2$, k = number of fit parameters (2 for linear models, 3 for quadratic models), and N = total number of data points.
+    Calculates the BIC value for a given model ephemeris. Uses the equation $\chi^2 + (k * \log(N))$ where $𝜒^2=\sum(\frac{(\texttt{observed mid times} - \texttt{model ephemeris mid times})}{\texttt{observed mid time uncertainties}})^2$, k = number of fit parameters (2 for linear models, 3 for quadratic models), and N = total number of data points.
      - **Parameters**:
         `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
      - **Returns**:
