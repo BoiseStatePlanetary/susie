@@ -64,7 +64,7 @@ Represents the model ephemeris using timing midpoint data over epochs.
         }
 
  - `get_ephemeris_uncertainties`
-    Calculates the uncertainties of a specific model data when compared to the actual data. Uses the equation $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2)}$ for linear models and $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2) + (1/4 * σ_{dP/dE}^2 * E^4)}$ for quadratic models (where $σ_T0$ = conjunction time error, E = epoch, $σ_P$ = period error, and $σ_{dP/dE}$ = period change by epoch error).
+    Calculates the uncertainties of a specific model data when compared to the actual data. Uses the equation $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2)}$ for linear models and $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2) + (1/4 * σ_{\frac{dP}{dE}}^2 * E^4)}$ for quadratic models (where $σ_T0$ = conjunction time error, E = epoch, $σ_P$ = period error, and $σ_{\frac{dP}{dE}}$ = period change by epoch error).
      - **Parameters**: 
         `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
      - **Returns**:
