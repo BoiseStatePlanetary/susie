@@ -7,17 +7,10 @@ Welcome to Susie's documentation!
 =================================
 
 Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their 
-extrasolar system. 
+extrasolar system.
 
-.. image:: susie/docs/images/sp_susie.png
-Here I am testing to see if the absolute path method will work
-
-.. image:: SP_ObservingGrid.png
-Here I am testing if moving the image into the docs folder will work
-
-.. image:: images/sp_susie.png
-   :alt: A placeholder image
-Here I have the original path 
+.. image:: images/SP_Susie.png
+   :alt: The Susie Exoplanets Group Logo
 
 About
 -----
