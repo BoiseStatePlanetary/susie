@@ -2,14 +2,9 @@ from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
-<<<<<<< HEAD
-from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
-=======
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
 from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 # from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
->>>>>>> dcd063d54be6c14a683123d9292f0e006d7a6767
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
