@@ -11,12 +11,12 @@ Ephemeris module
    :undoc-members:
    :show-inheritance:
 
-.. _transit_times_label:
+.. _timing_data_label:
 
-Transit Times module
+Timing Data module
 --------------------
 
-.. automodule:: src.susie.transit_times
+.. automodule:: src.susie.timing_data
    :members:
    :undoc-members:
    :show-inheritance:

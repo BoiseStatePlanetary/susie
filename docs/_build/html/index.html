@@ -218,7 +218,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Timing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>
@@ -268,7 +268,7 @@ extrasolar system.</p>
 <img alt="The Susie Exoplanets Group Logo" src="_images/SP_Susie.png" />
 <section id="about">
 <h2>About<a class="headerlink" href="#about" title="Link to this heading">¶</a></h2>
-<p>Susie works by fitting your transit mid-times (or occultation mid-times if given) to both a linear and quadratic model,
+<p>Susie works by fitting your transit and/or occultation mid-times to both a linear and quadratic model,
 then calculating a modified <span class="math notranslate nohighlight">\(\chi ^2\)</span> metric called <span class="math notranslate nohighlight">\(\rm BIC\)</span> for both models to determine which model
 best represents your data. Whichever model has a larger value of <span class="math notranslate nohighlight">\(BIC\)</span> will be the model that best represents
 your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay.
@@ -278,7 +278,7 @@ your <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value, the
 they are calculated can be found in <a class="reference external" href="https://arxiv.org/abs/2308.04587">our team’s paper here</a>.</p>
 <p>You can choose to fit your data to a specified model, or we can do the work for you, fitting both models with your data
 and returning a <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for you to further assess. Visualizations are given for you to further examine
-your results with your resturned model data. Just input your data into the <a class="reference internal" href="susie.html#transit-times-label"><span class="std std-ref">transit_times.py</span></a>
+your results with your resturned model data. Just input your data into the <a class="reference internal" href="susie.html#timing-data-label"><span class="std std-ref">timing_data.py</span></a>
 object, then insert your created object into the <a class="reference internal" href="susie.html#ephemeris-label"><span class="std std-ref">ephemeris.py</span></a> object to proceed with your choice
 of modeling and visualizations. See the documentation and example scripts below for more.</p>
 <p>Future work includes implementation of <a class="reference external" href="https://astroplan.readthedocs.io/en/stable/index.html">Astroplan</a> to provide
@@ -303,7 +303,7 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </pre></div>
 </div>
 <p>or</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">susie</span> <span class="kn">import</span> <span class="n">Ephemeris</span><span class="p">,</span> <span class="n">TransitTimes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">susie</span> <span class="kn">import</span> <span class="n">Ephemeris</span><span class="p">,</span> <span class="n">TimingData</span>
 </pre></div>
 </div>
 </li>
@@ -346,7 +346,10 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="susie.html#transit-times-module">Transit Times module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="susie.html#module-src.susie.timing_data">Timing Data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="susie.html#src.susie.timing_data.TimingData"><code class="docutils literal notranslate"><span class="pre">TimingData</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="susie.html#module-src.susie">Module contents</a></li>
 </ul>
 </li>
@@ -363,7 +366,7 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Transit Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Timing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
 </ul>

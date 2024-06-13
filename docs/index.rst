@@ -15,7 +15,7 @@ extrasolar system.
 About
 -----
 
-Susie works by fitting your transit mid-times (or occultation mid-times if given) to both a linear and quadratic model, 
+Susie works by fitting your transit and/or occultation mid-times to both a linear and quadratic model, 
 then calculating a modified :math:`\chi ^2` metric called :math:`\rm BIC` for both models to determine which model 
 best represents your data. Whichever model has a larger value of :math:`BIC` will be the model that best represents 
 your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay. 
@@ -26,7 +26,7 @@ they are calculated can be found in `our team's paper here <https://arxiv.org/ab
 
 You can choose to fit your data to a specified model, or we can do the work for you, fitting both models with your data 
 and returning a :math:`\Delta BIC` value for you to further assess. Visualizations are given for you to further examine 
-your results with your resturned model data. Just input your data into the :ref:`transit_times.py <transit_times_label>`
+your results with your resturned model data. Just input your data into the :ref:`timing_data.py <timing_data_label>`
 object, then insert your created object into the :ref:`ephemeris.py <ephemeris_label>` object to proceed with your choice
 of modeling and visualizations. See the documentation and example scripts below for more.
 
@@ -58,7 +58,7 @@ Quickstart
 
    .. code-block:: python
 
-      from susie import Ephemeris, TransitTimes
+      from susie import Ephemeris, TimingData
 
 
 Documentation
@@ -74,7 +74,7 @@ Tutorials
 .. toctree::
 
    Installation <tutorial1>
-   Adding Transit Data <tutorial2>
+   Adding Timing Data <tutorial2>
    Creating Ephemeris Models and Data <tutorial3> 
    Creating Ephemeris Visualizations <tutorial4> 
 
