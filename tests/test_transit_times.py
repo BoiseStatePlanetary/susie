@@ -321,6 +321,20 @@ class TestTimingData(unittest.TestCase):
 
     # Timing Format tests
     # test for logging.warning
+    def test_timing_system_logging_err(self):   
+        expected_messages = [
+                            "Recieved time format jd and time scale utc. " 
+                            "Correcting all times to BJD timing system with TDB time scale. \
+                             If no time scale is given, default is automatically assigned to UTC. \
+                             If this is incorrect, please set the time format and time scale for TransitTime object."
+        ]
+        with self.assertLogs('TimingData', level='WARNING') as cm:
+            timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon= -116.21)
+        
+        self.assertEqual(len(cm.output), 2)
+
+        for expected_message in expected_messages:
+            self.assertTrue(any(expected_message in message for message in cm.output))
     # @patch('logging.warning')
     # def test_timing_system_logging_err(self,mock_warning):
     #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon= -116.21)
