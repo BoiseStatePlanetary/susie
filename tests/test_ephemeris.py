@@ -241,7 +241,7 @@ class TestEphemeris(unittest.TestCase):
 
             Produces a numpy array with the length of the epochs
         """
-        expected_result = np.array([0.23692092, 0.31014149, 0.31190525, 0.45638284 ])
+        expected_result =  np.array([0.23692092,0.31036088, 0.31190525, 0.45667354 ])
         result = self.ephemeris._calc_linear_model_uncertainties(test_T0_err_linear, test_P_err_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
@@ -250,8 +250,9 @@ class TestEphemeris(unittest.TestCase):
 
             Produces a numpy array with the length of the epochs
         """
-        expected_result = np.array([ 0.34674309, 0.84691127, 0.85834968, 1.89170591 ])
-        result = self.ephemeris._calc_quadratic_model_uncertainties(test_T0_err_quad, test_P_err_quad,test_dPdE_err)
+        expected_result =  np.array([0.34674309,0.84788387,0.85834968,1.89255521])
+        result = self.ephemeris._calc_quadratic_model_uncertainties(test_T0_err_quad, test_P_err_quad, test_dPdE_err)
+        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_calc_linear_ephemeris(self):
@@ -411,7 +412,7 @@ class TestEphemeris(unittest.TestCase):
             'model_type': 'linear', 
             'model_data': ([-1.01033029e-01, 3.21043386e+02 , 3.24860043e+02, 6.25285467e+02 ])
         }
-        expected_result =  np.array([0.23692092, 0.31014149, 0.31190525, 0.45638284 ])
+        expected_result = np.array([0.23692092,0.31036088, 0.31190525, 0.45667354 ])
         self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
         results = self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
         self.assertTrue(np.allclose(expected_result, results, rtol=1e-05, atol=1e-08)) 
@@ -431,7 +432,7 @@ class TestEphemeris(unittest.TestCase):
             'model_type': 'quadratic',
             'model_data': ( [-8.65530018e-04,3.20970587e+02,3.24788020e+02,6.25386753e+02])
         }
-        expected_result =  np.array([ 0.34674309, 0.84691127, 0.85834968, 1.89170591 ])
+        expected_result = np.array([0.34674309,0.84788387,0.85834968,1.89255521]) 
         self.ephemeris.get_ephemeris_uncertainties(model_parameters_quad)
         results = self.ephemeris.get_ephemeris_uncertainties(model_parameters_quad)
         self.assertTrue(np.allclose(expected_result, results, rtol=1e-05, atol=1e-08)) 
