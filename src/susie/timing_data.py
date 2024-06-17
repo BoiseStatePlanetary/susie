@@ -4,6 +4,11 @@ from astropy import coordinates as coord
 from astropy import units as u
 import logging
 
+# logging.basicConfig(format='%(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+# logger = getLogger(__name__)
+
+logger = logging.getLogger('lumberjack')
+
 class TimingData():
     """Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.
 
@@ -59,6 +64,9 @@ class TimingData():
         Variables epochs and mid_times are shifted to start at zero by subtracting the minimum number from each value
     """
     def __init__(self, time_format, epochs, mid_times, mid_time_uncertainties=None, tra_or_occ=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
+        # Configure logging to remove 'root' prefix
+        self._configure_logging()
+
         self.epochs = epochs
         self.mid_times = mid_times
         self.tra_or_occ = tra_or_occ
@@ -69,10 +77,7 @@ class TimingData():
         # Check that timing system and scale are JD and TDB
         if time_format != 'jd' or time_scale != 'tdb':
             # If not correct time format and scale, create time objects and run corrections
-            logging.warning(f"Recieved time format {time_format} and time scale {time_scale}. " 
-                            "Correcting all times to BJD timing system with TDB time scale. \
-                             If no time scale is given, default is automatically assigned to UTC. \
-                             If this is incorrect, please set the time format and time scale for TransitTime object.")
+            logging.warning(f"Recieved time format {time_format} and time scale {time_scale}. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.")
             # Set timing data to None for now
             self.mid_times = None
             self.mid_time_uncertainties = None
@@ -81,6 +86,9 @@ class TimingData():
             self._validate_times(mid_times_obj, mid_time_uncertainties_obj, (object_ra, object_dec), (observatory_lon, observatory_lat))
         # Call validation function
         self._validate()
+
+    def _configure_logging(self):
+        logging.basicConfig(format='%(levelname)s: %(message)s')
 
     def _calc_barycentric_time(self, time_obj, obj_location, obs_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
