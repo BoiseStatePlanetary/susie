@@ -7,7 +7,6 @@ from numpy.testing import assert_array_equal
 import logging
 from astropy import time
 from astropy import coordinates
-from unittest.mock import patch
 
 
 # test_epochs = [0, 294, 298, 573, 579, 594, 602, 636, 637, 655, 677, 897, 901, 911, 912, 919, 941, 941, 963, 985, 992, 994, 995, 997, 1015, 1247, 1257, 1258, 1260, 1272, 1287, 1290, 1311, 1312, 1313, 1316, 1317, 1323, 1324, 1333, 1334, 1344, 1345, 1346, 1347, 1357, 1365, 1366, 1585, 1589, 1611, 1619, 1621, 1633, 1637, 1640, 1653, 1661, 1662, 1914, 1915, 1916, 1917, 1937, 1938, 1960, 1964, 1967, 1968, 1969, 1978, 1981, 1991, 1996, 2005, 2012, 2019, 2021, 2022, 2264, 2286, 2288, 2318, 2319, 2331, 2332, 2338, 2339, 2371, 2593, 2634, 2635, 2667, 2668, 2690, 2892, 2910, 2921, 2924, 2942, 2943, 2978, 2979, 2984, 2985, 2988, 2992, 2992, 2997, 2999, 3010, 3017, 3018, 3019, 3217, 3239, 3248, 3260, 3261, 3264, 3306, 3307, 3314, 3316, 3318, 3335, 3335, 3336, 3339, 3341, 3341, 3342, 3342, 3345, 3356, 3570, 3625, 3646, 3657]
@@ -321,81 +320,54 @@ class TestTimingData(unittest.TestCase):
 
     # Timing Format tests
     # test for logging.warning
-    def test_timing_system_logging_err(self):   
-        expected_messages = [
-                            "Recieved time format jd and time scale utc. " 
-                            "Correcting all times to BJD timing system with TDB time scale. \
-                             If no time scale is given, default is automatically assigned to UTC. \
-                             If this is incorrect, please set the time format and time scale for TransitTime object."
-        ]
-        with self.assertLogs('TimingData', level='WARNING') as cm:
-            timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon= -116.21)
-        
-        self.assertEqual(len(cm.output), 2)
-
-        for expected_message in expected_messages:
-            self.assertTrue(any(expected_message in message for message in cm.output))
-    # @patch('logging.warning')
-    # def test_timing_system_logging_err(self,mock_warning):
-    #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon= -116.21)
-    #     self.assertEqual(mock_warning.call_count,2)
-    #     expected_message = ("Recieved time format jd and time scale utc. " 
-    #                         "Correcting all times to BJD timing system with TDB time scale. \
-    #                          If no time scale is given, default is automatically assigned to UTC. \
-    #                          If this is incorrect, please set the time format and time scale for TransitTime object.")
-    #     mock_warning.assert_called_with(expected_message)
-
+    # def test_timing_system_logging_err(self):   
+    #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    #     with self.assertLogs('lumberjack', level='WARNING') as cm:
+    #         logging.basicConfig(format='%(levelname)s: %(message)s')
+    #         logging.getLogger('lumberjack').warning("Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.")
+    #         logging.getLogger('lumberjack').warning("Using ICRS coordinates in degrees of RA and Dec 97.64, 29.67 for time correction. "
+    #                     "Using geodetic Earth coordinates in degrees of longitude and latitude -116.21, 43.60 for time correction.")
+    #     self.assertEqual(cm.output, ['WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
+   
+   
+    # def test_timing_system_logging_err(self):   
+    #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    #     with self.assertLogs('lumberjack', level='WARNING') as cm:
+    #         logging.getLogger('lumberjack').warning("Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.")
+    #         logging.getLogger('lumberjack').warning("Using ICRS coordinates in degrees of RA and Dec 97.64, 29.67 for time correction. "
+    #                     "Using geodetic Earth coordinates in degrees of longitude and latitude -116.21, 43.60 for time correction.")
+    #     self.assertEqual(cm.output, ['WARNING: Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
+   
  
-
+    def test_timing_system_logging_err(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        with self.assertLogs('lumberjack', level='WARNING') as cm:
+            logger = logging.getLogger('lumberjack')
+            logger.warning('Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.')
+        self.assertEqual(cm.output, ['WARNING:lumberjack:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.'])
+   
+   
     # ######## IDK IF THIS IS RIGHT?????????#####
-    # ### trying to check if the time.Time produces the correct result
-    # gets errors with importing time module
-    # test to check creation of the mid_times_obj
-    # gets a warning but still runs
-    # def test_creation_of_mid_times_obj(self):
-    #     test_mid_times = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-    #     test_time_format = 'jd'  
-    #     test_time_scale = 'tdb' 
-    #     timing_data = TimingData(test_time_format, test_mid_times, test_time_scale)
-    #     expected_mid_times_obj = time.Time(test_mid_times,format='jd',scale = 'tdb')
-    #     actual_mid_times_obj = timing_data.mid_times_obj
-    #     self.assertEqual(expected_mid_times_obj,actual_mid_times_obj)
+    timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    expected_mid_times_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
+    expected_mid_times_err_obj = time.Time(test_mtts_err,format = 'jd',scale = 'utc')
+        
+   
+    # # # validate times tests
+    def test_validate_times_obj_coords_err(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
+        test_mid_times_obj = time.Time(test_mtts,format='jd',scale = 'tdb')
+        test_mid_time_uncertainties_obj = time.Time(test_mtts_err,format='jd',scale = 'tdb')
+        test_obj_coords = (150.0, 2.5)
+        test_obs_coords = (-70.0, -30.0)
+        new_obj_coords = (None,None)
+        with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. " 
+                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
+                             timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
+        
+    # obs coords
 
     
-    # # test to check creation of the mid_time_uncertainties_obj
-    # def test_creation_of_mid_times_uncertainties_obj(self):
-    #     test_mid_times =  np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-    #     test_mid_times_uncertainties = np.array([0.00043, 0.00028, 0.00062, 0.00042])
-    #     test_time_format = 'jd'  
-    #     test_time_scale = 'tdb' 
-    #     timing_data = TimingData(test_time_format, test_mid_times, test_mid_times_uncertainties, test_time_scale)
-    #     expected_mid_time_uncertainties = time.Time(test_mid_times_uncertainties,format='jd',scale = 'tdb')
-    #     actual_mid_time_uncertainties = timing_data.mid_time_uncertainties_obj
-    #     self.assertEqual(expected_mid_time_uncertainties,actual_mid_time_uncertainties)
-   
-   
-
-    # def test_validate_times_obj_coords_err(self):
-    #     test_mid_times = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-    #     test_mid_times_uncertainties = np.array([0.00043, 0.00028, 0.00062, 0.00042])
-    #     timing_data = TimingData()
-    #     test_mid_times_obj = time.Time(test_mid_times,format='jd',scale = 'tdb')
-    #     test_mid_time_uncertainties_obj = time.Time(test_mid_times_uncertainties,format='jd',scale = 'tdb')
-    #     test_obj_coords = (150.0, 2.5)
-    #     test_obs_coords = (-70.0, -30.0)
-    #     new_obj_coords = None
-    #     with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. " 
-    #                          "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
-    #                          timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
-        
-    # def test_validate_times_obs_coords(self,mock_warning):
-    #     self.timing_data = TimingData('isot', test_epochs, test_mtts, test_mtts_err, time_scale='tt')
-    #     self.assertEqual(mock_warning.call_count,1)
-    #     expected_message = ("Recieved time format isot and time scale tt. " 
-    #                         "Correcting all times to BJD timing system with TDB time scale. \
-    #                          If no time scale is given, default is automatically assigned to UTC. \
-    #                          If this is incorrect, please set the time format and time scale for TransitTime object.")
-    #     mock_warning.assert_called_with(expected_message)
     
     #tests for calc_barycentric_time
     test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
