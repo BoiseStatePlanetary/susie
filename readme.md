@@ -5,6 +5,9 @@
 [![Powered by Astropy](https://img.shields.io/badge/powered%20by-AstroPy-orange?style=flat)](https://www.astropy.org/)
 
 A package for exoplanet orbital decay calculations and visualizations.
+[![Susie Superpig Cartoon Image](/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html)
+
+[![Susie Superpig Cartoon Image](/readme_imgs/SP_Susie.png | width=100)](https://susie.readthedocs.io/en/latest/index.html)
 
 <img src="/readme_imgs/SP_Susie.png" alt="Susie Superpig Cartoon Image" width="400" style="align: center;"/>
 
