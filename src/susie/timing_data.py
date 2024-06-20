@@ -179,6 +179,9 @@ class TimingData():
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
 
     def _validate_tra_or_occ(self):
+        """TODO: Docstring
+        
+        """
         # Check that object is of type array
         if not isinstance(self.tra_or_occ, np.ndarray):
             raise TypeError("The variable 'tra_or_occ' expected a NumPy array (np.ndarray) but received a different data type")

@@ -1,4 +1,15 @@
 # The Susie Python Package
+
+|Docs| |Astropy|
+
+.. |Docs| image:: https://readthedocs.org/projects/specutils/badge/?version=latest
+   :target: https://susie.readthedocs.io/en/latest/index.html
+   :alt: Documentation Status
+
+.. |Astropy| image:: https://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+   :target: https://www.astropy.org/
+   :alt: Powered by Astropy
+
 A package for exoplanet orbital decay calculations and visualizations.
 
 https://susie.readthedocs.io/en/latest/
