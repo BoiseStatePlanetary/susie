@@ -66,3 +66,5 @@ extra
 .history
 docs_env
 local_requirements.txt
+htmlcov
+.coverage
