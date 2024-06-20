@@ -2,11 +2,11 @@
 
 |Docs| |Astropy|
 
-.. |Docs| image:: https://readthedocs.org/projects/specutils/badge/?version=latest
+.. |Docs| image:: https://readthedocs.org/projects/susie/badge/?version=latest
    :target: https://susie.readthedocs.io/en/latest/index.html
    :alt: Documentation Status
 
-.. |Astropy| image:: https://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+.. |Astropy| image:: https://img.shields.io/badge/powered%20by-AstroPy-orange?style=flat
    :target: https://www.astropy.org/
    :alt: Powered by Astropy
 
