@@ -1,5 +1,7 @@
 # The Susie Python Package
 
+![Documentation Status](https://readthedocs.org/projects/susie/badge/?version=latest)
+![Powered by Astropy](https://img.shields.io/badge/powered%20by-AstroPy-orange?style=flat)
 |Docs| |Astropy|
 
 .. |Docs| image:: https://readthedocs.org/projects/susie/badge/?version=latest
