@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
+from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
 from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 # from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
@@ -384,7 +385,7 @@ class Ephemeris(object):
         elif model_type == 'quadratic':
             return 3
         else:
-            return ValueError('Only linear and quadratic models are supported at this time.')
+            raise ValueError('Only linear and quadratic models are supported at this time.')
     
     def _calc_linear_model_uncertainties(self, T0_err, P_err):
         """Calculates the uncertainties of a given linear model when compared to actual data in TimingData.
@@ -728,6 +729,9 @@ class Ephemeris(object):
         quadratic_bic = self.calc_bic(quadratic_data)
         delta_bic = linear_bic - quadratic_bic
         return delta_bic
+    
+    def get_observing_schedule(self):
+        pass
     
     def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. model calculated mid-times.

@@ -1,4 +1,9 @@
 # The Susie Python Package
+
+[![Documentation Status](https://readthedocs.org/projects/susie/badge/?version=latest)](https://susie.readthedocs.io/en/latest/index.html)
+[![Powered by Astropy](https://img.shields.io/badge/powered%20by-AstroPy-orange?style=flat)](https://www.astropy.org/)
+![Coverage](https://github.com/BoiseStatePlanetary/susie/blob/main/readme_imgs/coverage.svg)
+
 A package for exoplanet orbital decay calculations and visualizations.
 
 https://susie.readthedocs.io/en/latest/
