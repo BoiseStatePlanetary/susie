@@ -258,7 +258,7 @@ class TestTimingData(unittest.TestCase):
         """
         test_mtts_err_zero= np.array([0.,0.,0.,0.])
         with self.assertRaises(ValueError, msg="The 'mid_transit_times_uncertainties' array must contain non-negative and non-zero values."):
-             TimingData('jd', test_epochs, test_mtts, test_mtts_err_zero, time_scale='tdb')  
+            TimingData('jd', test_epochs, test_mtts, test_mtts_err_zero, time_scale='tdb')  
 
     def test_mid_transit_err_self(self):
         """ Successful test for postive and greater than zero mid time uncertainties.
@@ -354,21 +354,32 @@ class TestTimingData(unittest.TestCase):
         
    
     # # # validate times tests
+    # Gives the error of the Value Error it should
     def test_validate_times_obj_coords_err(self):
-        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='tdb')
-        test_mid_times_obj = time.Time(test_mtts,format='jd',scale = 'tdb')
-        test_mid_time_uncertainties_obj = time.Time(test_mtts_err,format='jd',scale = 'tdb')
-        test_obj_coords = (150.0, 2.5)
-        test_obs_coords = (-70.0, -30.0)
-        new_obj_coords = (None,None)
-        with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. " 
-                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
-                             timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
-        
-    # obs coords
+        with self.assertRaises(ValueError, msg="Recieved None for object right ascension and/or declination. Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object."):
+            TimingData('jd', test_epochs, test_mtts, test_mtts_err, time_scale='utc')
+            # timing_data._validate_times(test_mid_times_obj, test_mid_time_uncertainties_obj,new_obj_coords, test_obs_coords)
 
+
+    # obs coords all 3
+    def test_validate_times_obs_coords_logging_err(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
+        with self.assertLogs('lumberjack', level='WARNING') as cm:
+            logger = logging.getLogger('lumberjack')
+            logger.warning("Unable to process observatory coordinates (None,None). "
+                             "Using gravitational center of Earth.")
+            
+        self.assertEqual(cm.output, ['WARNING:lumberjack:Unable to process observatory coordinates (None,None). Using gravitational center of Earth.'])
     
-    
+    # obj coords 2 warnings
+    def test_validate_times_obs_coords_logging_err(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        with self.assertLogs('lumberjack', level='WARNING') as cm:
+            logger = logging.getLogger('lumberjack')
+            logger.warning("Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. "
+                        "Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.")
+        self.assertEqual(cm.output, ['WARNING:lumberjack:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
+   
     #tests for calc_barycentric_time
     test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
     test_time_obj=np.array([0.00034,0.0006,0.0005,0.0008])

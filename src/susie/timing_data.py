@@ -164,8 +164,7 @@ class TimingData():
         """
         # check if there are objects coords, raise error if not
         if all(elem is None for elem in obj_coords):
-            raise ValueError("Recieved None for object right ascension and/or declination. " 
-                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
+            raise ValueError("Recieved None for object right ascension and/or declination. Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
         # Check if there are observatory coords, raise warning and use earth grav center coords if not
         if all(elem is None for elem in obs_coords):
             logging.warning(f"Unable to process observatory coordinates {obs_coords}. "
@@ -174,8 +173,7 @@ class TimingData():
         else:
             obs_location = coord.EarthLocation.from_geodetic(obs_coords[0], obs_coords[1])
         obj_location = coord.SkyCoord(ra=obj_coords[0], dec=obj_coords[1], unit='deg', frame='icrs')
-        logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_location.ra.value, 2), round(obj_location.dec.value, 2)} for time correction. "
-                        f"Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
+        logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_location.ra.value, 2), round(obj_location.dec.value, 2)} for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
         # Perform correction, will return array of corrected times
         self.mid_time_uncertainties = self._calc_barycentric_time(mid_time_uncertainties_obj, obj_location, obs_location)
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
