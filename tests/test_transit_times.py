@@ -7,6 +7,7 @@ from numpy.testing import assert_array_equal
 import logging
 from astropy import time
 from astropy import coordinates
+from astropy import units as u
 
 
 # test_epochs = [0, 294, 298, 573, 579, 594, 602, 636, 637, 655, 677, 897, 901, 911, 912, 919, 941, 941, 963, 985, 992, 994, 995, 997, 1015, 1247, 1257, 1258, 1260, 1272, 1287, 1290, 1311, 1312, 1313, 1316, 1317, 1323, 1324, 1333, 1334, 1344, 1345, 1346, 1347, 1357, 1365, 1366, 1585, 1589, 1611, 1619, 1621, 1633, 1637, 1640, 1653, 1661, 1662, 1914, 1915, 1916, 1917, 1937, 1938, 1960, 1964, 1967, 1968, 1969, 1978, 1981, 1991, 1996, 2005, 2012, 2019, 2021, 2022, 2264, 2286, 2288, 2318, 2319, 2331, 2332, 2338, 2339, 2371, 2593, 2634, 2635, 2667, 2668, 2690, 2892, 2910, 2921, 2924, 2942, 2943, 2978, 2979, 2984, 2985, 2988, 2992, 2992, 2997, 2999, 3010, 3017, 3018, 3019, 3217, 3239, 3248, 3260, 3261, 3264, 3306, 3307, 3314, 3316, 3318, 3335, 3335, 3336, 3339, 3341, 3341, 3342, 3342, 3345, 3356, 3570, 3625, 3646, 3657]
@@ -318,35 +319,9 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(ValueError, msg="The 'mid_transit_times_uncertainties' array contains NaN (Not-a-Number) values."):
              TimingData('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')  
 
-    # Timing Format tests
-    # test for logging.warning
-    # def test_timing_system_logging_err(self):   
-    #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    #     with self.assertLogs('lumberjack', level='WARNING') as cm:
-    #         logging.basicConfig(format='%(levelname)s: %(message)s')
-    #         logging.getLogger('lumberjack').warning("Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.")
-    #         logging.getLogger('lumberjack').warning("Using ICRS coordinates in degrees of RA and Dec 97.64, 29.67 for time correction. "
-    #                     "Using geodetic Earth coordinates in degrees of longitude and latitude -116.21, 43.60 for time correction.")
-    #     self.assertEqual(cm.output, ['WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
-   
-   
-    # def test_timing_system_logging_err(self):   
-    #     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    #     with self.assertLogs('lumberjack', level='WARNING') as cm:
-    #         logging.getLogger('lumberjack').warning("Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.")
-    #         logging.getLogger('lumberjack').warning("Using ICRS coordinates in degrees of RA and Dec 97.64, 29.67 for time correction. "
-    #                     "Using geodetic Earth coordinates in degrees of longitude and latitude -116.21, 43.60 for time correction.")
-    #     self.assertEqual(cm.output, ['WARNING: Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
-   
+    
  
-    def test_timing_system_logging_err(self):
-        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-        with self.assertLogs('lumberjack', level='WARNING') as cm:
-            logger = logging.getLogger('lumberjack')
-            logger.warning('Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.')
-        self.assertEqual(cm.output, ['WARNING:lumberjack:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.'])
-   
-   
+    
     # ######## IDK IF THIS IS RIGHT?????????#####
     timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     expected_mid_times_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
@@ -366,20 +341,49 @@ class TestTimingData(unittest.TestCase):
         timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
         with self.assertLogs('lumberjack', level='WARNING') as cm:
             logger = logging.getLogger('lumberjack')
+            logger.warning('Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.')
             logger.warning("Unable to process observatory coordinates (None,None). "
                              "Using gravitational center of Earth.")
-            
-        self.assertEqual(cm.output, ['WARNING:lumberjack:Unable to process observatory coordinates (None,None). Using gravitational center of Earth.'])
-    
+            logger.warning("Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. "
+                        "Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.")
+        self.assertEqual(cm.output, ['WARNING:lumberjack:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING:lumberjack:Unable to process observatory coordinates (None,None). Using gravitational center of Earth.','WARNING:lumberjack:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.']) 
+        
     # obj coords 2 warnings
-    def test_validate_times_obs_coords_logging_err(self):
+    def test_validate_times_logging_err(self):
         timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
         with self.assertLogs('lumberjack', level='WARNING') as cm:
             logger = logging.getLogger('lumberjack')
-            logger.warning("Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. "
-                        "Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.")
-        self.assertEqual(cm.output, ['WARNING:lumberjack:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.'])
-   
+            logger.warning('Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.')
+            logger.warning('Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.')
+        self.assertEqual(cm.output, ['WARNING:lumberjack:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING:lumberjack:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.']) 
+    
+    # geocentric obs coords
+    def test_obs_geocentric_coords(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
+        test_mid_times_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
+        test_mid_times_err_obj = time.Time(test_mtts_err,format = 'jd',scale = 'utc')
+        corrected_times = timing_data._validate_times(test_mid_times_obj, test_mid_times_err_obj,(97.64,29.67),(None,None))
+        obs_location = (0., 0.)
+        expected_obs_location = coordinates.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
+        self.assertTrue(np.allclose(obs_location[0], expected_obs_location.x.value))
+        self.assertTrue(np.allclose(obs_location[1], expected_obs_location.y.value))
+       
+    # geodetic obs coords
+    def test_obs_geodetic_coords(self):
+        obs_coords = (-2042896.9,-4149886.2,4376818.8)
+        expected_obs_location = coordinates.EarthLocation.from_geodetic(-116.21,43.61)
+        self.assertTrue(np.allclose(obs_coords[0], expected_obs_location.x.value))
+        self.assertTrue(np.allclose(obs_coords[1], expected_obs_location.y.value))
+        self.assertTrue(np.allclose(obs_coords[2], expected_obs_location.z.value))
+    # obj coords
+    def test_obj_coords(self):
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        obj_coords = (97.64,29.67)
+        expected_obj_location = coordinates.SkyCoord(ra=97.64, dec=29.67, unit='deg')
+        self.assertEqual(obj_coords[0], expected_obj_location.ra.deg)
+        self.assertEqual(obj_coords[1], expected_obj_location.dec.deg)
+    # assert equal .type
+
     #tests for calc_barycentric_time
     test_time_obj_ones=np.array([1.0, 1.0, 1.0, 1.0])
     test_time_obj=np.array([0.00034,0.0006,0.0005,0.0008])
@@ -392,12 +396,35 @@ class TestTimingData(unittest.TestCase):
     
     def test_calc_bary_time_uncertainties(self):
         self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-        self.time_obj = time.Time(np.array([1.0,1.0]),format = 'jd',scale = 'utc')
-        self.obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
-        self.obs_location = coordinates.EarthLocation(lat = 43.60, lon = 116.21)
-        expected_result = ([1.0,1.0])
-        actual_result = self.timing_data._calc_barycentric_time(self.time_obj,self.obj_location,self.obs_location)
-        np.testing.assert_array_equal(expected_result,actual_result)
+        time_obj = time.Time(np.array([1.0,1.0, 1.0, 1.0]),format = 'jd',scale = 'utc')
+        obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
+        obs_location = coordinates.EarthLocation(lat = 43.60, lon = 116.21)
+        expected_result = ([1.0,1.0,1.0,1.0])
+        actual_result = self.timing_data._calc_barycentric_time(time_obj,obj_location,obs_location)
+        self.assertTrue(np.array_equal(expected_result, actual_result))
+
+    def test_bary_time_corrected_time_vals(self):
+        test_epochs = np.array([0, 294, 298, 573])
+        test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        time_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
+        obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
+        obs_location = coordinates.EarthLocation(lat = 43.60, lon = -116.21)
+        expected_result = np.array([3.11451337e-03,3.20883762e+02,3.25249628e+02,6.25389263e+02])
+        actual_result = timing_data._calc_barycentric_time(time_obj, obj_location, obs_location)
+        self.assertTrue((np.allclose(expected_result,actual_result, rtol=1e-05, atol=1e-08)))
+
+    # ltt bary
+    def test_ltt_bary(self):
+        time_obj = time.Time(test_mtts, format='jd', scale='utc')
+        obj_location = coordinates.SkyCoord(ra=97.6, dec=29.67, unit='deg')
+        obs_location = coordinates.EarthLocation(lat=43.60, lon=-116.21)
+        time_obj.location = obs_location
+        actual_ltt_bary = time_obj.light_travel_time(obj_location).value
+        expected_ltt_bary = np.array([0.00274199, 0.00538933, 0.00525568, 0.0038908])
+        self.assertTrue((np.allclose(expected_ltt_bary, actual_ltt_bary, rtol=1e-05, atol=1e-08)))
+
+
 
     # Tests for validate tra_or_occ
     def test_tra_or_occ_None(self):
