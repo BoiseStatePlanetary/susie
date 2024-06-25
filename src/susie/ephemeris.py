@@ -2,9 +2,12 @@ from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
+import astropy.units as u
+from astropy.time import Time
+from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 # from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 
 class BaseModelEphemeris(ABC):
@@ -730,7 +733,123 @@ class Ephemeris(object):
         delta_bic = linear_bic - quadratic_bic
         return delta_bic
     
-    def get_observing_schedule(self):
+    def _create_observer_obj(self, timezone, coords=None, name=None):
+        """Creates the Astroplan Observer object.
+
+        Parameters
+        ----------
+            timezone: str
+                The local timezone. If a string, it will be passed through pytz.timezone() to produce the timezone object.
+            coords: tuple(float, float, float) (Optional)
+                The longitude, latitude, and elevation of the observer's location on Earth.
+            name: str (Optional)
+                The name of the observer's location. This can either be a registered Astropy site
+                name (get the latest site names with `EarthLocation.get_site_names()`), which will
+                return the latitude, longitude, and elevation of the site OR it can be a custom name
+                to keep track of your Observer object.
+
+        Returns
+        -------
+            The Astroplan Observer object.
+        
+        Raises
+        ------
+            ValueError if neither coords nor name are given.
+        """
+        observer = None
+        if not any(val is None for val in coords):
+            # There are valid vals for lon and lat
+            observer = Observer(longitude=coords[0]*u.deg, latitude=coords[1]*u.deg, elevation=coords[2]*u.m, timezone=timezone)
+            if name is not None:
+                observer.name = name
+        elif name is not None:
+            # No vals for lon and lat, use site name
+            observer = Observer.at_site(name, timezone=timezone)
+        else:
+            # No coords or site name given, raise error
+            raise ValueError("Observatory location must be specified with either (1) a site name specified by astropy.coordinates.EarthLocation.get_site_names() or (2) latitude and longitude in degrees as accepted by astropy.coordinates.Latitude and astropy.coordinates.Latitude.")
+        return observer
+    
+    def _create_target_obj(self, coords=None, name=None):
+        """Creates the Astroplan FixedTarget object.
+
+        Parameters
+        ----------
+            coords: tuple(float, float) (Optional)
+                The right ascension and declination of the object in the sky (most likely the planet's host star).
+            name: str (Optional)
+                The name of the object in the sky. This can either be a registered object name, which will query
+                a CDS name resolver (see Astroplan documentation for more information on this) OR it can be a 
+                custom name to keep track of your FixedTarget object.
+
+        Returns
+        -------
+            The Astroplan FixedTarget object.
+
+        Raises
+        ------
+            ValueError if neither coords nor name are given.
+        """
+        target = None
+        if not any(val is None for val in coords):
+            # There are valid vals for ra and dec
+            skycoord = SkyCoord(ra=coords[0]*u.deg, dec=coords[1]*u.deg)
+            target = FixedTarget(coord=skycoord)
+            if name is not None:
+                target.name = name
+        elif name is not None:
+            # No vals for ra & dec, query by object name
+            target = FixedTarget.from_name(name)
+        else:
+            # Neither ra & dec or name given, raise error
+            raise ValueError("Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
+        return target
+    
+    def get_observing_schedule(self, model_data_dict, timezone, obs_lat=None, obs_lon=None, obs_elevation=0.0, obs_name=None, obj_ra=None, obj_dec=None, obj_name=None, system_name=None):
+        """Returns a list of observable future transits for the target object
+
+        Parameters
+        ----------
+            model_data_dict: dict
+                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+            timezone: str
+                The local timezone. If a string, it will be passed through `pytz.timezone()` to produce the timezone object.
+            obs_lat: float (Optional)
+                The latitude of the observer's location on Earth.
+            obs_lon: float (Optional)
+                The longitude of the observer's location on Earth.
+            obs_elevation: float (Optional)
+                The elevation of the observer's location on Earth.
+            obs_name: str (Optional)
+                The name of the observer's location. This can either be a registered Astropy site
+                name (get the latest site names with `EarthLocation.get_site_names()`), which will
+                return the latitude, longitude, and elevation of the site OR it can be a custom name
+                to keep track of your `Observer` object.
+            obj_ra: float (Optional)
+                The right ascension of the object to observe in the sky (most likely a planet or star).
+            obj_dec: float (Optional)
+                The declination of the object to observe in the sky (most likely a planet or star).
+            obj_name: str (Optional)
+                The name of the object in the sky. This can either be a registered object name, which will query
+                a CDS name resolver (see Astroplan documentation for more information on this) OR it can be a 
+                custom name to keep track of your `FixedTarget` object.
+            system_name: str (Optional)
+                The name of your eclipsing system. An Optional parameter to help you keep track of your 
+                `EclipsingSystem` object.
+        """
+        observer = self._create_observer_obj(timezone, coords=(obs_lon, obs_lat, obs_elevation), name=obs_name)
+        target = self._create_target_obj(coords=(obj_ra, obj_dec), name=obj_name)
+        # This is just a mid transit time, we most likely want to use the most recent mid transit time
+        # For now just using last value from calculated mid-times 
+        # TODO: Should we change this to use the most recent mid transit time from the data?
+        primary_eclipse_time = Time(model_data_dict['model_data'][-1], format='jd')
+        # We can pull orbital period from the model
+        orbital_period = model_data_dict['period'] * u.day
+        # TODO: Need to use the equation from the book for the eclipse duration
+        eclipse_duration = 0.1277 * u.day
+        eclipsing_system = EclipsingSystem(primary_eclipse_time=primary_eclipse_time,
+                                orbital_period=orbital_period, duration=eclipse_duration,
+                                name=system_name)
         pass
     
     def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
@@ -866,14 +985,15 @@ if __name__ == '__main__':
     epochs = data["epoch"].astype('int')
     mid_times = data["transit_time"]
     mid_time_errs = data["sigma_transit_time"]
-    print(f"epochs: {list(epochs)}")
-    print(f"mid_times: {list(mid_times)}")
-    print(f"mid_time_errs: {list(mid_time_errs)}")
-    print(f"tra_or_occ: {list(tra_or_occs)}")
+    # print(f"epochs: {list(epochs)}")
+    # print(f"mid_times: {list(mid_times)}")
+    # print(f"mid_time_errs: {list(mid_time_errs)}")
+    # print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
     # times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     # times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb')
     times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
+    print(vars(times_obj1))
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
