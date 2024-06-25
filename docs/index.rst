@@ -73,10 +73,8 @@ Tutorials
 ----------
 .. toctree::
 
-   Installation <tutorial1>
-   Adding Timing Data <tutorial2>
-   Creating Ephemeris Models and Data <tutorial3> 
-   Creating Ephemeris Visualizations <tutorial4> 
+   Basic Usage of TimingData and Ephemeris Objects <basic_usage>
+   Special TimingData Object Usage <special_usage>
 
 
 Indices and tables

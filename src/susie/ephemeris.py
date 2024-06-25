@@ -45,6 +45,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         Uses the equation 
          - (period * epochs + initial mid time) for transit observations 
          - (period * epochs + (initial mid time + (½ * period ))) for occultation observations 
+        
         as a linear function for an LMfit Model.
         
         Parameters
@@ -98,16 +99,16 @@ class LinearModelEphemeris(BaseModelEphemeris):
         ------- 
         return_data: dict
             A dictionary of parameters from the fit model ephemeris.
-                Example:
+            Example:
 
-                .. code-block:: python
+            .. code-block:: python
 
-                    {
-                    'period': Estimated orbital period of the exoplanet (in units of days),
-                    'period_err': Uncertainty associated with orbital period (in units of days),
-                    'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                    'conjunction_time_err': Uncertainty associated with conjunction_time
-                    }
+                {
+                'period': Estimated orbital period of the exoplanet (in units of days),
+                'period_err': Uncertainty associated with orbital period (in units of days),
+                'conjunction_time': Time of conjunction of exoplanet transit or occultation,
+                'conjunction_time_err': Uncertainty associated with conjunction_time
+                }
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=['E', 'tra_or_occ'])
@@ -129,8 +130,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
         Uses the equation 
          - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for transit observations
-         - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations
-        as a quadratic function for the LMfit Model.
+         - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations as a quadratic function for the LMfit Model.
         
         Parameters
         ----------
@@ -639,19 +639,15 @@ class Ephemeris(object):
         
         For linear models:
         
-         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}` 
-         for transit observations
+         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}` for transit observations
 
-         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * (\\frac{1}{2} + E)^2)}` 
-         for occultation observations
+         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * (\\frac{1}{2} + E)^2)}` for occultation observations
             
         And for quadratic models:
 
-         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` 
-         for transit observations
+         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` for transit observations
 
-         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * (\\frac{1}{2} + E^2)) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` 
-         for occultation observations
+         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * (\\frac{1}{2} + E^2)) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` for occultation observations
         
         where :math:`\\sigma(T_0) =` conjunction time error, :math:`E=` epoch, :math:`\\sigma(P)=` period error, and :math:`\\sigma(\\frac{dP}{dE})=` period change with respect to epoch error.
         

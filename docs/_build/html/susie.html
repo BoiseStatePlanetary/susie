@@ -217,10 +217,8 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Timing Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
 </ul>
 
 </div>
@@ -355,24 +353,16 @@ information you entered.</p>
 <p>For linear models:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * E^2)}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * E^2)}\)</span> for transit observations</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * (\frac{1}{2} + E)^2)}\)</span> for occultation observations</p></li>
 </ul>
-<p>for transit observations</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * (\frac{1}{2} + E)^2)}\)</span></p></li>
-</ul>
-<p>for occultation observations</p>
 </div></blockquote>
 <p>And for quadratic models:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * E^2) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * E^2) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\)</span> for transit observations</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * (\frac{1}{2} + E^2)) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\)</span> for occultation observations</p></li>
 </ul>
-<p>for transit observations</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * (\frac{1}{2} + E^2)) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\)</span></p></li>
-</ul>
-<p>for occultation observations</p>
 </div></blockquote>
 <p>where <span class="math notranslate nohighlight">\(\sigma(T_0) =\)</span> conjunction time error, <span class="math notranslate nohighlight">\(E=\)</span> epoch, <span class="math notranslate nohighlight">\(\sigma(P)=\)</span> period error, and <span class="math notranslate nohighlight">\(\sigma(\frac{dP}{dE})=\)</span> period change with respect to epoch error.</p>
 <dl class="field-list simple">
@@ -430,6 +420,34 @@ information you entered.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.get_observing_schedule">
+<span class="sig-name descname"><span class="pre">get_observing_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_observing_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_observing_schedule" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of observable future transits for the target object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_data_dict</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p></li>
+<li><p><strong>timezone</strong> (<em>str</em>) – The local timezone. If a string, it will be passed through <cite>pytz.timezone()</cite> to produce the timezone object.</p></li>
+<li><p><strong>obs_lat</strong> (<em>float</em><em> (</em><em>Optional</em><em>)</em>) – The latitude of the observer’s location on Earth.</p></li>
+<li><p><strong>obs_lon</strong> (<em>float</em><em> (</em><em>Optional</em><em>)</em>) – The longitude of the observer’s location on Earth.</p></li>
+<li><p><strong>obs_elevation</strong> (<em>float</em><em> (</em><em>Optional</em><em>)</em>) – The elevation of the observer’s location on Earth.</p></li>
+<li><p><strong>obs_name</strong> (<em>str</em><em> (</em><em>Optional</em><em>)</em>) – The name of the observer’s location. This can either be a registered Astropy site
+name (get the latest site names with <cite>EarthLocation.get_site_names()</cite>), which will
+return the latitude, longitude, and elevation of the site OR it can be a custom name
+to keep track of your <cite>Observer</cite> object.</p></li>
+<li><p><strong>obj_ra</strong> (<em>float</em><em> (</em><em>Optional</em><em>)</em>) – The right ascension of the object to observe in the sky (most likely a planet or star).</p></li>
+<li><p><strong>obj_dec</strong> (<em>float</em><em> (</em><em>Optional</em><em>)</em>) – The declination of the object to observe in the sky (most likely a planet or star).</p></li>
+<li><p><strong>obj_name</strong> (<em>str</em><em> (</em><em>Optional</em><em>)</em>) – The name of the object in the sky. This can either be a registered object name, which will query
+a CDS name resolver (see Astroplan documentation for more information on this) OR it can be a
+custom name to keep track of your <cite>FixedTarget</cite> object.</p></li>
+<li><p><strong>system_name</strong> (<em>str</em><em> (</em><em>Optional</em><em>)</em>) – The name of your eclipsing system. An Optional parameter to help you keep track of your
+<cite>EclipsingSystem</cite> object.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -519,9 +537,8 @@ respective errors. These parameters are returned in a dictionary to the user.</p
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p><strong>return_data</strong> –</p>
-<dl>
-<dt>A dictionary of parameters from the fit model ephemeris.</dt><dd><p>Example:</p>
+<dd class="field-even"><p><p><strong>return_data</strong> – A dictionary of parameters from the fit model ephemeris.
+Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="n">Estimated</span> <span class="n">orbital</span> <span class="n">period</span> <span class="n">of</span> <span class="n">the</span> <span class="n">exoplanet</span> <span class="p">(</span><span class="ow">in</span> <span class="n">units</span> <span class="n">of</span> <span class="n">days</span><span class="p">),</span>
 <span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="n">Uncertainty</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">orbital</span> <span class="n">period</span> <span class="p">(</span><span class="ow">in</span> <span class="n">units</span> <span class="n">of</span> <span class="n">days</span><span class="p">),</span>
@@ -530,8 +547,6 @@ respective errors. These parameters are returned in a dictionary to the user.</p
 <span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -681,11 +696,10 @@ Example:</p>
 <dl class="simple">
 <dt>Uses the equation</dt><dd><ul class="simple">
 <li><p>((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for transit observations</p></li>
-<li><p>((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations</p></li>
+<li><p>((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations as a quadratic function for the LMfit Model.</p></li>
 </ul>
 </dd>
 </dl>
-<p>as a quadratic function for the LMfit Model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -802,7 +816,7 @@ will be separated according to the order of the tra_or_occ array and stored in t
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Holly VanLooy
+                Copyright &#169; 2023, Boise State University
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -839,6 +853,7 @@ will be separated according to the order of the tra_or_occ array and stored in t
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_delta_bic()</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_ephemeris_uncertainties()</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_model_ephemeris()</span></code></a></li>
+<li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_observing_schedule"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_observing_schedule()</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_model_ephemeris()</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_oc_plot()</span></code></a></li>
 <li><a class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_delta_bic()</span></code></a></li>

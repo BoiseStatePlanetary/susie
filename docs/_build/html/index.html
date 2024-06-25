@@ -217,10 +217,8 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Timing Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
 </ul>
 
 </div>
@@ -324,6 +322,7 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.calc_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_delta_bic()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_ephemeris_uncertainties()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_model_ephemeris()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_observing_schedule"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_observing_schedule()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_model_ephemeris()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_oc_plot()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_delta_bic()</span></code></a></li>
@@ -365,10 +364,46 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Adding Timing Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Creating Ephemeris Models and Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial4.html">Creating Ephemeris Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_usage.html#basic-usage">🔵 Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#example">🟢  EXAMPLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#id1">🟢  EXAMPLE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-o-c-plot">🔹 The O-C Plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="special_usage.html#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#downloading-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 Downloading the timing data (that includes occultations) from the GitHub repository</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="special_usage.html#other-timing-data-formats-and-options">🔵 Other Timing Data Formats and Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#using-timing-data-that-is-not-in-jd-tdb-format-and-system">🔷 Using Timing Data that is NOT in JD TDB Format and System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#option-1-including-both-object-coordinates-and-observatory-coordinates">🔹 Option 1: Including BOTH Object Coordinates and Observatory Coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#option-2-including-only-object-coordinates">🔹 Option 2: Including ONLY Object Coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#using-timing-data-that-does-not-include-uncertainties">🔷 Using Timing Data that does NOT include uncertainties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="special_usage.html#using-timing-data-that-does-not-include-a-transit-or-occultation-array">🔷 Using Timing Data that does NOT include a transit or occultation array</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -403,7 +438,7 @@ an Exoplanets Research grant (NNH21ZDA001N).</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Holly VanLooy
+                Copyright &#169; 2023, Boise State University
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

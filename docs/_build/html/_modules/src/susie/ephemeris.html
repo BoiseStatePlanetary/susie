@@ -216,10 +216,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial2.html">Adding Timing Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial3.html">Creating Ephemeris Models and Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial4.html">Creating Ephemeris Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../special_usage.html">Special TimingData Object Usage</a></li>
 </ul>
 
 </div>
@@ -259,6 +257,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astroplan</span> <span class="kn">import</span> <span class="n">FixedTarget</span><span class="p">,</span> <span class="n">Observer</span><span class="p">,</span> <span class="n">EclipsingSystem</span>
 <span class="c1"># from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES</span>
 <span class="kn">from</span> <span class="nn">.timing_data</span> <span class="kn">import</span> <span class="n">TimingData</span> <span class="c1"># REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES</span>
 <span class="c1"># from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES</span>
@@ -308,6 +310,7 @@
 <span class="sd">        Uses the equation </span>
 <span class="sd">         - (period * epochs + initial mid time) for transit observations </span>
 <span class="sd">         - (period * epochs + (initial mid time + (½ * period ))) for occultation observations </span>
+<span class="sd">        </span>
 <span class="sd">        as a linear function for an LMfit Model.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -364,16 +367,16 @@
 <span class="sd">        ------- </span>
 <span class="sd">        return_data: dict</span>
 <span class="sd">            A dictionary of parameters from the fit model ephemeris.</span>
-<span class="sd">                Example:</span>
+<span class="sd">            Example:</span>
 
-<span class="sd">                .. code-block:: python</span>
+<span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                    {</span>
-<span class="sd">                    &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
-<span class="sd">                    &#39;period_err&#39;: Uncertainty associated with orbital period (in units of days),</span>
-<span class="sd">                    &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation,</span>
-<span class="sd">                    &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction_time</span>
-<span class="sd">                    }</span>
+<span class="sd">                {</span>
+<span class="sd">                &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
+<span class="sd">                &#39;period_err&#39;: Uncertainty associated with orbital period (in units of days),</span>
+<span class="sd">                &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation,</span>
+<span class="sd">                &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction_time</span>
+<span class="sd">                }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tra_or_occ_enum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;tra&#39;</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tra_or_occ</span><span class="p">]</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_fit</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;tra_or_occ&#39;</span><span class="p">])</span>
@@ -401,8 +404,7 @@
 
 <span class="sd">        Uses the equation </span>
 <span class="sd">         - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for transit observations</span>
-<span class="sd">         - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations</span>
-<span class="sd">        as a quadratic function for the LMfit Model.</span>
+<span class="sd">         - ((0.5 * change in period over epoch * (epoch²)) + (period * epoch) + conjunction time) for occultation observations as a quadratic function for the LMfit Model.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -673,7 +675,7 @@
         <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">3</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only linear and quadratic models are supported at this time.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only linear and quadratic models are supported at this time.&#39;</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">_calc_linear_model_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T0_err</span><span class="p">,</span> <span class="n">P_err</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the uncertainties of a given linear model when compared to actual data in TimingData.</span>
@@ -929,19 +931,15 @@
 <span class="sd">        </span>
 <span class="sd">        For linear models:</span>
 <span class="sd">        </span>
-<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}` </span>
-<span class="sd">         for transit observations</span>
+<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}` for transit observations</span>
 
-<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * (\\frac{1}{2} + E)^2)}` </span>
-<span class="sd">         for occultation observations</span>
+<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * (\\frac{1}{2} + E)^2)}` for occultation observations</span>
 <span class="sd">            </span>
 <span class="sd">        And for quadratic models:</span>
 
-<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` </span>
-<span class="sd">         for transit observations</span>
+<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` for transit observations</span>
 
-<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * (\\frac{1}{2} + E^2)) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` </span>
-<span class="sd">         for occultation observations</span>
+<span class="sd">         - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * (\\frac{1}{2} + E^2)) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` for occultation observations</span>
 <span class="sd">        </span>
 <span class="sd">        where :math:`\\sigma(T_0) =` conjunction time error, :math:`E=` epoch, :math:`\\sigma(P)=` period error, and :math:`\\sigma(\\frac{dP}{dE})=` period change with respect to epoch error.</span>
 <span class="sd">        </span>
@@ -1028,6 +1026,128 @@
         <span class="n">quadratic_bic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_data</span><span class="p">)</span>
         <span class="n">delta_bic</span> <span class="o">=</span> <span class="n">linear_bic</span> <span class="o">-</span> <span class="n">quadratic_bic</span>
         <span class="k">return</span> <span class="n">delta_bic</span></div>
+
+    
+    <span class="k">def</span> <span class="nf">_create_observer_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the Astroplan Observer object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            timezone: str</span>
+<span class="sd">                The local timezone. If a string, it will be passed through pytz.timezone() to produce the timezone object.</span>
+<span class="sd">            coords: tuple(float, float, float) (Optional)</span>
+<span class="sd">                The longitude, latitude, and elevation of the observer&#39;s location on Earth.</span>
+<span class="sd">            name: str (Optional)</span>
+<span class="sd">                The name of the observer&#39;s location. This can either be a registered Astropy site</span>
+<span class="sd">                name (get the latest site names with `EarthLocation.get_site_names()`), which will</span>
+<span class="sd">                return the latitude, longitude, and elevation of the site OR it can be a custom name</span>
+<span class="sd">                to keep track of your Observer object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The Astroplan Observer object.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">            ValueError if neither coords nor name are given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">observer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">):</span>
+            <span class="c1"># There are valid vals for lon and lat</span>
+            <span class="n">observer</span> <span class="o">=</span> <span class="n">Observer</span><span class="p">(</span><span class="n">longitude</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">observer</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No vals for lon and lat, use site name</span>
+            <span class="n">observer</span> <span class="o">=</span> <span class="n">Observer</span><span class="o">.</span><span class="n">at_site</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># No coords or site name given, raise error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Observatory location must be specified with either (1) a site name specified by astropy.coordinates.EarthLocation.get_site_names() or (2) latitude and longitude in degrees as accepted by astropy.coordinates.Latitude and astropy.coordinates.Latitude.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">observer</span>
+    
+    <span class="k">def</span> <span class="nf">_create_target_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the Astroplan FixedTarget object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            coords: tuple(float, float) (Optional)</span>
+<span class="sd">                The right ascension and declination of the object in the sky (most likely the planet&#39;s host star).</span>
+<span class="sd">            name: str (Optional)</span>
+<span class="sd">                The name of the object in the sky. This can either be a registered object name, which will query</span>
+<span class="sd">                a CDS name resolver (see Astroplan documentation for more information on this) OR it can be a </span>
+<span class="sd">                custom name to keep track of your FixedTarget object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The Astroplan FixedTarget object.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">            ValueError if neither coords nor name are given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">):</span>
+            <span class="c1"># There are valid vals for ra and dec</span>
+            <span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">FixedTarget</span><span class="p">(</span><span class="n">coord</span><span class="o">=</span><span class="n">skycoord</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No vals for ra &amp; dec, query by object name</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">FixedTarget</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Neither ra &amp; dec or name given, raise error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">target</span>
+    
+<div class="viewcode-block" id="Ephemeris.get_observing_schedule">
+<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.get_observing_schedule">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_observing_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">obs_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obs_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obs_elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">obs_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obj_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obj_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obj_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">system_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of observable future transits for the target object</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            model_data_dict: dict</span>
+<span class="sd">                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.</span>
+<span class="sd">            timezone: str</span>
+<span class="sd">                The local timezone. If a string, it will be passed through `pytz.timezone()` to produce the timezone object.</span>
+<span class="sd">            obs_lat: float (Optional)</span>
+<span class="sd">                The latitude of the observer&#39;s location on Earth.</span>
+<span class="sd">            obs_lon: float (Optional)</span>
+<span class="sd">                The longitude of the observer&#39;s location on Earth.</span>
+<span class="sd">            obs_elevation: float (Optional)</span>
+<span class="sd">                The elevation of the observer&#39;s location on Earth.</span>
+<span class="sd">            obs_name: str (Optional)</span>
+<span class="sd">                The name of the observer&#39;s location. This can either be a registered Astropy site</span>
+<span class="sd">                name (get the latest site names with `EarthLocation.get_site_names()`), which will</span>
+<span class="sd">                return the latitude, longitude, and elevation of the site OR it can be a custom name</span>
+<span class="sd">                to keep track of your `Observer` object.</span>
+<span class="sd">            obj_ra: float (Optional)</span>
+<span class="sd">                The right ascension of the object to observe in the sky (most likely a planet or star).</span>
+<span class="sd">            obj_dec: float (Optional)</span>
+<span class="sd">                The declination of the object to observe in the sky (most likely a planet or star).</span>
+<span class="sd">            obj_name: str (Optional)</span>
+<span class="sd">                The name of the object in the sky. This can either be a registered object name, which will query</span>
+<span class="sd">                a CDS name resolver (see Astroplan documentation for more information on this) OR it can be a </span>
+<span class="sd">                custom name to keep track of your `FixedTarget` object.</span>
+<span class="sd">            system_name: str (Optional)</span>
+<span class="sd">                The name of your eclipsing system. An Optional parameter to help you keep track of your </span>
+<span class="sd">                `EclipsingSystem` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">observer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_observer_obj</span><span class="p">(</span><span class="n">timezone</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="p">(</span><span class="n">obs_lon</span><span class="p">,</span> <span class="n">obs_lat</span><span class="p">,</span> <span class="n">obs_elevation</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">obs_name</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_target_obj</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="p">(</span><span class="n">obj_ra</span><span class="p">,</span> <span class="n">obj_dec</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">obj_name</span><span class="p">)</span>
+        <span class="c1"># This is just a mid transit time, we most likely want to use the most recent mid transit time</span>
+        <span class="c1"># For now just using last value from calculated mid-times </span>
+        <span class="c1"># TODO: Should we change this to use the most recent mid transit time from the data?</span>
+        <span class="n">primary_eclipse_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;jd&#39;</span><span class="p">)</span>
+        <span class="c1"># We can pull orbital period from the model</span>
+        <span class="n">orbital_period</span> <span class="o">=</span> <span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span>
+        <span class="c1"># TODO: Need to use the equation from the book for the eclipse duration</span>
+        <span class="n">eclipse_duration</span> <span class="o">=</span> <span class="mf">0.1277</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span>
+        <span class="n">eclipsing_system</span> <span class="o">=</span> <span class="n">EclipsingSystem</span><span class="p">(</span><span class="n">primary_eclipse_time</span><span class="o">=</span><span class="n">primary_eclipse_time</span><span class="p">,</span>
+                                <span class="n">orbital_period</span><span class="o">=</span><span class="n">orbital_period</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">eclipse_duration</span><span class="p">,</span>
+                                <span class="n">name</span><span class="o">=</span><span class="n">system_name</span><span class="p">)</span>
+        <span class="k">pass</span></div>
 
     
 <div class="viewcode-block" id="Ephemeris.plot_model_ephemeris">
@@ -1176,14 +1296,15 @@
     <span class="n">epochs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
     <span class="n">mid_times</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">]</span>
     <span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epochs: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mid_times: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">mid_times</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mid_time_errs: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">mid_time_errs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tra_or_occ: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">tra_or_occs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># print(f&quot;epochs: {list(epochs)}&quot;)</span>
+    <span class="c1"># print(f&quot;mid_times: {list(mid_times)}&quot;)</span>
+    <span class="c1"># print(f&quot;mid_time_errs: {list(mid_time_errs)}&quot;)</span>
+    <span class="c1"># print(f&quot;tra_or_occ: {list(tra_or_occs)}&quot;)</span>
     <span class="c1"># STEP 3: Create new transit times object with above data</span>
     <span class="c1"># times_obj1 = TimingData(&#39;jd&#39;, epochs, mid_times, mid_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)</span>
     <span class="c1"># times_obj1 = TimingData(&#39;jd&#39;, epochs, mid_times, mid_time_errs, time_scale=&#39;tdb&#39;)</span>
     <span class="n">times_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="n">times_obj1</span><span class="p">))</span>
     <span class="c1"># STEP 4: Create new ephemeris object with transit times object</span>
     <span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">times_obj1</span><span class="p">)</span>
     <span class="c1"># STEP 5: Get model ephemeris data &amp; BIC values</span>
@@ -1231,7 +1352,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Holly VanLooy
+                Copyright &#169; 2023, Boise State University
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
