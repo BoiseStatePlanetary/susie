@@ -164,7 +164,8 @@ class TimingData():
         """
         # check if there are objects coords, raise error if not
         if all(elem is None for elem in obj_coords):
-            raise ValueError("Recieved None for object right ascension and/or declination. Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
+            raise ValueError("Recieved None for object right ascension and/or declination. " 
+                             "Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.")
         # Check if there are observatory coords, raise warning and use earth grav center coords if not
         if all(elem is None for elem in obs_coords):
             logging.warning(f"Unable to process observatory coordinates {obs_coords}. "
@@ -179,7 +180,7 @@ class TimingData():
         self.mid_times = self._calc_barycentric_time(mid_times_obj, obj_location, obs_location)
 
     def _validate_tra_or_occ(self):
-        """TODO: Docstring
+        """TODO: Write docstring
         
         """
         # Check that object is of type array
