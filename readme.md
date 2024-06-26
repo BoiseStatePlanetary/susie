@@ -5,7 +5,7 @@
 
 A package for exoplanet orbital decay calculations and visualizations.
 
-[![Susie Superpig Cartoon Image](/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html)
+<!-- [![Susie Superpig Cartoon Image](/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html) -->
 
 [![Susie Superpig Cartoon Image](https://github.com/BoiseStatePlanetary/susie/blob/main/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html)
 
