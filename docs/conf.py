@@ -12,8 +12,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 project = 'Susie'
-copyright = '2023, Holly VanLooy'
-author = 'Holly VanLooy'
+copyright = '2023, Boise State University'
+author = 'Holly VanLooy, Malia Barker'
 root_doc = 'index'
 release = 'Sept. 2023'
 

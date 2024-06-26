@@ -216,10 +216,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial1.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial2.html">Adding Transit Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial3.html">Creating Ephemeris Models and Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial4.html">Creating Ephemeris Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../special_usage.html">Special TimingData Object Usage</a></li>
 </ul>
 
 </div>
@@ -260,6 +258,11 @@
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coord</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># logging.basicConfig(format=&#39;%(levelname)s: %(message)s&#39;, datefmt=&#39;%m/%d/%Y %I:%M:%S %p&#39;)</span>
+<span class="c1"># logger = getLogger(__name__)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;lumberjack&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimingData">
 <a class="viewcode-back" href="../../../susie.html#src.susie.timing_data.TimingData">[docs]</a>
@@ -318,6 +321,9 @@
 <span class="sd">        Variables epochs and mid_times are shifted to start at zero by subtracting the minimum number from each value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_format</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Configure logging to remove &#39;root&#39; prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_logging</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span> <span class="o">=</span> <span class="n">mid_times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tra_or_occ</span> <span class="o">=</span> <span class="n">tra_or_occ</span>
@@ -328,10 +334,7 @@
         <span class="c1"># Check that timing system and scale are JD and TDB</span>
         <span class="k">if</span> <span class="n">time_format</span> <span class="o">!=</span> <span class="s1">&#39;jd&#39;</span> <span class="ow">or</span> <span class="n">time_scale</span> <span class="o">!=</span> <span class="s1">&#39;tdb&#39;</span><span class="p">:</span>
             <span class="c1"># If not correct time format and scale, create time objects and run corrections</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recieved time format </span><span class="si">{</span><span class="n">time_format</span><span class="si">}</span><span class="s2"> and time scale </span><span class="si">{</span><span class="n">time_scale</span><span class="si">}</span><span class="s2">. &quot;</span> 
-                            <span class="s2">&quot;Correcting all times to BJD timing system with TDB time scale. </span><span class="se">\</span>
-<span class="s2">                             If no time scale is given, default is automatically assigned to UTC. </span><span class="se">\</span>
-<span class="s2">                             If this is incorrect, please set the time format and time scale for TransitTime object.&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recieved time format </span><span class="si">{</span><span class="n">time_format</span><span class="si">}</span><span class="s2"> and time scale </span><span class="si">{</span><span class="n">time_scale</span><span class="si">}</span><span class="s2">. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.&quot;</span><span class="p">)</span>
             <span class="c1"># Set timing data to None for now</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mid_time_uncertainties</span> <span class="o">=</span> <span class="kc">None</span>
@@ -340,6 +343,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_times</span><span class="p">(</span><span class="n">mid_times_obj</span><span class="p">,</span> <span class="n">mid_time_uncertainties_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">object_ra</span><span class="p">,</span> <span class="n">object_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">observatory_lon</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="p">))</span>
         <span class="c1"># Call validation function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_configure_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelname)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_calc_barycentric_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.</span>
@@ -415,8 +421,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check if there are objects coords, raise error if not</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obj_coords</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Recieved None for object right ascension and/or declination. &quot;</span> 
-                             <span class="s2">&quot;Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Recieved None for object right ascension and/or declination. Please enter ICRS coordinate values in degrees for object_ra and object_dec for TransitTime object.&quot;</span><span class="p">)</span>
         <span class="c1"># Check if there are observatory coords, raise warning and use earth grav center coords if not</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">obs_coords</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to process observatory coordinates </span><span class="si">{</span><span class="n">obs_coords</span><span class="si">}</span><span class="s2">. &quot;</span>
@@ -425,13 +430,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obs_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">EarthLocation</span><span class="o">.</span><span class="n">from_geodetic</span><span class="p">(</span><span class="n">obs_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">obs_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">obj_location</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dec</span><span class="o">=</span><span class="n">obj_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;icrs&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using ICRS coordinates in degrees of RA and Dec </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Using geodetic Earth coordinates in degrees of longitude and latitude </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using ICRS coordinates in degrees of RA and Dec </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obj_location</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">obs_location</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> for time correction.&quot;</span><span class="p">)</span>
         <span class="c1"># Perform correction, will return array of corrected times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mid_time_uncertainties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_time_uncertainties_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_barycentric_time</span><span class="p">(</span><span class="n">mid_times_obj</span><span class="p">,</span> <span class="n">obj_location</span><span class="p">,</span> <span class="n">obs_location</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate_tra_or_occ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO: Docstring</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check that object is of type array</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_or_occ</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The variable &#39;tra_or_occ&#39; expected a NumPy array (np.ndarray) but received a different data type&quot;</span><span class="p">)</span>
@@ -507,8 +514,8 @@
             <span class="c1"># Shift epochs and mid transit times</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span>
             <span class="c1"># TODO import warning that we are minimizing their epochs and transit times</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_times</span><span class="p">)</span>
+        <span class="c1"># if self.mid_times[0] != 0:</span>
+        <span class="c1">#     self.mid_times -= np.min(self.mid_times)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tra_or_occ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Create list of just &#39;tra&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tra_or_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;tra&#39;</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">])</span>
@@ -527,7 +534,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Holly VanLooy
+                Copyright &#169; 2023, Boise State University
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

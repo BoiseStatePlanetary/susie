@@ -68,3 +68,4 @@ docs_env
 local_requirements.txt
 htmlcov
 .coverage
+malia_test.ipynb

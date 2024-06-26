@@ -1,0 +1,540 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="🐷 Susie Basic Timing and Ephemeris Object Usage" href="basic_usage.html" />
+
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
+        <title>🐷 Susie Special Timing Object Usage - Susie Sept. 2023 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" /
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Susie Sept. 2023 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Susie Sept. 2023 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Special TimingData Object Usage</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/special_usage.ipynb.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="susie-special-timing-object-usage">
+<h1>🐷 Susie Special Timing Object Usage<a class="headerlink" href="#susie-special-timing-object-usage" title="Link to this heading">¶</a></h1>
+<section id="import-the-necessary-python-libraries-and-susie-objects">
+<h2>🔵 Import the necessary python libraries and Susie objects.<a class="headerlink" href="#import-the-necessary-python-libraries-and-susie-objects" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">susie.timing_data</span> <span class="kn">import</span> <span class="n">TimingData</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">susie.timing_data</span> <span class="kn">import</span> <span class="n">TimingData</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;susie.timing_data&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<section id="downloading-the-timing-data-that-includes-occultations-from-the-github-repository">
+<h3>🔷 Downloading the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#downloading-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/example_data/wasp12b_tra_occ.csv&#39;</span>
+
+<span class="c1"># Read the CSV file directly from the URL</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">])</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">))</span>
+<span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">])</span>
+<span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"></section>
+</section>
+<section id="other-timing-data-formats-and-options">
+<h2>🔵 Other Timing Data Formats and Options<a class="headerlink" href="#other-timing-data-formats-and-options" title="Link to this heading">¶</a></h2>
+<p>The default option (shown in the example above) for timing data:</p>
+<ul class="simple">
+<li><p>Is in JD TDB timing format and system</p></li>
+<li><p>Includes mid-time uncertainties</p></li>
+<li><p>Includes both transits AND occultations</p></li>
+</ul>
+<p>However, there are a number of options you have for creating timing objects. A few include:</p>
+<ul>
+<li><p>Timing formats and systems different from JD TDB. For example, you can specify that your data is in JD with UTC timing system. If you do not specify the timing system, the code will default to UTC and will automatically correct for barycentric light travel time.</p>
+<p><small> NOTE: If you choose to specify a different timing format and/or systems, or if you choose not to specify the timing system, REMEMBER the code will automatically convert your time to JD TDB timing format and system. If this happens, you will need to include some additional information including the position of your object in the sky (in RA and Dec) and the position of your observing location on Earth (in longitude and latitude). You ARE REQUIRED to input the coordinates of your object. You ARE NOT REQUIRED to specify your location on Earth, but this will generate a default position on Earth that corresponds to the North Pole.</small></p>
+</li>
+<li><p>No mid-time uncertainties. In this case, a placeholder list of 1s will be generated for functional purposes.</p></li>
+<li><p>No list specifying transits and occultations. If you do not include a list specifying if the data included is a transit or occultation (this will be the tra_or_occ parameter), then the code defaults to transits and will generate a list of ‘tra’ that has a number of values equal to the number of values of your epochs array.</p></li>
+</ul>
+<p>Below are examples of how these options would work.</p>
+<hr style="color: #D64309;"><section id="using-timing-data-that-is-not-in-jd-tdb-format-and-system">
+<h3>🔷 Using Timing Data that is NOT in JD TDB Format and System<a class="headerlink" href="#using-timing-data-that-is-not-in-jd-tdb-format-and-system" title="Link to this heading">¶</a></h3>
+<p>Using timing data that is not corrected for barcentric light travel time and is in a timing format and system other than JD TDB. For example, we will assume this data is in the JD timing format with the UTC time scale.</p>
+<p><small>NOTE: If you do not include a timing system parameter when you create the TimingData object, it will default to UTC and correct for barycentric light travel time</small></p>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="option-1-including-both-object-coordinates-and-observatory-coordinates">
+<h3>🔹 Option 1: Including BOTH Object Coordinates and Observatory Coordinates<a class="headerlink" href="#option-1-including-both-object-coordinates-and-observatory-coordinates" title="Link to this heading">¶</a></h3>
+<p>For this example, we show creating the object:</p>
+<ul class="simple">
+<li><p>WITHOUT specifying the timing system, which will default to UTC</p></li>
+<li><p>WITH specifying the timing system as UTC</p></li>
+</ul>
+<p><small>Note: These will both be the exact same because if the object is not given a timing system, it will default to UTC.</small></p>
+<p>We also include positional data for both:</p>
+<ul class="simple">
+<li><p>the <strong>object coordinates</strong>, which includes the right ascension and declination of WASP 12-b</p></li>
+<li><p>the <strong>location of the observatory</strong>, which includes the latitude and longitude of the Boise State observatory.</p></li>
+</ul>
+<p><small>Note: This data was not collected from the BSU observatory, we just use this as an example. Also note, this data is already corrected for barycentric light travel time, so the resulting data is not actually correct. This is JUST AN EXAMPLE. </small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Not including time scale. Will default to UTC</span>
+<span class="n">timing_obj2</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+<span class="c1"># OR including time scale as UTC</span>
+<span class="n">timing_obj2</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">,</span> <span class="n">observatory_lat</span><span class="o">=</span><span class="mf">43.60</span><span class="p">,</span> <span class="n">observatory_lon</span><span class="o">=-</span><span class="mf">116.21</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
+/Users/maliabarker/Desktop/susie/notebook_env/lib/python3.12/site-packages/susie/timing_data.py:129: FutureWarning: Setting the location attribute post initialization will be disallowed in a future version of Astropy. Instead you should set the location when creating the Time object. In the future, this will raise an AttributeError.
+  time_obj.location = obs_location
+WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary. [astropy.coordinates.builtin_frames.utils]
+WARNING: Tried to get polar motions for times before IERS data is valid. Defaulting to polar motion from the 50-yr mean for those. This may affect precision at the arcsec level. Please check your astropy.utils.iers.conf.iers_auto_url and point it to a newer version if necessary.
+/Users/maliabarker/Desktop/susie/notebook_env/lib/python3.12/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;utctai&quot; yielded 158 of &quot;dubious year (Note 3)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/susie/notebook_env/lib/python3.12/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;utcut1&quot; yielded 158 of &quot;dubious year (Note 3)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/susie/notebook_env/lib/python3.12/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;taiutc&quot; yielded 158 of &quot;dubious year (Note 4)&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+/Users/maliabarker/Desktop/susie/notebook_env/lib/python3.12/site-packages/erfa/core.py:133: ErfaWarning: ERFA function &quot;epv00&quot; yielded 158 of &quot;warning: date outsidethe range 1900-2100 AD&quot;
+  warn(f&#39;ERFA function &quot;{func_name}&quot; yielded {wmsg}&#39;, ErfaWarning)
+WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now the TimingData object contains the corrected mid-times and mid-time uncertainties. To see these corrected values, you can print the variables of the object by running the code below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj2).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="option-2-including-only-object-coordinates">
+<h3>🔹 Option 2: Including ONLY Object Coordinates<a class="headerlink" href="#option-2-including-only-object-coordinates" title="Link to this heading">¶</a></h3>
+<p>We can also opt to <strong>not include any observatory coordinates</strong> (due to not knowing where to data was taken, for example). If this is not passed in, the object will default to the gravitational center of the Earth at x=0, y=0, z=0.</p>
+<p>We include positional data for the <strong>object coordinates</strong>, which includes the right ascension and declination of WASP 12-b.</p>
+<p><small>Note: This data is already corrected for barycentric light travel time, so the resulting data is not actually correct. This is JUST AN EXAMPLE. </small></p>
+<p><small style="color: #D64309;"><b> Don’t be scared of the warnings! These are just warnings, nothing is wrong.</b></small></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Including time scale as UTC. NOT passing in observatory coordinates</span>
+<span class="n">timing_obj3</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">object_ra</span><span class="o">=</span><span class="mf">97.64</span><span class="p">,</span> <span class="n">object_dec</span><span class="o">=</span><span class="mf">29.67</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.
+WARNING: Unable to process observatory coordinates (None, None). Using gravitational center of Earth.
+WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (0.0, 90.0) for time correction.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj3).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"></section>
+<section id="using-timing-data-that-does-not-include-uncertainties">
+<h3>🔷 Using Timing Data that does NOT include uncertainties<a class="headerlink" href="#using-timing-data-that-does-not-include-uncertainties" title="Link to this heading">¶</a></h3>
+<p>We do not have to include uncertainties for our mid-time data. If no uncertainties are given, the object will generate a default placeholder of 1’s with the same number of values that are in your <code class="docutils literal notranslate"><span class="pre">epochs</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj4</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj4).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"></section>
+<section id="using-timing-data-that-does-not-include-a-transit-or-occultation-array">
+<h3>🔷 Using Timing Data that does NOT include a transit or occultation array<a class="headerlink" href="#using-timing-data-that-does-not-include-a-transit-or-occultation-array" title="Link to this heading">¶</a></h3>
+<p>We also do not need to include a <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code> array. For example, if you only have transit data, you most likely would not include a <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code> array because all of your data are transits. If we do not provide an array for <code class="docutils literal notranslate"><span class="pre">tra_or_occ</span></code>, then the object will generate a default placeholder of ‘tra’ with the same number of values that are in your <code class="docutils literal notranslate"><span class="pre">epochs</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj5</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in vars(timing_obj5).items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<hr style="color: #D64309;"><p>There are many different ways to create your TimingData object. Once you have created the TimingData object with as much information as you can provide, continue with the <strong>🔵 Basic Usage</strong> workflow tutorial.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="basic_usage.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">🐷 Susie Basic Timing and Ephemeris Object Usage</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Boise State University
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">🐷 Susie Special Timing Object Usage</a><ul>
+<li><a class="reference internal" href="#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a><ul>
+<li><a class="reference internal" href="#downloading-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 Downloading the timing data (that includes occultations) from the GitHub repository</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-timing-data-formats-and-options">🔵 Other Timing Data Formats and Options</a><ul>
+<li><a class="reference internal" href="#using-timing-data-that-is-not-in-jd-tdb-format-and-system">🔷 Using Timing Data that is NOT in JD TDB Format and System</a></li>
+<li><a class="reference internal" href="#option-1-including-both-object-coordinates-and-observatory-coordinates">🔹 Option 1: Including BOTH Object Coordinates and Observatory Coordinates</a></li>
+<li><a class="reference internal" href="#option-2-including-only-object-coordinates">🔹 Option 2: Including ONLY Object Coordinates</a></li>
+<li><a class="reference internal" href="#using-timing-data-that-does-not-include-uncertainties">🔷 Using Timing Data that does NOT include uncertainties</a></li>
+<li><a class="reference internal" href="#using-timing-data-that-does-not-include-a-transit-or-occultation-array">🔷 Using Timing Data that does NOT include a transit or occultation array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=cc8b8c85"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
+    </body>
+</html>
