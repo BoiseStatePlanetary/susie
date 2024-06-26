@@ -7,7 +7,7 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from .timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 # from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 
 class BaseModelEphemeris(ABC):
@@ -972,20 +972,25 @@ class Ephemeris(object):
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
-    filepath = "../../example_data/wasp12b_tra_occ.csv"
-    # filepath = "../../malia_examples/WASP12b_transit_ephemeris.csv"
-    data = np.genfromtxt(filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    bjd_filepath = "../../example_data/wasp12b_tra_occ.csv"
+    isot_filepath = "../../example_data/wasp12b_isot_utc.csv"
+    data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"]
     epochs = data["epoch"].astype('int')
     mid_times = data["transit_time"]
     mid_time_errs = data["sigma_transit_time"]
+    isot_mid_times = isot_data["transit_time"]
+    print(isot_mid_times)
     # print(f"epochs: {list(epochs)}")
     # print(f"mid_times: {list(mid_times)}")
     # print(f"mid_time_errs: {list(mid_time_errs)}")
     # print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
+    # times_obj1 = TimingData('jd', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('jd', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     # times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     # times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb')
     times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
