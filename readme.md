@@ -5,12 +5,12 @@
 
 A package for exoplanet orbital decay calculations and visualizations.
 
-[![Susie Superpig Cartoon Image](/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html)
+[![Susie Superpig Cartoon Image](https://github.com/BoiseStatePlanetary/susie/blob/main/readme_imgs/SP_Susie.png)](https://susie.readthedocs.io/en/latest/index.html)
 
 ## Statement of need
 Hot Jupiters are planets outside of our solar system that orbit extremely fast and close to their star. Due to their proximity, hot Jupiters experience gravitational forces from their stars, and are large enough to also exhibit gravitational forces ON their stars. These forces are called tidal interactions, and are similar to the tidal interactions we see between our moon and Earth. The tidal interactions between a hot Jupiter and its star gradually pull the hot Jupiter closer to the star. As the hot Jupiter gets closer to the star, the planet completes a full orbit around its star faster. Therefore, the time it takes for the planet to complete an orbit—which we call the orbital period—decreases. We can find these hot Jupiters by looking for these decreasing orbital periods using observations of the orbits. 
 
-![Illustration of an exoplanet transit. As the planet passes in front of its host star, the total amount of light coming from the star drops, as seen in the U-shaped curve. The time between the middle of each transit curve equals the planet’s orbital period.](readme_imgs/Transit_Illustration.png)
+![Illustration of an exoplanet transit. As the planet passes in front of its host star, the total amount of light coming from the star drops, as seen in the U-shaped curve. The time between the middle of each transit curve equals the planet’s orbital period.](https://github.com/BoiseStatePlanetary/susie/blob/500e9f4d396155a682424207478266b9ed27035d/readme_imgs/Transit_Illustration.png)
 
 A common way of observing an exoplanet's orbit is by observing a transit. An exoplanet 'transits' its star when it passes in front of the star, blocking out some of the light. We can collect the amount of light coming from the star over time, and when the exoplanet transits the star, we see the amount of light decrease. By looking at a graph of amount of star light vs. time, such as the graph above, we can record the duration of the transit and find the moment an exoplanet is exactly halfway through the transit, called the transit mid-time. By comparing one mid time to the next, we can measure an orbital period. By observing transits over time, we can find changes in mid-times and therefore the changes in orbital periods that would indicate hot Jupiters experiencing tidal interactions with their stars. However, these changes in orbital period are incredibly small, with timing variations of milliseconds per Earth year, making an unguided search for these systems inefficient. Our package helps to streamline this process.
 
@@ -169,7 +169,7 @@ You can also visualize both the linear and quadratic model fits and compare thes
 
 Here is an example of an OC plot returned by the data above.
 
-![An Observed minus Caluclated plot for the hot Jupiter WASP 12-b.](/readme_imgs/Figure_1.png)
+![An Observed minus Caluclated plot for the hot Jupiter WASP 12-b.](https://github.com/BoiseStatePlanetary/susie/blob/500e9f4d396155a682424207478266b9ed27035d/readme_imgs/Figure_1.png)
 
 <small>NOTE: You also have the option to save this plot by setting `save_plot` to True and including a `file_path` parameter. This option is available for ALL plotting methods.</small>
 
