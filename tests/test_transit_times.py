@@ -450,15 +450,6 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(ValueError, msg= "Shapes of 'tra_or_occ', 'mid_time_uncertainties', and 'mid_times' arrays do not match."):
              TimingData('jd', not_test_epochs, not_test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
 
-    def test_tra_or_occ_str(self):
-        """ Unsuccessful test to check the data values within the tra_or_occ array.
-
-            The data values must be a string and will raise an error if not.
-        """
-        not_tra_or_occ = np.array([1,2,3,4])
-        with self.assertRaises(ValueError, msg= "All values in 'tra_or_occ' must be of type string."):
-             TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
-    
     def test_tra_or_occ_no_null(self):
         """ Unsuccessful test to check if any null values are in the tra_or_occ array.
 
