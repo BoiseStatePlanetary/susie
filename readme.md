@@ -169,7 +169,7 @@ You can also visualize both the linear and quadratic model fits and compare thes
 
 Here is an example of an OC plot returned by the data above.
 
-![An Observed minus Caluclated plot for the hot Jupiter WASP 12-b.](https://github.com/BoiseStatePlanetary/susie/blob/500e9f4d396155a682424207478266b9ed27035d/readme_imgs/Figure_1.png)
+![An Observed minus Caluclated plot for the hot Jupiter WASP 12-b.](https://github.com/BoiseStatePlanetary/susie/blob/main/readme_imgs/Figure_1.png?raw=true)
 
 <small>NOTE: You also have the option to save this plot by setting `save_plot` to True and including a `file_path` parameter. This option is available for ALL plotting methods.</small>
 
