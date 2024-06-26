@@ -189,9 +189,6 @@ class TimingData():
         # Check the shape 
         if self.tra_or_occ.shape != self.mid_time_uncertainties.shape != self.mid_times.shape != self.epochs.shape:
             raise ValueError("Shapes of 'tra_or_occ', 'mid_time_uncertainties', 'mid_times', and 'epochs' arrays do not match.")
-        # strings
-        if not all(isinstance(value, str) for value in self.tra_or_occ):
-            raise TypeError("All values in 'tra_or_occ' must be of type string.")
         # null values
         if np.issubdtype(self.tra_or_occ.dtype, np.number) and np.any(np.isnan(self.tra_or_occ)):
             raise ValueError("The 'tra_or_occ' array contains NaN (Not-a-Number) values.")
@@ -242,8 +239,6 @@ class TimingData():
         if not all(isinstance(value, float) for value in self.mid_time_uncertainties):
             raise TypeError("All values in 'mid_time_uncertainties' must be of type float.")
         # Check that there are no null values
-        if np.any(np.isnan(self.epochs)):
-            raise ValueError("The 'epochs' array contains NaN (Not-a-Number) values.")
         if np.any(np.isnan(self.mid_times)):
             raise ValueError("The 'mid_times' array contains NaN (Not-a-Number) values.")
         if np.any(np.isnan(self.mid_time_uncertainties)):
