@@ -6,12 +6,10 @@ import logging
 
 logger = logging.getLogger("lumberjack")
 
-class TimingFormatError(ValueError):
-    def __init__(self, message):
-        super().__init__(message)
-
 class TimingData():
     """Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.
+
+    TODO: Reqrite this docstring
 
     The TimingData object processes, formats, and holds user data to be passed to the ephemeris object.
     
@@ -39,6 +37,8 @@ class TimingData():
             List of observed timing mid points corresponding with epochs, in timing units given by time_format
         mid_time_uncertainties: Optional(numpy.ndarray[float])
             List of uncertainties corresponding to timing mid points, in timing units given by time_format. If given None, will be replaced with array of 1's with same shape as `mid_times`.
+        tra_or_occ: Optional(numpy.ndarray[str])
+            TODO: 
         time_scale: Optional(str)
             An abbreviation of the data's time scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
         object_ra: Optional(float)
@@ -68,9 +68,12 @@ class TimingData():
         # Configure logging to remove "root" prefix
         self._configure_logging()
         self.epochs = epochs
-        self.tra_or_occ = tra_or_occ
         self.mid_times = mid_times
         self.mid_time_uncertainties = mid_time_uncertainties
+        if tra_or_occ is None:
+            # Create list of just "tra"
+            tra_or_occ = np.array(["tra" for el in self.epochs])
+        self.tra_or_occ = tra_or_occ
         # Check that timing system and scale are JD and TDB
         if time_format != "jd" or time_scale != "tdb":
             # If not correct time format and scale, create time objects and run corrections
@@ -83,11 +86,10 @@ class TimingData():
         if mid_time_uncertainties is None:
             # If no uncertainties provided, make an array of 1s in the same shape of epochs
             self.mid_time_uncertainties = np.ones_like(self.epochs, dtype=float)
+        # Once every array is populated, make sure you sort by ascending epoch
+        self._sort_data_arrays()
         # Call validation function
         self._validate()
-
-    def _configure_logging(self):
-        logging.basicConfig(format="%(levelname)s: %(message)s")
 
     def _calc_barycentric_time(self, time_obj, obj_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
@@ -126,6 +128,58 @@ class TimingData():
         ltt_bary = time_obj.light_travel_time(obj_location)
         corrected_time_vals = (time_obj.tdb+ltt_bary).value
         return corrected_time_vals
+    
+    def _configure_logging(self):
+        logging.basicConfig(format="%(levelname)s: %(message)s")
+
+    def _convert_times(self, time_data, format, scale, obj_coords, obs_coords, warn=False):
+        """Validates object and observatory information and populates Astropy objects for barycentric light travel time correction.
+
+        Checks that object coordinates (right ascension and declination) and are of correct types. If correct object 
+        coordinates are given, will create an Astropy SkyCoord object. Checks that observatory coordinates (longitude 
+        and latitude) are given and of correct types. If given, will populate an Astropy EarthLocation object. If not
+        given, will populate Astropy EarthLocation with gravitational center of Earth at North Pole. Passes the validated
+        SkyCoord, EarthLocation, and Time objects to the `_calc_barycentric_time` correction function to convert times
+        to BJD TDB timing format and scale.
+
+        Parameters
+        ----------
+            time_data: np.ndarray[float]
+                An array of timing data values. This will either be mid times or the mid time uncertainties.
+            format: str
+                A valid Astropy abbreviation of the data's time system.
+            scale: str
+                A valid Astropy abbreviation of the data's time scale.
+            obj_coords: (float, float)
+                Tuple of the right ascension and declination in degrees of the object being observed.
+            obs_coords: (float, float)    
+                Tuple of the longitude and latitude in degrees of the site of observation.
+            warn: Boolean
+                If True, will raise warnings to the user.
+
+        Returns
+        -------
+            An array of timing data converted to Barycentric Julian Date timing format and scale (Astropy JD format, TDB scale).
+
+        Raises
+        ------
+            ValueError:
+                Error if None recieved for object_ra or object_dec.
+            Warning:
+                Warning if no observatory coordinates are given.
+                Warning notifying user that barycentric light travel time correction is taking place with the given
+                information.
+        """
+        # Get observatory and object location
+        obs_location = self._get_obs_location(obs_coords, warn)
+        obj_location = self._get_obj_location(obj_coords)
+        if warn:
+            logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_location.ra.value, 2), round(obj_location.dec.value, 2)} for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
+        # Create time object and convert format to JD
+        time_obj = time.Time(list(time_data), format=format, scale=scale, location=obs_location)
+        time_obj_converted_format = time.Time(time_obj.to_value("jd"), format="jd", scale=scale, location=obs_location)
+        # Perform barycentric correction for scale conversion, will return array of corrected times
+        return self._calc_barycentric_time(time_obj_converted_format, obj_location)
     
     def _get_obj_location(self, obj_coords):
         """Creates the Astropy SkyCoord object for BJD time conversions.
@@ -172,54 +226,20 @@ class TimingData():
             return coord.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
         else:
             return coord.EarthLocation.from_geodetic(obs_coords[0], obs_coords[1])
-    
-    def _convert_times(self, time_data, format, scale, obj_coords, obs_coords, warn=False):
-        """Validates object and observatory information and populates Astropy objects for barycentric light travel time correction.
+        
+    def _sort_data_arrays(self):
+        """Sorts all data arrays by ascending epoch.
 
-        Checks that object coordinates (right ascension and declination) and are of correct types. If correct object 
-        coordinates are given, will create an Astropy SkyCoord object. Checks that observatory coordinates (longitude 
-        and latitude) are given and of correct types. If given, will populate an Astropy EarthLocation object. If not
-        given, will populate Astropy EarthLocation with gravitational center of Earth at North Pole. Passes the validated
-        SkyCoord, EarthLocation, and Time objects to the `_calc_barycentric_time` correction function to convert times
-        to BJD TDB timing format and scale.
-
-        Parameters
-        ----------
-            time_data: np.ndarray[float]
-                An array of timing data values. This will either be mid times or the mid time uncertainties.
-            format: str
-                A valid Astropy abbreviation of the data's time system.
-            scale: str
-                A valid Astropy abbreviation of the data's time scale.
-            obj_coords: (float, float)
-                Tuple of the right ascension and declination in degrees of the object being observed.
-            obs_coords: (float, float)    
-                Tuple of the longitude and latitude in degrees of the site of observation.
-            warn: Boolean
-                If True, will raise warnings to the user.
-
-        Returns
-        -------
-            An array of timing data converted to Barycentric Julian Date timing format and scale (Astropy JD format, TDB scale).
-
-        Raises
-        ------
-            ValueError:
-                Error if None recieved for object_ra or object_dec.
-            Warning:
-                Warning if no observatory coordinates are given.
-                Warning notifying user that barycentric light travel time correction is taking place with the given
-                information.
+        Reorders the epochs, mid_times, mid_time_uncertainties, and tra_or_occ arrays based
+        on the index order of ascending epochs. This makes sure that all data is order from first 
+        observation to most recent observation.
         """
-        # Get observatory and object location
-        obs_location = self._get_obs_location(obs_coords, warn)
-        obj_location = self._get_obj_location(obj_coords)
-        if warn:
-            logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_location.ra.value, 2), round(obj_location.dec.value, 2)} for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
-        # Perform correction, will return array of corrected times
-        time_obj = time.Time(list(time_data), format=format, scale=scale, location=obs_location)
-        return self._calc_barycentric_time(time_obj, obj_location)
-
+        sorted_indices = np.argsort(self.epochs)
+        self.epochs = self.epochs[sorted_indices]
+        self.tra_or_occ = self.tra_or_occ[sorted_indices]
+        self.mid_times = self.mid_times[sorted_indices]
+        self.mid_time_uncertainties = self.mid_time_uncertainties[sorted_indices]
+    
     def _validate_tra_or_occ(self):
         """TODO: Write docstring
         
@@ -294,10 +314,5 @@ class TimingData():
             # Shift epochs and mid transit times
             self.epochs -= np.min(self.epochs)
             # TODO import warning that we are minimizing their epochs and transit times
-        # if self.mid_times[0] != 0:
-        #     self.mid_times -= np.min(self.mid_times)
-        if self.tra_or_occ is None:
-            # Create list of just "tra"
-            self.tra_or_occ = np.array(["tra" for element in self.epochs])
         if self.tra_or_occ is not None:
             self._validate_tra_or_occ()
