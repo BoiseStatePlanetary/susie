@@ -81,15 +81,15 @@ class TimingData():
             # Set timing data to None for now
             self.mid_times = self._convert_times(mid_times, time_format, time_scale, (object_ra, object_dec), (observatory_lon, observatory_lat), warn=True)
             if mid_time_uncertainties is not None:
-                self.mid_time_uncertainties = self._convert_times(mid_time_uncertainties, time_format, time_scale, (object_ra, object_dec), (observatory_lon, observatory_lat))
-            # self._validate_times(mid_times_obj, mid_time_uncertainties_obj, (object_ra, object_dec), (observatory_lon, observatory_lat))
+                self.mid_time_uncertainties = self._convert_timing_uncertainties(mid_times, mid_time_uncertainties, time_format, time_scale, (object_ra, object_dec), (observatory_lon, observatory_lat))
         if mid_time_uncertainties is None:
             # If no uncertainties provided, make an array of 1s in the same shape of epochs
-            self.mid_time_uncertainties = np.ones_like(self.epochs, dtype=float)
-        # Once every array is populated, make sure you sort by ascending epoch
-        self._sort_data_arrays()
+            self.mid_time_uncertainties = np.full(self.epochs.shape, 0.001)
+            # self.mid_time_uncertainties = np.ones_like(self.epochs, dtype=float)
         # Call validation function
         self._validate()
+        # Once every array is populated, make sure you sort by ascending epoch
+        # self._sort_data_arrays()
 
     def _calc_barycentric_time(self, time_obj, obj_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
@@ -131,6 +131,25 @@ class TimingData():
     
     def _configure_logging(self):
         logging.basicConfig(format="%(levelname)s: %(message)s")
+
+    def _convert_timing_uncertainties(self, mid_times, mid_time_uncertainties, format, scale, obj_coords, obs_coords, warn=False):
+        """
+        Reminder!! Make sure to ONLY run this if uncertainties are given
+
+        """
+        # create time objects from upper and lower vals
+        mid_times_obj = time.Time(mid_times, format=format, scale=scale)
+        upper_times_obj = time.Time(mid_times + mid_time_uncertainties, format=format, scale=scale)
+        lower_times_obj = time.Time(mid_times - mid_time_uncertainties, format=format, scale=scale)
+        # convert the format mid_times, up and down errs
+        mid_times_converted = self._convert_times(mid_times_obj, format, scale, obj_coords, obs_coords)
+        upper_times_converted = self._convert_times(upper_times_obj, format, scale, obj_coords, obs_coords)
+        lower_times_converted = self._convert_times(lower_times_obj, format, scale, obj_coords, obs_coords)
+        # subtract up and down errs
+        upper_diffs = upper_times_converted - mid_times_converted
+        lower_diffs = mid_times_converted - lower_times_converted
+        avg_diff = (upper_diffs + lower_diffs) / 2
+        return avg_diff
 
     def _convert_times(self, time_data, format, scale, obj_coords, obs_coords, warn=False):
         """Validates object and observatory information and populates Astropy objects for barycentric light travel time correction.
@@ -176,7 +195,7 @@ class TimingData():
         if warn:
             logging.warning(f"Using ICRS coordinates in degrees of RA and Dec {round(obj_location.ra.value, 2), round(obj_location.dec.value, 2)} for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude {round(obs_location.lon.value, 2), round(obs_location.lat.value, 2)} for time correction.")
         # Create time object and convert format to JD
-        time_obj = time.Time(list(time_data), format=format, scale=scale, location=obs_location)
+        time_obj = time.Time(time_data, format=format, scale=scale, location=obs_location)
         time_obj_converted_format = time.Time(time_obj.to_value("jd"), format="jd", scale=scale, location=obs_location)
         # Perform barycentric correction for scale conversion, will return array of corrected times
         return self._calc_barycentric_time(time_obj_converted_format, obj_location)
@@ -295,7 +314,6 @@ class TimingData():
         if self.epochs.shape != self.mid_times.shape != self.mid_time_uncertainties.shape:
             raise ValueError("Shapes of `epochs`, `mid_times`, and `mid_time_uncertainties` arrays do not match.")
         # Check that all values in arrays are correct
-        # if not all(isinstance(value, (int, np.int64)) for value in self.epochs) or not all(isinstance(value, (int, np.int32)) for value in self.epochs):
         if not all(isinstance(value, (int, np.int64, np.int32)) for value in self.epochs):
             raise TypeError("All values in `epochs` must be of type int, numpy.int64, or numpy.int32.")
         if not all(isinstance(value, float) for value in self.mid_times):
@@ -313,6 +331,6 @@ class TimingData():
         if self.epochs[0] != 0:
             # Shift epochs and mid transit times
             self.epochs -= np.min(self.epochs)
-            # TODO import warning that we are minimizing their epochs and transit times
+            # TODO import warning that we are minimizing their epochs
         if self.tra_or_occ is not None:
             self._validate_tra_or_occ()
