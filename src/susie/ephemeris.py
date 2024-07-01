@@ -7,7 +7,7 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+# from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 # from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
 
 class BaseModelEphemeris(ABC):
