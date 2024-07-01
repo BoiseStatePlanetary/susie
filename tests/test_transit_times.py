@@ -14,7 +14,7 @@ from astropy import units as u
 # test_mtts = [0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421, 631.933999999892, 648.3059999998659, 657.0360000003129, 694.1440000003204, 695.2370000001974, 714.8820000002161, 738.8940000003204, 979.0049999998882, 983.3710000002757, 994.285000000149, 995.3769999998622, 1003.0160000002943, 1027.0270000002347, 1027.027999999933, 1051.0389999998733, 1075.0509999999776, 1082.691000000108, 1084.8730000001378, 1085.9650000003166, 1088.1480000000447, 1107.7930000000633, 1361.003000000026, 1371.9169999998994, 1373.0079999999143, 1375.191000000108, 1388.2889999998733, 1404.658999999985, 1407.933999999892, 1430.8530000001192, 1431.945000000298, 1433.036000000313, 1436.3100000000559, 1437.4020000002347, 1443.9500000001863, 1445.0419999998994, 1454.8640000000596, 1455.9560000002384, 1466.8700000001118, 1467.9620000002906, 1469.0530000003055, 1470.1450000000186, 1481.058999999892, 1489.7900000000373, 1490.8810000000522, 1729.9020000002347, 1734.2690000003204, 1758.2800000002608, 1767.0109999999404, 1769.194000000134, 1782.2910000002012, 1786.657000000123, 1789.9300000001676, 1804.1189999999478, 1812.851000000257, 1813.942000000272, 2088.9799999999814, 2090.0709999999963, 2091.163000000175, 2092.25400000019, 2114.0819999999367, 2115.1740000001155, 2139.185000000056, 2143.5509999999776, 2146.8250000001863, 2147.916000000201, 2149.0079999999143, 2158.8310000002384, 2162.1049999999814, 2173.0190000003204, 2178.4769999999553, 2188.2990000001155, 2195.939000000246, 2203.5789999999106, 2205.7620000001043, 2206.853000000119, 2470.9769999999553, 2494.9879999998957, 2497.1710000000894, 2529.913000000175, 2531.0049999998882, 2544.1019999999553, 2545.19299999997, 2551.7420000000857, 2552.8330000001006, 2587.7590000000782, 2830.0540000000037, 2874.8020000001416, 2875.8930000001565, 2910.81799999997, 2911.910000000149, 2935.9210000000894, 3156.388000000268, 3176.033999999985, 3188.0389999998733, 3191.313000000082, 3210.9590000002645, 3212.0500000002794, 3250.25, 3251.341000000015, 3256.7990000001155, 3257.8900000001304, 3261.1639999998733, 3265.529000000097, 3265.530999999959, 3270.9870000001974, 3273.1699999999255, 3285.1750000002794, 3292.814999999944, 3293.907000000123, 3294.998000000138, 3511.098999999929, 3535.1099999998696, 3544.933999999892, 3558.0300000002608, 3559.121999999974, 3562.3960000001825, 3608.2349999998696, 3609.3270000000484, 3616.966000000015, 3619.149999999907, 3621.3330000001006, 3639.885000000242, 3639.8870000001043, 3640.978000000119, 3644.253000000026, 3646.435000000056, 3646.435000000056, 3647.526000000071, 3647.526000000071, 3650.8009999999776, 3662.805999999866, 3896.3700000001118, 3956.3980000000447, 3979.31799999997, 3991.323000000324]
 # test_mtts_err = [0.00043, 0.00028, 0.00062, 0.00042, 0.00043, 0.00032, 0.00036, 0.00046, 0.00041, 0.00019, 0.00043, 0.00072, 0.00079, 0.00037, 0.00031, 0.0004, 0.0004, 0.00028, 0.00028, 0.00068, 0.00035, 0.00029, 0.00024, 0.00029, 0.00039, 0.00027, 0.00021, 0.00027, 0.00024, 0.00032, 0.00031, 0.00022, 0.00018, 0.00017, 0.00033, 0.00011, 0.0001, 0.00017, 0.00032, 0.00039, 0.00035, 0.00034, 0.00035, 0.00032, 0.00042, 0.00037, 0.00037, 0.00031, 0.00033, 0.00039, 0.0003, 0.0003, 0.0003, 0.0003, 0.00046, 0.00024, 0.00038, 0.00027, 0.00029, 0.00021, 0.0003, 0.00033, 0.00071, 0.00019, 0.00043, 0.00034, 0.00034, 0.00019, 0.00019, 0.00031, 0.00028, 0.00032, 0.0004, 0.00029, 0.00029, 0.00025, 0.00034, 0.00034, 0.00046, 0.00043, 0.00039, 0.00049, 0.00046, 0.00049, 0.00035, 0.00036, 0.00022, 0.0002, 0.00031, 0.00042, 0.00033, 0.00033, 0.00055, 0.00023, 0.00021, 0.00035, 0.00025, 0.00034, 0.00037, 0.00028, 0.00023, 0.00028, 0.00039, 0.00024, 0.00022, 0.00029, 0.00043, 0.00036, 0.00026, 0.00048, 0.00032, 0.0004, 0.00018, 0.00021, 0.00056, 0.00023, 0.0003, 0.00022, 0.00034, 0.00028, 0.00027, 0.00035, 0.00031, 0.00032, 0.00033, 0.0005, 0.00031, 0.00032, 0.00091, 0.00035, 0.00026, 0.00021, 0.00034, 0.00034, 0.00038, 0.0004, 0.00026, 0.0003, 0.00044]
 test_epochs = np.array([0, 294, 298, 573])
-test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+test_mtts = np.array([2454515.525,2454836.403,2454840.769,2455140.91])
 test_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
 tra_or_occ = np.array(['tra','occ','tra','occ'])
 timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ,'utc',object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
@@ -158,36 +158,7 @@ class TestTimingData(unittest.TestCase):
         self.timing_data =  TimingData('jd', test_epochs_neg, test_mtts, test_mtts_err, time_scale='tdb')
         self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_neg))
 
-    def test_shifted_mtts_zero(self):
-        """ Successful test to check the shifted mid times function works when the mid times start with 0.
-
-            The mid times should remain the same as the array already starts at zero.
-        """
-        test_mtts_zero = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-        shifted_mtts_zero = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts_zero, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_zero))
-
-    def test_shifted_mtts_pos(self):
-        """ Successful test to check the shifted mid times function works when the mid times start with a positive number.
-
-            The mid times should shift to start with zero.
-        """
-        test_mtts_pos = np.array([1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-        shifted_mtts_pos = np.array([0.0, 319.8780000000261, 324.24399999994785, 624.3850000002421])
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts_pos, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_pos))
-    
-    def test_shifted_mtts_neg(self):
-        """ Successful test to check the shifted mid times function works when the mid times start with a negative number.
-
-            The mid times should shift to start with zero.
-        """
-        test_mtts_neg = np.array([-1.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-        shifted_mtts_neg = np.array([0.0, 321.8780000000261, 326.24399999994785, 626.3850000002421])
-        self.timing_data =  TimingData('jd', test_epochs, test_mtts_neg, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtts_neg))
-
+   
 #<————————————————————————————————————————————————————————————————————————————————————————>
     def test_no_mtts_err(self):
         """ Successful test for when no mid time uncertainties are given.
@@ -337,7 +308,7 @@ class TestTimingData(unittest.TestCase):
         timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
         test_mid_times_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
         test_mid_times_err_obj = time.Time(test_mtts_err,format = 'jd',scale = 'utc')
-        corrected_times = timing_data._validate_times(test_mid_times_obj, test_mid_times_err_obj,(97.64,29.67),(None,None))
+        corrected_times = timing_data._convert_times(test_mid_times_obj, test_mid_times_err_obj,(97.64,29.67),(None,None))
         obs_location = (0., 0.)
         expected_obs_location = coordinates.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
         self.assertTrue(np.allclose(obs_location[0], expected_obs_location.x.value))
@@ -410,7 +381,7 @@ class TestTimingData(unittest.TestCase):
         obs_location = coordinates.EarthLocation(lat=43.60, lon=-116.21)
         time_obj.location = obs_location
         actual_ltt_bary = time_obj.light_travel_time(obj_location).value
-        expected_ltt_bary = np.array([0.00274199, 0.00538933, 0.00525568, 0.0038908])
+        expected_ltt_bary = np.array([0.00344345,0.00561672,0.00554016,0.00339291])
         self.assertTrue((np.allclose(expected_ltt_bary, actual_ltt_bary, rtol=1e-05, atol=1e-08)))
 
     def test_tra_or_occ_None(self):

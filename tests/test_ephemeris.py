@@ -8,7 +8,7 @@ from src.susie.timing_data import TimingData
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
 
 test_epochs = np.array([0, 294, 298, 573])
-test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
+test_mtts = np.array([2454515.525,2454836.403,2454840.769,2455140.91])
 test_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
 test_tra_or_occ = np.array(['tra','occ','tra','occ'])
 test_tra_or_occ_enum = [0 if i == 'tra' else 1 for i in test_tra_or_occ]
@@ -27,8 +27,8 @@ test_T0_err_quad = 0.34674308676945004#conjunction time err quad
 test_dPdE = 4.224191878694417e-06#period change by epoch
 test_dPdE_err = 7.743357776955459e-06#period change by epoch error
 
-test_observed_data = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
-test_uncertainties= np.array([0.00043, 0.00028, 0.00062, 0.00042])    
+test_observed_data = test_mtts
+test_uncertainties= test_mtts_err    
 
 
 class TestLinearModelEphemeris(unittest.TestCase):
@@ -60,6 +60,7 @@ class TestLinearModelEphemeris(unittest.TestCase):
             'conjunction_time_err':float}    
         """
         result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
+        print(result)
         return_data = {
             'period': 1.0904734089104249,
             'period_err': 0.0006807480614626216,
@@ -480,6 +481,11 @@ class TestEphemeris(unittest.TestCase):
         expected_result = 193513.19608140213
         result = self.ephemeris.calc_delta_bic() 
         self.assertTrue(expected_result, result)
+
+    def test_subract_plotting_parameters(self):
+        expected_result = np.array([2454515.62603303,2454515.02166016,2454515.90895717,2454515.28657907])
+        result = self.ephemeris._subtract_plotting_parameters()
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
 
     if __name__ == '__main__':
