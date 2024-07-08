@@ -483,8 +483,10 @@ class TestEphemeris(unittest.TestCase):
         self.assertTrue(expected_result, result)
 
     def test_subract_plotting_parameters(self):
-        expected_result = np.array([2454515.62603303,2454515.02166016,2454515.90895717,2454515.28657907])
-        result = self.ephemeris._subtract_plotting_parameters()
+        expected_result = np.array([-4.91239202e-10, 1.04388675e-07, 1.73202181e-07, 1.83800921e-08])
+        model_data = np.array([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02 ])
+        result = self.ephemeris._subtract_plotting_parameters(model_data,test_T0_linear,test_P_linear,test_epochs)
+        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
 
