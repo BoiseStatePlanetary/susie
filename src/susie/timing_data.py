@@ -7,40 +7,42 @@ import logging
 logger = logging.getLogger("lumberjack")
 
 class TimingData():
-    """Represents timing mid point data over observations. Holds data to be accessed by Ephemeris class.
+    """Represents timing mid-point data over observations. Holds data to be accessed by Ephemeris object.
 
-    TODO: Reqrite this docstring
-
-    The TimingData object processes, formats, and holds user data to be passed to the ephemeris object.
+    The TimingData object processes, formats, and holds user data to be passed to the Ephemeris object.
+    Users can input observational data as lists of transit and/or occultation mid-times and corresponding
+    epochs and (if available) mid-time uncertainties. 
     
     Timing conversions are applied to ensure that all data is processed correctly and users are aware of 
     timing formats and scales, which can give rise to false calculations in our metrics. If data is not specified
     to be in Barycentric Julian Date format with the TDB time scale, timing data will be corrected for barycentric
-    light travel time using the Astropy Time utilities. 
+    light travel time using the Astropy Time utilities. If correction is needed, users will be required to provide
+    additional information on the observed object.
     
     If mid time uncertainties are not provided, we will generate placeholder values of 1.
 
     Our implementations rely on Numpy functions. This object implements checks to ensure that data are stored in 
-    Numpy arrays and are of correct data types. The appropriate Type or Value Error is raised if there are any issues.
-    
-    If timing data contains both transit mid times and occultation mid times, users can pass in an array of "tra" 
-    and "occ" strings that correspond to the epochs, mid time, and uncertainty timing data. If passed in, timing data
-    will be separated according to the order of the tra_or_occ array and stored in their corresponding objects.
+    Numpy arrays and are of correct data types. The appropriate Type or Value Error is raised if there are any 
+    issues.
 
     Parameters
     ------------
         time_format: str 
-            An abbreviation of the data's time system. Abbreviations for systems can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id3).
+            An abbreviation of the data's time system. Abbreviations for systems can be found on [Astropy's 
+            Time documentation](https://docs.astropy.org/en/stable/time/#id3).
         epochs: numpy.ndarray[int]
             List of orbit number reference points for timing observations
         mid_times: numpy.ndarray[float]
             List of observed timing mid points corresponding with epochs, in timing units given by time_format.
         mid_time_uncertainties: Optional(numpy.ndarray[float])
-            List of uncertainties corresponding to timing mid points, in timing units given by time_format. If given None, will be replaced with array of 1's with same shape as `mid_times`.
+            List of uncertainties corresponding to timing mid points, in timing units given by time_format. If 
+            given None, will be replaced with array of 1's with same shape as `mid_times`.
         tra_or_occ: Optional(numpy.ndarray[str])
-            TODO: 
+            List of either `tra` or `occ` which specifies if observational data was taken from a transit or an 
+            occultation.
         time_scale: Optional(str)
-            An abbreviation of the data's time scale. Abbreviations for scales can be found on [Astropy's Time documentation](https://docs.astropy.org/en/stable/time/#id6).
+            An abbreviation of the data's time scale. Abbreviations for scales can be found on [Astropy's Time 
+            documentation](https://docs.astropy.org/en/stable/time/#id6).
         object_ra: Optional(float)
             The right ascension of observed object represented by data, in degrees
         object_dec: Optional(float)
