@@ -34,7 +34,7 @@ class TimingData():
         epochs: numpy.ndarray[int]
             List of orbit number reference points for timing observations
         mid_times: numpy.ndarray[float]
-            List of observed timing mid points corresponding with epochs, in timing units given by time_format
+            List of observed timing mid points corresponding with epochs, in timing units given by time_format.
         mid_time_uncertainties: Optional(numpy.ndarray[float])
             List of uncertainties corresponding to timing mid points, in timing units given by time_format. If given None, will be replaced with array of 1's with same shape as `mid_times`.
         tra_or_occ: Optional(numpy.ndarray[str])
@@ -89,7 +89,7 @@ class TimingData():
         # Call validation function
         self._validate()
         # Once every array is populated, make sure you sort by ascending epoch
-        # self._sort_data_arrays()
+        self._sort_data_arrays()
 
     def _calc_barycentric_time(self, time_obj, obj_location):
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
@@ -132,10 +132,36 @@ class TimingData():
     def _configure_logging(self):
         logging.basicConfig(format="%(levelname)s: %(message)s")
 
-    def _convert_timing_uncertainties(self, mid_times, mid_time_uncertainties, format, scale, obj_coords, obs_coords, warn=False):
-        """
-        Reminder!! Make sure to ONLY run this if uncertainties are given
+    def _convert_timing_uncertainties(self, mid_times, mid_time_uncertainties, format, scale, obj_coords, obs_coords):
+        """Calculates the converted mid-time uncertainties.
 
+        Calculates the new converted timing uncertainties by calculating the upper and lower limits
+        of each mid-time, converting the time formats and scales of the upper and lower limits, then
+        subtracting the converted mid time from the limits and taking the average for the final
+        resulting mid-time uncertainty.
+
+        This function will ONLY run if the timing format and/or scale needs to be converted and mid-time
+        uncertainties are given. If no mid-time uncertainties are given, this calculation will not run and
+        placeholder uncertainty values will be generated instead.
+
+        Parameters
+        ----------
+            mid_times: numpy.ndarray[float]
+                List of observed timing mid-points corresponding with epochs.
+            mid_time_uncertainties: numpy.ndarray[float]
+                List of uncertainties corresponding to timing mid-points.
+            format: str
+                A valid Astropy abbreviation of the data's time system.
+            scale: str
+                A valid Astropy abbreviation of the data's time scale.
+            obj_coords: (float, float)
+                Tuple of the right ascension and declination in degrees of the object being observed.
+            obs_coords: (float, float)    
+                Tuple of the longitude and latitude in degrees of the site of observation.
+
+        Returns
+        -------
+            An array of timing uncertainty data converted to Barycentric Julian Date timing format and scale (Astropy JD format, TDB scale).
         """
         # create time objects from upper and lower vals
         mid_times_obj = time.Time(mid_times, format=format, scale=scale)
@@ -258,23 +284,6 @@ class TimingData():
         self.tra_or_occ = self.tra_or_occ[sorted_indices]
         self.mid_times = self.mid_times[sorted_indices]
         self.mid_time_uncertainties = self.mid_time_uncertainties[sorted_indices]
-    
-    def _validate_tra_or_occ(self):
-        """TODO: Write docstring
-        
-        """
-        # Check that object is of type array
-        if not isinstance(self.tra_or_occ, np.ndarray):
-            raise TypeError("The variable `tra_or_occ` expected a NumPy array (np.ndarray) but received a different data type")
-        # Check if any values are not valid in tra_or_occ array
-        if any(val not in ["tra", "occ"] for val in self.tra_or_occ):
-            raise ValueError("The `tra_or_occ` array cannot contain string values other than `tra` or `occ`")
-        # Check the shape 
-        if self.tra_or_occ.shape != self.mid_time_uncertainties.shape != self.mid_times.shape != self.epochs.shape:
-            raise ValueError("Shapes of `tra_or_occ`, `mid_time_uncertainties`, `mid_times`, and `epochs` arrays do not match.")
-        # null values
-        if np.issubdtype(self.tra_or_occ.dtype, np.number) and np.any(np.isnan(self.tra_or_occ)):
-            raise ValueError("The `tra_or_occ` array contains NaN (Not-a-Number) values.")
    
     def _validate(self):
         """Checks that all object attributes are of correct types and within value constraints.
@@ -310,9 +319,11 @@ class TimingData():
             raise TypeError("The variable `mid_times` expected a NumPy array (np.ndarray) but received a different data type")
         if not isinstance(self.mid_time_uncertainties, np.ndarray):
             raise TypeError("The variable `mid_time_uncertainties` expected a NumPy array (np.ndarray) but received a different data type")
+        if not isinstance(self.tra_or_occ, np.ndarray):
+            raise TypeError("The variable `tra_or_occ` expected a NumPy array (np.ndarray) but received a different data type")
         # Check that all are same shape
-        if self.epochs.shape != self.mid_times.shape != self.mid_time_uncertainties.shape:
-            raise ValueError("Shapes of `epochs`, `mid_times`, and `mid_time_uncertainties` arrays do not match.")
+        if self.epochs.shape != self.mid_times.shape != self.mid_time_uncertainties.shape != self.tra_or_occ.shape:
+            raise ValueError("Shapes of `epochs`, `mid_times`, `mid_time_uncertainties`, and `tra_or_occ` arrays do not match.")
         # Check that all values in arrays are correct
         if not all(isinstance(value, (int, np.int64, np.int32)) for value in self.epochs):
             raise TypeError("All values in `epochs` must be of type int, numpy.int64, or numpy.int32.")
@@ -328,9 +339,10 @@ class TimingData():
         # Check that mid_time_uncertainties are positive and non-zero (greater than zero)
         if not np.all(self.mid_time_uncertainties > 0):
             raise ValueError("The `mid_time_uncertainties` array must contain non-negative and non-zero values.")
+        # Check that tra_or_occ values are all 'tra' or 'occ'
+        if any(val not in ["tra", "occ"] for val in self.tra_or_occ):
+            raise ValueError("The `tra_or_occ` array cannot contain string values other than `tra` or `occ`")
+        # Shift epochs by subtracting the minimum number from everything (new list will start at 0)
         if self.epochs[0] != 0:
-            # Shift epochs and mid transit times
             self.epochs -= np.min(self.epochs)
             # TODO import warning that we are minimizing their epochs
-        if self.tra_or_occ is not None:
-            self._validate_tra_or_occ()
