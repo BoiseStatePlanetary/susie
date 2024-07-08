@@ -6,9 +6,9 @@ import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
-from src.susie.timing_data import TimingData # REMEMBER TO ONLY USE THIS FOR PACKAGE UPDATES
-# from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
-# from timing_data import TimingData # REMEMBER TO COMMENT THIS OUT BEFORE GIT PUSHES
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
+# from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -582,11 +582,9 @@ class Ephemeris(object):
         for i, t_type in enumerate(self.timing_data.tra_or_occ):
             if t_type == 'tra':
                 # transit data
-                print("TRANSIT")
                 result.append(model_mid_times[i] - T0 - (P*E[i]))
             elif t_type == 'occ':
                 # occultation data
-                print("OCCULTATION")
                 result.append(model_mid_times[i] - T0 - (0.5*P) - (P*E[i]))
         return np.array(result)
     
@@ -917,11 +915,8 @@ class Ephemeris(object):
         # y = 0.5 dP/dE * (E - median E)^2
         # TODO: Make this calculation a separate function
         quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2)
-        print(quad_model_curve)
         # plot points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
         y = self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)
-        print("\n\n")
-        print(y)
         plt.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties, 
                     marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
@@ -981,39 +976,43 @@ if __name__ == '__main__':
     bjd_no_occs_filepath = "../../example_data/WASP12b_transit_ephemeris.csv"
     isot_filepath = "../../example_data/wasp12b_isot_utc.csv"
     jd_utc_filepath = "../../example_data/wasp12b_jd_utc.csv"
+    jd_utc_no_occs_filepath = "../../example_data/wasp12b_jd_utc_tra.csv"
     data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     bjd_data_no_occs = np.genfromtxt(bjd_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     jd_utc_data = np.genfromtxt(jd_utc_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    jd_utc_no_occs_data = np.genfromtxt(jd_utc_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
-    tra_or_occs = data["tra_or_occ"]
-    epochs = data["epoch"].astype('int')
-    epochs_no_occs = bjd_data_no_occs["epoch"].astype('int')
-    mid_times = data["transit_time"]
-    mid_time_errs = data["sigma_transit_time"]
-    mid_times_no_occs = bjd_data_no_occs["transit_time"]
-    mid_time_errs_no_occs = bjd_data_no_occs["sigma_transit_time"]
-    isot_mid_times = isot_data["transit_time"]
-    jd_utc_times = jd_utc_data["transit_time"]
-    jd_utc_time_errs = data["sigma_transit_time"]
+    tra_or_occs = data["tra_or_occ"] # Base tra_or_occs
+    epochs = data["epoch"].astype('int') # Epochs with tra_or_occs
+    epochs_no_occs = bjd_data_no_occs["epoch"].astype('int') # Epochs with ONLY tra
+    isot_mid_times = isot_data["transit_time"] # ISOT mid times
+    jd_utc_times = jd_utc_data["transit_time"] # JD UTC mid times
+    jd_utc_time_errs = jd_utc_data["sigma_transit_time"] # JD UTC mid time errs
+    jd_utc_times_no_occs = jd_utc_no_occs_data["transit_time"] # JD UTC mid times ONLY tra
+    jd_utc_time_errs_no_occs = jd_utc_no_occs_data["sigma_transit_time"] # JD UTC mid time errs ONLY tra
+    bjd_mid_times = data["transit_time"] # BJD mid times
+    bjd_mid_time_errs = data["sigma_transit_time"] # BJD mid time errs
+    bjd_mid_times_no_occs = bjd_data_no_occs["transit_time"]
+    bjd_mid_time_errs_no_occs = bjd_data_no_occs["sigma_transit_time"]
     # print(f"epochs: {list(epochs)}")
     # print(f"mid_times: {list(mid_times)}")
     # print(f"mid_time_errs: {list(mid_time_errs)}")
     # print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
-    """NOTE: ISOT NO UNCERTAINTIES"""
-    # times_obj1 = TimingData('isot', epochs, isot_mid_times, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    """NOTE: JD UTC NO UNCERTAINTIES NO TRA_OR_OCC"""
-    # times_obj1 = TimingData('jd', epochs, mid_times, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    """NOTE: JD UTC NO UNCERTAINTIES"""
-    # times_obj1 = TimingData('jd', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    """NOTE: JD UTC TIMING OBJECT"""
+    """NOTE: ISOT (NO UNCERTAINTIES)"""
+    # times_obj1 = TimingData('isot', epochs, isot_mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    """NOTE: JD UTC"""
     # times_obj1 = TimingData('jd', epochs, jd_utc_times, jd_utc_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-    """NOTE: JD TDB NO TRA_OR_OCC"""
-    # times_obj1 = TimingData('jd', epochs_no_occs, mid_times_no_occs, mid_time_errs_no_occs, time_scale='tdb')
-    """NOTE: JD TDB ALL INFO"""
-    times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
+    """NOTE: JD UTC NO UNCERTAINTIES"""
+    # times_obj1 = TimingData('jd', epochs, jd_utc_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    """NOTE: JD UTC NO UNCERTAINTIES NO TRA_OR_OCC"""
+    # times_obj1 = TimingData('jd', epochs_no_occs, jd_utc_times_no_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    """NOTE: JD TDB (BJD) NO TRA_OR_OCC"""
+    # times_obj1 = TimingData('jd', epochs_no_occs, bjd_mid_times_no_occs, bjd_mid_time_errs_no_occs, time_scale='tdb')
+    """NOTE: JD TDB (BJD) ALL INFO"""
+    times_obj1 = TimingData('jd', epochs, bjd_mid_times, bjd_mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
@@ -1036,12 +1035,12 @@ if __name__ == '__main__':
     # print(delta_bic)
 
     # STEP 6: Show a plot of the model ephemeris data
-    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
-    ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
+    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
 
     # STEP 7: Uncertainties plot
-    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
-    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
+    # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
+    # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
     
     # STEP 8: O-C Plot
     ephemeris_obj1.plot_oc_plot(save_plot=False)

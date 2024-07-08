@@ -69,3 +69,7 @@ local_requirements.txt
 htmlcov
 .coverage
 malia_test.ipynb
+Icon
+.Icon
+./Icon
+/Icon
