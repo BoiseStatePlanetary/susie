@@ -1,16 +1,6 @@
 User Guide 
 ==========
 
-.. _ephemeris_label:
-
-Ephemeris module
-----------------
-
-.. automodule:: src.susie.ephemeris
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. _timing_data_label:
 
 Timing Data module
@@ -20,11 +10,24 @@ Timing Data module
    :members:
    :undoc-members:
    :show-inheritance:
+.. :private-members:
 
-Module contents
----------------
+.. _ephemeris_label:
 
-.. automodule:: src.susie
+Ephemeris module
+----------------
+
+.. automodule:: src.susie.ephemeris
    :members:
    :undoc-members:
    :show-inheritance:
+   :exclude-members: BaseModelEphemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
+.. :private-members:
+
+.. Module contents
+.. ---------------
+
+.. .. automodule:: src.susie
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:

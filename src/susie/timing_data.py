@@ -7,9 +7,9 @@ import logging
 logger = logging.getLogger("lumberjack")
 
 class TimingData():
-    """Represents timing mid-point data over observations. Holds data to be accessed by Ephemeris object.
+    """Represents timing mid-point data over observations. Holds data to be accessed by :class:`Ephemeris`.
 
-    The TimingData object processes, formats, and holds user data to be passed to the Ephemeris object.
+    This object processes, formats, and holds user data to be passed to the :class:`Ephemeris` object.
     Users can input observational data as lists of transit and/or occultation mid-times and corresponding
     epochs and (if available) mid-time uncertainties. 
     
@@ -24,6 +24,9 @@ class TimingData():
     Our implementations rely on Numpy functions. This object implements checks to ensure that data are stored in 
     Numpy arrays and are of correct data types. The appropriate Type or Value Error is raised if there are any 
     issues.
+
+    All timing data arrays will be sorted by ascending epoch. Epochs are shifted to start at zero by subtracting 
+    the minimum number from each value.
 
     Parameters
     ------------
@@ -54,17 +57,17 @@ class TimingData():
     
     Raises
     ------
-        Error raised if  
-            * parameters are not NumPy Arrays
-            * timing data arrays are not the same shape
-            * the values of epochs are not all ints
-            * the values of mid_times and uncertainites are not all floats
-            * values of uncertainities are not all positive
-            * values of transit or occultation array or not all "tra" or "occ"
+        TypeError: 
+            - If ``epochs``, ``mid_times``, ``mid_time_uncertainties``, and/or ``tra_or_occs`` are not Numpy arrays.
+            - If ``epochs`` contain any non-int values.
+            - If ``mid_times`` and/or ``mid_time_uncertainties`` contain any non-float values.
 
-    Side Effects
-    -------------
-        Variables epochs and mid_times are shifted to start at zero by subtracting the minimum number from each value
+        ValueError:
+            - If ``epochs``, ``mid_times``, ``mid_time_uncertainties``, and/or ``tra_or_occs`` do not have the same 
+            amount of data (the arrays do not have the same shape).
+            - If ``tra_or_occ`` contains any values that are not 'tra' or 'occ'.
+            - If ``mid_times`` or ``mid_time_uncertainties`` contain any NaN values.
+            - If ``mid_time_uncertainties`` contain any negative or zero values.
     """
     def __init__(self, time_format, epochs, mid_times, mid_time_uncertainties=None, tra_or_occ=None, time_scale=None, object_ra=None, object_dec=None, observatory_lon=None, observatory_lat=None):
         # Configure logging to remove "root" prefix
@@ -97,14 +100,15 @@ class TimingData():
         """Function to correct non-barycentric time formats to Barycentric Julian Date in TDB time scale.
 
         This function will run under the given circumstances:
-            * If the timing format provided is not JD (time_format == "jd")
-            * If the timing scale is not provided
-            * If the timing scale provided is not TDB (time_sclae == "tdb")
+
+        - If the timing format provided is not JD (``time_format`` does not equal "jd")
+        - If the timing scale provided is not TDB (``time_scale`` does not equal "tdb")
+        - If the timing scale is not provided
 
         Calculates the light travel time for the given Astropy timing object and adds the light 
         travel time to each original value in the given timing data. If the given Astropy timing object time data 
         contains a list of 1s, which means this is placeholder timing uncertainty data, no timing correction will 
-        be applied as this is not real data. If the timing correction proceeds, the `light_travel_time` function 
+        be applied as this is not real data. If the timing correction proceeds, the ``light_travel_time`` function 
         from Astropy will be applied and added to the original timing data. Timing data corrected for Barycentric  
         light travel time will be returned.
 
@@ -113,7 +117,7 @@ class TimingData():
             time_obj : numpy.ndarray[float]
                List of timing data to be corrected to the Barycentric Julian Date time format in the TDB time scale.
             obj_location : Astropy.coordinates.SkyCoord obj
-                The RA and DEC in degrees of the object being observed, stored as an Astropy coordinates.SkyCoord object.
+                The RA and Dec in degrees of the object being observed, stored as an Astropy coordinates.SkyCoord object.
             obs_location : Astropy.coordinates.EarthLocation obj
                 The longitude and latitude in degrees of the site of observation, stored as an Astropy coordinates.EarthLocation object. 
                 If None given, uses gravitational center of Earth at North Pole.
@@ -333,6 +337,8 @@ class TimingData():
             raise TypeError("All values in `mid_times` must be of type float.")
         if not all(isinstance(value, float) for value in self.mid_time_uncertainties):
             raise TypeError("All values in `mid_time_uncertainties` must be of type float.")
+        if any(val not in ["tra", "occ"] for val in self.tra_or_occ):
+            raise ValueError("The `tra_or_occ` array cannot contain string values other than `tra` or `occ`")
         # Check that there are no null values
         if np.any(np.isnan(self.mid_times)):
             raise ValueError("The `mid_times` array contains NaN (Not-a-Number) values.")
@@ -341,9 +347,6 @@ class TimingData():
         # Check that mid_time_uncertainties are positive and non-zero (greater than zero)
         if not np.all(self.mid_time_uncertainties > 0):
             raise ValueError("The `mid_time_uncertainties` array must contain non-negative and non-zero values.")
-        # Check that tra_or_occ values are all 'tra' or 'occ'
-        if any(val not in ["tra", "occ"] for val in self.tra_or_occ):
-            raise ValueError("The `tra_or_occ` array cannot contain string values other than `tra` or `occ`")
         # Shift epochs by subtracting the minimum number from everything (new list will start at 0)
         if self.epochs[0] != 0:
             self.epochs -= np.min(self.epochs)
