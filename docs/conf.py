@@ -9,7 +9,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-# sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 project = 'Susie'
 copyright = '2023, Boise State University'
@@ -23,18 +22,19 @@ release = 'Sept. 2023'
 mathjax_path="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax', 'sphinx-mathjax-offline', 'myst_nb']
-# extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax', 'sphinx-mathjax-offline', 'myst_nb']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# The order in which the classes and methods are shown
+autodoc_member_order = 'bysource'
+
+autodoc_default_flags = ['members', 'undoc-members', 'private-members']
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 # html_theme = 'sphinx_rtd_theme'
-# html_theme = "sphinxawesome_theme"
-html_theme = "furo"
-html_static_path = ['_static']
-
-# how clickable hyperlinks are placed around the names of the parameter
-# paramlinks_hyperlink_param='none'
+# html_theme = "furo"
+html_permalinks_icon = '<span>#</span>'
+html_theme = 'sphinxawesome_theme'

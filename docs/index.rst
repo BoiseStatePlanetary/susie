@@ -58,7 +58,7 @@ Quickstart
 
    .. code-block:: python
 
-      from susie import Ephemeris, TimingData
+      from susie import TimingData, Ephemeris
 
 
 Documentation
