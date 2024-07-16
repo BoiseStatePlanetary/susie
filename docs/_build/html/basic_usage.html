@@ -100,8 +100,7 @@
 <div id="content" role="main">
 <section id="susie-basic-timing-and-ephemeris-object-usage">
 <h1>🐷 Susie Basic Timing and Ephemeris Object Usage<a class="headerlink" href="#susie-basic-timing-and-ephemeris-object-usage" title="Link to this heading"><span>#</span></a></h1>
-<section id="import-the-necessary-python-libraries-and-susie-objects">
-<h2>🔵 Import the necessary python libraries and Susie objects.<a class="headerlink" href="#import-the-necessary-python-libraries-and-susie-objects" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#import-the-necessary-python-libraries-and-susie-objects'"><span>#</span></a></h2>
+<p>🔵 Import the necessary python libraries and Susie objects.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -111,23 +110,9 @@
 </span></code></pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
-</span><span id="line-2"><span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="line-5"><span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-</span><span id="line-6"><span class="ne">----&gt; </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">susie.timing_data</span> <span class="kn">import</span> <span class="n">TimingData</span>
-</span><span id="line-7"><span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">susie.ephemeris</span> <span class="kn">import</span> <span class="n">Ephemeris</span>
-</span><span id="line-8">
-</span><span id="line-9"><span class="ne">ModuleNotFoundError</span>: No module named 'susie.timing_data'
-</span></code></pre></div>
-</div>
-</div>
 </div>
 <hr style="color: #D64309;"/>
-<hr style="color: #D64309;"/></section>
-<section id="basic-usage">
+<hr style="color: #D64309;"/><section id="basic-usage">
 <h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#basic-usage'"><span>#</span></a></h2>
 <p>The basic creation and usage of the <strong>TimingData</strong> and <strong>Ephemeris</strong> objects. This will assume the following:</p>
 <ol class="arabic simple">
@@ -137,8 +122,8 @@
 </ol>
 <p>We will pull this data from the repository below.</p>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;">
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">
-<h3>🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'"><span>#</span></a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">
+<h3>🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository<a class="headerlink" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">url</span> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/example_data/wasp12b_tra_occ.csv'</span>
@@ -190,8 +175,7 @@
 </div>
 </div>
 </div>
-<section id="example">
-<h5>🟢  EXAMPLE<a class="headerlink" href="#example" title="Link to this heading"><span>#</span></a></h5>
+<p><strong>🟢  EXAMPLE</strong></p>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
 </span><span id="line-2"> <span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
@@ -213,7 +197,6 @@
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-</section>
 <section id="the-quadratic-model">
 <h4>🔹 The <strong>Quadratic</strong> Model<a class="headerlink" href="#the-quadratic-model" title="Link to this heading"><span>#</span></a></h4>
 <p>We can do the same process for a quadratic model by specifying ‘quadratic’ for the model type instead of linear. The same process above is shown below for the quadratic model.</p>
@@ -225,8 +208,7 @@
 </div>
 </div>
 </div>
-<section id="id1">
-<h5>🟢  EXAMPLE<a class="headerlink" href="#id1" title="Link to this heading"><span>#</span></a></h5>
+<p><strong>🟢  EXAMPLE</strong></p>
 <p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_model_data</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
 </span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
@@ -250,7 +232,6 @@
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-</section>
 </section>
 <section id="step-5-get-bic-values">
 <h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-5-get-bic-values'"><span>#</span></a></h3>
@@ -383,20 +364,13 @@
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
-<li><a :data-current="activeSection === '#import-the-necessary-python-libraries-and-susie-objects'" class="reference internal" href="#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a></li>
 <li><a :data-current="activeSection === '#basic-usage'" class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
-<li><a :data-current="activeSection === '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'" class="reference internal" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
+<li><a :data-current="activeSection === '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'" class="reference internal" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository</a></li>
 <li><a :data-current="activeSection === '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'" class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
 <li><a :data-current="activeSection === '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'" class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
 <li><a :data-current="activeSection === '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'" class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
-<li><a :data-current="activeSection === '#the-linear-model'" class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a><ul>
-<li><a :data-current="activeSection === '#example'" class="reference internal" href="#example">🟢  EXAMPLE</a></li>
-</ul>
-</li>
-<li><a :data-current="activeSection === '#the-quadratic-model'" class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a><ul>
-<li><a :data-current="activeSection === '#id1'" class="reference internal" href="#id1">🟢  EXAMPLE</a></li>
-</ul>
-</li>
+<li><a :data-current="activeSection === '#the-linear-model'" class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li><a :data-current="activeSection === '#the-quadratic-model'" class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#step-5-get-bic-values'" class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>

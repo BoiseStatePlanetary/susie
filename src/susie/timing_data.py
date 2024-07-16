@@ -89,8 +89,8 @@ class TimingData():
                 self.mid_time_uncertainties = self._convert_timing_uncertainties(mid_times, mid_time_uncertainties, time_format, time_scale, (object_ra, object_dec), (observatory_lon, observatory_lat))
         if mid_time_uncertainties is None:
             # If no uncertainties provided, make an array of 1s in the same shape of epochs
+            logging.warning(f"Recieved value of {mid_time_uncertainties} for mid time uncertainties. Auto-populating placeholder values of 0.001 for uncertainties.")
             self.mid_time_uncertainties = np.full(self.epochs.shape, 0.001)
-            # self.mid_time_uncertainties = np.ones_like(self.epochs, dtype=float)
         # Call validation function
         self._validate()
         # Once every array is populated, make sure you sort by ascending epoch
@@ -143,8 +143,8 @@ class TimingData():
 
         Calculates the new converted timing uncertainties by calculating the upper and lower limits
         of each mid-time, converting the time formats and scales of the upper and lower limits, then
-        subtracting the converted mid time from the limits and taking the average for the final
-        resulting mid-time uncertainty.
+        subtracting the converted mid time from the limits and taking the square root of the sum of 
+        squares for the final resulting mid-time uncertainty.
 
         This function will ONLY run if the timing format and/or scale needs to be converted and mid-time
         uncertainties are given. If no mid-time uncertainties are given, this calculation will not run and
@@ -167,7 +167,8 @@ class TimingData():
 
         Returns
         -------
-            An array of timing uncertainty data converted to Barycentric Julian Date timing format and scale (Astropy JD format, TDB scale).
+            unc: np.ndarray[float]
+                An array of timing uncertainty data converted to Barycentric Julian Date timing format and scale (Astropy JD format, TDB scale).
         """
         # create time objects from upper and lower vals
         mid_times_obj = time.Time(mid_times, format=format, scale=scale)
@@ -180,8 +181,8 @@ class TimingData():
         # subtract up and down errs
         upper_diffs = upper_times_converted - mid_times_converted
         lower_diffs = mid_times_converted - lower_times_converted
-        avg_diff = (upper_diffs + lower_diffs) / 2
-        return avg_diff
+        unc = np.sqrt((upper_diffs**2) + (lower_diffs**2))
+        return unc
 
     def _convert_times(self, time_data, format, scale, obj_coords, obs_coords, warn=False):
         """Validates object and observatory information and populates Astropy objects for barycentric light travel time correction.
