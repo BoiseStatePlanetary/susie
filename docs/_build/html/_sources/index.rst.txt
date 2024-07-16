@@ -84,5 +84,7 @@ Indices and tables
 * :ref:`search`
 
 
-The developers were supported by a TESS Guest Investigator Cycle-5 grant (NNH21ZDA001N), and 
-an Exoplanets Research grant (NNH21ZDA001N).
+The developers were supported by grants from NASA's TESS Cycle-5
+Guest Investigator program (NNH21ZDA001N-TESS), Exoplanets Research
+Program (NNH21ZDA001N-XRP), and from the Idaho Space Grant
+Consortium.
