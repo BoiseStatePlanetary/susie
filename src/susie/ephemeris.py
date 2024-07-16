@@ -7,7 +7,7 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
+from timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class Ephemeris():
@@ -239,7 +239,7 @@ class Ephemeris():
                                 name=system_name)
         pass
     
-    def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
+    def plot_model_ephemeris(self, model_data_dict, save_plot=False, fname=None):
         """Plots a scatterplot of epochs vs. model calculated mid-times.
 
         Parameters
@@ -248,7 +248,7 @@ class Ephemeris():
                 The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
             save_plot: bool 
                 If True, will save the plot as a figure.
-            save_filepath: Optional(str)
+            fname: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
         plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0')
@@ -256,10 +256,10 @@ class Ephemeris():
         plt.ylabel('Model Predicted Mid-Times (units)')
         plt.title(f'Predicted {model_data_dict["model_type"].capitalize()} Model Mid Times over Epochs')
         if save_plot == True:
-            plt.savefig(save_filepath)
+            plt.savefig(fname)
         plt.show()
 
-    def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
+    def plot_timing_uncertainties(self, model_data_dict, save_plot=False, fname=None):
         """Plots a scatterplot of epochs vs. model calculated mid-time uncertainties.
 
         Parameters
@@ -268,7 +268,7 @@ class Ephemeris():
                 The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
             save_plot: bool 
                 If True, will save the plot as a figure.
-            save_filepath: Optional(str)
+            fname: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
         # get uncertainties
@@ -287,17 +287,17 @@ class Ephemeris():
         plt.title(f'Uncertainties of Predicted {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid Times')
         plt.legend()
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(fname)
         plt.show()
 
-    def plot_oc_plot(self, save_plot=False, save_filepath=None):
+    def plot_oc_plot(self, save_plot=False, fname=None):
         """Plots a scatter plot of observed minus calculated values of mid-times for linear and quadratic model ephemerides over epochs.
 
         Parameters
         ----------
             save_plot: bool 
                 If True, will save the plot as a figure.
-            save_filepath: Optional(str)
+            fname: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
         # y = T0 - PE - 0.5 dP/dE E^2
@@ -319,10 +319,10 @@ class Ephemeris():
         plt.ylabel('O-C (seconds)')
         plt.title('Observed Minus Caluclated Plot')
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(fname)
         plt.show()
 
-    def plot_running_delta_bic(self, save_plot=False, save_filepath=None):
+    def plot_running_delta_bic(self, save_plot=False, fname=None):
         """Plots a scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.
 
         Starting at the third epoch, will plot the value of :math:`\\Delta BIC` for all previous epochs,
@@ -332,7 +332,7 @@ class Ephemeris():
         ----------
             save_plot: bool 
                 If True, will save the plot as a figure.
-            save_filepath: Optional(str)
+            fname: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
         delta_bics = []
@@ -358,7 +358,7 @@ class Ephemeris():
         plt.ylabel('$\Delta$BIC')
         plt.title("Value of $\Delta$BIC as Observational Epochs Increase")
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(fname)
         plt.show()
         
     def _get_timing_data(self):
@@ -1113,15 +1113,20 @@ if __name__ == '__main__':
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
+    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=True, fname="../../wasp12b_graphs/lin_model")
+    ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=True, fname="../../wasp12b_graphs/quad_model")
 
     # STEP 7: Uncertainties plot
     # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
+    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=True, fname="../../wasp12b_graphs/lin_unc")
+    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=True, fname="../../wasp12b_graphs/quad_unc")
     
     # STEP 8: O-C Plot
-    ephemeris_obj1.plot_oc_plot(save_plot=False)
+    # ephemeris_obj1.plot_oc_plot(save_plot=False)
+    ephemeris_obj1.plot_oc_plot(save_plot=True, fname="../../wasp12b_graphs/oc_plot")
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-    
-    ephemeris_obj1._calc_linear_ephemeris()
+    ephemeris_obj1.plot_running_delta_bic(save_plot=True, fname="../../wasp12b_graphs/running_delta_bic")
+
