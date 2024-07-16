@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-
-<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
+<html lang="en"
+      data-content_root="./"
+      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      class="scroll-smooth"
+      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
+>
 <head>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta charset="utf-8"/>
-<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="black" media="(prefers-color-scheme: dark)" name="theme-color"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation</title>
-<meta content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" name="twitter:title"/>
-<link href="_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
-<link href="_static/theme.css?v=ecdfb4fc" rel="stylesheet" type="text/css"/>
-<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
-<link href="search.html" rel="search" title="Search"/>
-<link href="genindex.html" rel="index" title="Index"/>
-<link href="special_usage.html" rel="next" title="🐷 Susie Special Timing Object Usage"/>
-<link href="FAQ.html" rel="prev" title="Frequently Asked Questions"/>
-<script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation</title>
+    <meta property="og:title" content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" />
+    <meta name="twitter:title" content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8d216cef" />
+      <link rel="stylesheet" type="text/css" href="_static/theme.css?v=ecdfb4fc" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+        <link rel="search" title="Search" href="search.html" />
+        <link rel="index" title="Index" href="genindex.html" />
+          <link rel="next" title="🐷 Susie Special Timing Object Usage" href="special_usage.html" />
+          <link rel="prev" title="Frequently Asked Questions" href="FAQ.html" />
+
+    <script>
     <!-- Prevent Flash of wrong theme -->
       const userPreference = localStorage.getItem('darkMode');
       let mode;
@@ -30,46 +37,73 @@
       if (!userPreference) {localStorage.setItem('darkMode', mode)}
     </script>
 </head>
-<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false }">
-<div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
+<body x-data="{ showSidebar: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
-    </a><header class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
-<div class="hidden mr-4 md:flex">
-<a class="flex items-center mr-6" href="index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
-</a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
-<svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
-</svg>
-<span class="sr-only">Toggle navigation menu</span>
-</button>
-<div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
-<div class="flex-1 w-full md:w-auto md:flex-none"><form @keydown.k.window.meta="$refs.search.focus()" action="search.html" class="relative flex items-center group" id="searchbox" method="get">
-<input aria-label="Search the docs" class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" id="search-input" name="q" placeholder="Search ..." type="search" x-ref="search"/>
-<kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
-<span class="text-xs">⌘</span>
+    </a><header
+  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+    <div class="hidden mr-4 md:flex">
+      <a href="index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
+      </a></div><button
+      class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
+      type="button" @click="showSidebar = true">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" aria-hidden="true"
+        fill="currentColor">
+        <path
+          d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z" />
+      </svg>
+      <span class="sr-only">Toggle navigation menu</span>
+    </button>
+    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+      <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
+      action="search.html"
+      method="get"
+      class="relative flex items-center group"
+      @keydown.k.window.meta="$refs.search.focus()">
+  <input x-ref="search"
+          name="q"
+          id="search-input"
+          type="search"
+          aria-label="Search the docs"
+          placeholder="Search ..."
+          class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" />
+  <kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
+    <span class="text-xs">⌘</span>
     K
   </kbd>
 </form>
-</div>
-<nav class="flex items-center space-x-1">
-<button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'" aria-label="Color theme switcher" class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button">
-<svg class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z"></path>
-</svg>
-<svg class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z"></path>
-</svg>
-</button>
-</nav>
-</div>
-</div>
+      </div>
+      <nav class="flex items-center space-x-1">
+        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+          class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
+          type="button"
+          aria-label="Color theme switcher">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
+            <path
+              d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
+            <path
+              d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </div>
 </header>
-<div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
-<a class="!justify-start text-sm md:!hidden bg-background" href="index.html"><span class="font-bold text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
-</a>
-<div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
-<div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
-<ul>
+
+    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
+  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+  :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
+
+    <a href="index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
+    </a>
+
+    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+      <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
@@ -77,28 +111,44 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage of TimingData and Ephemeris Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
 </ul>
+
 </nav>
-</div>
-</div>
-<button @click="showSidebar = false" class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100" type="button">
-<svg class="h-4 w-4" fill="currentColor" height="24" stroke="none" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z"></path>
-</svg>
-</button>
-</aside>
-<main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+      </div>
+    </div>
+    <button type="button" @click="showSidebar = false"
+      class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+        stroke="none" class="h-4 w-4">
+        <path
+          d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z" />
+      </svg>
+    </button>
+  </aside>
+        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
-<nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
-<a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="index.html">
-<span class="hidden md:inline">Susie Sept. 2023 documentation</span>
-<svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
-<path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
-</svg>
-</a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🐷 Susie Basic Timing and Ephemeris Object Usage</span>
+<nav aria-label="breadcrumbs"
+     class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
+  <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
+     href="index.html">
+    <span class="hidden md:inline">Susie Sept. 2023 documentation</span>
+    <svg xmlns="http://www.w3.org/2000/svg"
+         height="18"
+         width="18"
+         viewBox="0 96 960 960"
+         aria-label="Home"
+         fill="currentColor"
+         stroke="none"
+         class="md:hidden">
+      <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z" />
+    </svg>
+  </a>
+  
+<div class="mr-1">/</div><span aria-current="page"
+        class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🐷 Susie Basic Timing and Ephemeris Object Usage</span>
 </nav>
-<div id="content" role="main">
-<section id="susie-basic-timing-and-ephemeris-object-usage">
+
+    <div id="content" role="main">
+      <section id="susie-basic-timing-and-ephemeris-object-usage">
 <h1>🐷 Susie Basic Timing and Ephemeris Object Usage<a class="headerlink" href="#susie-basic-timing-and-ephemeris-object-usage" title="Link to this heading"><span>#</span></a></h1>
 <p>🔵 Import the necessary python libraries and Susie objects.</p>
 <div class="cell docutils container">
@@ -111,9 +161,9 @@
 </div>
 </div>
 </div>
-<hr style="color: #D64309;"/>
-<hr style="color: #D64309;"/><section id="basic-usage">
-<h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#basic-usage'"><span>#</span></a></h2>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"><section id="basic-usage">
+<h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"><span>#</span></a></h2>
 <p>The basic creation and usage of the <strong>TimingData</strong> and <strong>Ephemeris</strong> objects. This will assume the following:</p>
 <ol class="arabic simple">
 <li><p>Your data is in JD TDB timing format and system</p></li>
@@ -121,19 +171,19 @@
 <li><p>You have mid time uncertainties included in your data</p></li>
 </ol>
 <p>We will pull this data from the repository below.</p>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;">
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">
-<h3>🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository<a class="headerlink" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'"><span>#</span></a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">
+<h3>🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository<a class="headerlink" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">url</span> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/example_data/wasp12b_tra_occ.csv'</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/BoiseStatePlanetary/susie/main/example_data/wasp12b_tra_occ.csv&#39;</span>
 </span><span id="line-2">
 </span><span id="line-3"><span class="c1"># Read the CSV file directly from the URL</span>
 </span><span id="line-4"><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-</span><span id="line-5"><span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"tra_or_occ"</span><span class="p">])</span>
-</span><span id="line-6"><span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"epoch"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">))</span>
-</span><span id="line-7"><span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"transit_time"</span><span class="p">])</span>
-</span><span id="line-8"><span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"sigma_transit_time"</span><span class="p">])</span>
+</span><span id="line-5"><span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">])</span>
+</span><span id="line-6"><span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">))</span>
+</span><span id="line-7"><span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;transit_time&quot;</span><span class="p">])</span>
+</span><span id="line-8"><span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sigma_transit_time&quot;</span><span class="p">])</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -141,11 +191,11 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">
-<h3>🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.<a class="headerlink" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.<a class="headerlink" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Create new transit times object with above data</span>
-</span><span id="line-2"><span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -153,7 +203,7 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-3-create-the-ephemeris-object-and-add-your-timingdata-object">
-<h3>🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.<a class="headerlink" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.<a class="headerlink" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">timing_obj1</span><span class="p">)</span>
@@ -164,25 +214,25 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
-<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading"><span>#</span></a></h3>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="the-linear-model">
 <h4>🔹 The <strong>Linear</strong> Model<a class="headerlink" href="#the-linear-model" title="Link to this heading"><span>#</span></a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
 <p><strong>🟢  EXAMPLE</strong></p>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
-</span><span id="line-2"> <span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
-</span><span id="line-3"> <span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
-</span><span id="line-4"> <span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
-</span><span id="line-5"> <span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
-</span><span id="line-6"> <span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
+</span><span id="line-2"> <span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
+</span><span id="line-3"> <span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
+</span><span id="line-4"> <span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
+</span><span id="line-5"> <span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+</span><span id="line-6"> <span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
 </span><span id="line-7">
 </span></code></pre></div>
 </div>
@@ -191,7 +241,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
 </span><span id="line-2">
 </span><span id="line-3"><span class="c1"># for key, value in linear_model_data.items():</span>
-</span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
+</span><span id="line-4"><span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -203,21 +253,21 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">get_model_ephemeris</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
 <p><strong>🟢  EXAMPLE</strong></p>
 <p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
-</span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
-</span><span id="line-3"><span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
-</span><span id="line-4"><span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
-</span><span id="line-5"><span class="s1">'period_change_by_epoch'</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
-</span><span id="line-6"><span class="s1">'period_change_by_epoch_err'</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
-</span><span id="line-7"><span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'quadratic'</span><span class="p">,</span>
-</span><span id="line-8"><span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
+</span><span id="line-2"><span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
+</span><span id="line-3"><span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
+</span><span id="line-4"><span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
+</span><span id="line-5"><span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
+</span><span id="line-6"><span class="s1">&#39;period_change_by_epoch_err&#39;</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
+</span><span id="line-7"><span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">,</span>
+</span><span id="line-8"><span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
 </span></code></pre></div>
 </div>
 <div class="cell docutils container">
@@ -225,7 +275,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
 </span><span id="line-2">
 </span><span id="line-3"><span class="c1"># for key, value in quadratic_model_data.items():</span>
-</span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
+</span><span id="line-4"><span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -234,14 +284,14 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 </section>
 <section id="step-5-get-bic-values">
-<h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-5-get-bic-values'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading"><span>#</span></a></h3>
 <p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">get_model_ephemeris</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
 </span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
 </span><span id="line-3">
-</span><span id="line-4"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-4"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -258,7 +308,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">()</span>
 </span><span id="line-2">
-</span><span id="line-3"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-3"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">delta_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -271,7 +321,7 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-6-plot-your-data">
-<h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-6-plot-your-data'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading"><span>#</span></a></h3>
 <p>Now you can use the linear_model_data and quadratic_model_data dictionaries for plotting methods. Available plotting methods include:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_model_ephemeris</span></code>: This will plot the model predicted mid-times. This takes in a model data dictionary.</p></li>
@@ -279,7 +329,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_oc_plot</span></code>: This will plot the observed mid-times minus the model predicted mid-times (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$) and a curve with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$). This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code>: This will plot how the $\Delta$ BIC value changes over time. This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
 </ul>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="plot-the-ephemeris">
+<!-- You can use the same process for a quadratic model ephemeris (shown below). --><hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="plot-the-ephemeris">
 <h4>🔹 Plot the ephemeris<a class="headerlink" href="#plot-the-ephemeris" title="Link to this heading"><span>#</span></a></h4>
 <p>🔹 For the Linear Ephemeris</p>
 <div class="cell docutils container">
@@ -290,7 +340,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0550fc3817f82f7d981576dc1e96db12cec8fa7ceb1572002f24a90be9999614.png" src="_images/0550fc3817f82f7d981576dc1e96db12cec8fa7ceb1572002f24a90be9999614.png"/>
+<img alt="_images/0550fc3817f82f7d981576dc1e96db12cec8fa7ceb1572002f24a90be9999614.png" src="_images/0550fc3817f82f7d981576dc1e96db12cec8fa7ceb1572002f24a90be9999614.png" />
 </div>
 </div>
 <p>🔹 For the Quadratic Ephemeris</p>
@@ -302,7 +352,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0ffba911116b873bbd78dfc624e058e9c0b5c7f39f338a827c896f52d938e759.png" src="_images/0ffba911116b873bbd78dfc624e058e9c0b5c7f39f338a827c896f52d938e759.png"/>
+<img alt="_images/0ffba911116b873bbd78dfc624e058e9c0b5c7f39f338a827c896f52d938e759.png" src="_images/0ffba911116b873bbd78dfc624e058e9c0b5c7f39f338a827c896f52d938e759.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -316,7 +366,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/998ded57e5d875d81ac709163c174e5fa92b6c79ee3782dad749fe8ddf3b84e5.png" src="_images/998ded57e5d875d81ac709163c174e5fa92b6c79ee3782dad749fe8ddf3b84e5.png"/>
+<img alt="_images/998ded57e5d875d81ac709163c174e5fa92b6c79ee3782dad749fe8ddf3b84e5.png" src="_images/998ded57e5d875d81ac709163c174e5fa92b6c79ee3782dad749fe8ddf3b84e5.png" />
 </div>
 </div>
 <p>🔹 For the Quadratic Ephemeris</p>
@@ -327,7 +377,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ff02bc7fb05b1804d0db314ee9844d83fa2a817cd797cd5940c62ac36095798f.png" src="_images/ff02bc7fb05b1804d0db314ee9844d83fa2a817cd797cd5940c62ac36095798f.png"/>
+<img alt="_images/ff02bc7fb05b1804d0db314ee9844d83fa2a817cd797cd5940c62ac36095798f.png" src="_images/ff02bc7fb05b1804d0db314ee9844d83fa2a817cd797cd5940c62ac36095798f.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -340,7 +390,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ca208b5bd7236bdb9bcbe6890c8c73d55455deb4d9320feb788034a78b273e60.png" src="_images/ca208b5bd7236bdb9bcbe6890c8c73d55455deb4d9320feb788034a78b273e60.png"/>
+<img alt="_images/ca208b5bd7236bdb9bcbe6890c8c73d55455deb4d9320feb788034a78b273e60.png" src="_images/ca208b5bd7236bdb9bcbe6890c8c73d55455deb4d9320feb788034a78b273e60.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -353,32 +403,33 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/0067ff5c92d495e0bf8041136ba4815786aa48688d043fdedadf201d7dd74559.png" src="_images/0067ff5c92d495e0bf8041136ba4815786aa48688d043fdedadf201d7dd74559.png"/>
+<img alt="_images/0067ff5c92d495e0bf8041136ba4815786aa48688d043fdedadf201d7dd74559.png" src="_images/0067ff5c92d495e0bf8041136ba4815786aa48688d043fdedadf201d7dd74559.png" />
 </div>
 </div>
-<hr style="color: #D64309;"/>
-<hr style="color: #D64309;"/></section>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"></section>
 </section>
-</hr></hr></section>
 </section>
-</div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
-<div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
-<ul>
-<li><a :data-current="activeSection === '#basic-usage'" class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
-<li><a :data-current="activeSection === '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'" class="reference internal" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository</a></li>
-<li><a :data-current="activeSection === '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'" class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
-<li><a :data-current="activeSection === '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'" class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
-<li><a :data-current="activeSection === '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'" class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
-<li><a :data-current="activeSection === '#the-linear-model'" class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
-<li><a :data-current="activeSection === '#the-quadratic-model'" class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
+</section>
+
+    </div></div><aside id="right-sidebar" class="hidden text-sm xl:block">
+  <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
+    <ul>
+<li><a class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
+<li><a class="reference internal" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository</a></li>
+<li><a class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
+<li><a class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
+<li><a class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
+<li><a class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li><a class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
 </ul>
 </li>
-<li><a :data-current="activeSection === '#step-5-get-bic-values'" class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
-<li><a :data-current="activeSection === '#step-6-plot-your-data'" class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
-<li><a :data-current="activeSection === '#plot-the-ephemeris'" class="reference internal" href="#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
-<li><a :data-current="activeSection === '#plot-the-ephemeris-uncertainties'" class="reference internal" href="#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
-<li><a :data-current="activeSection === '#the-o-c-plot'" class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
-<li><a :data-current="activeSection === '#plot-the-running-delta-bic'" class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
+<li><a class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
+<li><a class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
+<li><a class="reference internal" href="#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
+<li><a class="reference internal" href="#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
+<li><a class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
+<li><a class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
 </ul>
 </li>
 </ul>
@@ -386,19 +437,23 @@
 </ul>
 </div>
 </aside>
-</main>
-</div>
-</div><footer class="py-6 border-t border-border md:py-0">
-<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-<div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2023, Boise State University Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 7.3.7</a></p>
+        </main>
+      </div>
+    </div><footer class="py-6 border-t border-border md:py-0">
+    <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+      <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+        <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2023, Boise State University&nbsp;Built with <a class="font-medium underline underline-offset-4"
+    href="https://www.sphinx-doc.org"
+    rel="noreferrer">Sphinx 7.3.7</a></p>
 </div>
 </div>
 </footer>
-</div>
-<script src="_static/documentation_options.js?v=cc8b8c85"></script>
-<script src="_static/doctools.js?v=9a2dae69"></script>
-<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-<script defer="defer" src="_static/theme.js?v=e82a16a3"></script>
+  </div>
+  
+    <script src="_static/documentation_options.js?v=cc8b8c85"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script defer="defer" src="_static/theme.js?v=e82a16a3"></script>
+  
 </body>
 </html>
