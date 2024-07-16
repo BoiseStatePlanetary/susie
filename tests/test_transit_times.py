@@ -47,10 +47,9 @@ class TestTimingData(unittest.TestCase):
         self.timing_data = TimingData('jd', test_epochs, test_mtts, time_scale='tdb')
         self.assertIsInstance(self.timing_data, TimingData )  # Check if the object is an instance of TransitTimes
         shifted_epochs = test_epochs - np.min(test_epochs)
-        shifted_mtt = test_mtts - np.min(test_mtts)
-        new_uncertainties = np.ones_like(test_epochs, dtype=float)
+        new_uncertainties = np.full(test_epochs.shape, 0.001)
         self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs))  # Check if epochs remain unchanged
-        self.assertTrue(np.array_equal(self.timing_data.mid_times, shifted_mtt))  # Check mid_transit_times
+        self.assertTrue(np.array_equal(self.timing_data.mid_times, test_mtts))  # Check mid_transit_times
         self.assertTrue(np.array_equal(self.timing_data.mid_time_uncertainties, new_uncertainties))  # Check uncertainties chage this back!!!
 
     def test_suc_arrays(self):
@@ -263,6 +262,48 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(ValueError, msg="The 'mid_transit_times_uncertainties' array contains NaN (Not-a-Number) values."):
              TimingData('jd', test_epochs, test_mtts, new_test_mtts_err, time_scale='tdb')  
   
+    # new get obs location test 
+    def test_get_obs_location(self):
+        """ Successful test to check that the correct observatory coordinates are produced by validate times.
+
+            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct observatory coordinates.
+            When given no coordinates the obsevatory coordinates produced should be the gravitational center of the Earth.
+        """
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
+        corrected_times = timing_data._convert_times(test_mtts, 'jd', 'utc',(97.64, 29.67), (None, None))
+        obs_location = (0,0)
+        expected_obs_location = coordinates.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
+        self.assertTrue(np.allclose(obs_location[0], expected_obs_location.x.value))
+        self.assertTrue(np.allclose(obs_location[1], expected_obs_location.y.value))
+
+    def test_obs_geodetic_coords(self):
+        """ Successful test to check that the correct observatory coordinates are produced by validate times.
+
+            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct observatory coordinates.
+        """
+        obs_coords = (-2042896.9,-4149886.2,4376818.8)
+        expected_obs_location = coordinates.EarthLocation.from_geodetic(-116.21,43.61)
+        self.assertTrue(np.allclose(obs_coords[0], expected_obs_location.x.value))
+        self.assertTrue(np.allclose(obs_coords[1], expected_obs_location.y.value))
+        self.assertTrue(np.allclose(obs_coords[2], expected_obs_location.z.value))
+    # new get obj location test
+    def test_get_obj_location(self):
+        """ Successful test to check that the correct object coordinates are produced by validate times.
+
+            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct object coordinates.
+        """
+        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+        obj_coords = (97.64,29.67)
+        expected_obj_location = coordinates.SkyCoord(ra=97.64, dec=29.67, unit='deg')
+        self.assertEqual(obj_coords[0], expected_obj_location.ra.deg)
+        self.assertEqual(obj_coords[1], expected_obj_location.dec.deg)
+
+
+
+
+    
+    
+    
     def test_validate_times_obj_coords_err(self):
         """ Unsuccessful test to check the object coordinates within the Timing Data.
 
@@ -299,42 +340,7 @@ class TestTimingData(unittest.TestCase):
             logger.warning('Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.')
         self.assertEqual(cm.output, ['WARNING:lumberjack:Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.','WARNING:lumberjack:Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.']) 
     
-    def test_obs_geocentric_coords(self):
-        """ Successful test to check that the correct observatory coordinates are produced by validate times.
-
-            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct observatory coordinates.
-            When given no coordinates the obsevatory coordinates produced should be the gravitational center of the Earth.
-        """
-        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=None, observatory_lon=None)
-        test_mid_times_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
-        test_mid_times_err_obj = time.Time(test_mtts_err,format = 'jd',scale = 'utc')
-        corrected_times = timing_data._convert_times(test_mid_times_obj, test_mid_times_err_obj,(97.64,29.67),(None,None))
-        obs_location = (0., 0.)
-        expected_obs_location = coordinates.EarthLocation.from_geocentric(0., 0., 0., unit=u.m)
-        self.assertTrue(np.allclose(obs_location[0], expected_obs_location.x.value))
-        self.assertTrue(np.allclose(obs_location[1], expected_obs_location.y.value))
-       
-    def test_obs_geodetic_coords(self):
-        """ Successful test to check that the correct observatory coordinates are produced by validate times.
-
-            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct observatory coordinates.
-        """
-        obs_coords = (-2042896.9,-4149886.2,4376818.8)
-        expected_obs_location = coordinates.EarthLocation.from_geodetic(-116.21,43.61)
-        self.assertTrue(np.allclose(obs_coords[0], expected_obs_location.x.value))
-        self.assertTrue(np.allclose(obs_coords[1], expected_obs_location.y.value))
-        self.assertTrue(np.allclose(obs_coords[2], expected_obs_location.z.value))
-
-    def test_obj_coords(self):
-        """ Successful test to check that the correct object coordinates are produced by validate times.
-
-            Testing to see that given a time scale/time format other that jd and tdb the validate times function produces the correct object coordinates.
-        """
-        timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ, 'utc', object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-        obj_coords = (97.64,29.67)
-        expected_obj_location = coordinates.SkyCoord(ra=97.64, dec=29.67, unit='deg')
-        self.assertEqual(obj_coords[0], expected_obj_location.ra.deg)
-        self.assertEqual(obj_coords[1], expected_obj_location.dec.deg)
+    
 
     def test_calc_bary_time_instantiation(self):
         """ Successful test for instantiation of timing data.
@@ -349,12 +355,13 @@ class TestTimingData(unittest.TestCase):
             If the uncertainties are ones, there is no correction done as they are just placeholder values.
         """
         self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-        time_obj = time.Time(np.array([1.0,1.0, 1.0, 1.0]),format = 'jd',scale = 'utc')
+        obs_location = coordinates.EarthLocation(lat = 43.60, lon = -116.21)
+        time_obj = time.Time(test_mtts_err, format='jd', scale='utc', location=obs_location)
         obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
         obs_location = coordinates.EarthLocation(lat = 43.60, lon = 116.21)
-        expected_result = ([1.0,1.0,1.0,1.0])
-        actual_result = self.timing_data._calc_barycentric_time(time_obj,obj_location,obs_location)
-        self.assertTrue(np.array_equal(expected_result, actual_result))
+        expected_result = np.array([0.00354448, 0.00339449, 0.00373446, 0.00353448])
+        actual_result = self.timing_data._calc_barycentric_time(time_obj,obj_location)
+        self.assertTrue(np.allclose(expected_result, actual_result,rtol=1e-05, atol=1e-08))
 
     def test_bary_time_corrected_time_vals(self):
         """ Successful test to check that the corrected time values are the correct values.
@@ -364,11 +371,11 @@ class TestTimingData(unittest.TestCase):
         test_epochs = np.array([0, 294, 298, 573])
         test_mtts = np.array([0.0, 320.8780000000261, 325.24399999994785, 625.3850000002421])
         timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
-        time_obj = time.Time(test_mtts,format = 'jd',scale = 'utc')
-        obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
         obs_location = coordinates.EarthLocation(lat = 43.60, lon = -116.21)
+        time_obj = time.Time(test_mtts,format = 'jd',scale = 'utc',location = obs_location)
+        obj_location = coordinates.SkyCoord(ra = 97.6,dec = 29.67, unit = 'deg')
         expected_result = np.array([3.11451337e-03,3.20883762e+02,3.25249628e+02,6.25389263e+02])
-        actual_result = timing_data._calc_barycentric_time(time_obj, obj_location, obs_location)
+        actual_result = timing_data._calc_barycentric_time(time_obj, obj_location)
         self.assertTrue((np.allclose(expected_result,actual_result, rtol=1e-05, atol=1e-08)))
 
     def test_ltt_bary(self):
