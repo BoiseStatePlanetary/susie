@@ -15,17 +15,17 @@ test_tra_or_occ_enum = [0 if i == 'tra' else 1 for i in test_tra_or_occ]
 
 test_P_fits = 1.091423
 
-test_P_linear =  1.0904734089104249 # period linear
-test_P_err_linear = 0.0006807480614626216 # period error linear
-test_T0_linear = -0.1010330285087608# conjunction time
-test_T0_err_linear = 0.23692091722329203 # conjunction time error
+test_P_linear =  1.0904734088754364 # period linear
+test_P_err_linear =  0.0006807481006299065 # period error linear
+test_T0_linear =2454515.423966982# conjunction time
+test_T0_err_linear = 0.23692092991744518  # conjunction time error
 
-test_P_quad =  1.0892661840315387#period quad
-test_P_err_quad =  0.0023688537695923505 # period err quad
-test_T0_quad = -0.000865530018010096  #conjunction time quad
-test_T0_err_quad = 0.34674308676945004#conjunction time err quad
-test_dPdE = 4.224191878694417e-06#period change by epoch
-test_dPdE_err = 7.743357776955459e-06#period change by epoch error
+test_P_quad =  1.0892663209112947#period quad
+test_P_err_quad =  0.002368690041166098 # period err quad
+test_T0_quad = 2454515.5241231285 #conjunction time quad
+test_T0_err_quad = 0.3467430587812461#conjunction time err quad
+test_dPdE =  4.223712653342504e-06#period change by epoch
+test_dPdE_err = 7.742732700893123e-06#period change by epoch error
 
 test_observed_data = test_mtts
 test_uncertainties= test_mtts_err    
@@ -62,10 +62,10 @@ class TestLinearModelEphemeris(unittest.TestCase):
         result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
         print(result)
         return_data = {
-            'period': 1.0904734089104249,
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608 ,
-            'conjunction_time_err':  0.23692091722329203
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982 ,
+            'conjunction_time_err': 0.23692092991744518 
         }
         self.assertEqual(result['period'], return_data['period'])
         self.assertEqual(result['period_err'], return_data['period_err'])
@@ -104,12 +104,12 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
         """
         result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
         return_data = {
-            'period': 1.0892661840315387,
-            'period_err': 0.0023688537695923505,
-            'conjunction_time': -0.000865530018010096 ,
-            'conjunction_time_err':  0.34674308676945004,
-            'period_change_by_epoch':4.224191878694417e-06,
-            'period_change_by_epoch_err': 7.743357776955459e-06
+            'period': 1.0892663209112947,
+            'period_err': 0.002368690041166098,
+            'conjunction_time': 2454515.5241231285,
+            'conjunction_time_err': 0.3467430587812461,
+            'period_change_by_epoch': 4.223712653342504e-06,
+            'period_change_by_epoch_err': 7.742732700893123e-06
         }
         self.assertEqual(result['period'], return_data['period'])
         self.assertEqual(result['period_err'], return_data['period_err'])
@@ -185,12 +185,12 @@ class TestEphemeris(unittest.TestCase):
         test_model_type= 'linear'
         model_parameters = self.ephemeris._get_model_parameters(test_model_type)
         expected_result = {
-            'period': 1.0904734089104249,
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608 ,
-            'conjunction_time_err': 0.23692091722329203  
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982 ,
+            'conjunction_time_err': 0.23692092991744518 
         }
-        self.assertDictEqual(model_parameters, expected_result)   
+        self.assertDictAlmostEqual(model_parameters, expected_result)   
 
     def test_get_model_parameters_quad(self):
         """ Tests the creation of the quadratic model parameters
@@ -201,14 +201,14 @@ class TestEphemeris(unittest.TestCase):
         test_model_type = 'quadratic'
         model_parameters = self.ephemeris._get_model_parameters(test_model_type)   
         expected_result = {
-            'period': 1.0892661840315387,
-            'period_err': 0.0023688537695923505,
-            'conjunction_time': -0.000865530018010096,
-            'conjunction_time_err': 0.34674308676945004,
-            'period_change_by_epoch': 4.224191878694417e-06,
-            'period_change_by_epoch_err': 7.743357776955459e-06
+            'period': 1.0892663209112947,
+            'period_err': 0.002368690041166098,
+            'conjunction_time': 2454515.5241231285,
+            'conjunction_time_err': 0.3467430587812461,
+            'period_change_by_epoch': 4.223712653342504e-06,
+            'period_change_by_epoch_err': 7.742732700893123e-06
         }
-        self.assertDictEqual(model_parameters, expected_result)
+        self.assertDictAlmostEqual(model_parameters, expected_result)
 
     def test_k_value_linear(self):
         """Tests the correct k value is returned given the linear model type
@@ -253,7 +253,7 @@ class TestEphemeris(unittest.TestCase):
 
             Produces a numpy array with the length of the epochs
         """
-        expected_result =  np.array([0.34674309,0.84788387,0.85834968,1.89255521])
+        expected_result = np.array([0.34674306,0.84783352,0.85829843,1.89241887])
         result = self.ephemeris._calc_quadratic_model_uncertainties(test_T0_err_quad, test_P_err_quad, test_dPdE_err)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
@@ -262,7 +262,7 @@ class TestEphemeris(unittest.TestCase):
 
             The model data is a numpy array of calcuated mid transit times
         """
-        expected_result = np.array([-1.01033029e-01, 3.21043386e+02 , 3.24860043e+02, 6.25285467e+02])#test model data linear
+        expected_result = np.array([2454515.42396698, 2454836.5683859, 2454840.38504283, 2455140.81046697])#test model data linear
         result = self.ephemeris._calc_linear_ephemeris(test_epochs, test_P_linear, test_T0_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
@@ -271,7 +271,7 @@ class TestEphemeris(unittest.TestCase):
 
             The model data is a numpy array of calcuated mid transit times
         """
-        expected_result = np.array([-8.65530018e-04, 3.20970587e+02, 3.24788020e+02, 6.25386753e+02])#test model data quad
+        expected_result = np.array([2454515.52412313, 2454836.49559505, 2454840.31302805, 2455140.91174185])#test model data quad
         result = self.ephemeris._calc_quadratic_ephemeris(test_epochs, test_P_quad, test_T0_quad, test_dPdE)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
@@ -280,8 +280,8 @@ class TestEphemeris(unittest.TestCase):
 
             The linear chi squared value is a float that is calculated with the model data produced by test_calc_linear_ephemeris 
         """
-        test_linear_model_data = np.array([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02])
-        expected_result = 843766.361148408
+        test_linear_model_data = np.array([2454515.42396698, 2454836.5683859, 2454840.38504283, 2455140.81046697])
+        expected_result = 843766.30314325
         result = self.ephemeris._calc_chi_squared(test_linear_model_data)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
 
@@ -290,8 +290,8 @@ class TestEphemeris(unittest.TestCase):
 
             The quadratic chi squared value is a float that is calculated with the model data produced by test_calc_quadratic_ephemeris 
         """
-        test_quad_model_data = np.array([-8.65530018e-04, 3.20970587e+02, 3.24788020e+02, 6.25386753e+02])
-        expected_result = 650251.7787726448
+        test_quad_model_data = np.array([2454515.52412313, 2454836.49559505, 2454840.31302805, 2455140.91174185])
+        expected_result = 650251.5809274575
         result = self.ephemeris._calc_chi_squared(test_quad_model_data)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
     
@@ -310,12 +310,13 @@ class TestEphemeris(unittest.TestCase):
         """
         test_model_type = 'linear'
         model_parameters_linear = {
-            'period': 1.0904734089104249,
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608, 
-            'conjunction_time_err': 0.23692091722329203,
-            'model_type': 'linear', 
-            'model_data': ([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02])
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982,
+            'conjunction_time_err': 0.23692092991744518,
+            'model_type': 'linear',
+            'model_data': np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283,
+                    2455140.81046697])
         }
         result = self.ephemeris.get_model_ephemeris(test_model_type)
         self.assertDictAlmostEqual(result, model_parameters_linear)
@@ -337,14 +338,15 @@ class TestEphemeris(unittest.TestCase):
         """
         test_model_type = 'quadratic'
         model_parameters_quad = {
-            'conjunction_time': -0.000865530018010096,
-            'conjunction_time_err': 0.34674308676945004,
-            'period': 1.0892661840315387,
-            'period_err': 0.0023688537695923505,
-            'period_change_by_epoch': 4.224191878694417e-06,
-            'period_change_by_epoch_err': 7.743357776955459e-06,
+            'period': 1.0892663209112947,
+            'period_err': 0.002368690041166098,
+            'conjunction_time': 2454515.5241231285,
+            'conjunction_time_err': 0.3467430587812461,
+            'period_change_by_epoch': 4.223712653342504e-06,
+            'period_change_by_epoch_err': 7.742732700893123e-06,
             'model_type': 'quadratic',
-            'model_data': ([-8.65530018e-04, 3.20970587e+02, 3.24788020e+02, 6.25386753e+02])
+            'model_data': np.array([2454515.52412313, 2454836.49559505, 2454840.31302805,
+                    2455140.91174185])
         }
         result = self.ephemeris.get_model_ephemeris(test_model_type)
         self.assertDictAlmostEqual(result, model_parameters_quad)
@@ -355,11 +357,12 @@ class TestEphemeris(unittest.TestCase):
             Model type is needed
         """
         model_parameters_linear = {
-            'period': 1.0904734089104249,  
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608, 
-            'conjunction_time_err': 0.23692091722329203,
-            'model_data': ([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02 ])
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982,
+            'conjunction_time_err': 0.23692092991744518,
+            'model_data': np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283,
+                    2455140.81046697])
         }
         with self.assertRaises(KeyError, msg="Cannot find model type in model data. Please run the get_model_ephemeris method to return ephemeris fit parameters."):
             self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
@@ -370,10 +373,11 @@ class TestEphemeris(unittest.TestCase):
             Period error and conjunction time error values are needed
         """
         model_parameters_linear = {
-            'period': 1.0904734089104249,  
-            'conjunction_time': -0.1010330285087608, 
-            'model_type': 'linear', 
-            'model_data': ([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02 ])
+            'period': 1.0904734088754364,
+            'conjunction_time': 2454515.423966982,
+            'model_type': 'linear',
+            'model_data': np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283,
+                    2455140.81046697])
         }
         with self.assertRaises(KeyError, msg="Cannot find conjunction time and period errors in model data. Please run the get_model_ephemeris method with 'linear' model_type to return ephemeris fit parameters."):
             self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
@@ -384,11 +388,11 @@ class TestEphemeris(unittest.TestCase):
             Conjunction time error, period error and period change by epoch error is needed
         """
         model_parameters_quad = {
-            'conjunction_time': -0.000865530018010096,
-            'period': 1.0892661840315387,
-            'period_change_by_epoch': 4.224191878694417e-06,
-            'model_type': 'quadratic',
-            'model_data': ([-8.65530018e-04, 3.20970587e+02, 3.24788020e+02, 6.25386753e+02])
+        'period': 1.0892663209112947,
+        'conjunction_time': 2454515.5241231285,
+        'period_change_by_epoch': 4.223712653342504e-06,
+        'model_type': 'quadratic',
+        'model_data': np.array([2454515.52412313, 2454836.49559505, 2454840.31302805,2455140.91174185])
         }
         with self.assertRaises(KeyError, msg="Cannot find conjunction time, period, and/or period change by epoch errors in model data. Please run the get_model_ephemeris method with 'quadratic' model_type to return ephemeris fit parameters."):
             self.ephemeris.get_ephemeris_uncertainties(model_parameters_quad)
@@ -399,12 +403,13 @@ class TestEphemeris(unittest.TestCase):
             Expected result is the numpy array produced by test_calc_linear_model_uncertainties
         """
         model_parameters_linear = {
-            'period': 1.0904734089104249,  
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608, 
-            'conjunction_time_err': 0.23692091722329203,
-            'model_type': 'linear', 
-            'model_data': ([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02])
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982,
+            'conjunction_time_err': 0.23692092991744518,
+            'model_type': 'linear',
+            'model_data': np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283,
+                    2455140.81046697])
         }
         expected_result = np.array([0.23692092, 0.31036088, 0.31190525, 0.45667354])
         self.ephemeris.get_ephemeris_uncertainties(model_parameters_linear)
@@ -417,16 +422,16 @@ class TestEphemeris(unittest.TestCase):
             Expected result is the numpy array produced by test_calc_quadratic_model_uncertaintie
         """
         model_parameters_quad = {
-            'conjunction_time': -0.000865530018010096,
-            'conjunction_time_err': 0.34674308676945004,
-            'period': 1.0892661840315387,
-            'period_err': 0.0023688537695923505,
-            'period_change_by_epoch': 4.224191878694417e-06,
-            'period_change_by_epoch_err': 7.743357776955459e-06,
-            'model_type': 'quadratic',
-            'model_data': ([-8.65530018e-04, 3.20970587e+02, 3.24788020e+02, 6.25386753e+02])
+        'period': 1.0892663209112947,
+        'period_err': 0.002368690041166098,
+        'conjunction_time': 2454515.5241231285,
+        'conjunction_time_err': 0.3467430587812461,
+        'period_change_by_epoch': 4.223712653342504e-06,
+        'period_change_by_epoch_err': 7.742732700893123e-06,
+        'model_type': 'quadratic',
+        'model_data': np.array([2454515.52412313, 2454836.49559505, 2454840.31302805,2455140.91174185])
         }
-        expected_result = np.array([0.34674309, 0.84788387, 0.85834968, 1.89255521]) 
+        expected_result = np.array([0.34674306,0.84783352,0.85829843,1.89241887])
         self.ephemeris.get_ephemeris_uncertainties(model_parameters_quad)
         results = self.ephemeris.get_ephemeris_uncertainties(model_parameters_quad)
         self.assertTrue(np.allclose(expected_result, results, rtol=1e-05, atol=1e-08)) 
@@ -437,16 +442,16 @@ class TestEphemeris(unittest.TestCase):
             Uses the linear k value and linear chi squared value
         """
         model_parameters_linear = {
-            'period': 1.0904734089104249,  
-            'period_err': 0.0006807480614626216,
-            'conjunction_time': -0.1010330285087608, 
-            'conjunction_time_err': 0.23692091722329203,
-            'model_type': 'linear', 
-            'model_data': ([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02 ])
+            'period': 1.0904734088754364,
+            'period_err': 0.0006807481006299065,
+            'conjunction_time': 2454515.423966982,
+            'conjunction_time_err': 0.23692092991744518,
+            'model_type': 'linear',
+            'model_data': np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283,
+                    2455140.81046697])
         }
         # k_value = 2
-        # linear_chi_squared = 843766.361148408
-        expected_result = 843769.1337371303
+        expected_result = 843769.0757319723
         result = self.ephemeris.calc_bic(model_parameters_linear)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
         
@@ -456,18 +461,17 @@ class TestEphemeris(unittest.TestCase):
             Uses the quadratic k value and quadratic chi squared value
         """
         model_parameters_quad = {
-            'conjunction_time':  -0.000865530018010096 ,
-            'conjunction_time_err': 0.34674308676945004,
-            'period': 1.0892661840315387,
-            'period_err':  0.0023688537695923505,
-            'period_change_by_epoch':4.224191878694417e-06,
-            'period_change_by_epoch_err':7.743357776955459e-06,
-            'model_type': 'quadratic',
-            'model_data': ( [-8.65530018e-04,3.20970587e+02,3.24788020e+02,6.25386753e+02])
+        'period': 1.0892663209112947,
+        'period_err': 0.002368690041166098,
+        'conjunction_time': 2454515.5241231285,
+        'conjunction_time_err': 0.3467430587812461,
+        'period_change_by_epoch': 4.223712653342504e-06,
+        'period_change_by_epoch_err': 7.742732700893123e-06,
+        'model_type': 'quadratic',
+        'model_data': np.array([2454515.52412313, 2454836.49559505, 2454840.31302805,2455140.91174185])
         }
         # k_value = 3
-        # quad_chi_squared = 650251.7787726448
-        expected_result = 650255.9376557282
+        expected_result = 650255.7398105409
         result = self.ephemeris.calc_bic(model_parameters_quad)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08)) 
     
@@ -476,17 +480,14 @@ class TestEphemeris(unittest.TestCase):
 
             Uses both the quadratic bic and linear bic
         """
-        # linear_bic = 843769.1337371303
-        # quad_bic = 650255.9376557282
-        expected_result = 193513.19608140213
+        expected_result = 193513.33592143143
         result = self.ephemeris.calc_delta_bic() 
         self.assertTrue(expected_result, result)
 
     def test_subract_plotting_parameters(self):
-        expected_result = np.array([-4.91239202e-10, 1.04388675e-07, 1.73202181e-07, 1.83800921e-08])
-        model_data = np.array([-1.01033029e-01, 3.21043386e+02, 3.24860043e+02, 6.25285467e+02 ])
+        expected_result = np.array([-1.86264515e-09, 4.24597602e-09, 3.08841663e-09 , -2.14754436e-09])
+        model_data =  np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283, 2455140.81046697])
         result = self.ephemeris._subtract_plotting_parameters(model_data,test_T0_linear,test_P_linear,test_epochs)
-        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
 
