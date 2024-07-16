@@ -409,7 +409,7 @@
 </span><span id="line-241">    
 <div class="viewcode-block" id="Ephemeris.plot_model_ephemeris">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_model_ephemeris">[docs]</a>
-</span><span id="line-242">    <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-242">    <span class="k">def</span> <span class="nf">plot_model_ephemeris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="line-243"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a scatterplot of epochs vs. model calculated mid-times.</span>
 </span><span id="line-244">
 </span><span id="line-245"><span class="sd">        Parameters</span>
@@ -418,7 +418,7 @@
 </span><span id="line-248"><span class="sd">                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.</span>
 </span><span id="line-249"><span class="sd">            save_plot: bool </span>
 </span><span id="line-250"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-251"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-251"><span class="sd">            fname: Optional(str)</span>
 </span><span id="line-252"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
 </span><span id="line-253"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-254">        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">)</span>
@@ -426,13 +426,13 @@
 </span><span id="line-256">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Model Predicted Mid-Times (units)&#39;</span><span class="p">)</span>
 </span><span id="line-257">        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Predicted </span><span class="si">{</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Model Mid Times over Epochs&#39;</span><span class="p">)</span>
 </span><span id="line-258">        <span class="k">if</span> <span class="n">save_plot</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-259">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-259">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
 </span><span id="line-260">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 </span><span id="line-261">
 <div class="viewcode-block" id="Ephemeris.plot_timing_uncertainties">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">[docs]</a>
-</span><span id="line-262">    <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-262">    <span class="k">def</span> <span class="nf">plot_timing_uncertainties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_data_dict</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="line-263"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a scatterplot of epochs vs. model calculated mid-time uncertainties.</span>
 </span><span id="line-264">
 </span><span id="line-265"><span class="sd">        Parameters</span>
@@ -441,7 +441,7 @@
 </span><span id="line-268"><span class="sd">                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.</span>
 </span><span id="line-269"><span class="sd">            save_plot: bool </span>
 </span><span id="line-270"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-271"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-271"><span class="sd">            fname: Optional(str)</span>
 </span><span id="line-272"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
 </span><span id="line-273"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-274">        <span class="c1"># get uncertainties</span>
@@ -460,20 +460,20 @@
 </span><span id="line-287">        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Uncertainties of Predicted </span><span class="si">{</span><span class="n">model_data_dict</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Model Ephemeris Mid Times&#39;</span><span class="p">)</span>
 </span><span id="line-288">        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </span><span id="line-289">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-290">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-290">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
 </span><span id="line-291">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 </span><span id="line-292">
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
-</span><span id="line-293">    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-293">    <span class="k">def</span> <span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="line-294"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a scatter plot of observed minus calculated values of mid-times for linear and quadratic model ephemerides over epochs.</span>
 </span><span id="line-295">
 </span><span id="line-296"><span class="sd">        Parameters</span>
 </span><span id="line-297"><span class="sd">        ----------</span>
 </span><span id="line-298"><span class="sd">            save_plot: bool </span>
 </span><span id="line-299"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-300"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-300"><span class="sd">            fname: Optional(str)</span>
 </span><span id="line-301"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
 </span><span id="line-302"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-303">        <span class="c1"># y = T0 - PE - 0.5 dP/dE E^2</span>
@@ -495,13 +495,13 @@
 </span><span id="line-319">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;O-C (seconds)&#39;</span><span class="p">)</span>
 </span><span id="line-320">        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Observed Minus Caluclated Plot&#39;</span><span class="p">)</span>
 </span><span id="line-321">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-322">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-322">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
 </span><span id="line-323">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 </span><span id="line-324">
 <div class="viewcode-block" id="Ephemeris.plot_running_delta_bic">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic">[docs]</a>
-</span><span id="line-325">    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="line-325">    <span class="k">def</span> <span class="nf">plot_running_delta_bic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="line-326"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.</span>
 </span><span id="line-327">
 </span><span id="line-328"><span class="sd">        Starting at the third epoch, will plot the value of :math:`\\Delta BIC` for all previous epochs,</span>
@@ -511,7 +511,7 @@
 </span><span id="line-332"><span class="sd">        ----------</span>
 </span><span id="line-333"><span class="sd">            save_plot: bool </span>
 </span><span id="line-334"><span class="sd">                If True, will save the plot as a figure.</span>
-</span><span id="line-335"><span class="sd">            save_filepath: Optional(str)</span>
+</span><span id="line-335"><span class="sd">            fname: Optional(str)</span>
 </span><span id="line-336"><span class="sd">                The path used to save the plot if `save_plot` is True.</span>
 </span><span id="line-337"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-338">        <span class="n">delta_bics</span> <span class="o">=</span> <span class="p">[]</span>
@@ -537,7 +537,7 @@
 </span><span id="line-358">        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta$BIC&#39;</span><span class="p">)</span>
 </span><span id="line-359">        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Value of $\Delta$BIC as Observational Epochs Increase&quot;</span><span class="p">)</span>
 </span><span id="line-360">        <span class="k">if</span> <span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="line-361">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">)</span>
+</span><span id="line-361">            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
 </span><span id="line-362">        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 </span><span id="line-363">        
@@ -932,12 +932,8 @@
 
 </span><span id="line-752">
 </span><span id="line-753">
-<div class="viewcode-block" id="BaseModelEphemeris">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris">[docs]</a>
 </span><span id="line-754"><span class="k">class</span> <span class="nc">BaseModelEphemeris</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 </span><span id="line-755"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class that defines the structure of different model ephemeris classes.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="BaseModelEphemeris.fit_model">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.BaseModelEphemeris.fit_model">[docs]</a>
 </span><span id="line-756">    <span class="nd">@abstractmethod</span>
 </span><span id="line-757">    <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-758"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits a model ephemeris to timing data.</span>
@@ -961,17 +957,11 @@
 </span><span id="line-776"><span class="sd">        return_data: dict</span>
 </span><span id="line-777"><span class="sd">            A dictionary containing fitted model parameters. </span>
 </span><span id="line-778"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-779">        <span class="k">pass</span></div>
-</div>
-
+</span><span id="line-779">        <span class="k">pass</span>
 </span><span id="line-780">
 </span><span id="line-781">
-<div class="viewcode-block" id="LinearModelEphemeris">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris">[docs]</a>
 </span><span id="line-782"><span class="k">class</span> <span class="nc">LinearModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
 </span><span id="line-783"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass of BaseModelEphemeris that implements a linear fit.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="LinearModelEphemeris.lin_fit">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.lin_fit">[docs]</a>
 </span><span id="line-784">    <span class="k">def</span> <span class="nf">lin_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-785"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates a linear function with given data.</span>
 </span><span id="line-786">
@@ -1009,11 +999,8 @@
 </span><span id="line-818">            <span class="k">elif</span> <span class="n">t_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="line-819">                <span class="c1"># occultation data</span>
 </span><span id="line-820">                <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">T0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">P</span><span class="p">)</span>
-</span><span id="line-821">        <span class="k">return</span> <span class="n">result</span></div>
-
+</span><span id="line-821">        <span class="k">return</span> <span class="n">result</span>
 </span><span id="line-822">    
-<div class="viewcode-block" id="LinearModelEphemeris.fit_model">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.LinearModelEphemeris.fit_model">[docs]</a>
 </span><span id="line-823">    <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-824"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits a linear model to ephemeris data.</span>
 </span><span id="line-825">
@@ -1066,16 +1053,10 @@
 </span><span id="line-872">            <span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
 </span><span id="line-873">            <span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;T0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">stderr</span>
 </span><span id="line-874">        <span class="p">}</span>
-</span><span id="line-875">        <span class="k">return</span><span class="p">(</span><span class="n">return_data</span><span class="p">)</span></div>
-</div>
-
+</span><span id="line-875">        <span class="k">return</span><span class="p">(</span><span class="n">return_data</span><span class="p">)</span>
 </span><span id="line-876">
-<div class="viewcode-block" id="QuadraticModelEphemeris">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris">[docs]</a>
 </span><span id="line-877"><span class="k">class</span> <span class="nc">QuadraticModelEphemeris</span><span class="p">(</span><span class="n">BaseModelEphemeris</span><span class="p">):</span>
 </span><span id="line-878"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass of BaseModelEphemeris that implements a quadratic fit.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="QuadraticModelEphemeris.quad_fit">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.quad_fit">[docs]</a>
 </span><span id="line-879">    <span class="k">def</span> <span class="nf">quad_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dPdE</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-880"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates a quadratic function with given data.</span>
 </span><span id="line-881">
@@ -1115,11 +1096,8 @@
 </span><span id="line-915">            <span class="k">elif</span> <span class="n">t_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="line-916">                <span class="c1"># occultation data</span>
 </span><span id="line-917">                <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">T0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dPdE</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
-</span><span id="line-918">        <span class="k">return</span> <span class="n">result</span></div>
-
+</span><span id="line-918">        <span class="k">return</span> <span class="n">result</span>
 </span><span id="line-919">    
-<div class="viewcode-block" id="QuadraticModelEphemeris.fit_model">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.QuadraticModelEphemeris.fit_model">[docs]</a>
 </span><span id="line-920">    <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-921"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits a quadratic model to ephemeris data.</span>
 </span><span id="line-922">
@@ -1178,16 +1156,10 @@
 </span><span id="line-975">            <span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;dPdE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
 </span><span id="line-976">            <span class="s1">&#39;period_change_by_epoch_err&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;dPdE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">stderr</span>
 </span><span id="line-977">        <span class="p">}</span>
-</span><span id="line-978">        <span class="k">return</span><span class="p">(</span><span class="n">return_data</span><span class="p">)</span></div>
-</div>
-
+</span><span id="line-978">        <span class="k">return</span><span class="p">(</span><span class="n">return_data</span><span class="p">)</span>
 </span><span id="line-979">
-<div class="viewcode-block" id="ModelEphemerisFactory">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.ModelEphemerisFactory">[docs]</a>
 </span><span id="line-980"><span class="k">class</span> <span class="nc">ModelEphemerisFactory</span><span class="p">:</span>
 </span><span id="line-981"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory class for selecting which type of ephemeris class (linear or quadratic) to use.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ModelEphemerisFactory.create_model">
-<a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.ModelEphemerisFactory.create_model">[docs]</a>
 </span><span id="line-982">    <span class="nd">@staticmethod</span>
 </span><span id="line-983">    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
 </span><span id="line-984"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiates the appropriate BaseModelEphemeris subclass and runs fit_model method.</span>
@@ -1252,9 +1224,7 @@
 </span><span id="line-1043">        <span class="k">if</span> <span class="n">model_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
 </span><span id="line-1044">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="line-1045">        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span>
-</span><span id="line-1046">        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span></div>
-</div>
-
+</span><span id="line-1046">        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
 </span><span id="line-1047">    
 </span><span id="line-1048">
 </span><span id="line-1049"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -1322,20 +1292,19 @@
 </span><span id="line-1111">    <span class="c1"># print(delta_bic)</span>
 </span><span id="line-1112">
 </span><span id="line-1113">    <span class="c1"># STEP 6: Show a plot of the model ephemeris data</span>
-</span><span id="line-1114">    <span class="c1"># ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)</span>
-</span><span id="line-1115">    <span class="c1"># ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)</span>
+</span><span id="line-1114">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-1115">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model_ephemeris</span><span class="p">(</span><span class="n">quad_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-1116">
 </span><span id="line-1117">    <span class="c1"># STEP 7: Uncertainties plot</span>
-</span><span id="line-1118">    <span class="c1"># ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)</span>
-</span><span id="line-1119">    <span class="c1"># ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)</span>
+</span><span id="line-1118">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-1119">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quad_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-1120">    
 </span><span id="line-1121">    <span class="c1"># STEP 8: O-C Plot</span>
 </span><span id="line-1122">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">(</span><span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-1123">
 </span><span id="line-1124">    <span class="c1"># STEP 9: Running delta BIC plot</span>
-</span><span id="line-1125">    <span class="c1"># ephemeris_obj1.plot_running_delta_bic(save_plot=False)</span>
-</span><span id="line-1126">    
-</span><span id="line-1127">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">_calc_linear_ephemeris</span><span class="p">()</span>
+</span><span id="line-1125">    <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-1126">
 </span></code></pre></div>
     </div></div>
         </main>
