@@ -1111,22 +1111,16 @@ if __name__ == '__main__':
     # print(delta_bic)
 
     # STEP 6: Show a plot of the model ephemeris data
-    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
-    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
-    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=True, fname="../../wasp12b_graphs/lin_model")
-    ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=True, fname="../../wasp12b_graphs/quad_model")
+    ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
 
     # STEP 7: Uncertainties plot
-    # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
-    # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
-    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=True, fname="../../wasp12b_graphs/lin_unc")
-    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=True, fname="../../wasp12b_graphs/quad_unc")
+    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
+    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
     
     # STEP 8: O-C Plot
-    # ephemeris_obj1.plot_oc_plot(save_plot=False)
-    ephemeris_obj1.plot_oc_plot(save_plot=True, fname="../../wasp12b_graphs/oc_plot")
+    ephemeris_obj1.plot_oc_plot(save_plot=False)
 
     # STEP 9: Running delta BIC plot
-    # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-    ephemeris_obj1.plot_running_delta_bic(save_plot=True, fname="../../wasp12b_graphs/running_delta_bic")
+    ephemeris_obj1.plot_running_delta_bic(save_plot=False)
 
