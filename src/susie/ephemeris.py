@@ -7,7 +7,7 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem
 # from susie.timing_data import TimingData # Use this for package pushes
-from timing_data import TimingData # Use this for running tests
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class Ephemeris():
