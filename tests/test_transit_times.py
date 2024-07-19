@@ -298,12 +298,6 @@ class TestTimingData(unittest.TestCase):
         self.assertEqual(obj_coords[0], expected_obj_location.ra.deg)
         self.assertEqual(obj_coords[1], expected_obj_location.dec.deg)
 
-
-
-
-    
-    
-    
     def test_validate_times_obj_coords_err(self):
         """ Unsuccessful test to check the object coordinates within the Timing Data.
 
@@ -391,6 +385,17 @@ class TestTimingData(unittest.TestCase):
         expected_ltt_bary = np.array([0.00344345,0.00561672,0.00554016,0.00339291])
         self.assertTrue((np.allclose(expected_ltt_bary, actual_ltt_bary, rtol=1e-05, atol=1e-08)))
 
+    def test_convert_timing_unc(self):
+        """ Sucessful tests for the mid time uncertainty conversions.
+
+            The mid time uncertainties are calulated using the upper limit (mid times + uncertainties) and lower limits (mid times - uncertainties) only if the scale/format needs to be converted.
+        """
+        self.timing_data = TimingData('jd', test_epochs, test_mtts, test_mtts_err, tra_or_occ = None, time_scale='tdb')
+        expected_result = np.array([0.00060806, 0.00039597, 0.00087679, 0.00059402])
+        result = self.timing_data._convert_timing_uncertainties(test_mtts, test_mtts_err, 'jd', 'tdb', (97.64,29.67), (-116.21,43.60))
+        self.assertTrue((np.allclose(expected_result,result, rtol=1e-05, atol=1e-08)))
+
+
     def test_tra_or_occ_None(self):
         """ Successful test for when the tra_or_occ equals None.
 
@@ -437,6 +442,26 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(ValueError, msg = "The 'tra_or_occ' array contains NaN (Not-a-Number) values."):
              TimingData('jd', test_epochs, test_mtts, test_mtts_err,not_tra_or_occ, time_scale='tdb')  
     
+
+    # sort arrays
+    def test_sort_arrays(self):
+        """ Successful test to sort arrays.
+
+            Arrays will be sorted by the first epoch. This occurs after the minimization of the epochs so zero should be first.
+        """
+        test_epochs_reordered = np.array([294, 0, 298, 573])
+        test_mtts_reordered = np.array([2454836.403,2454515.525,2454840.769,2455140.91])
+        test_mtts_err_reordered = np.array([ 0.00028,0.00043, 0.00062, 0.00042])
+        tra_or_occ_reordered = np.array(['occ','tra','tra','occ'])
+        timing_data_reordered = TimingData('jd', test_epochs_reordered, test_mtts_reordered, test_mtts_err_reordered, tra_or_occ_reordered, time_scale='tdb')
+        expected_epochs = np.array([0, 294, 298, 573])
+        expected_mtts = np.array([2454515.525,2454836.403,2454840.769,2455140.91])
+        expected_mtts_err = np.array([0.00043, 0.00028, 0.00062, 0.00042])
+        expected_tra_or_occ = np.array(['tra','occ','tra','occ'])
+        self.assertTrue((np.allclose(timing_data_reordered.epochs, expected_epochs, rtol=1e-05, atol=1e-08)))
+        self.assertTrue((np.allclose(timing_data_reordered.mid_times,expected_mtts, rtol=1e-05, atol=1e-08)))
+        self.assertTrue((np.allclose(timing_data_reordered.mid_time_uncertainties, expected_mtts_err, rtol=1e-05, atol=1e-08)))
+        assert_array_equal(timing_data_reordered.tra_or_occ, expected_tra_or_occ)
 
 
     
