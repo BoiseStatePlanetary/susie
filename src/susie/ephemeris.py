@@ -123,6 +123,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         }
         return(return_data)
 
+
 class QuadraticModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a quadratic fit."""
     def quad_fit(self, E, dPdE, P, T0, tra_or_occ):
@@ -212,43 +213,61 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
     
 
 class PrecessionModelEphemeris(BaseModelEphemeris):
-    def precession_fit(self, E, T0, PA, dWdE, W0, e, tra_or_occ):
-        """
+    """ Subclass of BaseModelEphemeris that implements a precession fit.
+    """
+    def anomalistic_period(self, P, dwdE):
+       PA = P/(1 - (1/(2*np.pi))*dwdE)
+       return PA
+    
+    def pericenter(self, W0, dwdE, E):
+       w = W0 + dwdE*E
+       return w
+    
+    def precession_fit(self, E, T0, P, dwdE, W0, e, tra_or_occ):
+        """Calculates a precession function with given data.
+
+        Uses the equation 
+         -  ????? for transit observations
+         -  ????? for occultation observations as a precession function for the LMfit Model.
         
         Parameters
         ----------
-            E: 
-                epoch
-            T0:
-                conjunction time
-            PA: 
-                Anomalistic period
-            dWdP: 
-                Change in pericenter
-            W0:
-                Pericenter
-            e:
-                eccentricity
-            tra_or_occ:
-
+            e: float
+                The eccentricity.
+            E: numpy.ndarray[int]
+                The epochs.
+            dwdE: float
+                Change in pericenter with respect to epoch.
+            P: float
+                The exoplanet sideral orbital period.
+            T0: float
+                The initial mid-time, also known as conjunction time.
+            tra_or_occ: numpy.ndarray[str]
+                Indicates if the data is from a transit or occultation.
+            W0: int
+                The intial pericenter.
+        
+        Returns
+        -------
+            result: numpy.ndarray[float]
+                A precession function to be used with the LMfit Model, returned as:
+                ?????
+                ?????
         """
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
            if t_type == 0:
             # transit data
-            result[i] = T0 + E*(PA(1 - (1/(2*np.pi))*dWdE)) - ((e*PA)/np.pi)*np.cos(W0 + dWdE*E)
+            result[i] = T0 + E*P - ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
            elif t_type == 1:
             # occultation data
-            result[i] = T0 + PA/2 + E*(PA(1 - (1/(2*np.pi))*dWdE)) + ((e*PA)/np.pi)*np.cos(W0 + dWdE*E)
+            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E(self.anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
         return result
-    
-    def anomalistic_period_fit(self, dWdE):
-        """TODO: Put in the function for this here"""
 
     def fit_model(self, x, y, yerr, tra_or_occ):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0., P=1.091423, dWdE=0., e=0.049, PA=1.091423, W0=-74, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0., P=1.091423, dWdE=0., e=0.049, W0=-74, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
@@ -259,8 +278,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             'pericenter_change_by_epoch_err': result.params['dWdE'].stderr,
             'eccentricity': result.params['e'].value,
             'eccentricity_err': result.params['e'].stderr,
-            'anomalistic_period': result.params['PA'].value,
-            'anomalistic_period_err': result.params['PA'].stderr,
+
             'pericenter': result.params['W0'].value,
             'pericenter_err': result.params['W0'].stderr
         }
