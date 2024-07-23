@@ -209,6 +209,63 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             'period_change_by_epoch_err': result.params['dPdE'].stderr
         }
         return(return_data)
+    
+
+class PrecessionModelEphemeris(BaseModelEphemeris):
+    def precession_fit(self, E, T0, PA, dWdE, W0, e, tra_or_occ):
+        """
+        
+        Parameters
+        ----------
+            E: 
+                epoch
+            T0:
+                conjunction time
+            PA: 
+                Anomalistic period
+            dWdP: 
+                Change in pericenter
+            W0:
+                Pericenter
+            e:
+                eccentricity
+            tra_or_occ:
+
+        """
+        result = np.zeros_like(E)
+        for i, t_type in enumerate(tra_or_occ):
+           if t_type == 0:
+            # transit data
+            result[i] = T0 + E*(PA(1 - (1/(2*np.pi))*dWdE)) - ((e*PA)/np.pi)*np.cos(W0 + dWdE*E)
+           elif t_type == 1:
+            # occultation data
+            result[i] = T0 + PA/2 + E*(PA(1 - (1/(2*np.pi))*dWdE)) + ((e*PA)/np.pi)*np.cos(W0 + dWdE*E)
+        return result
+    
+    def anomalistic_period_fit(self, dWdE):
+        """TODO: Put in the function for this here"""
+
+    def fit_model(self, x, y, yerr, tra_or_occ):
+        tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
+        model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
+        params = model.make_params(T0=0., P=1.091423, dWdE=0., e=0.049, PA=1.091423, W0=-74, tra_or_occ=tra_or_occ_enum)
+        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
+        return_data = {
+            'period': result.params['P'].value,
+            'period_err': result.params['P'].stderr,
+            'conjunction_time': result.params['T0'].value,
+            'conjunction_time_err': result.params['T0'].stderr,
+            'pericenter_change_by_epoch': result.params['dWdE'].value,
+            'pericenter_change_by_epoch_err': result.params['dWdE'].stderr,
+            'eccentricity': result.params['e'].value,
+            'eccentricity_err': result.params['e'].stderr,
+            'anomalistic_period': result.params['PA'].value,
+            'anomalistic_period_err': result.params['PA'].stderr,
+            'pericenter': result.params['W0'].value,
+            'pericenter_err': result.params['W0'].stderr
+        }
+        return(return_data)
+
 
 class ModelEphemerisFactory:
     """Factory class for selecting which type of ephemeris class (linear or quadratic) to use."""
@@ -467,6 +524,17 @@ class Ephemeris(object):
                 # occultation data
                 result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
         return np.array(result)
+    
+    def _calc_anomalistic_period(self, model_dict):
+        """TODO
+        """
+        # Add in function for this
+        # Pull model parameters to calculate it
+
+    def _calc_precession_ephemeris(self, model_dict):
+        """TODO"""
+        # function for precession
+        # t0 + 3823 + self._calc_anomalistic_period(model_dict) + ...
     
     def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates mid-times using parameters from a linear model ephemeris.
