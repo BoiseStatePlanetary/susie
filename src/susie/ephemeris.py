@@ -327,7 +327,8 @@ class ModelEphemerisFactory:
         """
         models = {
             'linear': LinearModelEphemeris(),
-            'quadratic': QuadraticModelEphemeris()
+            'quadratic': QuadraticModelEphemeris(),
+            'precession': PrecessionModelEphemeris()
         }
         if model_type not in models:
             raise ValueError(f"Invalid model type: {model_type}")
@@ -462,8 +463,10 @@ class Ephemeris(object):
             return 2
         elif model_type == 'quadratic':
             return 3
+        elif model_type == 'precession':
+            return 5
         else:
-            raise ValueError('Only linear and quadratic models are supported at this time.')
+            raise ValueError('Only linear, quadratic, and precession models are supported at this time.')
     
     def _calc_linear_model_uncertainties(self, T0_err, P_err):
         """Calculates the uncertainties of a given linear model when compared to actual data in TimingData.
@@ -543,6 +546,9 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
         return np.array(result)
     
+    def _calc_precession_model_uncertainties(self):
+        pass
+
     def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates mid-times using parameters from a linear model ephemeris.
         
@@ -609,6 +615,26 @@ class Ephemeris(object):
                 result.append((T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i])
         return np.array(result)
     
+    def anomalistic_period(self, P, dwdE):
+       result = P/(1 - (1/(2*np.pi))*dwdE)
+       return result
+    
+    def pericenter(self, W0, dwdE, E):
+       result = W0 + dwdE*E
+       return result
+    
+    def _calc_precession_ephemeris(self, E, P, T0, W0, dwdE, e, tra_or_occ):
+        result = np.zeros_like(E)
+        for i, t_type in enumerate(tra_or_occ):
+           if t_type == 0:
+            # transit data
+            result[i] = T0 + E*P - ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+           elif t_type == 1:
+            # occultation data
+            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E(self.anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+        return result
+   
+   
     def _calc_chi_squared(self, model_mid_times):
         """Calculates the residual chi squared values for the model ephemeris.
         
@@ -753,7 +779,11 @@ class Ephemeris(object):
             if 'conjunction_time_err' not in model_params or 'period_err' not in model_params or 'period_change_by_epoch_err' not in model_params:
                 raise KeyError("Cannot find conjunction time, period, and/or period change by epoch errors in model data. Please run the get_model_ephemeris method with 'quadratic' model_type to return ephemeris fit parameters.")
             return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'])
-    
+        elif model_params['model_type'] == 'precession':
+            if 'conjunction_time_err' not in model_params or 'period_err' not in model_params or 'period_change_by_epoch_err' not in model_params or 'eccentricity_err' not in model_params or 'pericenter_err' not in model_params:
+                raise KeyError("Cannot find conjunction time, period, period change by epoch errors, eccentricity and/or pericenter errors in model data. Please run the get_model_ephemeris method with 'precession' model_type to return ephemeris fit parameters.")
+            return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'], model_params['eccentricity_err'], model_params['pericenter_err'])
+
     def calc_bic(self, model_data_dict):
         """Calculates the BIC value for a given model ephemeris. 
         
