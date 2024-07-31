@@ -213,22 +213,60 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
     
 
 class PrecessionModelEphemeris(BaseModelEphemeris):
-    """ Subclass of BaseModelEphemeris that implements a precession fit.
-    """
+    """ Subclass of BaseModelEphemeris that implements a precession fit."""
     def anomalistic_period(self, P, dwdE):
-       PA = P/(1 - (1/(2*np.pi))*dwdE)
-       return PA
+       """Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
+
+       Uses the equation
+       ?????
+       ?????
+
+
+
+       Parameters
+       ----------
+       P: float
+           The exoplanet sideral orbital period.
+        dwdE: float
+           Change in pericenter with respect to epoch.
+
+        Returns
+        -------
+           A float of the calculated starting anomalistic period.
+       """
+       result = P/(1 - (1/(2*np.pi))*dwdE)
+       return result
     
     def pericenter(self, W0, dwdE, E):
-       w = W0 + dwdE*E
-       return w
+       """Calculates the pericenter given a list of epochs, an intial pericenter value, and a change in pericenter with respect to epoch.
+
+       Uses the equation
+        ?????
+        ?????
+
+
+       Parameters
+       ----------
+        E: numpy.ndarray[int]
+            The epochs.
+        dwdE: float
+            Change in pericenter with respect to epoch.
+        W0: int
+            The intial pericenter.
+
+        Returns
+        -------
+           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
+       """
+       result = W0 + dwdE*E
+       return result
     
     def precession_fit(self, E, T0, P, dwdE, W0, e, tra_or_occ):
         """Calculates a precession function with given data.
 
         Uses the equation 
-         -  ????? for transit observations
-         -  ????? for occultation observations as a precession function for the LMfit Model.
+         -  conjunction time + (epochs * period) - ((eccentricity * anomalistic period) / pi) * cos(pericenter) for transit observations
+         -  conjunction time + (anomalistic period / 2) + epochs * period + ((eccentricity * anomalistic period) / pi) * cos(pericenter) for occultation observations as a precession function for the LMfit Model.
         
         Parameters
         ----------
@@ -261,10 +299,46 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             result[i] = T0 + E*P - ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
            elif t_type == 1:
             # occultation data
-            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E(self.anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E*P + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
+        """Fits a precession model to ephemeris data.
+
+        Compares the model ephemeris data to the precession fit calculated with precession_fit method. Then minimizes 
+        the difference between the two sets of data. The LMfit Model then returns the parameters of the precession
+        function corresponding to period, conjunction time, pericenter change by epoch, eccentricity, pericenter, and their respective errors. 
+        These parameters are returned in a dictionary to the user.
+
+        Parameters
+        ----------
+            x: numpy.ndarray[int]
+                The epoch data as recieved from the TimingData object.
+            y: numpy.ndarray[float]
+                The mid-time data as recieved from the TimingData object.
+            yerr: numpy.ndarray[float]
+                The mid-time error data as recieved from the TimingData object.
+            tra_or_occ: numpy.ndarray[str]
+                Indicates if each point of data is taken from a transit or an occultation.
+
+        Returns
+        ------- 
+        return_data: dict
+            A dictionary of parameters from the fit model ephemeris. 
+            Example:
+                {
+                 'period': Estimated orbital period of the exoplanet (in units of days),
+                 'period_err': Uncertainty associated with orbital period (in units of days),
+                 'conjunction_time': Time of conjunction of exoplanet transit or occultation,
+                 'conjunction_time_err': Uncertainty associated with conjunction_time,
+                 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch ,
+                 'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
+                 'eccentricity': The exoplanet pericenter,
+                 'eccentricity_err': The uncertainties associated with eccentricity,
+                 'pericenter': The exoplanet inital pericenter value,
+                 'pericenter_err': The uncertainties associated with pericenter.
+                }
+        """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
         params = model.make_params(T0=0., P=1.091423, dWdE=0., e=0.049, W0=-74, tra_or_occ=tra_or_occ_enum)
@@ -278,7 +352,6 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             'pericenter_change_by_epoch_err': result.params['dWdE'].stderr,
             'eccentricity': result.params['e'].value,
             'eccentricity_err': result.params['e'].stderr,
-
             'pericenter': result.params['W0'].value,
             'pericenter_err': result.params['W0'].stderr
         }
@@ -616,14 +689,82 @@ class Ephemeris(object):
         return np.array(result)
     
     def anomalistic_period(self, P, dwdE):
+       """ Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
+
+       Uses the equation
+       ?????
+       ?????
+
+
+
+       Parameters
+       ----------
+       P: float
+           The exoplanet sideral orbital period.
+        dwdE: float
+           Change in pericenter with respect to epoch.
+
+        Returns
+        -------
+           A float of the calculated anomalistic period.
+       """
        result = P/(1 - (1/(2*np.pi))*dwdE)
        return result
     
     def pericenter(self, W0, dwdE, E):
+       """Calculates the pericenter given a list of epochs, a pericenter value, and a change in pericenter with respect to epoch.
+
+       Uses the equation
+        ??????
+        ??????
+
+
+       Parameters
+       ----------
+        E: numpy.ndarray[int]
+            The epochs.
+        dwdE: float
+            Change in pericenter with respect to epoch.
+        W0: int
+            The pericenter.
+
+        Returns
+        -------
+           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
+       """
        result = W0 + dwdE*E
        return result
     
     def _calc_precession_ephemeris(self, E, P, T0, W0, dwdE, e, tra_or_occ):
+        """Calculates mid-times using parameters from a precession model ephemeris.
+
+        Uses the equation:
+         -  ????? for transit observations
+         -  ????? for occultation observations
+        to calculate the mid-times over each epoch where T0 is conjunction time, P is sideral period, E is epoch, 
+        dwdE is pericenter change with respect to epoch, W0 is intial pericenter, e is eccentricity.
+
+        Parameters
+        ----------
+            e: float
+                The eccentricity.
+            E: numpy.ndarray[int]
+                The epochs.
+            dwdE: float
+                Change in pericenter with respect to epoch.
+            P: float
+                The exoplanet sideral orbital period.
+            T0: float
+                The initial mid-time, also known as conjunction time.
+            tra_or_occ: numpy.ndarray[str]
+                Indicates if the data is from a transit or occultation.
+            W0: int
+                The intial pericenter.  
+
+        Returns
+        -------
+            A numpy array of mid-times calculated over each epoch using the equation above.
+        """ 
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
            if t_type == 0:
