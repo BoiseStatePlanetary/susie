@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
 from src.susie.timing_data import TimingData
-from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, ModelEphemerisFactory
+from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, PrecessionModelEphemeris, ModelEphemerisFactory
 
 test_epochs = np.array([0, 294, 298, 573])
 test_mtts = np.array([2454515.525,2454836.403,2454840.769,2455140.91])
@@ -95,12 +95,15 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
         """Testing that the dictionary parameters of fit model are equal to what they are suppose to be
 
             Tests the creation of a dictionary named return_data containing the quadratic fit model data in the order of:
-            {  'conjunction_time': float,
+            {  
+            'conjunction_time': float,
             'conjunction_time_err': float,
             'period': float,
             'period_err': float,
             'period_change_by_epoch': float,
             'period_change_by_epoch_err': float,
+            }
+
         """
         result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
         return_data = {
@@ -118,6 +121,69 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
         self.assertEqual(result['period_change_by_epoch'], return_data['period_change_by_epoch'])
         self.assertEqual(result['period_change_by_epoch_err'], return_data['period_change_by_epoch_err'])
 
+class TestPrecessionModelEphemeris(unittest.TestCase):
+    def setUp(self):
+        self.ephemeris = PrecessionModelEphemeris()
+
+    def test_precession_fit_instantiation(self):
+        # Tests that ephemeris is an instance of PrecessionModelEphemeris
+        self.assertIsInstance(self.ephemeris, PrecessionModelEphemeris)
+
+    def test_anomalistic_period(self):
+        pass
+
+    def test_pericenter(self):
+        pass
+
+    def test_precession_fit(self):
+        """Tests that the precession_fit function works.
+
+            Creates a numpy.ndarray[int] with the length of the test data
+        """
+        expected_result = np.array()
+        result = self.ephemeris.precession_fit(test_epochs, 0, test_P_fits, 0, test_tra_or_occ_enum)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
+
+    def test_precession_fit_model(self):
+        """Testing that the dictionary parameters of fit model are equal to what they are suppose to be
+
+            Tests the creation of a dictionary named return_data containing the precession fit model data in the order of:
+            {  
+            'conjunction_time': float,
+            'conjunction_time_err': float,
+            'period': float,
+            'period_err': float,
+            'pericenter_change_by_epoch': float,
+            'pericenter_change_by_epoch_err': float,
+            'eccentricity': float,
+            'eccentricity_err': float,
+            'pericenter': float,
+            'pericenter_err': float
+            }
+        """
+        result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
+        return_data = {
+            'period': 1.0892663209112947,
+            'period_err': 0.002368690041166098,
+            'conjunction_time': 2454515.5241231285,
+            'conjunction_time_err': 0.3467430587812461,
+            'pericenter_change_by_epoch': 4.223712653342504e-06,
+            'pericenter_change_by_epoch_err': 7.742732700893123e-06,
+            'eccentricity': 3.0,
+            'eccentricity_err': 3.0,
+            'pericenter': 3.0,
+            'pericenter_err': 3.0
+        }
+        self.assertEqual(result['period'], return_data['period'])
+        self.assertEqual(result['period_err'], return_data['period_err'])
+        self.assertEqual(result['conjunction_time'], return_data['conjunction_time'])
+        self.assertEqual(result['conjunction_time_err'], return_data['conjunction_time_err'])
+        self.assertEqual(result['pericenter_change_by_epoch'], return_data['pericenter_change_by_epoch'])
+        self.assertEqual(result['pericenter_change_by_epoch_err'], return_data['pericenter_change_by_epoch_err'])
+        self.assertEqual(result['eccentricity'], return_data['eccentricity'])
+        self.assertEqual(result['eccentricity_err'], return_data['eccentricity_err'])
+        self.assertEqual(result['pericenter'], return_data['pericenter'])
+        self.assertEqual(result['pericenter_err'], return_data['pericenter_err'])
 
 class TestModelEphemerisFactory(unittest.TestCase):
     def setUp(self):
