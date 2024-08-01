@@ -214,14 +214,11 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
 class PrecessionModelEphemeris(BaseModelEphemeris):
     """ Subclass of BaseModelEphemeris that implements a precession fit."""
-    def anomalistic_period(self, P, dwdE):
+    def _anomalistic_period(self, P, dwdE):
        """Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
 
-       Uses the equation
-       ?????
-       ?????
-
-
+       Uses the equation:
+       P / (1 - (1/(2*pi)) * dwdE)
 
        Parameters
        ----------
@@ -237,13 +234,11 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
        result = P/(1 - (1/(2*np.pi))*dwdE)
        return result
     
-    def pericenter(self, W0, dwdE, E):
+    def _pericenter(self, W0, dwdE, E):
        """Calculates the pericenter given a list of epochs, an intial pericenter value, and a change in pericenter with respect to epoch.
 
-       Uses the equation
-        ?????
-        ?????
-
+       Uses the equation:
+        W0 + dwdE * E
 
        Parameters
        ----------
@@ -289,17 +284,17 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         -------
             result: numpy.ndarray[float]
                 A precession function to be used with the LMfit Model, returned as:
-                ?????
-                ?????
+                :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
+                :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
         """
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
            if t_type == 0:
             # transit data
-            result[i] = T0 + E*P - ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+            result[i] = T0 + E*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E))
            elif t_type == 1:
             # occultation data
-            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E*P + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+            result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -692,11 +687,8 @@ class Ephemeris(object):
        """ Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
 
        Uses the equation
-       ?????
-       ?????
-
-
-
+       :math:`\\frac{P}{(1 - \\frac{1}{2*\\pi})*frac{dw}{dE}}`
+       
        Parameters
        ----------
        P: float
@@ -715,8 +707,7 @@ class Ephemeris(object):
        """Calculates the pericenter given a list of epochs, a pericenter value, and a change in pericenter with respect to epoch.
 
        Uses the equation
-        ??????
-        ??????
+        :math:`W0 + \\frac{dw}{dE} * E`
 
 
        Parameters
@@ -739,8 +730,8 @@ class Ephemeris(object):
         """Calculates mid-times using parameters from a precession model ephemeris.
 
         Uses the equation:
-         -  ????? for transit observations
-         -  ????? for occultation observations
+         -  T0 + E*P - (e*anomalistic period)/pi * cos(pericenter) for transit observations
+         -  T0 + (anomalistic period / 2) + (e*anomalistic period)/pi * cos(pericenter) for occultation observations
         to calculate the mid-times over each epoch where T0 is conjunction time, P is sideral period, E is epoch, 
         dwdE is pericenter change with respect to epoch, W0 is intial pericenter, e is eccentricity.
 
