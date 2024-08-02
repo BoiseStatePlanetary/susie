@@ -130,9 +130,15 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         self.assertIsInstance(self.ephemeris, PrecessionModelEphemeris)
 
     def test_anomalistic_period(self):
+        expected_result = np.array()
+        result = self.ephemeris._anomalistic_period()
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
         pass
 
     def test_pericenter(self):
+        expected_result = np.array()
+        result = self.ephemeris._pericenter()
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
         pass
 
     def test_precession_fit(self):

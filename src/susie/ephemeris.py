@@ -16,7 +16,7 @@ class BaseModelEphemeris(ABC):
     def fit_model(self, x, y, yerr, tra_or_occ):
         """Fits a model ephemeris to timing data.
 
-        Defines the structure for fitting a model (linear or quadratic) to timing data. 
+        Defines the structure for fitting a model (linear, quadratic or precession) to timing data. 
         All subclasses must implement this method.
 
         Parameters
@@ -326,7 +326,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                  'period_err': Uncertainty associated with orbital period (in units of days),
                  'conjunction_time': Time of conjunction of exoplanet transit or occultation,
                  'conjunction_time_err': Uncertainty associated with conjunction_time,
-                 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch ,
+                 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
                  'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
                  'eccentricity': The exoplanet pericenter,
                  'eccentricity_err': The uncertainties associated with eccentricity,
@@ -354,19 +354,19 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
 
 
 class ModelEphemerisFactory:
-    """Factory class for selecting which type of ephemeris class (linear or quadratic) to use."""
+    """Factory class for selecting which type of ephemeris class (linear, quadratic or precession) to use."""
     @staticmethod
     def create_model(model_type, x, y, yerr, tra_or_occ):
         """Instantiates the appropriate BaseModelEphemeris subclass and runs fit_model method.
 
-        Based on the given user input of model type (linear or quadratic) the factory will create the 
+        Based on the given user input of model type (linear, quadratic or precession) the factory will create the 
         corresponding subclass of BaseModelEphemeris and run the fit_model method to recieve the model 
         ephemeris return data dictionary.
         
         Parameters
         ----------
             model_type: str
-                The name of the model ephemeris to create, either 'linear' or 'quadratic'.
+                The name of the model ephemeris to create, either 'linear', 'quadratic' or 'precession'.
             x: numpy.ndarray[int]
                 The epoch data as recieved from the TimingData object.
             y: numpy.ndarray[float]
@@ -387,11 +387,18 @@ class ModelEphemerisFactory:
                 If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
                     * 'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
                     * 'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
+                If a precession model was chosen, the same varibales as linear are returned, and additional parameter is included in the dictionary:
+                    * 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
+                    * 'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
+                    * 'eccentricity': The exoplanet pericenter,
+                    * 'eccentricity': The uncertainties associated with eccentricity,
+                    * 'pericenter': The exoplanet inital pericenter value,
+                    * 'pericenter_err': The uncertainties associated with pericenter
         
         Raises
         ------
             ValueError:
-                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear' or 'quadratic'.
+                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear', 'quadratic', or 'precession'.
         """
         models = {
             'linear': LinearModelEphemeris(),
@@ -476,7 +483,7 @@ class Ephemeris(object):
         Parameters
         ----------
             model_type: str
-                Either 'linear' or 'quadratic'. The ephemeris subclass specified to create and run.
+                Either 'linear', 'quadratic', or 'precession'. The ephemeris subclass specified to create and run.
 
         Returns
         -------
@@ -494,11 +501,24 @@ class Ephemeris(object):
                     'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
                     'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
                 }
+                If a precession model was chosen, the same variables as the linear model are returned, and additional parameters are included in the dictionary:
+                {
+                    'period': Estimated orbital period of the exoplanet (in units of days),
+                    'period_err': Uncertainty associated with orbital period (in units of days),
+                    'conjunction_time': Time of conjunction of exoplanet transit or occultation,
+                    'conjunction_time_err': Uncertainty associated with conjunction_time,
+                    'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
+                    'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
+                    'eccentricity': The exoplanet pericenter,
+                    'eccentricity_err': The uncertainties associated with eccentricity,
+                    'pericenter': The exoplanet inital pericenter value,
+                    'pericenter_err': The uncertainties associated with pericenter.
+                }
 
         Raises
         ------
             ValueError:
-                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear' or 'quadratic'.
+                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear', 'quadratic', or 'precession'.
         """
         # Step 1: Get data from transit times obj
         x, y, yerr, tra_or_occ = self._get_timing_data()
