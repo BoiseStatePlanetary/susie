@@ -287,14 +287,19 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                 :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
                 :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
         """
+        # anomalistic_period = self._anomalistic_period(P, dwdE)
+        # pericenter = self._pericenter(W0, dwdE, E)
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
-           if t_type == 0:
-            # transit data
-            result[i] = T0 + E*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E))
-           elif t_type == 1:
-            # occultation data
-            result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E))
+            print(dwdE)
+            print(E[i])
+            if t_type == 0:
+                # transit data
+                result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
+            elif t_type == 1:
+                # occultation data
+                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
+        print(result)
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -334,17 +339,18 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                  'pericenter_err': The uncertainties associated with pericenter.
                 }
         """
+        # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0., P=1.091423, dWdE=0., e=0.049, W0=-74, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984, min=0.0001, max=0.001), e=0.00310, W0=2.62, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
             'period_err': result.params['P'].stderr,
             'conjunction_time': result.params['T0'].value,
             'conjunction_time_err': result.params['T0'].stderr,
-            'pericenter_change_by_epoch': result.params['dWdE'].value,
-            'pericenter_change_by_epoch_err': result.params['dWdE'].stderr,
+            'pericenter_change_by_epoch': result.params['dwdE'].value,
+            'pericenter_change_by_epoch_err': result.params['dwdE'].stderr,
             'eccentricity': result.params['e'].value,
             'eccentricity_err': result.params['e'].stderr,
             'pericenter': result.params['W0'].value,
