@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from lmfit import Model
 import astropy.units as u
 from astropy.time import Time
@@ -291,15 +292,12 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # pericenter = self._pericenter(W0, dwdE, E)
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
-            print(dwdE)
-            print(E[i])
             if t_type == 0:
                 # transit data
                 result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
             elif t_type == 1:
                 # occultation data
                 result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
-        print(result)
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -342,7 +340,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984, min=0.0001, max=0.001), e=0.00310, W0=2.62, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), W0=2.62, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
@@ -643,6 +641,17 @@ class Ephemeris(object):
     def _calc_precession_model_uncertainties(self):
         pass
 
+    def _calc_anomalistic_period(self, model_dict):
+        """TODO
+        """
+        # Add in function for this
+        # Pull model parameters to calculate it
+
+    def _calc_precession_ephemeris(self, model_dict):
+        """TODO"""
+        # function for precession
+        # t0 + 3823 + self._calc_anomalistic_period(model_dict) + ...
+    
     def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates mid-times using parameters from a linear model ephemeris.
         
@@ -1123,12 +1132,15 @@ class Ephemeris(object):
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
-        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0')
+        
+        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0', zorder=10)
         plt.xlabel('Epochs')
-        plt.ylabel('Model Predicted Mid-Times (units)')
-        plt.title(f'Predicted {model_data_dict["model_type"].capitalize()} Model Mid Times over Epochs')
+        plt.ylabel('Mid-Times (JD TDB)')
+        plt.title(f'{model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
+        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        plt.ticklabel_format(style="plain", useOffset=False)
         if save_plot == True:
-            plt.savefig(save_filepath)
+            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
         plt.show()
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
@@ -1155,11 +1167,12 @@ class Ephemeris(object):
         plt.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
         # Add labels and show legend
         plt.xlabel('Epochs')
-        plt.ylabel('Seconds') # TODO: Are these days or seconds?
-        plt.title(f'Uncertainties of Predicted {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid Times')
+        plt.ylabel('Mid-Time Uncertainties (JD TDB)')
+        plt.title(f'Uncertainties of {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
         plt.legend()
+        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
         plt.show()
 
     def plot_oc_plot(self, save_plot=False, save_filepath=None):
@@ -1172,26 +1185,29 @@ class Ephemeris(object):
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
+        DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
         lin_model = self.get_model_ephemeris('linear')
         quad_model = self.get_model_ephemeris('quadratic')
         # y = 0.5 dP/dE * (E - median E)^2
         # TODO: Make this calculation a separate function
-        quad_model_curve = ((1/2)*quad_model['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2)
+        quad_model_curve = (0.5*quad_model['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2) * DAYS_TO_SECONDS
         # plot points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
-        y = self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)
-        plt.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties, 
+        # y = self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)
+        y = (self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)) * DAYS_TO_SECONDS
+        plt.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
         plt.plot(self.timing_data.epochs,
                  (quad_model_curve),
-                 color='#D64309', label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
+                 color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
         plt.legend()
-        plt.xlabel('E - Median E')
+        plt.xlabel('Epoch')
         plt.ylabel('O-C (seconds)')
-        plt.title('Observed Minus Caluclated Plot')
+        plt.title('Observed Minus Calculated Mid-Times')
+        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
         plt.show()
 
     def plot_running_delta_bic(self, save_plot=False, save_filepath=None):
@@ -1223,14 +1239,14 @@ class Ephemeris(object):
                 self.timing_data.tra_or_occ = all_tra_or_occ[:i+1]
                 delta_bic = self.calc_delta_bic()
                 delta_bics.append(delta_bic)
-        plt.scatter(x=self.timing_data.epochs, y=delta_bics, color='#0033A0')
-        plt.grid(True)
-        plt.plot(self.timing_data.epochs, delta_bics, color='#0033A0')
+        plt.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
+        plt.axhline(y=0, color='grey', linestyle='-', zorder=0)
         plt.xlabel('Epoch')
-        plt.ylabel('$\Delta$BIC')
-        plt.title("Value of $\Delta$BIC as Observational Epochs Increase")
+        plt.ylabel(r'$\Delta$BIC')
+        plt.title(r"Value of $\Delta$BIC as Observational Epochs Increase")
+        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
-            plt.savefig(save_filepath)
+            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
         plt.show()
 
 if __name__ == '__main__':
@@ -1300,14 +1316,19 @@ if __name__ == '__main__':
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
+    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=True, save_filepath="lin_model_updated")
+    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=True, save_filepath="quad_model_updated")
 
     # STEP 7: Uncertainties plot
     # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
+    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=True, save_filepath="lin_unc_updated")
+    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=True, save_filepath="quad_unc_updated")
     
     # STEP 8: O-C Plot
-    ephemeris_obj1.plot_oc_plot(save_plot=False)
+    # ephemeris_obj1.plot_oc_plot(save_plot=False)
+    # ephemeris_obj1.plot_oc_plot(save_plot=True, save_filepath="oc_updated")
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-    
+    # ephemeris_obj1.plot_running_delta_bic(save_plot=True, save_filepath="delta_bic_updated")
