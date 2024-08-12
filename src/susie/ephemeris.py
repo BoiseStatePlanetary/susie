@@ -291,15 +291,12 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # pericenter = self._pericenter(W0, dwdE, E)
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
-            print(dwdE)
-            print(E[i])
             if t_type == 0:
                 # transit data
                 result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
             elif t_type == 1:
                 # occultation data
                 result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
-        print(result)
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
