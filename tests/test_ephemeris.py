@@ -62,7 +62,7 @@ class TestLinearModelEphemeris(unittest.TestCase):
             NOTE: The last number should round to 626
         """
         T0 = 0
-        # Index error if enum is used and if reg is used returns all zeros
+        # Index error if enum is used and if reg is used returns all zerosgit
         expected_result = np.array([0, 321, 325, 625])
         result = self.ephemeris.lin_fit(test_epochs, test_P_fits, T0, test_tra_or_occ)
         print(result)
