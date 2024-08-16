@@ -31,7 +31,7 @@ test_epochs_precession = np.array([ -1640, -1346,  -1342, -1067, -1061, -1046,  
 test_mtts_precession = np.array([2454515.525,2454836.403,2454840.769,2455140.91, 2455147.459, 2455163.831,2455172.561])
 test_mtts_err_precession = np.array([0.00043, 0.00028, 0.00062, 0.00042, 0.00043, 0.00032, 0.00036])
 test_tra_or_occ_precession = np.array(['tra','occ','occ','tra', 'tra', 'tra', 'tra'])
-test_tra_or_occ_enum = [0 if i == 'tra' else 1 for i in test_tra_or_occ_precession]
+test_tra_or_occ_enum_precession = [0 if i == 'tra' else 1 for i in test_tra_or_occ_precession]
 test_P_pre =  1.0914233780823739
 test_P_err_pre =  2.5837552101593316e-06
 test_T0_pre =  2454515.5247473116
@@ -65,7 +65,6 @@ class TestLinearModelEphemeris(unittest.TestCase):
         # Index error if enum is used and if reg is used returns all zerosgit
         expected_result = np.array([0, 321, 325, 625])
         result = self.ephemeris.lin_fit(test_epochs, test_P_fits, T0, test_tra_or_occ)
-        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_lin_fit_model(self):
@@ -78,7 +77,6 @@ class TestLinearModelEphemeris(unittest.TestCase):
             'conjunction_time_err':float}    
         """
         result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
-        print(result)
         return_data = {
             'period': 1.0904734088754364,
             'period_err': 0.0006807481006299065,
@@ -160,7 +158,6 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         test_dwdE =  0.000984
         test_W0 =  2.62
         result = self.ephemeris._pericenter(test_W0, test_dwdE, test_epochs_precession)
-        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
         
 
@@ -170,11 +167,11 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             Creates a numpy.ndarray[int] with the length of the test data
         """
         # expected_result = np.array([9.33910858e-04, 3.21423111e+02, 3.25788802e+02, 6.25386429e+02,6.31934975e+02, 6.48306322e+02, 6.57037708e+02])
-        expected_result = np.array([-5.76315154e-04, 3.21424452e+02, 3.25790140e+02, 6.25385378e+02, 6.31933923e+02,  6.48305283e+02,  6.57036676e+02])
-        test_W0 =  2.62
+        expected_result = np.array([-5.76315154e-04, 3.21424452e+02, 3.25790140e+02, 6.25385378e+02, 6.31933923e+02, 6.48305283e+02, 6.57036676e+02])
+        test_W0 = 2.62
         test_dwdE = 0.000984
         test_e = 0.00310
-        result = self.ephemeris.precession_fit(test_epochs, 0, test_P_fits, test_dwdE, test_W0, test_e, test_tra_or_occ_enum)
+        result = self.ephemeris.precession_fit(test_epochs_precession, 0, test_P_fits, test_dwdE, test_W0, test_e, test_tra_or_occ_enum_precession)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_precession_fit_model(self):
