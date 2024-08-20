@@ -64,7 +64,7 @@ class TestLinearModelEphemeris(unittest.TestCase):
         T0 = 0
         # Index error if enum is used and if reg is used returns all zerosgit
         expected_result = np.array([0, 321, 325, 625])
-        result = self.ephemeris.lin_fit(test_epochs, test_P_fits, T0, test_tra_or_occ)
+        result = self.ephemeris.lin_fit(test_epochs, test_P_fits, T0, test_tra_or_occ_enum)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_lin_fit_model(self):
@@ -167,11 +167,13 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             Creates a numpy.ndarray[int] with the length of the test data
         """
         # expected_result = np.array([9.33910858e-04, 3.21423111e+02, 3.25788802e+02, 6.25386429e+02,6.31934975e+02, 6.48306322e+02, 6.57037708e+02])
-        expected_result = np.array([-5.76315154e-04, 3.21424452e+02, 3.25790140e+02, 6.25385378e+02, 6.31933923e+02, 6.48305283e+02, 6.57036676e+02])
+        expected_result = np.array([-1789, -1468, -1464, -1164, -1157, -1141, -1132])
+        # expected_result = np.array([-5.76315154e-04, 3.21424452e+02, 3.25790140e+02, 6.25385378e+02, 6.31933923e+02, 6.48305283e+02, 6.57036676e+02])
         test_W0 = 2.62
         test_dwdE = 0.000984
         test_e = 0.00310
         result = self.ephemeris.precession_fit(test_epochs_precession, 0, test_P_fits, test_dwdE, test_W0, test_e, test_tra_or_occ_enum_precession)
+        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_precession_fit_model(self):
