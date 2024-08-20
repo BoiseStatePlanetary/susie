@@ -151,7 +151,6 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         result = self.ephemeris._anomalistic_period(test_P_fits, test_dwdE)
         self.assertTrue(expected_result, result)
         
-
     def test_pericenter(self):
         # expected_result = np.array([2.62, 2.909296, 2.913232, 2.9152, 2.95456, 2.9644, 2.97424])
         expected_result = np.array([1.00624,  1.295536, 1.299472, 1.570072, 1.575976, 1.590736, 1.598608])
@@ -160,7 +159,6 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         result = self.ephemeris._pericenter(test_W0, test_dwdE, test_epochs_precession)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
         
-
     def test_precession_fit(self):
         """Tests that the precession_fit function works.
 
@@ -172,6 +170,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         test_dwdE = 0.000984
         test_e = 0.00310
         result = self.ephemeris.precession_fit(test_epochs_precession, 0, test_P_fits, test_dwdE, test_W0, test_e, test_tra_or_occ_enum_precession)
+        print(f"\n\n\n {result}, \n{expected_result} \n\n\n")
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_precession_fit_model(self):
@@ -191,7 +190,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             'pericenter_err': float
             }
         """
-        result = self.ephemeris.fit_model(test_epochs, test_mtts, test_mtts_err, test_tra_or_occ)
+        result = self.ephemeris.fit_model(test_epochs_precession, test_mtts_precession, test_mtts_err_precession, test_tra_or_occ_precession)
         return_data = {
             'period': 1.0914233780823739,
             'period_err': 2.5837552101593316e-06,

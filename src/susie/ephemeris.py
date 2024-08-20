@@ -67,7 +67,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
                     :math:`P*E + T_0` if the data point is an observed transit (denoted by 0)
                     :math:`P*E + (T_0 + \\frac{1}{2}*P)` if the data point is an observed occultation (denoted by 1)
         """
-        result = np.zeros_like(E)
+        result = np.zeros(len(E))
         for i, t_type in enumerate(tra_or_occ):
             if t_type == 0:
                 # transit data
@@ -154,7 +154,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
                     :math:`\\frac{1}{2}*\\frac{dP}{dE}*E^2 + P*E + T_0` if the data point is an observed transit (denoted by 0)
                     :math:`\\frac{1}{2}*\\frac{dP}{dE}*E^2 + P*E + (T_0 + \\frac{1}{2}*P)` if the data point is an observed occultation (denoted by 1)
         """
-        result = np.zeros_like(E)
+        result = np.zeros(len(E))
         for i, t_type in enumerate(tra_or_occ):
             if t_type == 0:
                 # transit data
@@ -290,7 +290,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         """
         # anomalistic_period = self._anomalistic_period(P, dwdE)
         # pericenter = self._pericenter(w0, dwdE, E)
-        result = np.zeros_like(E)
+        result = np.zeros(len(E))
         for i, t_type in enumerate(tra_or_occ):
             if t_type == 0:
                 # transit data
@@ -340,7 +340,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
