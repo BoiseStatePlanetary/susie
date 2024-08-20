@@ -235,11 +235,11 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
        result = P/(1 - (1/(2*np.pi))*dwdE)
        return result
     
-    def _pericenter(self, W0, dwdE, E):
+    def _pericenter(self, w0, dwdE, E):
        """Calculates the pericenter given a list of epochs, an intial pericenter value, and a change in pericenter with respect to epoch.
 
        Uses the equation:
-        W0 + dwdE * E
+        w0 + dwdE * E
 
        Parameters
        ----------
@@ -247,17 +247,17 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             The epochs.
         dwdE: float
             Change in pericenter with respect to epoch.
-        W0: int
+        w0: int
             The intial pericenter.
 
         Returns
         -------
            A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
        """
-       result = W0 + dwdE*E
+       result = w0 + dwdE*E
        return result
     
-    def precession_fit(self, E, T0, P, dwdE, W0, e, tra_or_occ):
+    def precession_fit(self, E, T0, P, dwdE, w0, e, tra_or_occ):
         """Calculates a precession function with given data.
 
         Uses the equation 
@@ -278,26 +278,26 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                 The initial mid-time, also known as conjunction time.
             tra_or_occ: numpy.ndarray[str]
                 Indicates if the data is from a transit or occultation.
-            W0: int
+            w0: int
                 The intial pericenter.
         
         Returns
         -------
             result: numpy.ndarray[float]
                 A precession function to be used with the LMfit Model, returned as:
-                :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
-                :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(W0, dwdE, E))`
+                :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
+                :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
         """
         # anomalistic_period = self._anomalistic_period(P, dwdE)
-        # pericenter = self._pericenter(W0, dwdE, E)
+        # pericenter = self._pericenter(w0, dwdE, E)
         result = np.zeros_like(E)
         for i, t_type in enumerate(tra_or_occ):
             if t_type == 0:
                 # transit data
-                result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
+                result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
             elif t_type == 1:
                 # occultation data
-                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(W0, dwdE, E[i]))
+                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -340,19 +340,19 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), W0=2.62, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0., P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
             'period_err': result.params['P'].stderr,
             'conjunction_time': result.params['T0'].value,
             'conjunction_time_err': result.params['T0'].stderr,
-            'pericenter_change_by_epoch': result.params['dwdE'].value,
-            'pericenter_change_by_epoch_err': result.params['dwdE'].stderr,
             'eccentricity': result.params['e'].value,
             'eccentricity_err': result.params['e'].stderr,
-            'pericenter': result.params['W0'].value,
-            'pericenter_err': result.params['W0'].stderr
+            'pericenter': result.params['w0'].value,
+            'pericenter_err': result.params['w0'].stderr,
+            'pericenter_change_by_epoch': result.params['dwdE'].value,
+            'pericenter_change_by_epoch_err': result.params['dwdE'].stderr
         }
         return(return_data)
 
@@ -560,6 +560,49 @@ class Ephemeris(object):
         else:
             raise ValueError('Only linear, quadratic, and precession models are supported at this time.')
     
+    def _calc_anomalistic_period(self, P, dwdE):
+       """ Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
+
+       Uses the equation
+       :math:`\\frac{P}{(1 - \\frac{1}{2*\\pi})*frac{dw}{dE}}`
+       
+       Parameters
+       ----------
+       P: float
+           The exoplanet sideral orbital period.
+        dwdE: float
+           Change in pericenter with respect to epoch.
+
+        Returns
+        -------
+           A float of the calculated anomalistic period.
+       """
+       result = P/(1 - (1/(2*np.pi))*dwdE)
+       return result
+    
+    def _calc_pericenter(self, w0, dwdE, E):
+       """Calculates the pericenter given a list of epochs, a pericenter value, and a change in pericenter with respect to epoch.
+
+       Uses the equation
+        :math:`w0 + \\frac{dw}{dE} * E`
+
+
+       Parameters
+       ----------
+        E: numpy.ndarray[int]
+            The epochs.
+        dwdE: float
+            Change in pericenter with respect to epoch.
+        w0: int
+            The pericenter.
+
+        Returns
+        -------
+           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
+       """
+       result = w0 + dwdE*E
+       return result
+    
     def _calc_linear_model_uncertainties(self, T0_err, P_err):
         """Calculates the uncertainties of a given linear model when compared to actual data in TimingData.
         
@@ -640,17 +683,6 @@ class Ephemeris(object):
     
     def _calc_precession_model_uncertainties(self):
         pass
-
-    def _calc_anomalistic_period(self, model_dict):
-        """TODO
-        """
-        # Add in function for this
-        # Pull model parameters to calculate it
-
-    def _calc_precession_ephemeris(self, model_dict):
-        """TODO"""
-        # function for precession
-        # t0 + 3823 + self._calc_anomalistic_period(model_dict) + ...
     
     def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates mid-times using parameters from a linear model ephemeris.
@@ -718,87 +750,44 @@ class Ephemeris(object):
                 result.append((T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i])
         return np.array(result)
     
-    def anomalistic_period(self, P, dwdE):
-       """ Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
-
-       Uses the equation
-       :math:`\\frac{P}{(1 - \\frac{1}{2*\\pi})*frac{dw}{dE}}`
-       
-       Parameters
-       ----------
-       P: float
-           The exoplanet sideral orbital period.
-        dwdE: float
-           Change in pericenter with respect to epoch.
-
-        Returns
-        -------
-           A float of the calculated anomalistic period.
-       """
-       result = P/(1 - (1/(2*np.pi))*dwdE)
-       return result
-    
-    def pericenter(self, W0, dwdE, E):
-       """Calculates the pericenter given a list of epochs, a pericenter value, and a change in pericenter with respect to epoch.
-
-       Uses the equation
-        :math:`W0 + \\frac{dw}{dE} * E`
-
-
-       Parameters
-       ----------
-        E: numpy.ndarray[int]
-            The epochs.
-        dwdE: float
-            Change in pericenter with respect to epoch.
-        W0: int
-            The pericenter.
-
-        Returns
-        -------
-           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
-       """
-       result = W0 + dwdE*E
-       return result
-    
-    def _calc_precession_ephemeris(self, E, P, T0, W0, dwdE, e, tra_or_occ):
+    def _calc_precession_ephemeris(self, E, P, T0, e, w0, dwdE):
         """Calculates mid-times using parameters from a precession model ephemeris.
 
         Uses the equation:
          -  T0 + E*P - (e*anomalistic period)/pi * cos(pericenter) for transit observations
          -  T0 + (anomalistic period / 2) + (e*anomalistic period)/pi * cos(pericenter) for occultation observations
         to calculate the mid-times over each epoch where T0 is conjunction time, P is sideral period, E is epoch, 
-        dwdE is pericenter change with respect to epoch, W0 is intial pericenter, e is eccentricity.
+        dwdE is pericenter change with respect to epoch, w0 is intial pericenter, e is eccentricity.
 
         Parameters
         ----------
-            e: float
-                The eccentricity.
             E: numpy.ndarray[int]
                 The epochs.
-            dwdE: float
-                Change in pericenter with respect to epoch.
             P: float
                 The exoplanet sideral orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
+            e: float
+                The eccentricity.
+            w0: int
+                The argument of periastron (initial pericenter).
+            dwdE: float
+                The precession rate, or the change in pericenter with respect to epoch.
             tra_or_occ: numpy.ndarray[str]
                 Indicates if the data is from a transit or occultation.
-            W0: int
-                The intial pericenter.  
 
         Returns
         -------
             A numpy array of mid-times calculated over each epoch using the equation above.
         """ 
         result = np.zeros_like(E)
-        for i, t_type in enumerate(tra_or_occ):
+        for i, t_type in enumerate(self.timing_data.tra_or_occ):
            if t_type == 0:
             # transit data
-            result[i] = T0 + E*P - ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+            result[i] = T0 + E*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E))
            elif t_type == 1:
             # occultation data
-            result[i] = T0 + self.anomalistic_period(P, dwdE)/2 + E(self.anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self.anomalistic_period(P, dwdE))/np.pi)*np.cos(self.pericenter(W0, dwdE, E))
+            result[i] = T0 + self._calc_anomalistic_period(P, dwdE)/2 + E(self._calc_anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E))
         return result
    
    
@@ -891,13 +880,15 @@ class Ephemeris(object):
                         }
         """
         model_ephemeris_data = self._get_model_parameters(model_type)
-        model_ephemeris_data['model_type'] = model_type
+        model_ephemeris_data["model_type"] = model_type
         # Once we get parameters back, we call _calc_linear_ephemeris 
-        if model_type == 'linear':
+        if model_type == "linear":
             # Return dict with parameters and model data
-            model_ephemeris_data['model_data'] = self._calc_linear_ephemeris(self.timing_data.epochs, model_ephemeris_data['period'], model_ephemeris_data['conjunction_time'])
-        elif model_type == 'quadratic':
-            model_ephemeris_data['model_data'] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data['period'], model_ephemeris_data['conjunction_time'], model_ephemeris_data['period_change_by_epoch'])
+            model_ephemeris_data["model_data"] = self._calc_linear_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"])
+        elif model_type == "quadratic":
+            model_ephemeris_data["model_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["period_change_by_epoch"])
+        elif model_type == "precession":
+            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"], )
         return model_ephemeris_data
     
     def get_ephemeris_uncertainties(self, model_params):
@@ -1295,40 +1286,38 @@ if __name__ == '__main__':
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
-    # # LINEAR MODEL
-    linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
-    print(linear_model_data)
-    linear_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_model_data)
-    # print(linear_model_uncertainties)
-    lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
-    # print(lin_bic)
-    # # QUADRATIC MODEL
-    quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
-    # print(quad_model_data)
-    quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
-    # print(quad_model_uncertainties)
-    quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
-    # print(quad_bic)
-    # STEP 5.5: Get the delta BIC value for both models
-    delta_bic = ephemeris_obj1.calc_delta_bic()
-    # print(delta_bic)
+    # # # LINEAR MODEL
+    # linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
+    # # print(linear_model_data)
+    # linear_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_model_data)
+    # # print(linear_model_uncertainties)
+    # lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
+    # # print(lin_bic)
+    # # # QUADRATIC MODEL
+    # quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
+    # # print(quad_model_data)
+    # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
+    # # print(quad_model_uncertainties)
+    # quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
+    # # print(quad_bic)
+    # # STEP 5.5: Get the delta BIC value for both models
+    # delta_bic = ephemeris_obj1.calc_delta_bic()
+    # # print(delta_bic)
+
+    # PRECESSION MODEL
+    precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
+    print(precession_model_data)
 
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
-    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=True, save_filepath="lin_model_updated")
-    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=True, save_filepath="quad_model_updated")
 
     # STEP 7: Uncertainties plot
     # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
-    ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=True, save_filepath="lin_unc_updated")
-    ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=True, save_filepath="quad_unc_updated")
     
     # STEP 8: O-C Plot
     # ephemeris_obj1.plot_oc_plot(save_plot=False)
-    # ephemeris_obj1.plot_oc_plot(save_plot=True, save_filepath="oc_updated")
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
-    # ephemeris_obj1.plot_running_delta_bic(save_plot=True, save_filepath="delta_bic_updated")
