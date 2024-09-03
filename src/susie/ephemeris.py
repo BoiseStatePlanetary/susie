@@ -1,15 +1,18 @@
 from abc import ABC, abstractmethod
 import numpy as np
+import numpy.ma as ma
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 from lmfit import Model
+from astropy.units import Quantity
 import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord
+from astropy.constants import R_earth, R_sun, au
 from astroplan import FixedTarget, Observer, EclipsingSystem
+from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
 # from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
-# from timing_data import TimingData # Use this for running this file
+# from .timing_data import TimingData # Use this for running tests
+from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -1064,7 +1067,117 @@ class Ephemeris(object):
             raise ValueError("Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
         return target
     
-    def get_observing_schedule(self, model_data_dict, timezone, obs_lat=None, obs_lon=None, obs_elevation=0.0, obs_name=None, obj_ra=None, obj_dec=None, obj_name=None, system_name=None):
+    def _query_nasa_exoplanet_archive(self, obj_name, ra=None, dec=None, select_query=None):
+        """Queries the NASA Exoplanet Archive for system parameters.
+
+        Parameters
+        ----------
+            obj_name: str
+                The name of the exoplanet object.
+            ra: float (Optional)
+                The right ascension of the object to observe in the sky (most likely a planet or star).
+            dec: float (Optional)
+                The declination of the object to observe in the sky (most likely a planet or star).
+            select_query: str
+                The select query string. For examples please see the Astroquery documentation.
+            
+        Returns
+        -------
+            obj_data: An astropy Table object
+                The table of data returned from the NASA Exoplanet Archive query. For more information on 
+                how to work with these tables, please see the Astroquery NASA Exoplanet Archive documentation.
+        """
+        # Get object data
+        obj_data = None
+        if obj_name is not None:
+            if select_query:
+                obj_data = NasaExoplanetArchive.query_object(obj_name, select=select_query)
+            else:
+                obj_data = NasaExoplanetArchive.query_object(obj_name)
+        elif ra is not None and dec is not None:
+            if select_query:
+                obj_data = NasaExoplanetArchive.query_region(
+                    table="pscomppars", coordinates=SkyCoord(ra=ra*u.deg, dec=dec*u.deg),
+                    radius=1.0*u.deg, select=select_query)
+            else:
+                obj_data = NasaExoplanetArchive.query_region(
+                    table="pscomppars", coordinates=SkyCoord(ra=ra*u.deg, dec=dec*u.deg), radius=1.0*u.deg)
+        else:
+            raise ValueError("Object must be specified with either (1) a recognized object name in the NASA Exoplanet Archive or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
+        # Check that the returned data is not empty
+        if obj_data is not None and len(obj_data) > 0:
+            return obj_data
+        else:
+            if obj_name is not None:
+                raise ValueError(f"Nothing found for {obj_name} in the NASA Exoplanet Archive. Please check that your object is accepted and contains data on the archive's homepage.")
+            elif ra is not None and dec is not None:
+                raise ValueError(f"Nothing found for the coordinates {ra}, {dec} in the NASA Exoplanet Archive. Please check that your values are correct and are in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
+    
+    def _calc_eclipse_duration(self, P, R_star, R_planet, a, b, i):
+        """
+        TODO: Add units to this
+
+        Parameters
+        ----------
+            P: float
+                Orbital period of the exoplanet.
+            R_star: float
+                Stellar radius
+            R_planet: float
+                Planetary radius
+            a: float
+                Semi-major axis of the exoplanet orbit
+            b: float
+                Impact parameter
+            i: float
+                Inclination
+
+        """
+        k = R_planet/R_star
+        transit_duration = (P/np.pi) * (np.arcsin((R_star/a) * (((1+k)**2-(b)**2)**1/2) / np.sin(i)))
+        return transit_duration
+    
+    def _get_eclipse_system_params(self, obj_name, ra=None, dec=None):
+        """Queries the NASA Exoplanet Archive for system parameters used in eclipse duration calculation.
+
+        Parameters
+        ----------
+            obj_name: str
+                The name of the exoplanet object.
+            ra: float (Optional)
+                The right ascension of the object to observe in the sky (most likely a planet or star).
+            dec: float (Optional)
+                The declination of the object to observe in the sky (most likely a planet or star).
+            
+        Returns
+        -------
+        """
+        nea_data = self._query_nasa_exoplanet_archive(obj_name, select_query="pl_rade,st_rad,pl_orbsmax,pl_imppar,pl_orbincl")
+        params = ["pl_rade", "st_rad", "pl_orbsmax", "pl_imppar", "pl_orbincl"]
+        return_data = {}
+        for param in params:
+            for val in nea_data[param]:
+                # If it is real value and not nan
+                if not(np.isnan(val)):
+                    val_to_store = val
+                    if isinstance(val, Quantity) and hasattr(val, 'mask'):
+                        # If the value is masked, just store value
+                        val_to_store = val.value
+                    if param == "pl_rade":
+                        # Convert earth radii to km
+                        val_to_store = (val_to_store * R_earth).to(u.km)
+                    elif param == "st_rad":
+                        # Convert solar radii to km
+                        val_to_store = (val_to_store * R_sun).to(u.km)
+                        # return_data[param] = val_km.value
+                    elif param == "pl_orbsmax":
+                        val_to_store = (val_to_store * au).to(u.km)
+                    return_data[param] = val_to_store
+                    # Break the param value loop once a real value has been found
+                    break
+        return return_data
+    
+    def get_observing_schedule(self, model_data_dict, timezone, obs_lat=None, obs_lon=None, obs_elevation=0.0, obs_name=None, obj_ra=None, obj_dec=None, obj_name=None, system_name=None, R_star=None, R_planet=None, a=None, b=None, i=None):
         """Returns a list of observable future transits for the target object
 
         Parameters
@@ -1095,6 +1208,24 @@ class Ephemeris(object):
             system_name: str (Optional)
                 The name of your eclipsing system. An Optional parameter to help you keep track of your 
                 `EclipsingSystem` object.
+            R_star: float
+                Stellar radius. Will be used to calculate eclipse duration. If not given, values will be pulled 
+                from the NASA Exoplanet Archive.
+            R_planet: float
+                Planetary radius. Will be used to calculate eclipse duration. If not given, values will be pulled 
+                from the NASA Exoplanet Archive.
+            a: float
+                Semi-major axis of the exoplanet orbit. Will be used to calculate eclipse duration. If not given, values will be pulled 
+                from the NASA Exoplanet Archive.
+            b: float
+                Impact parameter. Will be used to calculate eclipse duration. If not given, values will be pulled 
+                from the NASA Exoplanet Archive.
+            i: float
+                Inclination. Will be used to calculate eclipse duration. If not given, values will be pulled 
+                from the NASA Exoplanet Archive.
+            eclipse_duration: float
+                The full duration of the exoplanet transit from ingress to egress. If not given, will calculate
+                using either provided system parameters or parameters pulled from the NASA Exoplanet Archive.
         """
         observer = self._create_observer_obj(timezone, coords=(obs_lon, obs_lat, obs_elevation), name=obs_name)
         target = self._create_target_obj(coords=(obj_ra, obj_dec), name=obj_name)
@@ -1106,6 +1237,8 @@ class Ephemeris(object):
         orbital_period = model_data_dict['period'] * u.day
         # TODO: Need to use the equation from the book for the eclipse duration
         eclipse_duration = 0.1277 * u.day
+        system_params = self._get_eclipse_system_params(obj_name, obj_ra, obj_dec)
+        eclipse_duration = self._calc_eclipse_duration(model_data_dict["period"], system_params["st_rad"], system_params["pl_rade"], system_params["pl_orbsmax"], system_params["pl_imppar"], system_params["pl_orbincl"])
         eclipsing_system = EclipsingSystem(primary_eclipse_time=primary_eclipse_time,
                                 orbital_period=orbital_period, duration=eclipse_duration,
                                 name=system_name)
@@ -1305,8 +1438,8 @@ if __name__ == '__main__':
     # # print(delta_bic)
 
     # PRECESSION MODEL
-    precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
-    print(precession_model_data)
+    # precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
+    # print(precession_model_data)
 
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
@@ -1321,3 +1454,8 @@ if __name__ == '__main__':
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+
+    nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
+    # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
+    print(nea_data)
+    print(np.arcsin(0.3642601363) * 0.3474 * 24)
