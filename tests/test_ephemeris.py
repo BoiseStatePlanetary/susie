@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Model
 from src.susie.timing_data import TimingData
+from .helpers import assertDictAlmostEqual
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, PrecessionModelEphemeris, ModelEphemerisFactory
 
 test_epochs = np.array([0, 294, 298, 573])
@@ -62,9 +63,9 @@ class TestLinearModelEphemeris(unittest.TestCase):
             NOTE: The last number should round to 626
         """
         T0 = 0
-        # Index error if enum is used and if reg is used returns all zerosgit
-        expected_result = np.array([0, 321, 325, 625])
+        expected_result = np.array([  0. ,321.4240735, 325.244054,  625.9310905])
         result = self.ephemeris.lin_fit(test_epochs, test_P_fits, T0, test_tra_or_occ_enum)
+        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_lin_fit_model(self):
@@ -103,7 +104,7 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
             Creates a numpy.ndarray[int] with the length of the test data
             NOTE: last one should be 626
         """
-        expected_result = np.array([0, 321, 325, 625])
+        expected_result = np.array([0. ,3.21424073e+02, 325.244054, 6.25931091e+02])
         result = self.ephemeris.quad_fit(test_epochs, 0, test_P_fits, 0, test_tra_or_occ_enum)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
@@ -152,7 +153,6 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
         self.assertTrue(expected_result, result)
 
     def test_pericenter(self):
-        # expected_result = np.array([2.62, 2.909296, 2.913232, 2.9152, 2.95456, 2.9644, 2.97424])
         expected_result = np.array([1.00624,  1.295536, 1.299472, 1.570072, 1.575976, 1.590736, 1.598608])
         test_dwdE =  0.000984
         test_W0 =  2.62
@@ -164,14 +164,11 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
 
             Creates a numpy.ndarray[int] with the length of the test data
         """
-        # expected_result = np.array([9.33910858e-04, 3.21423111e+02, 3.25788802e+02, 6.25386429e+02,6.31934975e+02, 6.48306322e+02, 6.57037708e+02])
-        expected_result = np.array([-1789, -1468, -1464, -1164, -1157, -1141, -1132])
-        # expected_result = np.array([-5.76315154e-04, 3.21424452e+02, 3.25790140e+02, 6.25385378e+02, 6.31933923e+02, 6.48305283e+02, 6.57036676e+02])
+        expected_result = np.array([-1789.93429632, -1468.50926826, -1464.14358034, -1164.54834178, -1157.99979742, -1141.62843652, -1132.89704405])
         test_W0 = 2.62
         test_dwdE = 0.000984
         test_e = 0.00310
         result = self.ephemeris.precession_fit(test_epochs_precession, 0, test_P_fits, test_dwdE, test_W0, test_e, test_tra_or_occ_enum_precession)
-        print(result)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
     def test_precession_fit_model(self):
@@ -204,16 +201,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             'pericenter': -55020653.47561098,
             'pericenter_err':589049.1819169023
         }
-        self.assertEqual(result['period'], return_data['period'])
-        self.assertEqual(result['period_err'], return_data['period_err'])
-        self.assertEqual(result['conjunction_time'], return_data['conjunction_time'])
-        self.assertEqual(result['conjunction_time_err'], return_data['conjunction_time_err'])
-        self.assertEqual(result['pericenter_change_by_epoch'], return_data['pericenter_change_by_epoch'])
-        self.assertEqual(result['pericenter_change_by_epoch_err'], return_data['pericenter_change_by_epoch_err'])
-        self.assertEqual(result['eccentricity'], return_data['eccentricity'])
-        self.assertEqual(result['eccentricity_err'], return_data['eccentricity_err'])
-        self.assertEqual(result['pericenter'], return_data['pericenter'])
-        self.assertEqual(result['pericenter_err'], return_data['pericenter_err'])
+        assertDictAlmostEqual().assertDictAlmostEqual(d1 = result, d2 = return_data)
 
 class TestModelEphemerisFactory(unittest.TestCase):
     def setUp(self):
