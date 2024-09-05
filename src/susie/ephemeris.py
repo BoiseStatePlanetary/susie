@@ -10,9 +10,9 @@ from astropy.coordinates import SkyCoord
 from astropy.constants import R_earth, R_sun, au
 from astroplan import FixedTarget, Observer, EclipsingSystem
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
+from susie.timing_data import TimingData # Use this for package pushes
 # from .timing_data import TimingData # Use this for running tests
-from timing_data import TimingData # Use this for running this file
+# from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -1450,12 +1450,12 @@ if __name__ == '__main__':
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
     
     # STEP 8: O-C Plot
-    # ephemeris_obj1.plot_oc_plot(save_plot=False)
+    ephemeris_obj1.plot_oc_plot(save_plot=False)
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
 
-    nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
-    # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
-    print(nea_data)
-    print(np.arcsin(0.3642601363) * 0.3474 * 24)
+    # nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
+    # # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
+    # print(nea_data)
+    # print(np.arcsin(0.3642601363) * 0.3474 * 24)

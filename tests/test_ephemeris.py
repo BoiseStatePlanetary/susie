@@ -204,6 +204,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             'pericenter': -55020653.47561098,
             'pericenter_err':589049.1819169023
         }
+        print(f"\n\n\n {result},{return_data}\n\n\n")
         self.assertEqual(result['period'], return_data['period'])
         self.assertEqual(result['period_err'], return_data['period_err'])
         self.assertEqual(result['conjunction_time'], return_data['conjunction_time'])
