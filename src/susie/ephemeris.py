@@ -10,8 +10,8 @@ from astropy.coordinates import SkyCoord
 from astropy.constants import R_earth, R_sun, au
 from astroplan import FixedTarget, Observer, EclipsingSystem
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -783,15 +783,15 @@ class Ephemeris(object):
         -------
             A numpy array of mid-times calculated over each epoch using the equation above.
         """ 
-        result = np.zeros_like(E)
+        result = []
         for i, t_type in enumerate(self.timing_data.tra_or_occ):
-           if t_type == 0:
-            # transit data
-            result[i] = T0 + E*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E))
-           elif t_type == 1:
-            # occultation data
-            result[i] = T0 + self._calc_anomalistic_period(P, dwdE)/2 + E(self._calc_anomalistic_period(P, dwdE)(1 - (1/(2*np.pi))*dwdE)) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E))
-        return result
+            if t_type == "tra":
+                # transit data
+                result.append(T0 + E[i]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
+            elif t_type == "occ":
+                # occultation data
+                result.append(T0 + self._calc_anomalistic_period(P, dwdE)/2 + E[i]*(self._calc_anomalistic_period(P, dwdE)*(1 - (1/(2*np.pi))*dwdE)) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
+        return np.array(result)
    
    
     def _calc_chi_squared(self, model_mid_times):
@@ -891,7 +891,7 @@ class Ephemeris(object):
         elif model_type == "quadratic":
             model_ephemeris_data["model_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["period_change_by_epoch"])
         elif model_type == "precession":
-            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"], )
+            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"])
         return model_ephemeris_data
     
     def get_ephemeris_uncertainties(self, model_params):
@@ -1428,7 +1428,7 @@ if __name__ == '__main__':
     # # print(lin_bic)
     # # # QUADRATIC MODEL
     # quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
-    # # print(quad_model_data)
+    # print(quad_model_data)
     # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
     # # print(quad_model_uncertainties)
     # quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
@@ -1438,8 +1438,8 @@ if __name__ == '__main__':
     # # print(delta_bic)
 
     # PRECESSION MODEL
-    # precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
-    # print(precession_model_data)
+    precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
+    print(precession_model_data)
 
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
@@ -1450,7 +1450,7 @@ if __name__ == '__main__':
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
     
     # STEP 8: O-C Plot
-    ephemeris_obj1.plot_oc_plot(save_plot=False)
+    # ephemeris_obj1.plot_oc_plot(save_plot=False)
 
     # STEP 9: Running delta BIC plot
     # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
