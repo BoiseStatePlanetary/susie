@@ -139,6 +139,22 @@ class TestQuadraticModelEphemeris(unittest.TestCase):
         self.assertEqual(result['period_change_by_epoch_err'], return_data['period_change_by_epoch_err'])
 
 class TestPrecessionModelEphemeris(unittest.TestCase):
+    def assertDictAlmostEqual(self, d1, d2, msg=None, places=7):
+        # Helper function used to check if the dictionaries are equal to eachother
+        # check if both inputs are dicts
+        self.assertIsInstance(d1, dict, 'First argument is not a dictionary')
+        self.assertIsInstance(d2, dict, 'Second argument is not a dictionary')
+        # check if both inputs have the same keys
+        self.assertEqual(d1.keys(), d2.keys())
+        # check each key
+        for key, value in d1.items():
+            if isinstance(value, dict):
+                self.assertDictAlmostEqual(d1[key], d2[key], msg=msg)
+            elif isinstance(value, np.ndarray):
+                self.assertTrue(np.allclose(d1[key], d2[key], rtol=1e-05, atol=1e-08))
+            else:
+                self.assertAlmostEqual(d1[key], d2[key], places=places, msg=msg)
+    
     def setUp(self):
         self.ephemeris = PrecessionModelEphemeris()
 
@@ -201,7 +217,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             'pericenter': -55020653.47561098,
             'pericenter_err':589049.1819169023
         }
-        assertDictAlmostEqual().assertDictAlmostEqual(d1 = result, d2 = return_data)
+        self.assertDictAlmostEqual(result, return_data)
 
 class TestModelEphemerisFactory(unittest.TestCase):
     def setUp(self):
