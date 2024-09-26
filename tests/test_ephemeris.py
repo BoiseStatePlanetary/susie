@@ -590,6 +590,74 @@ class TestEphemeris(unittest.TestCase):
         result = self.ephemeris._subtract_plotting_parameters(model_data,test_T0_linear,test_P_linear,test_epochs)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
 
+    # Astroplan Test
+    # observer obj
+    def test_obs_obj_lat_long(self):
+        #  tests that if (lat, long) is passed in creates  observer obj
+        pass
+    def test_obs_obj_name(self):
+        # tests that if a name is passed in uses observer.at_site
+        pass
+    def test_suc_return_obs_obj(self):
+        # tests for type astroplan.observer , name = str, coord = (float, float)
+        pass
+    def test_obs_obj_value_err(self):
+        # tests for value error if no name or lat or long
+        pass
+
+    # target obj
+    def test_target_obj_ra_dec(self):
+        #  tests that if coords = (ra,dec) is passed in creates a fixed target with the ra and dec 
+        # check the ra and dec is returned
+        pass
+    def test_target_obj_name(self):
+        # tests that if a name is passed in uses fixedTarget.from_name
+        pass
+    def test_suc_return_target_obj(self):
+        # tests for type astroplan.FixedTarget , name = str, coord = (float, float)
+        pass
+    def test_target_obj_value_err(self):
+        # tests for value error if no name or ra or dec
+        pass
+    
+    # query NASA
+    def test_input_value_err(self):
+        # tests for error if no coords or name
+        pass
+    def test_nothing_found_name_value_err(self):
+        # tests for if nothing is found in the query for the name
+        pass
+    def test_nothing_found_ra_dec_value_err(self):
+        # tests for if nothing is found in the query for the ra and dec
+        pass
+    def test_len_over_zero(self):
+        # tests the obj data length is not zero
+        pass
+
+    # eclipse duration
+    def test_eclipse_duration(self):
+        # tests calc eclipse duration
+        pass
+
+    # eclipse system params
+    def test_eclipse_params_type(self):
+        # tests type float 
+        pass
+    def test_eclipse_params_not_empty(self):
+        # tests that theres values but not using any values
+        pass
+    
+    # observing schedule
+    def test_primary_eclipse(self):
+        # tests for the primary eclipse time using our data 
+        # is the last eclipse time
+        pass
+
+    def test_orbital_period(self):
+        # tests its a float, units and value
+        # from model period
+        pass
+
 
     if __name__ == '__main__':
             unittest.main()
