@@ -10,8 +10,8 @@ from astropy.coordinates import SkyCoord
 from astropy.constants import R_earth, R_sun, au
 from astroplan import FixedTarget, Observer, EclipsingSystem
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
+from susie.timing_data import TimingData # Use this for package pushes
+# from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -855,10 +855,10 @@ class Ephemeris(object):
         # STEP 2: calculate X2 with observed data and model data
         return np.sum(((observed_data - model_mid_times)/uncertainties)**2)
     
-    def _subtract_plotting_parameters(self, model_mid_times, T0, P, E):
-        """Subtracts the first terms to show smaller changes for plotting functions.
+    def _subtract_linear_parameters(self, model_mid_times, T0, P, E):
+        """Subtracts the linear terms to show smaller changes in other model parameters for plotting functions.
 
-        Uses the equation:
+        Uses the equations:
          - (model midtime - T0 - PE) for transit observations
          - (model midtime - T0 - (½P) - PE) for occultation observations
         
@@ -1012,7 +1012,7 @@ class Ephemeris(object):
         # Step 3: Calculate BIC
         return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
 
-    def calc_delta_bic(self):
+    def calc_delta_bic(self, model1, model2):
         """Calculates the :math:`\\Delta BIC` value between linear and quadratic model ephemerides using the given timing data. 
         
         The BIC value is a modified :math:`\\chi^2` value that penalizes for additional parameters. The
@@ -1026,16 +1026,27 @@ class Ephemeris(object):
         This function will run all model ephemeris instantiation and BIC calculations for you using the TimingData
         information you entered.
 
+        Parameters
+        ----------
+            model1: str
+                This is the name of the model you would like to compare to the linear model.
+                Can be either "quadratic" or "precession".
+
         Returns
         ------- 
             delta_bic : float
                 Represents the :math:`\\Delta BIC` value for this timing data. 
         """
-        linear_data = self.get_model_ephemeris('linear')
-        quadratic_data = self.get_model_ephemeris('quadratic')
-        linear_bic = self.calc_bic(linear_data)
-        quadratic_bic = self.calc_bic(quadratic_data)
-        delta_bic = linear_bic - quadratic_bic
+        # For quad: lin - quad (model1="linear", model2="quadratic")
+        # For prec: lin - prec (model1="linear", model2="precession")
+        valid_models = ["linear", "quadratic", "precession"]
+        if model1 not in valid_models or model2 not in valid_models:
+            raise ValueError("Only linear, quadratic, and precession models are accepted at this time.")
+        model1_data = self.get_model_ephemeris(model1)
+        model2_data = self.get_model_ephemeris(model2)
+        model1_bic = self.calc_bic(model1_data)
+        model2_bic = self.calc_bic(model2_data)
+        delta_bic = model1_bic - model2_bic
         return delta_bic
     
     def _create_observer_obj(self, timezone, coords=None, name=None):
@@ -1299,16 +1310,16 @@ class Ephemeris(object):
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
-        
-        plt.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0', zorder=10)
-        plt.xlabel('Epochs')
-        plt.ylabel('Mid-Times (JD TDB)')
-        plt.title(f'{model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
-        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
-        plt.ticklabel_format(style="plain", useOffset=False)
+        fig, ax = plt.subplots()
+        ax.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0', zorder=10)
+        ax.set_xlabel('Epochs')
+        ax.set_ylabel('Mid-Times (JD TDB)')
+        ax.set_title(f'{model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.ticklabel_format(style="plain", useOffset=False)
         if save_plot == True:
-            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
-        plt.show()
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        return ax
 
     def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. model calculated mid-time uncertainties.
@@ -1323,61 +1334,72 @@ class Ephemeris(object):
                 The path used to save the plot if `save_plot` is True.
         """
         # get uncertainties
+        fig, ax = plt.subplots()
         model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
         x = self.timing_data.epochs
-        # get T(E) - T0 - PE  OR  T(E) - T0 - 0.5P - PE
-        # TODO: Make this calculation a separate function
-        y = self._subtract_plotting_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs)
+        # get T(E)-T0-PE (for transits), T(E)-T0-0.5P-PE (for occultations)
+        y = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs)
         # plot the y line, then the line +- the uncertainties
-        plt.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
-        plt.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
-        plt.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
+        ax.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
+        ax.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
+        ax.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
         # Add labels and show legend
-        plt.xlabel('Epochs')
-        plt.ylabel('Mid-Time Uncertainties (JD TDB)')
-        plt.title(f'Uncertainties of {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
-        plt.legend()
-        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.set_xlabel('Epochs')
+        ax.set_ylabel('Mid-Time Uncertainties (JD TDB)')
+        ax.set_title(f'Uncertainties of {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
+        ax.legend()
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
-            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
-        plt.show()
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        return ax
 
-    def plot_oc_plot(self, save_plot=False, save_filepath=None):
+    def plot_oc_plot(self, model, save_plot=False, save_filepath=None):
         """Plots a scatter plot of observed minus calculated values of mid-times for linear and quadratic model ephemerides over epochs.
 
         Parameters
         ----------
+            model: str
+                Either "quadratic" or "precession". One of the models being compared to the linear model.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
+        fig, ax = plt.subplots()
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
-        lin_model = self.get_model_ephemeris('linear')
-        quad_model = self.get_model_ephemeris('quadratic')
-        # y = 0.5 dP/dE * (E - median E)^2
-        # TODO: Make this calculation a separate function
-        quad_model_curve = (0.5*quad_model['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2) * DAYS_TO_SECONDS
-        # plot points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
-        # y = self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)
-        y = (self._subtract_plotting_parameters(self.timing_data.mid_times, lin_model['conjunction_time'], lin_model['period'], self.timing_data.epochs)) * DAYS_TO_SECONDS
-        plt.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
+        lin_model_data = self.get_model_ephemeris("linear")
+        model_data = self.get_model_ephemeris(model)
+        # plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
+        y = (self._subtract_linear_parameters(self.timing_data.mid_times, lin_model_data['conjunction_time'], lin_model_data['period'], self.timing_data.epochs)) * DAYS_TO_SECONDS
+        ax.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
-        plt.plot(self.timing_data.epochs,
-                 (quad_model_curve),
-                 color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
-        plt.legend()
-        plt.xlabel('Epoch')
-        plt.ylabel('O-C (seconds)')
-        plt.title('Observed Minus Calculated Mid-Times')
-        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        if model == "quadratic":
+            # Plot additional quadratic curve
+            # y = 0.5 dP/dE * (E - median E)^2
+            quad_model_curve = (0.5*model_data['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2) * DAYS_TO_SECONDS
+            ax.plot(self.timing_data.epochs,
+                    (quad_model_curve),
+                    color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
+        if model == "precession":
+            # Plot additional precession curve
+            # y = -
+            precession_model_curve = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs - np.median(self.timing_data.epochs)))))) * DAYS_TO_SECONDS
+            print(precession_model_curve)
+            ax.plot(self.timing_data.epochs,
+                    (precession_model_curve),
+                    color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
+        ax.legend()
+        ax.set_xlabel('Epoch')
+        ax.set_ylabel('O-C (seconds)')
+        ax.set_title('Observed Minus Calculated Mid-Times')
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
-            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
-        plt.show()
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        return ax
 
-    def plot_running_delta_bic(self, save_plot=False, save_filepath=None):
+    def plot_running_delta_bic(self, model1, model2, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.
 
         Starting at the third epoch, will plot the value of :math:`\\Delta BIC` for all previous epochs,
@@ -1385,36 +1407,49 @@ class Ephemeris(object):
 
         Parameters
         ----------
+            model1: str
+                Either "linear", "quadratic", or "precession". One of the models being compared.
+            model2: str
+                Either "linear", "quadratic", or "precession". One of the models being compared.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
+        # Create empty array to store values
         delta_bics = []
-        all_epochs = self.timing_data.epochs
-        all_mid_times = self.timing_data.mid_times
-        all_uncertainties = self.timing_data.mid_time_uncertainties
-        all_tra_or_occ = self.timing_data.tra_or_occ
-        # for each epoch (starting at 3?), calculate the delta bic, plot delta bics over epoch
+        # Create copy of each variable to be used
+        all_epochs = self.timing_data.epochs.copy()
+        all_mid_times = self.timing_data.mid_times.copy()
+        all_uncertainties = self.timing_data.mid_time_uncertainties.copy()
+        all_tra_or_occ = self.timing_data.tra_or_occ.copy()
+        # For each epoch, calculate delta BIC using all data up to that epoch
         for i in range(0, len(all_epochs)):
-            if i < 2:
+            if i < max(self._get_k_value(model1), self._get_k_value(model2))-1:
+                # Append 0s up until delta BIC can be calculated
                 delta_bics.append(int(0))
             else:
                 self.timing_data.epochs = all_epochs[:i+1]
                 self.timing_data.mid_times = all_mid_times[:i+1]
                 self.timing_data.mid_time_uncertainties = all_uncertainties[:i+1]
                 self.timing_data.tra_or_occ = all_tra_or_occ[:i+1]
-                delta_bic = self.calc_delta_bic()
+                delta_bic = self.calc_delta_bic(model1, model2)
                 delta_bics.append(delta_bic)
-        plt.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
-        plt.axhline(y=0, color='grey', linestyle='-', zorder=0)
-        plt.xlabel('Epoch')
-        plt.ylabel(r'$\Delta$BIC')
-        plt.title(r"Value of $\Delta$BIC as Observational Epochs Increase")
-        plt.grid(linestyle='--', linewidth=0.25, zorder=-1)
-        if save_plot is True:
-            plt.savefig(save_filepath, bbox_inches='tight', dpi=300)
-        plt.show()
+        # Plot the data
+        fig, ax = plt.subplots()
+        ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
+        ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
+        ax.set_xlabel('Epoch')
+        ax.set_ylabel(r"$\Delta$BIC")
+        ax.set_title(rf"Value of $\Delta$BIC Comparing {model1.capitalize()} and {model2.capitalize()} Models"
+                    "\n"
+                    rf"as Observational Epochs Increase")
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        # Save if save_plot and save_filepath have been provided
+        if save_plot and save_filepath:
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        # Return the axis (so it can be further edited if needed)
+        return ax
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
@@ -1462,41 +1497,50 @@ if __name__ == '__main__':
     # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
-    # # # LINEAR MODEL
+    # # LINEAR MODEL
     # linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
-    # # print(linear_model_data)
+    # print(linear_model_data)
     # linear_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_model_data)
-    # # print(linear_model_uncertainties)
+    # print(linear_model_uncertainties)
     # lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
-    # # print(lin_bic)
-    # # # QUADRATIC MODEL
+    # print(lin_bic)
+    # # QUADRATIC MODEL
     # quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
     # print(quad_model_data)
     # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
-    # # print(quad_model_uncertainties)
+    # print(quad_model_uncertainties)
     # quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
-    # # print(quad_bic)
-    # # STEP 5.5: Get the delta BIC value for both models
-    # delta_bic = ephemeris_obj1.calc_delta_bic()
-    # # print(delta_bic)
+    # print(quad_bic)
+    # STEP 5.5a: Get the delta BIC value for the linear and quadratic models
+    # delta_bic_lq = ephemeris_obj1.calc_delta_bic("linear", "quadratic")
+    # print(delta_bic_lq)
+    # STEP 5.5b: Get the delta BIC value for the linear and precession models
+    # delta_bic_lp = ephemeris_obj1.calc_delta_bic("linear", "precession")
+    # print(delta_bic_lp)
 
     # PRECESSION MODEL
-    precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
-    print(precession_model_data)
+    # precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
+    # print(precession_model_data)
 
     # STEP 6: Show a plot of the model ephemeris data
     # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
+    # plt.show()
     # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
+    # plt.show()
 
     # STEP 7: Uncertainties plot
     # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
+    # plt.show()
     # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
+    # plt.show()
     
     # STEP 8: O-C Plot
-    # ephemeris_obj1.plot_oc_plot(save_plot=False)
+    ephemeris_obj1.plot_oc_plot("quadratic", save_plot=False)
+    plt.show()
 
     # STEP 9: Running delta BIC plot
-    # ephemeris_obj1.plot_running_delta_bic(save_plot=False)
+    # running_bic_plot = ephemeris_obj1.plot_running_delta_bic(model1="linear", model2="quadratic", save_plot=False)
+    # plt.show()
 
     # nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
     # # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
