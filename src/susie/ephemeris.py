@@ -117,7 +117,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=['E', 'tra_or_occ'])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0., P=1.091423, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
@@ -203,7 +203,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.quad_fit, independent_vars=['E', 'tra_or_occ'])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0., P=1.091423, dPdE=0., tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, dPdE=0., tra_or_occ=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
@@ -297,10 +297,10 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         for i, t_type in enumerate(tra_or_occ):
             if t_type == 0:
                 # transit data
-                result[i] = T0 + E[i]*P - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
+                result[i] = T0 + (E[i]*P) - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
             elif t_type == 1:
                 # occultation data
-                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + E[i]*P + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
+                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + (E[i]*P) + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -790,9 +790,8 @@ class Ephemeris(object):
                 result.append(T0 + E[i]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
             elif t_type == "occ":
                 # occultation data
-                result.append(T0 + self._calc_anomalistic_period(P, dwdE)/2 + E[i]*(self._calc_anomalistic_period(P, dwdE)*(1 - (1/(2*np.pi))*dwdE)) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
+                result.append(T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[i]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
         return np.array(result)
-   
    
     def _calc_chi_squared(self, model_mid_times):
         """Calculates the residual chi squared values for the model ephemeris.
@@ -815,7 +814,7 @@ class Ephemeris(object):
         # STEP 2: calculate X2 with observed data and model data
         return np.sum(((observed_data - model_mid_times)/uncertainties)**2)
     
-    def _subtract_linear_parameters(self, model_mid_times, T0, P, E):
+    def _subtract_linear_parameters(self, model_mid_times, T0, P, E, tra_or_occ):
         """Subtracts the linear terms to show smaller changes in other model parameters for plotting functions.
 
         Uses the equations:
@@ -839,7 +838,7 @@ class Ephemeris(object):
             A numpy array of newly calculated values for plotting.
         """
         result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
+        for i, t_type in enumerate(tra_or_occ):
             if t_type == 'tra':
                 # transit data
                 result.append(model_mid_times[i] - T0 - (P*E[i]))
@@ -1255,7 +1254,7 @@ class Ephemeris(object):
                                 name=system_name)
         pass
     
-    def plot_model_ephemeris(self, model_data_dict, save_plot=False, save_filepath=None):
+    def plot_model_ephemeris(self, model_data_dict, subtract_lin_params=False, show_occultations=False, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. model calculated mid-times.
 
         Parameters
@@ -1268,7 +1267,16 @@ class Ephemeris(object):
                 The path used to save the plot if `save_plot` is True.
         """
         fig, ax = plt.subplots()
-        ax.scatter(x=self.timing_data.epochs, y=model_data_dict['model_data'], color='#0033A0', zorder=10)
+        y_data = model_data_dict['model_data']
+        if subtract_lin_params is True:
+            y_data = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
+        if show_occultations is True:
+            occ_mask = self.timing_data.tra_or_occ == "occ"
+            occ_data = model_data_dict["model_data"][occ_mask]
+            if subtract_lin_params is True:
+                occ_data = self._subtract_linear_parameters(occ_data, model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs[occ_mask], self.timing_data.tra_or_occ[occ_mask])
+            ax.scatter(x=self.timing_data.epochs[occ_mask], y=occ_data, color="#D64309", zorder=20)
+        ax.scatter(x=self.timing_data.epochs, y=y_data, color='#0033A0', zorder=10)
         ax.set_xlabel('Epochs')
         ax.set_ylabel('Mid-Times (JD TDB)')
         ax.set_title(f'{model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
@@ -1295,7 +1303,7 @@ class Ephemeris(object):
         model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
         x = self.timing_data.epochs
         # get T(E)-T0-PE (for transits), T(E)-T0-0.5P-PE (for occultations)
-        y = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs)
+        y = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
         # plot the y line, then the line +- the uncertainties
         ax.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
         ax.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
@@ -1325,10 +1333,11 @@ class Ephemeris(object):
         fig, ax = plt.subplots()
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
-        lin_model_data = self.get_model_ephemeris("linear")
+        # lin_model_data = self.get_model_ephemeris("linear")
         model_data = self.get_model_ephemeris(model)
         # plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
-        y = (self._subtract_linear_parameters(self.timing_data.mid_times, lin_model_data['conjunction_time'], lin_model_data['period'], self.timing_data.epochs)) * DAYS_TO_SECONDS
+        y = (self._subtract_linear_parameters(self.timing_data.mid_times, model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
+        self.oc_vals = y
         ax.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
@@ -1342,11 +1351,17 @@ class Ephemeris(object):
         if model == "precession":
             # Plot additional precession curve
             # y = -
-            precession_model_curve = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs - np.median(self.timing_data.epochs)))))) * DAYS_TO_SECONDS
-            print(precession_model_curve)
-            ax.plot(self.timing_data.epochs,
-                    (precession_model_curve),
-                    color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
+            tra_mask = self.timing_data.tra_or_occ == "tra"
+            occ_mask = self.timing_data.tra_or_occ == "occ"
+            precession_model_curve_tra = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.sin(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[tra_mask] - np.median(self.timing_data.epochs[tra_mask])))))) * DAYS_TO_SECONDS
+            precession_model_curve_occ = (((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.sin(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[occ_mask] - np.median(self.timing_data.epochs[occ_mask])))))) * DAYS_TO_SECONDS
+            ax.plot(self.timing_data.epochs[tra_mask],
+                    (precession_model_curve_tra),
+                    color='#D64309', ls="--", label=r'$-\frac{eP_a}{\pi}\cos\omega(E)$')
+                # $\frac{1}{2}(\frac{dP}{dE})E^2$
+            ax.plot(self.timing_data.epochs[occ_mask],
+                    (precession_model_curve_occ),
+                    color='#D64309', ls=":", label=r'$\frac{eP_a}{\pi}\cos\omega(E)$')
         ax.legend()
         ax.set_xlabel('Epoch')
         ax.set_ylabel('O-C (seconds)')
