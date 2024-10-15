@@ -349,6 +349,6 @@ class TimingData():
         if not np.all(self.mid_time_uncertainties > 0):
             raise ValueError("The `mid_time_uncertainties` array must contain non-negative and non-zero values.")
         # Shift epochs by subtracting the minimum number from everything (new list will start at 0)
-        if self.epochs[0] != 0:
-            self.epochs -= np.min(self.epochs)
-            # TODO import warning that we are minimizing their epochs
+        # if self.epochs[0] != 0:
+        #     self.epochs = self.epochs.copy() - np.min(self.epochs)
+        #     # TODO import warning that we are minimizing their epochs

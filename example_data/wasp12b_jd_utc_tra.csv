@@ -1,4 +1,4 @@
-tra_or_occ,transit_time,sigma_transit_time,epoch
+tra_or_occ,mid_time,mid_time_err,epoch
 tra,2454515.5242055417,0.00043,-1640
 tra,2454836.4026339813,0.00028,-1346
 tra,2454840.7681639795,0.00062,-1342
