@@ -35,17 +35,22 @@ test_tra_or_occ_precession = np.array(['tra','occ','occ','tra', 'tra', 'tra', 't
 test_tra_or_occ_enum_precession = [0 if i == 'tra' else 1 for i in test_tra_or_occ_precession]
 test_P_pre =  1.0914233780823739
 test_P_err_pre =  2.5837552101593316e-06
-test_T0_pre =  2454515.5247473116
-test_T0_err_pre =  0.0016189004920040013
-test_dwdE =  -862310.36579702
+test_T0_pre =   2454515.5247473116
+test_T0_err_pre = 0.0016189004920040013
+test_dwdE = -862310.36579702
 test_dwdE_err = 1933.7369753292073
-test_e =  0.5345414535549522
+test_e =   0.5345414535549522
 test_e_err = 13588.186664524692
 test_w =  -55020653.47561098
 test_w_err= 589049.1819169023
 
+
+
+
 test_observed_data = test_mtts
 test_uncertainties= test_mtts_err    
+model_1 = 'linear'
+model_2 = 'quadratic'
 
 
 class TestLinearModelEphemeris(unittest.TestCase):
@@ -164,15 +169,18 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
 
     def test_anomalistic_period(self):
         expected_result = 1.0915939528522707
-        test_dwdE =  0.000984
-        result = self.ephemeris._anomalistic_period(test_P_fits, test_dwdE)
+        test_dwdE_a =  0.000984
+        result = self.ephemeris._anomalistic_period(test_P_fits, test_dwdE_a)
         self.assertTrue(expected_result, result)
 
     def test_pericenter(self):
         expected_result = np.array([1.00624,  1.295536, 1.299472, 1.570072, 1.575976, 1.590736, 1.598608])
-        test_dwdE =  0.000984
-        test_W0 =  2.62
-        result = self.ephemeris._pericenter(test_W0, test_dwdE, test_epochs_precession)
+        test_dwdE_P =  0.000984
+        test_W0_P =  2.62
+        test_epochs_precession = np.array([ -1640, -1346,  -1342, -1067, -1061, -1046,  -1038])
+        result = self.ephemeris._pericenter(test_W0_P, test_dwdE_P, test_epochs_precession)
+        print(result)
+        print(test_epochs_precession)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
         
     def test_precession_fit(self):
@@ -181,6 +189,7 @@ class TestPrecessionModelEphemeris(unittest.TestCase):
             Creates a numpy.ndarray[int] with the length of the test data
         """
         expected_result = np.array([-1789.93429632, -1468.50926826, -1464.14358034, -1164.54834178, -1157.99979742, -1141.62843652, -1132.89704405])
+        test_epochs_precession = np.array([ -1640, -1346,  -1342, -1067, -1061, -1046,  -1038])
         test_W0 = 2.62
         test_dwdE = 0.000984
         test_e = 0.00310
@@ -575,20 +584,136 @@ class TestEphemeris(unittest.TestCase):
         result = self.ephemeris.calc_bic(model_parameters_quad)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08)) 
     
+
     def test_calc_delta_bic(self):
         """ Tests the calulation of the delta bic
 
             Uses both the quadratic bic and linear bic
         """
         expected_result = 193513.33592143143
-        result = self.ephemeris.calc_delta_bic() 
+        result = self.ephemeris.calc_delta_bic(model_1,model_2) 
         self.assertTrue(expected_result, result)
 
-    def test_subract_plotting_parameters(self):
+    def test_subract_linear_parameters(self):
         expected_result = np.array([-1.86264515e-09, 4.24597602e-09, 3.08841663e-09 , -2.14754436e-09])
         model_data =  np.array([2454515.42396698, 2454836.5683859 , 2454840.38504283, 2455140.81046697])
-        result = self.ephemeris._subtract_plotting_parameters(model_data,test_T0_linear,test_P_linear,test_epochs)
+        result = self.ephemeris._subtract_linear_parameters(model_data,test_T0_linear,test_P_linear,test_epochs)
         self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
+
+class TestPrecessionEphemeris(unittest.TestCase):
+    def assertDictAlmostEqual(self, d1, d2, msg=None, places=7):
+        # Helper function used to check if the dictionaries are equal to eachother
+        # check if both inputs are dicts
+        self.assertIsInstance(d1, dict, 'First argument is not a dictionary')
+        self.assertIsInstance(d2, dict, 'Second argument is not a dictionary')
+        # check if both inputs have the same keys
+        self.assertEqual(d1.keys(), d2.keys())
+        # check each key
+        for key, value in d1.items():
+            if isinstance(value, dict):
+                self.assertDictAlmostEqual(d1[key], d2[key], msg=msg)
+            elif isinstance(value, np.ndarray):
+                self.assertTrue(np.allclose(d1[key], d2[key], rtol=1e-05, atol=1e-08))
+            else:
+                self.assertAlmostEqual(d1[key], d2[key], places=places, msg=msg)
+                
+    def setUp(self):
+       """Sets up the intantiation of TimingData object and Ephemeris object.
+
+           Runs before every test in the TestEphemeris class
+       """
+       self.timing_data = TimingData('jd', test_epochs_precession, test_mtts_precession, test_mtts_err_precession, test_tra_or_occ_precession, time_scale='tdb')
+       self.assertIsInstance(self.timing_data, TimingData)
+       self.ephemeris = Ephemeris(self.timing_data)
+    
+    test_epochs_precession = np.array([ -1640, -1346,  -1342, -1067, -1061, -1046,  -1038])
+    test_mtts_precession = np.array([2454515.525,2454836.403,2454840.769,2455140.91, 2455147.459, 2455163.831,2455172.561])
+    test_mtts_err_precession = np.array([0.00043, 0.00028, 0.00062, 0.00042, 0.00043, 0.00032, 0.00036])
+    test_tra_or_occ_precession = np.array(['tra','occ','occ','tra', 'tra', 'tra', 'tra'])
+    test_tra_or_occ_enum_precession = [0 if i == 'tra' else 1 for i in test_tra_or_occ_precession]
+    test_P_pre =  1.0914233780823739
+    test_P_err_pre =  2.5837552101593316e-06
+    test_T0_pre =   2454515.5247473116
+    test_T0_err_pre = 0.0016189004920040013
+    test_dwdE = -862310.36579702
+    test_dwdE_err = 1933.7369753292073
+    test_e =   0.5345414535549522
+    test_e_err = 13588.186664524692
+    test_w =  -55020653.47561098
+    test_w_err= 589049.1819169023
+
+
+    def test_suc_t0_calc(self):
+        expected_result = 0.00000262083880301
+        result = self.ephemeris._calc_t0_model_uncertainty(test_T0_err_pre)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
+    
+    def test_suc_e_calc(self):
+        expected_result = 00.000265922331314
+        result = self.ephemeris._calc_eccentricity_model_uncertainty(test_P_pre, test_dwdE, test_w, -1640, test_e_err)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))   
+    
+    def test_suc_w_calc(self):
+        expected_result = 0.492510021213
+        result = self.ephemeris._calc_pericenter_model_uncertainty(test_e, test_P_pre, test_dwdE, test_w, -1640, test_w_err)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))     
+    
+    def test_suc_dwdE_trans_calc(self):
+        expected_result = 14.2756032506
+        result = self.ephemeris._calc_change_in_pericenter_transit_model_uncertainty(test_e, test_P_pre, test_dwdE, test_w, -1640, test_dwdE_err)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08)) 
+
+    # def test_suc_dwdE_occ_calc(self):
+    #     expected_result = 0.00805542606162
+    #     result = self.ephemeris._calc_change_in_pericenter_transit_model_uncertainty(test_e, test_P_pre, test_dwdE, test_w, -1640, test_dwdE_err)
+    #     self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))
+
+    def test_suc_P_trans_calc(self):
+        expected_result = 0.0000179552074489
+        result = self.ephemeris._calc_period_transit_model_uncertainty(test_e, test_dwdE, test_w, -1640, test_P_err_pre)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))  
+
+    # def test_suc_P_occ_calc(self):
+    #     expected_result = 0.0000179552065799
+    #     result = self.ephemeris._calc_period_occ_model_uncertainty(test_e, test_dwdE, test_w, -1640, test_P_err_pre)
+    #     self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))    
+
+    def test_transit_pre_uncertainty(self):
+        test_model_params = {
+            'period': 1.0914233780823739,
+            'period_err': 2.5837552101593316e-06,
+            'conjunction_time': 2454515.5247473116,
+            'conjunction_time_err': 0.0016189004920040013,
+            'pericenter_change_by_epoch': -862310.36579702,
+            'pericenter_change_by_epoch_err':  1933.7369753292073,
+            'eccentricity': 0.5345414535549522,
+            'eccentricity_err': 13588.186664524692,
+            'pericenter': -55020653.47561098,
+            'pericenter_err':589049.1819169023
+        }
+        expected_result = np.array([0.13978885, 0.71509374, 1.09144841, 0.56521842, 1.5887727, 0.51151548, 1.69457522])
+        result = self.ephemeris._calc_precession_model_uncertainties(test_model_params)
+        self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))    
+
+
+    # def test_occ_pre_uncertainty(self):
+    #     test_model_params = {
+    #         'period': 1.0914233780823739,
+    #         'period_err': 2.5837552101593316e-06,
+    #         'conjunction_time': 2456305.4591182857,
+    #         'conjunction_time_err': 0.0031974746201258552,
+    #         'pericenter_change_by_epoch': -116462.52579119639,
+    #         'pericenter_change_by_epoch_err': 44.094731428936605,
+    #         'eccentricity':  0.709249384779316,
+    #         'eccentricity_err': 21948.154831900636,
+    #         'pericenter': 201043977.85898417,
+    #         'pericenter_err':594028.6944042204
+    #         }
+    #     expected_result = np.array([2456305.45912621, 2456305.45912459, 2456305.45911874, 2456305.45912961])
+    #     result = self.ephemeris._calc_precession_model_uncertainties(test_model_params)
+    #     print(result)
+    #     self.assertTrue(np.allclose(expected_result, result, rtol=1e-05, atol=1e-08))    
+
 
     # Astroplan Test
     # observer obj
