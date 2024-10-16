@@ -10,8 +10,8 @@ from astropy.coordinates import SkyCoord
 from astropy.constants import R_earth, R_sun, au
 from astroplan import FixedTarget, Observer, EclipsingSystem
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -684,8 +684,52 @@ class Ephemeris(object):
                 result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
         return np.array(result)
     
-    def _calc_precession_model_uncertainties(self):
-        pass
+    # Precession Uncertainites
+    def _calc_t0_model_uncertainty(self, T0_err):
+        return T0_err**2
+
+    def _calc_eccentricity_model_uncertainty(self, P, dwdE, w0, E, e_err):
+        return (-P/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * e_err**2
+
+    def _calc_pericenter_model_uncertainty(self, e, P, dwdE, w0, E, w0_err):
+        return ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.sin(w0 + dwdE*E))**2 * w0_err**2
+    
+    def _calc_change_in_pericenter_transit_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
+        return (((-2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((-e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
+    
+    def _calc_change_in_pericenter_occ_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
+        return (((np.pi*P)/((1-(1/(2*np.pi))*dwdE)**2)) + ((2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
+
+    def _calc_period_transit_model_uncertainty(self, e, dwdE, w0, E, P_err):
+        return (E - e/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * P_err**2
+        
+    def _calc_period_occ_model_uncertainty(self, e, dwdE, w0, E, P_err):
+        return (E + e/(2*(1-(1/(2*np.pi))*dwdE)) + e/((1-(1/(2*np.pi))*dwdE)*np.pi)* np.cos(w0 + dwdE*E))**2 * P_err**2
+
+    # def _get_precession_model_partial_derivatives(self, tra_or_occ, epoch)
+    #     if tra:
+    #         return [self._calc_t0_model_uncertainty(T0), self._calc_eccentricity_model_uncertainty(P, dwdE, w0, epoch, e_err), self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, epoch, w0_err), self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, epoch, dwdE_err), self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)]
+    
+    def _calc_precession_model_uncertainties(self, model_params):
+        T0_err = model_params['conjunction_time_err']
+        P_err = model_params['period_err']
+        dwdE_err = model_params['pericenter_change_by_epoch_err']
+        e_err = model_params['eccentricity_err']
+        w0_err = model_params['pericenter_err']
+        T0 = model_params['conjunction_time']
+        P = model_params['period']
+        dwdE = model_params['pericenter_change_by_epoch']
+        e = model_params['eccentricity']
+        w0 = model_params['pericenter']       
+        result = []
+        for i, t_type in enumerate(self.timing_data.tra_or_occ):
+            if t_type == 'tra':
+                # transit data
+                result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
+            elif t_type == 'occ':
+                # occultation data
+                result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_occ_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_occ_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
+        return np.array(result)
     
     def _calc_linear_ephemeris(self, E, P, T0):
         """Calculates mid-times using parameters from a linear model ephemeris.
@@ -929,20 +973,23 @@ class Ephemeris(object):
             KeyError
                 If the model parameter error values are not in the model parameter dictionary.
         """
+        linear_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err']
+        quad_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err', 'period_change_by_epoch', 'period_change_by_epoch_err']
+        prec_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err', 'pericenter_change_by_epoch', 'pericenter_change_by_epoch_err', 'eccentricity', 'eccentricity_err', 'pericenter', 'pericenter_err']
         if 'model_type' not in model_params:
             raise KeyError("Cannot find model type in model data. Please run the get_model_ephemeris method to return ephemeris fit parameters.")
         if model_params['model_type'] == 'linear':
-            if 'conjunction_time_err' not in model_params or 'period_err' not in model_params:
-                raise KeyError("Cannot find conjunction time and period errors in model data. Please run the get_model_ephemeris method with 'linear' model_type to return ephemeris fit parameters.")
+            if any(linear_params) not in model_params:
+                raise KeyError("Cannot find conjunction time and period and/or their respective errors in model data. Please run the get_model_ephemeris method with 'linear' model_type to return ephemeris fit parameters.")
             return self._calc_linear_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'])
         elif model_params['model_type'] == 'quadratic':
-            if 'conjunction_time_err' not in model_params or 'period_err' not in model_params or 'period_change_by_epoch_err' not in model_params:
-                raise KeyError("Cannot find conjunction time, period, and/or period change by epoch errors in model data. Please run the get_model_ephemeris method with 'quadratic' model_type to return ephemeris fit parameters.")
+            if any(quad_params) not in model_params:
+                raise KeyError("Cannot find conjunction time, period, and/or period change by epoch and/or their respective errors in model data. Please run the get_model_ephemeris method with 'quadratic' model_type to return ephemeris fit parameters.")
             return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'])
         elif model_params['model_type'] == 'precession':
-            if 'conjunction_time_err' not in model_params or 'period_err' not in model_params or 'period_change_by_epoch_err' not in model_params or 'eccentricity_err' not in model_params or 'pericenter_err' not in model_params:
-                raise KeyError("Cannot find conjunction time, period, period change by epoch errors, eccentricity and/or pericenter errors in model data. Please run the get_model_ephemeris method with 'precession' model_type to return ephemeris fit parameters.")
-            return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'], model_params['eccentricity_err'], model_params['pericenter_err'])
+            if any(prec_params) not in model_params:
+                raise KeyError("Cannot find conjunction time, period, eccentricity, pericenter, and/or pericenter change by epoch and/or their respective errors in model data. Please run the get_model_ephemeris method with 'precession' model_type to return ephemeris fit parameters.")
+            return self._calc_precession_model_uncertainties(model_params)
 
     def calc_bic(self, model_data_dict):
         """Calculates the BIC value for a given model ephemeris. 
