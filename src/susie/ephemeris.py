@@ -1293,7 +1293,7 @@ class Ephemeris(object):
         # We can pull orbital period from the model
         orbital_period = model_data_dict['period'] * u.day
         # TODO: Need to use the equation from the book for the eclipse duration
-        eclipse_duration = 0.1277 * u.day
+        # eclipse_duration = 0.1277 * u.day
         system_params = self._get_eclipse_system_params(obj_name, obj_ra, obj_dec)
         eclipse_duration = self._calc_eclipse_duration(model_data_dict["period"], system_params["st_rad"], system_params["pl_rade"], system_params["pl_orbsmax"], system_params["pl_imppar"], system_params["pl_orbincl"])
         eclipsing_system = EclipsingSystem(primary_eclipse_time=primary_eclipse_time,
