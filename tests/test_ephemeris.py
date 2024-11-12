@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from lmfit import Model
 from src.susie.timing_data import TimingData
 from .helpers import assertDictAlmostEqual
+from astroplan import Observer
+from astropy.coordinates import EarthLocation
+import astropy.units as u
 from src.susie.ephemeris import Ephemeris, LinearModelEphemeris, QuadraticModelEphemeris, PrecessionModelEphemeris, ModelEphemerisFactory
 
 test_epochs = np.array([0, 294, 298, 573])
@@ -682,50 +685,117 @@ class TestPrecessionEphemeris(unittest.TestCase):
     # observer obj
     def test_obs_obj_lat_long(self):
         #  tests that if (lat, long) is passed in creates  observer obj
-        pass
+        boise_state = (-116.2010,43.6023, 821)
+        timezone = 'US/Mountain'
+        observer = self.ephemeris._create_observer_obj(timezone, coords = boise_state)
+        self.assertEqual(observer.location.lat.deg, 43.6023)
+        self.assertEqual(observer.location.lon.deg, -116.2010)
+    
     def test_obs_obj_name(self):
         # tests that if a name is passed in uses observer.at_site
-        pass
+        name = 'Subaru'
+        timezone = 'US/Hawaii'
+        empty_coords = (None, None, None)
+        observer = self.ephemeris._create_observer_obj(timezone, coords=empty_coords, name=name)
+        self.assertEqual(observer.name, "Subaru")
+
+    
     def test_suc_return_obs_obj(self):
         # tests for type astroplan.observer , name = str, coord = (float, float)
-        pass
+        name = 'Subaru'
+        timezone = 'US/Hawaii'
+        empty_coords = (None, None, None)
+        observer = self.ephemeris._create_observer_obj(timezone, coords=empty_coords, name=name)
+        self.assertTrue(all(isinstance(value, str) for value in  observer.name))
+        
+    def test_suc_return_obs_obj_float(self):
+        boise_state = (-116.2010,43.6023, 821.0)
+        timezone = 'US/Mountain'
+        observer = self.ephemeris._create_observer_obj(timezone, coords = boise_state)
+        self.assertTrue((isinstance(observer.location.lat.deg, (float, np.float64))))
+        self.assertTrue((isinstance(observer.location.lon.deg, (float, np.float64))))
+        # self.assertTrue((isinstance(observer.location.height (float, np.float64))))
+
     def test_obs_obj_value_err(self):
         # tests for value error if no name or lat or long
-        pass
+        timezone = 'US/Hawaii'
+        empty_coords = (None, None, None)
+        with self.assertRaises(ValueError, msg="Observatory location must be specified with either (1) a site name specified by astropy.coordinates.EarthLocation.get_site_names() or (2) latitude and longitude in degrees as accepted by astropy.coordinates.Latitude and astropy.coordinates.Latitude."):
+            self.ephemeris._create_observer_obj(timezone, coords = empty_coords, name= None)
+
 
     # target obj
     def test_target_obj_ra_dec(self):
         #  tests that if coords = (ra,dec) is passed in creates a fixed target with the ra and dec 
         # check the ra and dec is returned
-        pass
+        tres_3 = (268.0291,37.54633)
+        target = self.ephemeris._create_target_obj(coords = tres_3)
+        self.assertEqual(target.ra.deg, 268.0291)
+        self.assertEqual(target.dec.deg, 37.54633)
+    
     def test_target_obj_name(self):
         # tests that if a name is passed in uses fixedTarget.from_name
-        pass
+        tres_3 = (None,None)
+        target = self.ephemeris._create_target_obj(coords = tres_3, name='TrES-3b')
+        self.assertEqual(target.name, "TrES-3b")
+    
     def test_suc_return_target_obj(self):
         # tests for type astroplan.FixedTarget , name = str, coord = (float, float)
-        pass
+        name = 'TrES-3b'
+        empty_coords = (None, None)
+        target = self.ephemeris._create_target_obj(coords=empty_coords, name=name)
+        self.assertTrue(all(isinstance(value, str) for value in  target.name))
+    
+    def test_suc_return_obj_float(self):
+        tres_3 = (268.0291,37.54633)
+        target = self.ephemeris._create_target_obj(coords = tres_3)
+        self.assertTrue((isinstance(target.ra.deg, (float, np.float64))))
+        self.assertTrue((isinstance(target.dec.deg, (float, np.float64))))
+      
     def test_target_obj_value_err(self):
         # tests for value error if no name or ra or dec
-        pass
+        empty_coords = (None, None, None)
+        with self.assertRaises(ValueError, msg="Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec."):
+            self.ephemeris._create_target_obj(coords = empty_coords, name= None)
     
     # query NASA
     def test_input_value_err(self):
         # tests for error if no coords or name
-        pass
+        with self.assertRaises(ValueError, msg="Object must be specified with either (1) a recognized object name in the NASA Exoplanet Archive or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec."):
+            self.ephemeris._query_nasa_exoplanet_archive(None, ra=None, dec=None, select_query=None)
+    
     def test_nothing_found_name_value_err(self):
         # tests for if nothing is found in the query for the name
-        pass
+        with self.assertRaises(ValueError, msg=f"Nothing found for {'Earth'} in the NASA Exoplanet Archive. Please check that your object is accepted and contains data on the archive's homepage."):
+            self.ephemeris._query_nasa_exoplanet_archive("Earth", ra=None, dec=None, select_query=None)
+   
     def test_nothing_found_ra_dec_value_err(self):
         # tests for if nothing is found in the query for the ra and dec
-        pass
+        with self.assertRaises(ValueError, msg=f"Nothing found for the coordinates {0}, {0} in the NASA Exoplanet Archive. Please check that your values are correct and are in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec."):
+            self.ephemeris._query_nasa_exoplanet_archive('ground', ra=0, dec=0, select_query=None)
+   
+   
     def test_len_over_zero(self):
         # tests the obj data length is not zero
         pass
 
+
+
     # eclipse duration
     def test_eclipse_duration(self):
         # tests calc eclipse duration
-        pass
+        # trES_3 values
+        test_k = 0.1655
+        test_P = 1.30618581
+        test_a = 0.02282
+        test_b = 0.840
+        test_i = 81.85
+        test_R_star_a = 1/5.926
+        test_R_star = 1/(5.926 * (1/0.02282))
+        test_R_planet = 14.975
+        transit_duration = 3.296814064
+        result = self.ephemeris._calc_eclipse_duration(test_P, test_R_star, test_R_planet, test_a, test_b, test_i)
+        self.assertEqual(transit_duration, result)
 
     # eclipse system params
     def test_eclipse_params_type(self):
