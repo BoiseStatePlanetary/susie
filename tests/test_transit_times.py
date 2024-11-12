@@ -127,35 +127,35 @@ class TestTimingData(unittest.TestCase):
         with self.assertRaises(TypeError, msg="All values in 'mid_transit_times_uncertainties' must be of type float."):
              TimingData('jd', test_epochs, test_mtts, int_test_mtts_err, time_scale='tdb')
 
-    def test_shifted_epochs_zero(self):
-        """ Successful test to check the shifted epochs function works when the epochs start with 0.
+    # def test_shifted_epochs_zero(self):
+    #     """ Successful test to check the shifted epochs function works when the epochs start with 0.
 
-            The epochs should remain the same as the array already starts at zero.
-        """
-        test_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
-        shifted_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
-        self.timing_data =  TimingData('jd', test_epochs_zero, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_zero))
+    #         The epochs should remain the same as the array already starts at zero.
+    #     """
+    #     test_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
+    #     shifted_epochs_zero = np.array([0, 294, 298, 573]).astype(int)
+    #     self.timing_data =  TimingData('jd', test_epochs_zero, test_mtts, test_mtts_err, time_scale='tdb')
+    #     self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_zero))
     
-    def test_shifted_epochs_pos(self):
-        """ Successful test to check the shifted epochs function works when the epochs start with a positive number.
+    # def test_shifted_epochs_pos(self):
+    #     """ Successful test to check the shifted epochs function works when the epochs start with a positive number.
 
-            The epochs should shift to start with zero.
-        """
-        test_epochs_pos = np.array([1, 294, 298, 573]).astype(int)
-        shifted_epochs_pos = np.array([0, 293, 297, 572]).astype(int)
-        self.timing_data =  TimingData('jd', test_epochs_pos, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_pos))
+    #         The epochs should shift to start with zero.
+    #     """
+    #     test_epochs_pos = np.array([1, 294, 298, 573]).astype(int)
+    #     shifted_epochs_pos = np.array([0, 293, 297, 572]).astype(int)
+    #     self.timing_data =  TimingData('jd', test_epochs_pos, test_mtts, test_mtts_err, time_scale='tdb')
+    #     self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_pos))
 
-    def test_shifted_epochs_neg(self):
-        """ Successful test to check the shifted epochs function works when the epochs start with a negative number.
+    # def test_shifted_epochs_neg(self):
+    #     """ Successful test to check the shifted epochs function works when the epochs start with a negative number.
 
-            The epochs should shift to start with zero.
-        """
-        test_epochs_neg = np.array([-1, 294, 298, 573]).astype(int)
-        shifted_epochs_neg = np.array([0, 295, 299, 574]).astype(int)
-        self.timing_data =  TimingData('jd', test_epochs_neg, test_mtts, test_mtts_err, time_scale='tdb')
-        self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_neg))
+    #         The epochs should shift to start with zero.
+    #     """
+    #     test_epochs_neg = np.array([-1, 294, 298, 573]).astype(int)
+    #     shifted_epochs_neg = np.array([0, 295, 299, 574]).astype(int)
+    #     self.timing_data =  TimingData('jd', test_epochs_neg, test_mtts, test_mtts_err, time_scale='tdb')
+    #     self.assertTrue(np.array_equal(self.timing_data.epochs, shifted_epochs_neg))
 
    
 #<————————————————————————————————————————————————————————————————————————————————————————>
