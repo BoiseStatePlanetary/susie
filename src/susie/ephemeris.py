@@ -6,10 +6,10 @@ from astropy.units import Quantity
 import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord
-from astroplan import FixedTarget, Observer, EclipsingSystem
+from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
+from susie.timing_data import TimingData # Use this for package pushes
+# from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -30,7 +30,7 @@ class BaseModelEphemeris(ABC):
             yerr : numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                Indicates if the data is from a transit or occultation.
 
         Returns
         ------- 
@@ -41,7 +41,7 @@ class BaseModelEphemeris(ABC):
 
 class LinearModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a linear fit."""
-    def lin_fit(self, E, P, T0, tra_or_occ):
+    def lin_fit(self, E, P, T0, tra_or_occ_enum):
         """Calculates a linear function with given data.
 
         Uses the equation 
@@ -58,8 +58,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
                 The exoplanet orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
-            tra_or_occ: 
-                Indicates if the data is from a transit or occultation.
+            tra_or_occ_enum: numpy.ndarray[int]
+                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
         
         Returns
         -------
@@ -69,13 +69,10 @@ class LinearModelEphemeris(BaseModelEphemeris):
                     :math:`P*E + (T_0 + \\frac{1}{2}*P)` if the data point is an observed occultation (denoted by 1)
         """
         result = np.zeros(len(E))
-        for i, t_type in enumerate(tra_or_occ):
-            if t_type == 0:
-                # transit data
-                result[i] = P*E[i] + T0
-            elif t_type == 1:
-                # occultation data
-                result[i] = P*E[i] + (T0 + 0.5*P)
+        tra_mask = tra_or_occ_enum == 0
+        occ_mask = tra_or_occ_enum == 1
+        result[tra_mask] = T0 + P*E[tra_mask]
+        result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask]
         return result
     
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -115,8 +112,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=['E', 'tra_or_occ'])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0.0, P=1.091423, tra_or_occ=tra_or_occ_enum)
-        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, tra_or_occ_enum=tra_or_occ_enum)
+        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
             'period_err': result.params['P'].stderr,
@@ -128,7 +125,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
 
 class QuadraticModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a quadratic fit."""
-    def quad_fit(self, E, dPdE, P, T0, tra_or_occ):
+    def quad_fit(self, E, dPdE, P, T0, tra_or_occ_enum):
         """Calculates a quadratic function with given data.
 
         Uses the equation 
@@ -145,8 +142,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
                 The exoplanet orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
-            tra_or_occ: 
-                Indicates if the data is from a transit or occultation.
+            tra_or_occ_enum: numpy.ndarray[int]
+                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
         
         Returns
         -------
@@ -156,13 +153,10 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
                     :math:`\\frac{1}{2}*\\frac{dP}{dE}*E^2 + P*E + (T_0 + \\frac{1}{2}*P)` if the data point is an observed occultation (denoted by 1)
         """
         result = np.zeros(len(E))
-        for i, t_type in enumerate(tra_or_occ):
-            if t_type == 0:
-                # transit data
-                result[i] = T0 + P*E[i] + 0.5*dPdE*E[i]*E[i] 
-            elif t_type == 1:
-                # occultation data
-                result[i] = (T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i] 
+        tra_mask = tra_or_occ_enum == 0
+        occ_mask = tra_or_occ_enum == 1
+        result[tra_mask] = T0 + P*E[tra_mask] + 0.5*dPdE*np.power(E[tra_mask], 2)
+        result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask] + 0.5*dPdE*np.power(E[occ_mask], 2)
         return result
     
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -201,8 +195,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.quad_fit, independent_vars=['E', 'tra_or_occ'])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0.0, P=1.091423, dPdE=0., tra_or_occ=tra_or_occ_enum)
-        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, dPdE=0., tra_or_occ_enum=tra_or_occ_enum)
+        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
             'period_err': result.params['P'].stderr,
@@ -258,7 +252,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
        result = w0 + dwdE*E
        return result
     
-    def precession_fit(self, E, T0, P, dwdE, w0, e, tra_or_occ):
+    def precession_fit(self, E, T0, P, dwdE, w0, e, tra_or_occ_enum):
         """Calculates a precession function with given data.
 
         Uses the equation 
@@ -267,20 +261,20 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         
         Parameters
         ----------
-            e: float
-                The eccentricity.
             E: numpy.ndarray[int]
                 The epochs.
-            dwdE: float
-                Change in pericenter with respect to epoch.
-            P: float
-                The exoplanet sideral orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
-            tra_or_occ: numpy.ndarray[str]
-                Indicates if the data is from a transit or occultation.
+            P: float
+                The exoplanet sideral orbital period.
+            dwdE: float
+                Change in pericenter with respect to epoch.
             w0: int
                 The intial pericenter.
+            e: float
+                The eccentricity.
+            tra_or_occ_enum: numpy.ndarray[int]
+                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
         
         Returns
         -------
@@ -289,16 +283,12 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                 :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
                 :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
         """
-        # anomalistic_period = self._anomalistic_period(P, dwdE)
-        # pericenter = self._pericenter(w0, dwdE, E)
         result = np.zeros(len(E))
-        for i, t_type in enumerate(tra_or_occ):
-            if t_type == 0:
-                # transit data
-                result[i] = T0 + (E[i]*P) - ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
-            elif t_type == 1:
-                # occultation data
-                result[i] = T0 + self._anomalistic_period(P, dwdE)/2 + (E[i]*P) + ((e*self._anomalistic_period(P, dwdE))/np.pi)*np.cos(self._pericenter(w0, dwdE, E[i]))
+        P_a = self._anomalistic_period(P, dwdE)
+        tra_mask = tra_or_occ_enum == 0
+        occ_mask = tra_or_occ_enum == 1
+        result[tra_mask] = T0 + (E[tra_mask]*P) - ((e*P_a)/np.pi)*np.cos(self._pericenter(w0, dwdE, E[tra_mask]))
+        result[occ_mask] = T0 + P_a/2 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(w0, dwdE, E[occ_mask]))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -341,8 +331,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0.0, P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ=tra_or_occ_enum)
-        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ_enum=tra_or_occ_enum)
+        result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             'period': result.params['P'].value,
             'period_err': result.params['P'].stderr,
@@ -1120,6 +1110,22 @@ class Ephemeris(object):
                     val_to_store = val.value
                 return val_to_store * u.day
             
+    def _validate_obs_start_time(self, time_str):
+        value_err_msg = "obs_start_time must be in the format YYYY-MM-DD. For example, 2024-10-29."
+        if len(time_str) != 10:
+            return ValueError(value_err_msg)
+        if not (time_str[0:4].isdigit() and time_str[5:7].isdigit() and time_str[8:10].isdigit()):
+            return ValueError(value_err_msg)
+        if not (time_str[4] == '-' and time_str[7] == '-'):
+            return ValueError(value_err_msg)
+        
+    def _validate_observing_schedule_params(self, observer, target, obs_start_time):
+        self._validate_obs_start_time(obs_start_time)
+        if not isinstance(observer, Observer):
+            return TypeError("observer parameter must be an Astroplan Observer object. See the Astroplan documentation for more information: https://astroplan.readthedocs.io/en/latest/api/astroplan.Observer.html")
+        if not isinstance(target, FixedTarget):
+            return TypeError("target parameter must be an Astroplan FixedTarget object. See the Astroplan documentation for more information: https://astroplan.readthedocs.io/en/latest/api/astroplan.Target.html")
+
     def create_observer_obj(self, timezone, name, longitude=None, latitude=None, elevation=0.0):
         """Creates the Astroplan Observer object.
 
@@ -1221,8 +1227,10 @@ class Ephemeris(object):
 
             n_occultations: int
 
-            obs_start_time: 
-
+            obs_start_time: str
+                Time at which you would like to start looking for eclipse events. In the format YYYY-MM-DD. For
+                example, if you would like to find eclipses happening after October 1st, 2024, the format would
+                be "2024-10-01".
             exoplanet_name: str (Optional)
                 The name of the exoplanet. Used to query the NASA Exoplanet Archive for transit duration. If 
                 no name is provided, the right ascension and declination from the FixedTarget object will be used. 
@@ -1231,18 +1239,34 @@ class Ephemeris(object):
                 The full duration of the exoplanet transit from ingress to egress. If not given, will calculate
                 using either provided system parameters or parameters pulled from the NASA Exoplanet Archive.
         """
-        # This is just a mid transit time, we most likely want to use the most recent mid transit time
-        # For now just using last value from calculated mid-times 
-        # TODO: Should we change this to use the most recent mid transit time from the data?
-        primary_eclipse_time = Time(model_data_dict['model_data'][-1], format='jd')
+        # Validate some things before continuing
+        self._validate_observing_schedule_params(observer, target, obs_start_time)
+        # Grab the most recent mid transit time
+        primary_eclipse_time = Time(self.timing_data.mid_times[-1], format='jd')
         # Pull orbital period from the model
         orbital_period = model_data_dict['period'] * u.day
         if eclipse_duration == None:
-            # Not given, query the archive for it
+            # If not given, query the archive for it
             eclipse_duration = self._get_eclipse_duration(exoplanet_name, target.ra, target.dec)
+        # Create EclipsingSystem object
         eclipsing_system = EclipsingSystem(primary_eclipse_time=primary_eclipse_time,
                                 orbital_period=orbital_period, duration=eclipse_duration)
-        pass
+        # Set the observational parameters
+        # Time to start looking
+        obs_time = Time(f"{obs_start_time} 00:00")
+        # Grab the number of transits and occultations asked for
+        ing_egr_transits = eclipsing_system.next_primary_ingress_egress_time(obs_time, n_eclipses=n_transits)
+        # ing_egr_occultations = eclipsing_system.next_secondary_ingress_egress_time(obs_time, n_eclipses=n_occultations)
+        # We need to check if the events are observable
+        constraints = [AtNightConstraint.twilight_civil(), AltitudeConstraint(min=30*u.deg)]
+        transits_bool = is_event_observable(constraints, observer, target, times=ing_egr_transits)
+        # occultations_bool = is_event_observable(constraints, observer, target, times=ing_egr_occultations)
+        print(transits_bool)
+        # observable_transits = ing_egr_transits[transits_bool]
+        # observable_occultations = ing_egr_occultations[occultations_bool]
+        # print(observable_transits)
+        # print(observable_occultations)
+        pass    
     
     def plot_model_ephemeris(self, model_data_dict, subtract_lin_params=False, show_occultations=False, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. model calculated mid-times.
@@ -1398,7 +1422,7 @@ class Ephemeris(object):
                 delta_bic = self.calc_delta_bic(model1, model2)
                 delta_bics.append(delta_bic)
         # Plot the data
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(15, 7))
         ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel('Epoch')
@@ -1466,8 +1490,8 @@ if __name__ == '__main__':
     # print(linear_model_uncertainties)
     # lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
     # print(lin_bic)
-    # # QUADRATIC MODEL
-    # quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
+    # QUADRATIC MODEL
+    quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
     # print(quad_model_data)
     # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
     # print(quad_model_uncertainties)
@@ -1504,7 +1528,9 @@ if __name__ == '__main__':
     observer_obj = ephemeris_obj1.create_observer_obj(timezone="US/Mountain", longitude=-116.208710, latitude=43.602,
                                                       elevation=821, name="BoiseState")
     target_obj = ephemeris_obj1.create_target_obj("TrES-3")
-    print(observer_obj, target_obj)
+    obs_sch = ephemeris_obj1.get_observing_schedule(quad_model_data, "US/Mountain", observer_obj, target_obj, 10, 2, "2024-12-04", exoplanet_name="TrES-3")
+
+    # TODO: Do timezone checks and stuff in observing sched 
 
     # STEP 9: Running delta BIC plot
     # running_bic_plot = ephemeris_obj1.plot_running_delta_bic(model1="linear", model2="quadratic", save_plot=False)
