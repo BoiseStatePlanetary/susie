@@ -10,8 +10,8 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
+from susie.timing_data import TimingData # Use this for package pushes
+# from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -1217,9 +1217,11 @@ class Ephemeris(object):
                 `create_target_obj` method, or can be manually created. See the `Astroplan Target Documentation <https://astroplan.readthedocs.io/en/latest/api/astroplan.Target.html>`_
                 for more information.
             n_transits: int
-
+                The number of transits to initially request. This will be filtered down by what is observable from
+                the Earth location.
             n_occultations: int
-
+                The number of occultations to initially request. This will be filtered down by what is observable from
+                the Earth location.
             obs_start_time: str
                 Time at which you would like to start looking for eclipse events. In the format YYYY-MM-DD. For
                 example, if you would like to find eclipses happening after October 1st, 2024, the format would
