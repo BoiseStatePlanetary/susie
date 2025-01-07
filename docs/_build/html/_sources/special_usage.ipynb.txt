@@ -16,7 +16,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -74,7 +74,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -84,8 +84,8 @@
     "data = pd.read_csv(url)\n",
     "tra_or_occs = np.array(data[\"tra_or_occ\"])\n",
     "epochs = np.array(data[\"epoch\"].astype('int'))\n",
-    "mid_times = np.array(data[\"transit_time\"])\n",
-    "mid_time_errs = np.array(data[\"sigma_transit_time\"])"
+    "mid_times = np.array(data[\"mid_time\"])\n",
+    "mid_time_errs = np.array(data[\"mid_time_err\"])"
    ]
   },
   {
@@ -135,7 +135,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 4,
    "metadata": {},
    "outputs": [
     {
@@ -143,9 +143,9 @@
      "output_type": "stream",
      "text": [
       "WARNING: Recieved time format jd and time scale None. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.\n",
-      "WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.\n",
+      "WARNING: Using ICRS coordinates in degrees of RA and Dec (np.float64(97.64), np.float64(29.67)) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (np.float64(-116.21), np.float64(43.6)) for time correction.\n",
       "WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.\n",
-      "WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (-116.21, 43.6) for time correction.\n"
+      "WARNING: Using ICRS coordinates in degrees of RA and Dec (np.float64(97.64), np.float64(29.67)) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (np.float64(-116.21), np.float64(43.6)) for time correction.\n"
      ]
     }
    ],
@@ -165,7 +165,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -199,7 +199,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -208,7 +208,7 @@
      "text": [
       "WARNING: Recieved time format jd and time scale utc. Correcting all times to BJD timing system with TDB time scale. If no time scale is given, default is automatically assigned to UTC. If this is incorrect, please set the time format and time scale for TransitTime object.\n",
       "WARNING: Unable to process observatory coordinates (None, None). Using gravitational center of Earth.\n",
-      "WARNING: Using ICRS coordinates in degrees of RA and Dec (97.64, 29.67) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (0.0, 90.0) for time correction.\n"
+      "WARNING: Using ICRS coordinates in degrees of RA and Dec (np.float64(97.64), np.float64(29.67)) for time correction. Using geodetic Earth coordinates in degrees of longitude and latitude (np.float64(0.0), np.float64(90.0)) for time correction.\n"
      ]
     }
    ],
@@ -219,7 +219,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 7,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -247,9 +247,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 8,
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "WARNING: Recieved value of None for mid time uncertainties. Auto-populating placeholder values of 0.001 for uncertainties.\n"
+     ]
+    }
+   ],
    "source": [
     "# Create new transit times object with above data\n",
     "timing_obj4 = TimingData('jd', epochs, mid_times, time_scale='tdb')"
@@ -257,7 +265,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -285,7 +293,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -295,7 +303,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -322,7 +330,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "venv",
+   "display_name": "docs_env",
    "language": "python",
    "name": "python3"
   },

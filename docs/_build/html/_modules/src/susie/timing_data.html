@@ -500,12 +500,12 @@
 </span><span id="line-347">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The `mid_time_uncertainties` array contains NaN (Not-a-Number) values.&quot;</span><span class="p">)</span>
 </span><span id="line-348">        <span class="c1"># Check that mid_time_uncertainties are positive and non-zero (greater than zero)</span>
 </span><span id="line-349">        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mid_time_uncertainties</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="line-350">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The `mid_time_uncertainties` array must contain non-negative and non-zero values.&quot;</span><span class="p">)</span>
-</span><span id="line-351">        <span class="c1"># Shift epochs by subtracting the minimum number from everything (new list will start at 0)</span>
-</span><span id="line-352">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="line-353">            <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span></div>
+</span><span id="line-350">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The `mid_time_uncertainties` array must contain non-negative and non-zero values.&quot;</span><span class="p">)</span></div>
 
-</span><span id="line-354">            <span class="c1"># TODO import warning that we are minimizing their epochs</span>
+</span><span id="line-351">        <span class="c1"># Shift epochs by subtracting the minimum number from everything (new list will start at 0)</span>
+</span><span id="line-352">        <span class="c1"># if self.epochs[0] != 0:</span>
+</span><span id="line-353">        <span class="c1">#     self.epochs = self.epochs.copy() - np.min(self.epochs)</span>
+</span><span id="line-354">        <span class="c1">#     # TODO import warning that we are minimizing their epochs</span>
 </span></code></pre></div>
     </div></div>
         </main>
