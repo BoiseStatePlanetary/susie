@@ -18,20 +18,17 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-import numpy as np
-import pandas as pd
-from susie.timing_data import TimingData
-from susie.ephemeris import Ephemeris
+delta_bic_value = ephemeris_obj1.calc_delta_bic("linear", "quadratic")
+
+print(f"\u0394 BIC: {delta_bic_value}")
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-Cell [0;32mIn[2], line 3[0m
-[1;32m      1[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
-[1;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mpandas[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpd[39;00m
-[0;32m----> 3[0m [38;5;28;01mfrom[39;00m [38;5;21;01msusie[39;00m[38;5;21;01m.[39;00m[38;5;21;01mtiming_data[39;00m [38;5;28;01mimport[39;00m TimingData
-[1;32m      4[0m [38;5;28;01mfrom[39;00m [38;5;21;01msusie[39;00m[38;5;21;01m.[39;00m[38;5;21;01mephemeris[39;00m [38;5;28;01mimport[39;00m Ephemeris
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[10], line 1[0m
+[0;32m----> 1[0m delta_bic_value [38;5;241m=[39m [43mephemeris_obj1[49m[38;5;241;43m.[39;49m[43mcalc_delta_bic[49m[43m([49m[38;5;124;43m"[39;49m[38;5;124;43mlinear[39;49m[38;5;124;43m"[39;49m[43m,[49m[43m [49m[38;5;124;43m"[39;49m[38;5;124;43mquadratic[39;49m[38;5;124;43m"[39;49m[43m)[49m
+[1;32m      3[0m [38;5;28mprint[39m([38;5;124mf[39m[38;5;124m"[39m[38;5;130;01m\u0394[39;00m[38;5;124m BIC: [39m[38;5;132;01m{[39;00mdelta_bic_value[38;5;132;01m}[39;00m[38;5;124m"[39m)
 
-[0;31mModuleNotFoundError[0m: No module named 'susie.timing_data'
+[0;31mTypeError[0m: Ephemeris.calc_delta_bic() takes 1 positional argument but 3 were given
 

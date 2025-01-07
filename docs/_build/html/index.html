@@ -16,8 +16,8 @@
     <title>Welcome to Susie’s documentation! | Susie Sept. 2023 documentation</title>
     <meta property="og:title" content="Welcome to Susie’s documentation! | Susie Sept. 2023 documentation" />
     <meta name="twitter:title" content="Welcome to Susie’s documentation! | Susie Sept. 2023 documentation" />
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8d216cef" />
-      <link rel="stylesheet" type="text/css" href="_static/theme.css?v=ecdfb4fc" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e72c8e07" />
+      <link rel="stylesheet" type="text/css" href="_static/theme.css?v=42baaae4" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
         <link rel="search" title="Search" href="search.html" />
         <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +36,7 @@
       if (!userPreference) {localStorage.setItem('darkMode', mode)}
     </script>
 </head>
-<body x-data="{ showSidebar: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
     <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
     </a><header
@@ -109,6 +109,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observing_schedule.html">Generating an Observing Schedule</a></li>
 </ul>
 
 </nav>
@@ -165,11 +166,12 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </div>
 </li>
 <li><p>Include at the top of your Python file or notebook:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span> <span class="nn">susie</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span><span class="w"> </span><span class="nn">susie</span>
 </span></code></pre></div>
 </div>
 <p>or</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span> <span class="nn">susie</span> <span class="kn">import</span> <span class="n">TimingData</span><span class="p">,</span> <span class="n">Ephemeris</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span><span class="w"> </span><span class="nn">susie.timing_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimingData</span>
+</span><span id="line-2"><span class="kn">from</span><span class="w"> </span><span class="nn">susie.ephemeris</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ephemeris</span>
 </span></code></pre></div>
 </div>
 </li>
@@ -190,6 +192,8 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_ephemeris_uncertainties()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.calc_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_bic()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.calc_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_delta_bic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.create_observer_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_observer_obj()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.create_target_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_target_obj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_observing_schedule"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_observing_schedule()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_model_ephemeris()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_timing_uncertainties()</span></code></a></li>
@@ -249,6 +253,16 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="observing_schedule.html">Generating an Observing Schedule</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="observing_schedule.html#import-the-necessary-python-libraries-and-susie-objects">🔵 Import the necessary python libraries and Susie objects.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="observing_schedule.html#import-data">🔵 Import Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="observing_schedule.html#the-package">🔵 The Package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="observing_schedule.html#step-1-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 1:</strong> Add your transit and occultation data to the TimingData object.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observing_schedule.html#step-2-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 2:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -284,16 +298,16 @@ Consortium.</p>
       <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
         <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2023, Boise State University&nbsp;Built with <a class="font-medium underline underline-offset-4"
     href="https://www.sphinx-doc.org"
-    rel="noreferrer">Sphinx 7.3.7</a></p>
+    rel="noreferrer">Sphinx 8.1.3</a></p>
 </div>
 </div>
 </footer>
   </div>
   
     <script src="_static/documentation_options.js?v=cc8b8c85"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script defer="defer" src="_static/theme.js?v=e82a16a3"></script>
+    <script defer="defer" src="_static/theme.js?v=073f68d9"></script>
     <script async="async" src="_static/mathjax/tex-chtml.js?v=20daa33d"></script>
   
 </body>

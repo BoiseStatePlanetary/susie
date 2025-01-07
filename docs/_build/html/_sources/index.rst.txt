@@ -58,7 +58,8 @@ Quickstart
 
    .. code-block:: python
 
-      from susie import TimingData, Ephemeris
+      from susie.timing_data import TimingData
+      from susie.ephemeris import Ephemeris
 
 
 Documentation
@@ -75,6 +76,7 @@ Tutorials
 
    Basic Usage of TimingData and Ephemeris Objects <basic_usage>
    Special TimingData Object Usage <special_usage>
+   Generating an Observing Schedule <observing_schedule>
 
 
 Indices and tables
