@@ -8,8 +8,8 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -41,7 +41,7 @@ class BaseModelEphemeris(ABC):
 
 class LinearModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a linear fit."""
-    def lin_fit(self, E, P, T0, tra_or_occ_enum):
+    def lin_fit(self, E, T0, P, tra_or_occ_enum):
         """Calculates a linear function with given data.
 
         Uses the equation 
@@ -54,10 +54,10 @@ class LinearModelEphemeris(BaseModelEphemeris):
         ----------
             E: numpy.ndarray[float]
                 The epochs.
-            P: float
-                The exoplanet orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
+            P: float
+                The exoplanet orbital period.
             tra_or_occ_enum: numpy.ndarray[int]
                 Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
         
@@ -110,22 +110,22 @@ class LinearModelEphemeris(BaseModelEphemeris):
                 }
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
-        model = Model(self.lin_fit, independent_vars=['E', 'tra_or_occ'])
+        model = Model(self.lin_fit, independent_vars=["E", "tra_or_occ_enum"])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
         params = model.make_params(T0=0.0, P=1.091423, tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
-            'period': result.params['P'].value,
-            'period_err': result.params['P'].stderr,
-            'conjunction_time': result.params['T0'].value,
-            'conjunction_time_err': result.params['T0'].stderr
+            "period": result.params["P"].value,
+            "period_err": result.params["P"].stderr,
+            "conjunction_time": result.params["T0"].value,
+            "conjunction_time_err": result.params["T0"].stderr
         }
         return(return_data)
 
 
 class QuadraticModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a quadratic fit."""
-    def quad_fit(self, E, dPdE, P, T0, tra_or_occ_enum):
+    def quad_fit(self, E, T0, P, dPdE, tra_or_occ_enum):
         """Calculates a quadratic function with given data.
 
         Uses the equation 
@@ -136,12 +136,12 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         ----------
             E: numpy.ndarray[int]
                 The epochs.
-            dPdE: float
-                Change in period with respect to epoch.
-            P: float
-                The exoplanet orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
+            P: float
+                The exoplanet orbital period.
+            dPdE: float
+                Change in period with respect to epoch.
             tra_or_occ_enum: numpy.ndarray[int]
                 Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
         
@@ -193,17 +193,17 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
                 }
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
-        model = Model(self.quad_fit, independent_vars=['E', 'tra_or_occ'])
+        model = Model(self.quad_fit, independent_vars=["E", "tra_or_occ_enum"])
         # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0.0, P=1.091423, dPdE=0., tra_or_occ_enum=tra_or_occ_enum)
+        params = model.make_params(T0=0.0, P=1.091423, dPdE=0.0, tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
-            'period': result.params['P'].value,
-            'period_err': result.params['P'].stderr,
-            'conjunction_time': result.params['T0'].value,
-            'conjunction_time_err': result.params['T0'].stderr,
-            'period_change_by_epoch': result.params['dPdE'].value,
-            'period_change_by_epoch_err': result.params['dPdE'].stderr
+            "period": result.params["P"].value,
+            "period_err": result.params["P"].stderr,
+            "conjunction_time": result.params["T0"].value,
+            "conjunction_time_err": result.params["T0"].stderr,
+            "period_change_by_epoch": result.params["dPdE"].value,
+            "period_change_by_epoch_err": result.params["dPdE"].stderr
         }
         return(return_data)
     
@@ -227,10 +227,10 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         -------
            A float of the calculated starting anomalistic period.
        """
-       result = P/(1 - (1/(2*np.pi))*dwdE)
+       result = P/(1 - ((1/(2*np.pi))*dwdE))
        return result
     
-    def _pericenter(self, w0, dwdE, E):
+    def _pericenter(self, E, w0, dwdE):
        """Calculates the pericenter given a list of epochs, an intial pericenter value, and a change in pericenter with respect to epoch.
 
        Uses the equation:
@@ -249,10 +249,10 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         -------
            A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
        """
-       result = w0 + dwdE*E
+       result = w0 + (dwdE*E)
        return result
     
-    def precession_fit(self, E, T0, P, dwdE, w0, e, tra_or_occ_enum):
+    def precession_fit(self, E, T0, P, e, w0, dwdE, tra_or_occ_enum):
         """Calculates a precession function with given data.
 
         Uses the equation 
@@ -287,8 +287,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         P_a = self._anomalistic_period(P, dwdE)
         tra_mask = tra_or_occ_enum == 0
         occ_mask = tra_or_occ_enum == 1
-        result[tra_mask] = T0 + (E[tra_mask]*P) - ((e*P_a)/np.pi)*np.cos(self._pericenter(w0, dwdE, E[tra_mask]))
-        result[occ_mask] = T0 + P_a/2 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(w0, dwdE, E[occ_mask]))
+        result[tra_mask] = T0 + (E[tra_mask]*P) - ((e*P_a)/np.pi)*np.cos(self._pericenter(E[tra_mask], w0, dwdE))
+        result[occ_mask] = T0 + P_a/2 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(E[occ_mask], w0, dwdE))
         return result
 
     def fit_model(self, x, y, yerr, tra_or_occ):
@@ -330,20 +330,20 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         """
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
-        model = Model(self.precession_fit, independent_vars=['E', 'tra_or_occ'])
-        params = model.make_params(T0=0.0, P=1.091423, dwdE=dict(value=0.000984), e=dict(value=0.00310, min=0, max=1), w0=2.62, tra_or_occ_enum=tra_or_occ_enum)
+        model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
+        params = model.make_params(T0=0.0, P=1.091423, e=dict(value=0.00310, min=0, max=1), w0=2.62, dwdE=dict(value=0.000984), tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
-            'period': result.params['P'].value,
-            'period_err': result.params['P'].stderr,
-            'conjunction_time': result.params['T0'].value,
-            'conjunction_time_err': result.params['T0'].stderr,
-            'eccentricity': result.params['e'].value,
-            'eccentricity_err': result.params['e'].stderr,
-            'pericenter': result.params['w0'].value,
-            'pericenter_err': result.params['w0'].stderr,
-            'pericenter_change_by_epoch': result.params['dwdE'].value,
-            'pericenter_change_by_epoch_err': result.params['dwdE'].stderr
+            "period": result.params["P"].value,
+            "period_err": result.params["P"].stderr,
+            "conjunction_time": result.params["T0"].value,
+            "conjunction_time_err": result.params["T0"].stderr,
+            "eccentricity": result.params["e"].value,
+            "eccentricity_err": result.params["e"].stderr,
+            "pericenter": result.params["w0"].value,
+            "pericenter_err": result.params["w0"].stderr,
+            "pericenter_change_by_epoch": result.params["dwdE"].value,
+            "pericenter_change_by_epoch_err": result.params["dwdE"].stderr
         }
         return(return_data)
 
@@ -434,6 +434,8 @@ class Ephemeris(object):
         """
         self.timing_data = timing_data
         self._validate()
+        self.tra_mask = self.timing_data.tra_or_occ == "tra"
+        self.occ_mask = self.timing_data.tra_or_occ == "occ"
 
     def _validate(self):
         """Check that timing_data is an instance of the TimingData object.
@@ -622,15 +624,10 @@ class Ephemeris(object):
             A list of uncertainties associated with the model ephemeris data passed in, calculated with the 
             equation above and the TimingData epochs.
         """
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2))))
-            elif t_type == 'occ':
-                # occultation data
-                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2))))
-        return np.array(result)
+        result = np.zeros(len(self.timing_data.epochs))
+        result[self.tra_mask] = np.sqrt((T0_err**2) + ((self.timing_data.epochs[self.tra_mask]**2)*(P_err**2)))
+        result[self.occ_mask] = np.sqrt((T0_err**2) + (((self.timing_data.epochs[self.occ_mask]+0.5)**2)*(P_err**2)))
+        return result
     
     def _calc_quadratic_model_uncertainties(self, T0_err, P_err, dPdE_err):
         """Calculates the uncertainties of a given quadratic model when compared to actual data in TimingData.
@@ -662,64 +659,63 @@ class Ephemeris(object):
             A list of uncertainties associated with the model ephemeris passed in, calculated with the 
             equation above and the TimingData epochs.
         """
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(np.sqrt((T0_err**2) + ((self.timing_data.epochs[i]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
-            elif t_type == 'occ':
-                # occultation data
-                result.append(np.sqrt((T0_err**2) + (((self.timing_data.epochs[i]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[i]**4)*(dPdE_err**2))))
-        return np.array(result)
+        result = np.zeros(len(self.timing_data.epochs))
+        result[self.tra_mask] = np.sqrt((T0_err**2) + ((self.timing_data.epochs[self.tra_mask]**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[self.tra_mask]**4)*(dPdE_err**2)))
+        result[self.occ_mask] = np.sqrt((T0_err**2) + (((self.timing_data.epochs[self.occ_mask]+0.5)**2)*(P_err**2)) + ((1/4)*(self.timing_data.epochs[self.occ_mask]**4)*(dPdE_err**2)))
+        return result
     
-    # Precession Uncertainites
-    def _calc_t0_model_uncertainty(self, T0_err):
-        return T0_err**2
+    # ————————————————————WORK IN PROGRESS—————————————————————————————
 
-    def _calc_eccentricity_model_uncertainty(self, P, dwdE, w0, E, e_err):
-        return (-P/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * e_err**2
+    # # Precession Uncertainites
+    # def _calc_t0_model_uncertainty(self, T0_err):
+    #     return T0_err**2
 
-    def _calc_pericenter_model_uncertainty(self, e, P, dwdE, w0, E, w0_err):
-        return ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.sin(w0 + dwdE*E))**2 * w0_err**2
+    # def _calc_eccentricity_model_uncertainty(self, P, dwdE, w0, E, e_err):
+    #     return (-P/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * e_err**2
+
+    # def _calc_pericenter_model_uncertainty(self, e, P, dwdE, w0, E, w0_err):
+    #     return ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.sin(w0 + dwdE*E))**2 * w0_err**2
     
-    def _calc_change_in_pericenter_transit_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
-        return (((-2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((-e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
+    # def _calc_change_in_pericenter_transit_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
+    #     return (((-2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((-e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
     
-    def _calc_change_in_pericenter_occ_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
-        return (((np.pi*P)/((1-(1/(2*np.pi))*dwdE)**2)) + ((2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
+    # def _calc_change_in_pericenter_occ_model_uncertainty(self, e, P, dwdE, w0, E, dwdE_err):
+    #     return (((np.pi*P)/((1-(1/(2*np.pi))*dwdE)**2)) + ((2*e*P)/((1-(1/(2*np.pi))*dwdE)**2)) * np.cos(w0 + dwdE*E) + E*np.sin(w0 + dwdE*E) * ((e*P)/((1-(1/(2*np.pi))*dwdE)*np.pi)))**2 * dwdE_err**2
 
-    def _calc_period_transit_model_uncertainty(self, e, dwdE, w0, E, P_err):
-        return (E - e/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * P_err**2
+    # def _calc_period_transit_model_uncertainty(self, e, dwdE, w0, E, P_err):
+    #     return (E - e/((1-(1/(2*np.pi))*dwdE)*np.pi) * np.cos(w0 + dwdE*E))**2 * P_err**2
         
-    def _calc_period_occ_model_uncertainty(self, e, dwdE, w0, E, P_err):
-        return (E + e/(2*(1-(1/(2*np.pi))*dwdE)) + e/((1-(1/(2*np.pi))*dwdE)*np.pi)* np.cos(w0 + dwdE*E))**2 * P_err**2
+    # def _calc_period_occ_model_uncertainty(self, e, dwdE, w0, E, P_err):
+    #     return (E + e/(2*(1-(1/(2*np.pi))*dwdE)) + e/((1-(1/(2*np.pi))*dwdE)*np.pi)* np.cos(w0 + dwdE*E))**2 * P_err**2
 
-    # def _get_precession_model_partial_derivatives(self, tra_or_occ, epoch)
-    #     if tra:
-    #         return [self._calc_t0_model_uncertainty(T0), self._calc_eccentricity_model_uncertainty(P, dwdE, w0, epoch, e_err), self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, epoch, w0_err), self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, epoch, dwdE_err), self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)]
+    # # def _get_precession_model_partial_derivatives(self, tra_or_occ, epoch)
+    # #     if tra:
+    # #         return [self._calc_t0_model_uncertainty(T0), self._calc_eccentricity_model_uncertainty(P, dwdE, w0, epoch, e_err), self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, epoch, w0_err), self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, epoch, dwdE_err), self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)]
     
-    def _calc_precession_model_uncertainties(self, model_params):
-        T0_err = model_params['conjunction_time_err']
-        P_err = model_params['period_err']
-        dwdE_err = model_params['pericenter_change_by_epoch_err']
-        e_err = model_params['eccentricity_err']
-        w0_err = model_params['pericenter_err']
-        T0 = model_params['conjunction_time']
-        P = model_params['period']
-        dwdE = model_params['pericenter_change_by_epoch']
-        e = model_params['eccentricity']
-        w0 = model_params['pericenter']       
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
-            elif t_type == 'occ':
-                # occultation data
-                result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_occ_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_occ_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
-        return np.array(result)
+    # def _calc_precession_model_uncertainties(self, model_params):
+    #     T0_err = model_params['conjunction_time_err']
+    #     P_err = model_params['period_err']
+    #     dwdE_err = model_params['pericenter_change_by_epoch_err']
+    #     e_err = model_params['eccentricity_err']
+    #     w0_err = model_params['pericenter_err']
+    #     T0 = model_params['conjunction_time']
+    #     P = model_params['period']
+    #     dwdE = model_params['pericenter_change_by_epoch']
+    #     e = model_params['eccentricity']
+    #     w0 = model_params['pericenter']       
+    #     result = []
+    #     for i, t_type in enumerate(self.timing_data.tra_or_occ):
+    #         if t_type == 'tra':
+    #             # transit data
+    #             result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_transit_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_transit_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
+    #         elif t_type == 'occ':
+    #             # occultation data
+    #             result.append(np.sqrt(self._calc_t0_model_uncertainty(T0_err) + self._calc_eccentricity_model_uncertainty(P, dwdE, w0,self.timing_data.epochs[i], e_err) + self._calc_pericenter_model_uncertainty(e, P, dwdE, w0, self.timing_data.epochs[i], w0_err) + self._calc_change_in_pericenter_occ_model_uncertainty( e, P, dwdE, w0, self.timing_data.epochs[i], dwdE_err) + self._calc_period_occ_model_uncertainty(e, dwdE, w0,  self.timing_data.epochs[i], P_err)))
+    #     return np.array(result)
+
+    # ———————————————————————————————————————————————————————————————————————————————————————————
     
-    def _calc_linear_ephemeris(self, E, P, T0):
+    def _calc_linear_ephemeris(self, E, T0, P):
         """Calculates mid-times using parameters from a linear model ephemeris.
         
         Uses the equation:
@@ -732,26 +728,21 @@ class Ephemeris(object):
         ----------
             E: numpy.ndarray[int]
                 The epochs pulled from the TimingData object.
-            P: float
-                The orbital period of the exoplanet as calculated by the linear ephemeris model.
             T0: float
                 The conjunction time of the exoplanet as calculated by the linear ephemeris model.
+            P: float
+                The orbital period of the exoplanet as calculated by the linear ephemeris model.
 
         Returns
         -------
             A numpy array of mid-time times calculated over each epoch using the equation above.
         """
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(T0 + (P*E[i]))
-            elif t_type == 'occ':
-                # occultation data
-                result.append((T0 + 0.5*P) + (P*E[i]))
-        return np.array(result)
+        result = np.zeros(len(self.timing_data.epochs))
+        result[self.tra_mask] = T0 + (P*E[self.tra_mask])
+        result[self.occ_mask] = (T0 + 0.5*P) + (P*E[self.occ_mask])
+        return result
     
-    def _calc_quadratic_ephemeris(self, E, P, T0, dPdE):
+    def _calc_quadratic_ephemeris(self, E, T0, P, dPdE):
         """Calculates mid-times using parameters from a quadratic model ephemeris.
 
         Uses the equation:
@@ -764,10 +755,10 @@ class Ephemeris(object):
         ----------
             E: numpy.ndarray[int]
                 The epochs pulled from the TimingData object.
-            P: float
-                The orbital period of the exoplanet as calculated by the linear ephemeris model.
             T0: float
                 The conjunction time of the exoplanet as calculated by the linear ephemeris model.
+            P: float
+                The orbital period of the exoplanet as calculated by the linear ephemeris model.
             dPdE: float
                 The period change with respect to epoch as calculated by the linear ephemeris model.
 
@@ -775,17 +766,12 @@ class Ephemeris(object):
         -------
             A numpy array of mid-times calculated over each epoch using the equation above.
         """
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(T0 + P*E[i] + 0.5*dPdE*E[i]*E[i])
-            elif t_type == 'occ':
-                # occultation data
-                result.append((T0 + 0.5*P) + P*E[i] + 0.5*dPdE*E[i]*E[i])
-        return np.array(result)
+        result = np.zeros(len(self.timing_data.epochs))
+        result[self.tra_mask] = T0 + P*E[self.tra_mask] + 0.5*dPdE*E[self.tra_mask]*E[self.tra_mask]
+        result[self.occ_mask] = (T0 + 0.5*P) + P*E[self.occ_mask] + 0.5*dPdE*E[self.occ_mask]*E[self.occ_mask]
+        return result
     
-    def _calc_precession_ephemeris(self, E, P, T0, e, w0, dwdE):
+    def _calc_precession_ephemeris(self, E, T0, P, e, w0, dwdE):
         """Calculates mid-times using parameters from a precession model ephemeris.
 
         Uses the equation:
@@ -798,10 +784,10 @@ class Ephemeris(object):
         ----------
             E: numpy.ndarray[int]
                 The epochs.
-            P: float
-                The exoplanet sideral orbital period.
             T0: float
                 The initial mid-time, also known as conjunction time.
+            P: float
+                The exoplanet sideral orbital period.
             e: float
                 The eccentricity.
             w0: int
@@ -815,15 +801,10 @@ class Ephemeris(object):
         -------
             A numpy array of mid-times calculated over each epoch using the equation above.
         """ 
-        result = []
-        for i, t_type in enumerate(self.timing_data.tra_or_occ):
-            if t_type == "tra":
-                # transit data
-                result.append(T0 + E[i]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
-            elif t_type == "occ":
-                # occultation data
-                result.append(T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[i]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[i])))
-        return np.array(result)
+        result = np.zeros(len(self.timing_data.epochs))
+        result[self.tra_mask] = T0 + E[self.tra_mask]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.tra_mask]))
+        result[self.occ_mask] = T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[self.occ_mask]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.occ_mask]))
+        return result
    
     def _calc_chi_squared(self, model_mid_times):
         """Calculates the residual chi squared values for the model ephemeris.
@@ -869,15 +850,12 @@ class Ephemeris(object):
         -------
             A numpy array of newly calculated values for plotting.
         """
-        result = []
-        for i, t_type in enumerate(tra_or_occ):
-            if t_type == 'tra':
-                # transit data
-                result.append(model_mid_times[i] - T0 - (P*E[i]))
-            elif t_type == 'occ':
-                # occultation data
-                result.append(model_mid_times[i] - T0 - (0.5*P) - (P*E[i]))
-        return np.array(result)
+        tra_mask = tra_or_occ == "tra"
+        occ_mask = tra_or_occ == "occ"
+        result = np.zeros(len(E))
+        result[tra_mask] = model_mid_times[tra_mask] - T0 - (P*E[tra_mask])
+        result[occ_mask] = model_mid_times[occ_mask] - T0 - (0.5*P) - (P*E[occ_mask])
+        return result
     
     def get_model_ephemeris(self, model_type):
         """Fits the timing data to a specified model using an LMfit Model fit.
@@ -915,14 +893,14 @@ class Ephemeris(object):
         """
         model_ephemeris_data = self._get_model_parameters(model_type)
         model_ephemeris_data["model_type"] = model_type
-        # Once we get parameters back, we call _calc_linear_ephemeris 
+        # Once we get parameters back, we call _calc_blank_ephemeris 
         if model_type == "linear":
             # Return dict with parameters and model data
-            model_ephemeris_data["model_data"] = self._calc_linear_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"])
+            model_ephemeris_data["model_data"] = self._calc_linear_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"])
         elif model_type == "quadratic":
-            model_ephemeris_data["model_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["period_change_by_epoch"])
+            model_ephemeris_data["model_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"], model_ephemeris_data["period_change_by_epoch"])
         elif model_type == "precession":
-            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["period"], model_ephemeris_data["conjunction_time"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"])
+            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"])
         return model_ephemeris_data
     
     def get_ephemeris_uncertainties(self, model_params):
@@ -1444,42 +1422,39 @@ if __name__ == '__main__':
     isot_filepath = "../../example_data/wasp12b_isot_utc.csv"
     jd_utc_filepath = "../../example_data/wasp12b_jd_utc.csv"
     jd_utc_no_occs_filepath = "../../example_data/wasp12b_jd_utc_tra.csv"
-    data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    bjd_data_no_occs = np.genfromtxt(bjd_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    jd_utc_data = np.genfromtxt(jd_utc_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    jd_utc_no_occs_data = np.genfromtxt(jd_utc_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    test_filepath = "../../example_data/test_data.csv"
+    # data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # bjd_data_no_occs = np.genfromtxt(bjd_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # jd_utc_data = np.genfromtxt(jd_utc_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # jd_utc_no_occs_data = np.genfromtxt(jd_utc_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    test_data = np.genfromtxt(test_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # Set what data file you are using here
+    data = test_data
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"] # Base tra_or_occs
     epochs = data["epoch"].astype('int') # Epochs with tra_or_occs
-    # epochs_no_occs = bjd_data_no_occs["epoch"].astype('int') # Epochs with ONLY tra
-    # isot_mid_times = isot_data["transit_time"] # ISOT mid times
-    # jd_utc_times = jd_utc_data["transit_time"] # JD UTC mid times
-    # jd_utc_time_errs = jd_utc_data["sigma_transit_time"] # JD UTC mid time errs
-    # jd_utc_times_no_occs = jd_utc_no_occs_data["transit_time"] # JD UTC mid times ONLY tra
-    # jd_utc_time_errs_no_occs = jd_utc_no_occs_data["sigma_transit_time"] # JD UTC mid time errs ONLY tra
-    bjd_mid_times = data["mid_time"] # BJD mid times
-    bjd_mid_time_errs = data["mid_time_err"] # BJD mid time errs
-    # bjd_mid_times_no_occs = bjd_data_no_occs["transit_time"]
-    # bjd_mid_time_errs_no_occs = bjd_data_no_occs["sigma_transit_time"]
-    # print(f"epochs: {list(epochs)}")
-    # print(f"mid_times: {list(mid_times)}")
-    # print(f"mid_time_errs: {list(mid_time_errs)}")
-    # print(f"tra_or_occ: {list(tra_or_occs)}")
+    # epochs_no_occs = bjd_data_no_occs["epochs"]
+    mid_times = data["mid_time"] # BJD mid times
+    mid_time_errs = data["mid_time_err"] # BJD mid time errs
+    print(f"epochs: {list(epochs)}")
+    print(f"mid_times: {list(mid_times)}")
+    print(f"mid_time_errs: {list(mid_time_errs)}")
+    print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
     """NOTE: ISOT (NO UNCERTAINTIES)"""
-    # times_obj1 = TimingData('isot', epochs, isot_mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('isot', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     """NOTE: JD UTC"""
-    # times_obj1 = TimingData('jd', epochs, jd_utc_times, jd_utc_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     """NOTE: JD UTC NO UNCERTAINTIES"""
-    # times_obj1 = TimingData('jd', epochs, jd_utc_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('jd', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     """NOTE: JD UTC NO UNCERTAINTIES NO TRA_OR_OCC"""
-    # times_obj1 = TimingData('jd', epochs_no_occs, jd_utc_times_no_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
+    # times_obj1 = TimingData('jd', epochs_no_occs, mid_times, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
     """NOTE: JD TDB (BJD) NO TRA_OR_OCC"""
-    # times_obj1 = TimingData('jd', epochs_no_occs, bjd_mid_times_no_occs, bjd_mid_time_errs_no_occs, time_scale='tdb')
+    # times_obj1 = TimingData('jd', epochs_no_occs, mid_times, mid_time_errs, time_scale='tdb')
     """NOTE: JD TDB (BJD) ALL INFO"""
-    times_obj1 = TimingData('jd', epochs, bjd_mid_times, bjd_mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
+    times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
     # # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
     # STEP 5: Get model ephemeris data & BIC values
@@ -1525,10 +1500,10 @@ if __name__ == '__main__':
     # plt.show()
 
     # ephemeris_obj1._get_eclipse_duration("TrES-3 b")
-    observer_obj = ephemeris_obj1.create_observer_obj(timezone="US/Mountain", longitude=-116.208710, latitude=43.602,
-                                                      elevation=821, name="BoiseState")
-    target_obj = ephemeris_obj1.create_target_obj("TrES-3")
-    obs_sch = ephemeris_obj1.get_observing_schedule(quad_model_data, "US/Mountain", observer_obj, target_obj, 10, 2, "2024-12-04", exoplanet_name="TrES-3")
+    # observer_obj = ephemeris_obj1.create_observer_obj(timezone="US/Mountain", longitude=-116.208710, latitude=43.602,
+    #                                                   elevation=821, name="BoiseState")
+    # target_obj = ephemeris_obj1.create_target_obj("TrES-3")
+    # obs_sch = ephemeris_obj1.get_observing_schedule(quad_model_data, "US/Mountain", observer_obj, target_obj, 10, 2, "2024-12-04", exoplanet_name="TrES-3")
 
     # TODO: Do timezone checks and stuff in observing sched 
 
