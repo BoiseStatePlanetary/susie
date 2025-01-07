@@ -78,3 +78,5 @@ meep*
 moop*
 /notebooks/plots
 tres_3b_testing.ipynb
+testing_env
+ephemeris_tests.ipynb

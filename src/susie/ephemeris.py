@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+import pytz
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from lmfit import Model
 from astropy.units import Quantity
@@ -8,8 +10,8 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
+from susie.timing_data import TimingData # Use this for package pushes
+# from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
@@ -1086,7 +1088,7 @@ class Ephemeris(object):
                 if isinstance(val, Quantity) and hasattr(val, 'mask'):
                     # If the value is masked, just store value
                     val_to_store = val.value
-                return val_to_store * u.day
+                return val_to_store * u.hour
             
     def _validate_obs_start_time(self, time_str):
         value_err_msg = "obs_start_time must be in the format YYYY-MM-DD. For example, 2024-10-29."
@@ -1103,6 +1105,19 @@ class Ephemeris(object):
             return TypeError("observer parameter must be an Astroplan Observer object. See the Astroplan documentation for more information: https://astroplan.readthedocs.io/en/latest/api/astroplan.Observer.html")
         if not isinstance(target, FixedTarget):
             return TypeError("target parameter must be an Astroplan FixedTarget object. See the Astroplan documentation for more information: https://astroplan.readthedocs.io/en/latest/api/astroplan.Target.html")
+        
+    def _create_observing_schedule_dataframe(self, transits, occultations):
+        transit_df = pd.DataFrame(transits)
+        occultation_df = pd.DataFrame(occultations)
+        transit_df = transit_df.map(lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S %z"))
+        transit_df = transit_df.rename(columns={0: "ingress", 1: "egress"})
+        occultation_df = occultation_df.map(lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S %z"))
+        occultation_df = occultation_df.rename(columns={0: "ingress", 1: "egress"})
+        transit_df["type"] = "transit"
+        occultation_df["type"] = "occultation"
+        final_df = pd.concat([transit_df, occultation_df], ignore_index=True)
+        sorted_df = final_df.sort_values(by="ingress", ascending=True)
+        return sorted_df
 
     def create_observer_obj(self, timezone, name, longitude=None, latitude=None, elevation=0.0):
         """Creates the Astroplan Observer object.
@@ -1184,7 +1199,7 @@ class Ephemeris(object):
             raise ValueError("Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
         return target
     
-    def get_observing_schedule(self, model_data_dict, timezone, observer, target, n_transits, n_occultations, obs_start_time, exoplanet_name=None, eclipse_duration=None):
+    def get_observing_schedule(self, model_data_dict, timezone, observer, target, n_transits, n_occultations, obs_start_time, exoplanet_name=None, eclipse_duration=None, csv_filename=None):
         """Returns a list of observable future transits for the target object
 
         Parameters
@@ -1202,9 +1217,11 @@ class Ephemeris(object):
                 `create_target_obj` method, or can be manually created. See the `Astroplan Target Documentation <https://astroplan.readthedocs.io/en/latest/api/astroplan.Target.html>`_
                 for more information.
             n_transits: int
-
+                The number of transits to initially request. This will be filtered down by what is observable from
+                the Earth location.
             n_occultations: int
-
+                The number of occultations to initially request. This will be filtered down by what is observable from
+                the Earth location.
             obs_start_time: str
                 Time at which you would like to start looking for eclipse events. In the format YYYY-MM-DD. For
                 example, if you would like to find eclipses happening after October 1st, 2024, the format would
@@ -1216,6 +1233,8 @@ class Ephemeris(object):
             eclipse_duration: float (Optional)
                 The full duration of the exoplanet transit from ingress to egress. If not given, will calculate
                 using either provided system parameters or parameters pulled from the NASA Exoplanet Archive.
+            csv_filename: str (Optional)
+                If given, will save the returned schedule dataframe as a CSV file.
         """
         # Validate some things before continuing
         self._validate_observing_schedule_params(observer, target, obs_start_time)
@@ -1234,17 +1253,22 @@ class Ephemeris(object):
         obs_time = Time(f"{obs_start_time} 00:00")
         # Grab the number of transits and occultations asked for
         ing_egr_transits = eclipsing_system.next_primary_ingress_egress_time(obs_time, n_eclipses=n_transits)
-        # ing_egr_occultations = eclipsing_system.next_secondary_ingress_egress_time(obs_time, n_eclipses=n_occultations)
+        ing_egr_occultations = eclipsing_system.next_secondary_ingress_egress_time(obs_time, n_eclipses=n_occultations)
         # We need to check if the events are observable
         constraints = [AtNightConstraint.twilight_civil(), AltitudeConstraint(min=30*u.deg)]
-        transits_bool = is_event_observable(constraints, observer, target, times=ing_egr_transits)
-        # occultations_bool = is_event_observable(constraints, observer, target, times=ing_egr_occultations)
-        print(transits_bool)
-        # observable_transits = ing_egr_transits[transits_bool]
-        # observable_occultations = ing_egr_occultations[occultations_bool]
-        # print(observable_transits)
-        # print(observable_occultations)
-        pass    
+        transits_bool = is_event_observable(constraints, observer, target, times_ingress_egress=ing_egr_transits)
+        occultations_bool = is_event_observable(constraints, observer, target, times_ingress_egress=ing_egr_occultations)
+        observable_transits = ing_egr_transits[transits_bool[0]]
+        observable_occultations = ing_egr_occultations[occultations_bool[0]]
+        # Change to their given timezone
+        tz = pytz.timezone(timezone)
+        converted_transits = observable_transits.to_datetime(timezone=tz)
+        converted_occultations = observable_occultations.to_datetime(timezone=tz)
+        # Create dataframe from this
+        schedule_df = self._create_observing_schedule_dataframe(converted_transits, converted_occultations)
+        if csv_filename is not None:
+            schedule_df.to_csv(csv_filename, index=False)
+        return schedule_df
     
     def plot_model_ephemeris(self, model_data_dict, subtract_lin_params=False, show_occultations=False, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. model calculated mid-times.
