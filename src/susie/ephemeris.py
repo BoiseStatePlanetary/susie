@@ -10,12 +10,32 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
+    @abstractmethod
+    def get_initial_params(self, x, y, tra_or_occ):
+        """Defines the structure for retrieving initial parameters for the model.
+        
+        Parameters
+        ----------
+        x : numpy.ndarray[int]
+            The epoch data as received from the TimingData object.
+        y : numpy.ndarray[float]
+            The mid-time data as received from the TimingData object.
+        tra_or_occ: numpy.ndarray[str]
+            An array indicating the type of each event, with entries being either 
+            "tra" for transit or "occ" for occultation.
+
+        Returns
+        -------
+        A dictionary containing initial parameter values for the LMfit model fitting procedure.
+        """
+        pass
+
     @abstractmethod
     def fit_model(self, x, y, yerr, tra_or_occ):
         """Fits a model ephemeris to timing data.
@@ -32,7 +52,8 @@ class BaseModelEphemeris(ABC):
             yerr : numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if the data is from a transit or occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         ------- 
@@ -43,6 +64,45 @@ class BaseModelEphemeris(ABC):
 
 class LinearModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a linear fit."""
+    def get_initial_params(self, x, y, tra_or_occ):
+        """Computes and returns the initial parameters for the ephemeris model.
+
+        This method calculates the conjunction time (T0) and orbital period (P) 
+        using the provided timing data. The conjunction time is set to the first 
+        transit time, while the orbital period is estimated as the median of the 
+        differences between consecutive mid-times of transits and occultations.
+
+        Parameters
+        ----------
+        x : numpy.ndarray[int]
+            The epoch data as recieved from the TimingData object.
+        y : numpy.ndarray[float]
+            The mid-time data as received from the TimingData object.
+        tra_or_occ : numpy.ndarray[str]
+            An array indicating the type of each event, with entries being either 
+            "tra" for transit or "occ" for occultation.
+
+        Returns
+        -------
+        dict
+            A dictionary containing:
+            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "period" (float): The median time difference between consecutive events 
+            (transits and occultations).
+        """
+        tra_mask = tra_or_occ == "tra"
+        occ_mask = tra_or_occ == "occ"
+        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # If conjunction time needs to be a transit
+        t0_tra = y[tra_mask][0]
+        return_data = {
+            "conjunction_time": t0_tra,
+            "period": p_median
+        }
+        return return_data
+    
     def lin_fit(self, E, T0, P, tra_or_occ_enum):
         """Calculates a linear function with given data.
 
@@ -55,13 +115,14 @@ class LinearModelEphemeris(BaseModelEphemeris):
         Parameters
         ----------
             E: numpy.ndarray[float]
-                The epochs.
+                The epoch data as recieved from the TimingData object.
             T0: float
                 The initial mid-time, also known as conjunction time.
             P: float
                 The exoplanet orbital period.
             tra_or_occ_enum: numpy.ndarray[int]
-                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
+                An array indicating the type of each event, with enumerated entries being either 
+                0 for transit or 1 for occultation.
         
         Returns
         -------
@@ -94,7 +155,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
             yerr: numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         ------- 
@@ -113,8 +175,8 @@ class LinearModelEphemeris(BaseModelEphemeris):
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=["E", "tra_or_occ_enum"])
-        # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0.0, P=1.091423, tra_or_occ_enum=tra_or_occ_enum)
+        init_params = self.get_initial_params(x, y, tra_or_occ)
+        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             "period": result.params["P"].value,
@@ -127,6 +189,45 @@ class LinearModelEphemeris(BaseModelEphemeris):
 
 class QuadraticModelEphemeris(BaseModelEphemeris):
     """Subclass of BaseModelEphemeris that implements a quadratic fit."""
+    def get_initial_params(self, x, y, tra_or_occ):
+        """Computes and returns the initial parameters for the ephemeris model.
+
+        This method calculates the conjunction time (T0) and orbital period (P) 
+        using the provided timing data. The conjunction time is set to the first 
+        transit time, while the orbital period is estimated as the median of the 
+        differences between consecutive mid-times of transits and occultations.
+
+        Parameters
+        ----------
+        x : numpy.ndarray[int]
+            The epoch data as recieved from the TimingData object.
+        y : numpy.ndarray[float]
+            The mid-time data as received from the TimingData object.
+        tra_or_occ : numpy.ndarray[str]
+            An array indicating the type of each event, with entries being either 
+            "tra" for transit or "occ" for occultation.
+
+        Returns
+        -------
+        dict
+            A dictionary containing:
+            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "period" (float): The median time difference between consecutive events 
+            (transits and occultations).
+        """
+        tra_mask = tra_or_occ == "tra"
+        occ_mask = tra_or_occ == "occ"
+        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # If conjunction time needs to be a transit
+        t0_tra = y[tra_mask][0]
+        return_data = {
+            "conjunction_time": t0_tra,
+            "period": p_median
+        }
+        return return_data
+
     def quad_fit(self, E, T0, P, dPdE, tra_or_occ_enum):
         """Calculates a quadratic function with given data.
 
@@ -137,7 +238,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         Parameters
         ----------
             E: numpy.ndarray[int]
-                The epochs.
+                The epoch data as recieved from the TimingData object.
             T0: float
                 The initial mid-time, also known as conjunction time.
             P: float
@@ -145,7 +246,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             dPdE: float
                 Change in period with respect to epoch.
             tra_or_occ_enum: numpy.ndarray[int]
-                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
+                An array indicating the type of each event, with enumerated entries being either 
+                0 for transit or 1 for occultation.
         
         Returns
         -------
@@ -178,7 +280,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             yerr: numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         ------- 
@@ -196,8 +299,8 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.quad_fit, independent_vars=["E", "tra_or_occ_enum"])
-        # TODO: Should we set this as the base estimate for T0 and P or should we try to find a good estimate to start with?
-        params = model.make_params(T0=0.0, P=1.091423, dPdE=0.0, tra_or_occ_enum=tra_or_occ_enum)
+        init_params = self.get_initial_params(x, y, tra_or_occ)
+        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], dPdE=0.0, tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             "period": result.params["P"].value,
@@ -212,6 +315,47 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
 
 class PrecessionModelEphemeris(BaseModelEphemeris):
     """ Subclass of BaseModelEphemeris that implements a precession fit."""
+    def get_initial_params(self, x, y, tra_or_occ):
+        """Computes and returns the initial parameters for the ephemeris model.
+
+        This method calculates the conjunction time (T0) and orbital period (P) 
+        using the provided timing data. The conjunction time is set to the first 
+        transit time, while the orbital period is estimated as the median of the 
+        differences between consecutive mid-times of transits and occultations.
+
+        Parameters
+        ----------
+        x : numpy.ndarray[int]
+            The epoch data as recieved from the TimingData object.
+        y : numpy.ndarray[float]
+            The mid-time data as received from the TimingData object.
+        tra_or_occ : numpy.ndarray[str]
+            An array indicating the type of each event, with entries being either 
+            "tra" for transit or "occ" for occultation.
+
+        Returns
+        -------
+        dict
+            A dictionary containing:
+            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "period" (float): The median time difference between consecutive events 
+            (transits and occultations).
+        """
+        # TODO: find e, w0, and dwdE
+        # Can find this through nasa exoplanet archive search
+        tra_mask = tra_or_occ == "tra"
+        occ_mask = tra_or_occ == "occ"
+        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # If conjunction time needs to be a transit
+        t0_tra = y[tra_mask][0]
+        return_data = {
+            "conjunction_time": t0_tra,
+            "period": p_median
+        }
+        return return_data
+    
     def _anomalistic_period(self, P, dwdE):
        """Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
 
@@ -220,7 +364,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
 
        Parameters
        ----------
-       P: float
+        P: float
            The exoplanet sideral orbital period.
         dwdE: float
            Change in pericenter with respect to epoch.
@@ -241,7 +385,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
        Parameters
        ----------
         E: numpy.ndarray[int]
-            The epochs.
+            The epoch data as recieved from the TimingData object.
         dwdE: float
             Change in pericenter with respect to epoch.
         w0: int
@@ -264,7 +408,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         Parameters
         ----------
             E: numpy.ndarray[int]
-                The epochs.
+                The epoch data as recieved from the TimingData object.
             T0: float
                 The initial mid-time, also known as conjunction time.
             P: float
@@ -276,7 +420,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             e: float
                 The eccentricity.
             tra_or_occ_enum: numpy.ndarray[int]
-                Indicates if the data is from a transit or occultation. Enumerated to use 0 for transits and 1 for occultations.
+                An array indicating the type of each event, with enumerated entries being either 
+                0 for transit or 1 for occultation.
         
         Returns
         -------
@@ -310,7 +455,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             yerr: numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         ------- 
@@ -333,7 +479,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
-        params = model.make_params(T0=0.0, P=1.091423, e=dict(value=0.00310, min=0, max=1), w0=2.62, dwdE=dict(value=0.000984), tra_or_occ_enum=tra_or_occ_enum)
+        init_params = self.get_initial_params(x, y, tra_or_occ)
+        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=0.001, min=0, max=1), w0=2.0, dwdE=dict(value=0.001), tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             "period": result.params["P"].value,
@@ -371,7 +518,8 @@ class ModelEphemerisFactory:
             yerr: numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         ------- 
@@ -464,7 +612,8 @@ class Ephemeris(object):
             yerr: numpy.ndarray[float]
                 The mid-time error data as recieved from the TimingData object.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if each point of data is taken from a transit or an occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
         """
         x = self.timing_data.epochs
         y = self.timing_data.mid_times
@@ -797,7 +946,8 @@ class Ephemeris(object):
             dwdE: float
                 The precession rate, or the change in pericenter with respect to epoch.
             tra_or_occ: numpy.ndarray[str]
-                Indicates if the data is from a transit or occultation.
+                An array indicating the type of each event, with entries being either 
+                "tra" for transit or "occ" for occultation.
 
         Returns
         -------
