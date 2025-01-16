@@ -92,15 +92,35 @@ class LinearModelEphemeris(BaseModelEphemeris):
         """
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # If conjunction time needs to be a transit
-        t0_tra = y[tra_mask][0]
+
+        # Getting difference between the first and last values of tra array
+        mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
+        epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size > 0 else np.nan
+        # Getting difference between the first and last values of occ array
+        mid_time_diff_occ = abs(np.roll(y[occ_mask], -1)-y[occ_mask])
+        epochs_diff_occ = abs(np.roll(x[occ_mask], -1)-x[occ_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_occ = np.divide(mid_time_diff_occ, epochs_diff_occ)[-1] if x[occ_mask].size > 0 else np.nan
+        # Finding final period by getting average of the two
+        period = np.nanmean([period_tra, period_occ])
+        # Conjunction time (we assume to use transits, use occultations if there are no transits)
+        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
         return_data = {
-            "conjunction_time": t0_tra,
-            "period": p_median
+            "conjunction_time": T0,
+            "period": period
         }
+
+        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # # If conjunction time needs to be a transit
+        # t0_tra = y[tra_mask][0]
+        # return_data = {
+        #     "conjunction_time": t0_tra,
+        #     "period": p_median
+        # }
         return return_data
     
     def lin_fit(self, E, T0, P, tra_or_occ_enum):
@@ -217,15 +237,35 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         """
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # If conjunction time needs to be a transit
-        t0_tra = y[tra_mask][0]
+
+        # Getting difference between the first and last values of tra array
+        mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
+        epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size > 0 else np.nan
+        # Getting difference between the first and last values of occ array
+        mid_time_diff_occ = abs(np.roll(y[occ_mask], -1)-y[occ_mask])
+        epochs_diff_occ = abs(np.roll(x[occ_mask], -1)-x[occ_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_occ = np.divide(mid_time_diff_occ, epochs_diff_occ)[-1] if x[occ_mask].size > 0 else np.nan
+        # Finding final period by getting average of the two
+        period = np.nanmean([period_tra, period_occ])
+        # Conjunction time (we assume to use transits, use occultations if there are no transits)
+        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
         return_data = {
-            "conjunction_time": t0_tra,
-            "period": p_median
+            "conjunction_time": T0,
+            "period": period
         }
+
+        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # # If conjunction time needs to be a transit
+        # t0_tra = y[tra_mask][0]
+        # return_data = {
+        #     "conjunction_time": t0_tra,
+        #     "period": p_median
+        # }
         return return_data
 
     def quad_fit(self, E, T0, P, dPdE, tra_or_occ_enum):
@@ -345,15 +385,35 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # Can find this through nasa exoplanet archive search
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-        p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # If conjunction time needs to be a transit
-        t0_tra = y[tra_mask][0]
+
+        # Getting difference between the first and last values of tra array
+        mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
+        epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size > 0 else np.nan
+        # Getting difference between the first and last values of occ array
+        mid_time_diff_occ = abs(np.roll(y[occ_mask], -1)-y[occ_mask])
+        epochs_diff_occ = abs(np.roll(x[occ_mask], -1)-x[occ_mask])
+        # Dividing to get the period and accessing final value if it exists
+        period_occ = np.divide(mid_time_diff_occ, epochs_diff_occ)[-1] if x[occ_mask].size > 0 else np.nan
+        # Finding final period by getting average of the two
+        period = np.nanmean([period_tra, period_occ])
+        # Conjunction time (we assume to use transits, use occultations if there are no transits)
+        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
         return_data = {
-            "conjunction_time": t0_tra,
-            "period": p_median
+            "conjunction_time": T0,
+            "period": period
         }
+
+        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
+        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
+        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
+        # If conjunction time needs to be a transit
+        # t0_tra = y[tra_mask][0]
+        # return_data = {
+        #     "conjunction_time": t0_tra,
+        #     "period": p_median
+        # }
         return return_data
     
     def _anomalistic_period(self, P, dwdE):
@@ -1516,11 +1576,10 @@ class Ephemeris(object):
                     color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
         if model == "precession":
             # Plot additional precession curve
-            # y = -
             tra_mask = self.timing_data.tra_or_occ == "tra"
             occ_mask = self.timing_data.tra_or_occ == "occ"
-            precession_model_curve_tra = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.sin(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[tra_mask] - np.median(self.timing_data.epochs[tra_mask])))))) * DAYS_TO_SECONDS
-            precession_model_curve_occ = (((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.sin(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[occ_mask] - np.median(self.timing_data.epochs[occ_mask])))))) * DAYS_TO_SECONDS
+            precession_model_curve_tra = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[tra_mask] - np.median(self.timing_data.epochs[tra_mask])))))) * DAYS_TO_SECONDS
+            precession_model_curve_occ = (((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[occ_mask] - np.median(self.timing_data.epochs[occ_mask])))))) * DAYS_TO_SECONDS
             ax.plot(self.timing_data.epochs[tra_mask],
                     (precession_model_curve_tra),
                     color='#D64309', ls="--", label=r'$-\frac{eP_a}{\pi}\cos\omega(E)$')
