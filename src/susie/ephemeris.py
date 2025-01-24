@@ -11,8 +11,8 @@ from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
 # from susie.timing_data import TimingData # Use this for package pushes
-from .timing_data import TimingData # Use this for running tests
-# from timing_data import TimingData # Use this for running this file
+# from .timing_data import TimingData # Use this for running tests
+from timing_data import TimingData # Use this for running this file
 
 class BaseModelEphemeris(ABC):
     """Abstract class that defines the structure of different model ephemeris classes."""
@@ -540,6 +540,8 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
         init_params = self.get_initial_params(x, y, tra_or_occ)
+        # TODO: Can put bounds between 0 and 2pi for omega0
+        # TODO: Try out bound for d omega dE for abs(dwdE) < 2pi/delta E
         params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=0.001, min=0, max=1), w0=2.0, dwdE=dict(value=0.001), tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
@@ -1193,7 +1195,7 @@ class Ephemeris(object):
         # Step 3: Calculate BIC
         return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
 
-    def calc_delta_bic(self, model1, model2):
+    def calc_delta_bic(self, model1="linear", model2="quadratic"):
         """Calculates the :math:`\\Delta BIC` value between linear and quadratic model ephemerides using the given timing data. 
         
         The BIC value is a modified :math:`\\chi^2` value that penalizes for additional parameters. The
@@ -1647,6 +1649,59 @@ class Ephemeris(object):
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         # Return the axis (so it can be further edited if needed)
         return ax
+    
+    def plot_delta_bic_omit_one(self, model1="linear", model2="quadratic", outlier_percentage=None, save_plot=False, save_filepath=None):
+        """
+        Parameters
+        ----------
+            model1: str
+
+            model2: str
+
+            outlier_percentage: int
+
+            save_plot: bool
+
+            save_filepath: str
+
+        """
+        # Need to remove the data point at each index and calculate the BIC value
+        # Plotting the BIC value when the point at each epoch is removed
+        # If outlier percentage: calculate a percentage for each
+        delta_bic = self.calc_delta_bic(model1, model2)
+        delta_bics = np.zeros(len(self.timing_data.epochs))
+        delta_bic_percentages = np.zeros(len(self.timing_data.epochs))
+        for i in range(len(self.timing_data.epochs)):
+            # Create new timing data with elements at the given index removed
+            epochs = np.delete(self.timing_data.epochs, i)
+            mid_times = np.delete(self.timing_data.mid_times, i)
+            mid_time_uncertainties = np.delete(self.timing_data.mid_time_uncertainties, i)
+            tra_or_occs = np.delete(self.timing_data.tra_or_occ, i)
+            timing_data = TimingData("jd", epochs, mid_times, mid_time_uncertainties, tra_or_occs, "tdb")
+            # Create new ephemeris object with new timing data
+            ephemeris = Ephemeris(timing_data)
+            # Get delta BIC
+            d_bic = ephemeris.calc_delta_bic(model1, model2)
+            delta_bics[i] = (d_bic)
+            # Calculate the percentage difference 
+            perc_diff = (abs(d_bic - delta_bic) / ((d_bic + delta_bic) / 2)) * 100
+            delta_bic_percentages[i] = (perc_diff)
+        fig, ax = plt.subplots(figsize=(15, 7))
+        ax.scatter(self.timing_data.epochs, delta_bics)
+        ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(model1, model2)}")
+        # If we are given a percentage difference to mark, then plot that
+        if outlier_percentage is not None:
+            is_outlier = delta_bic_percentages >= outlier_percentage
+            ax.scatter(self.timing_data.epochs[is_outlier], delta_bics[is_outlier], color="red", marker="s", zorder=10, label=rf"Shifts $\Delta$ BIC by ≥ {outlier_percentage}%")
+        ax.set_xlabel("Epochs")
+        ax.set_ylabel(r"$\Delta$BIC")
+        ax.set_title(r"Final $\Delta$BIC if we Omit One Point")
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.legend()
+        # Save if save_plot and save_filepath have been provided
+        if save_plot and save_filepath:
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        return ax
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
@@ -1656,14 +1711,14 @@ if __name__ == '__main__':
     jd_utc_filepath = "../../example_data/wasp12b_jd_utc.csv"
     jd_utc_no_occs_filepath = "../../example_data/wasp12b_jd_utc_tra.csv"
     test_filepath = "../../example_data/test_data.csv"
-    # data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # bjd_data_no_occs = np.genfromtxt(bjd_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # jd_utc_data = np.genfromtxt(jd_utc_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # jd_utc_no_occs_data = np.genfromtxt(jd_utc_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    test_data = np.genfromtxt(test_filepath, delimiter=',', names=True, dtype=None, encoding=None)
+    # test_data = np.genfromtxt(test_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # Set what data file you are using here
-    data = test_data
+    data = data
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"] # Base tra_or_occs
@@ -1671,10 +1726,10 @@ if __name__ == '__main__':
     # epochs_no_occs = bjd_data_no_occs["epochs"]
     mid_times = data["mid_time"] # BJD mid times
     mid_time_errs = data["mid_time_err"] # BJD mid time errs
-    print(f"epochs: {list(epochs)}")
-    print(f"mid_times: {list(mid_times)}")
-    print(f"mid_time_errs: {list(mid_time_errs)}")
-    print(f"tra_or_occ: {list(tra_or_occs)}")
+    # print(f"epochs: {list(epochs)}")
+    # print(f"mid_times: {list(mid_times)}")
+    # print(f"mid_time_errs: {list(mid_time_errs)}")
+    # print(f"tra_or_occ: {list(tra_or_occs)}")
     # STEP 3: Create new transit times object with above data
     """NOTE: ISOT (NO UNCERTAINTIES)"""
     # times_obj1 = TimingData('isot', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
@@ -1748,3 +1803,6 @@ if __name__ == '__main__':
     # # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
     # print(nea_data)
     # print(np.arcsin(0.3642601363) * 0.3474 * 24)
+    ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
+    plt.show()
+    print(ephemeris_obj1.calc_delta_bic())
