@@ -1616,24 +1616,27 @@ class Ephemeris(object):
                 The path used to save the plot if `save_plot` is True.
         """
         # Create empty array to store values
-        delta_bics = []
+        delta_bics = np.zeros(len(self.timing_data.epochs))
         # Create copy of each variable to be used
         all_epochs = self.timing_data.epochs.copy()
         all_mid_times = self.timing_data.mid_times.copy()
         all_uncertainties = self.timing_data.mid_time_uncertainties.copy()
         all_tra_or_occ = self.timing_data.tra_or_occ.copy()
         # For each epoch, calculate delta BIC using all data up to that epoch
-        for i in range(0, len(all_epochs)):
+        for i in range(0, len(self.timing_data.epochs)):
             if i < max(self._get_k_value(model1), self._get_k_value(model2))-1:
                 # Append 0s up until delta BIC can be calculated
-                delta_bics.append(int(0))
+                delta_bics[i] = int(0)
             else:
-                self.timing_data.epochs = all_epochs[:i+1]
-                self.timing_data.mid_times = all_mid_times[:i+1]
-                self.timing_data.mid_time_uncertainties = all_uncertainties[:i+1]
-                self.timing_data.tra_or_occ = all_tra_or_occ[:i+1]
-                delta_bic = self.calc_delta_bic(model1, model2)
-                delta_bics.append(delta_bic)
+                epochs = np.delete(self.timing_data.epochs, i)
+                mid_times = np.delete(self.timing_data.mid_times, i)
+                mid_time_uncertainties = np.delete(self.timing_data.mid_time_uncertainties, i)
+                tra_or_occs = np.delete(self.timing_data.tra_or_occ, i)
+                timing_data = TimingData("jd", epochs, mid_times, mid_time_uncertainties, tra_or_occs, "tdb")
+                # Create new ephemeris object with new timing data
+                ephemeris = Ephemeris(timing_data)
+                delta_bic = ephemeris.calc_delta_bic(model1, model2)
+                delta_bics[i] = delta_bic
         # Plot the data
         fig, ax = plt.subplots(figsize=(15, 7))
         ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
@@ -1702,6 +1705,143 @@ class Ephemeris(object):
         if save_plot and save_filepath:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
+
+    def plot_analytical_delta_bic(self, timing_uncertainties, model, save_plot=False, save_filepath=None):
+        """
+            Plot the running analytical delta BIC
+        """
+        analytical_delta_bics = np.zeros(len(self.timing_data.epochs))
+        for i in range(len(self.timing_data.epochs)):
+            # Create new timing data with elements at the given index removed
+            epochs = np.delete(self.timing_data.epochs, i)
+            mid_times = np.delete(self.timing_data.mid_times, i)
+            mid_time_uncertainties = np.delete(self.timing_data.mid_time_uncertainties, i)
+            tra_or_occs = np.delete(self.timing_data.tra_or_occ, i)
+            timing_data = TimingData("jd", epochs, mid_times, mid_time_uncertainties, tra_or_occs, "tdb")
+            timing_errs = np.delete(timing_uncertainties, i)
+            # Create new ephemeris object with new timing data
+            ephemeris = Ephemeris(timing_data)
+            model_data = ephemeris.get_model_ephemeris(model)
+            # Get delta BIC
+            d_bic = ephemeris._calc_analytical_delta_bic(epochs, timing_errs, model_data)
+            analytical_delta_bics[i] = (d_bic)
+        fig, ax = plt.subplots(figsize=(15, 7))
+        ax.scatter(self.timing_data.epochs, analytical_delta_bics)
+        # ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(model1, model2)}")
+        # If we are given a percentage difference to mark, then plot that
+        # if outlier_percentage is not None:
+        #     is_outlier = delta_bic_percentages >= outlier_percentage
+        #     ax.scatter(self.timing_data.epochs[is_outlier], delta_bics[is_outlier], color="red", marker="s", zorder=10, label=rf"Shifts $\Delta$ BIC by ≥ {outlier_percentage}%")
+        ax.set_xlabel("Epochs")
+        ax.set_ylabel(r"Analytical $\Delta$BIC")
+        ax.set_title(r"Analytical $\Delta$BIC as Observations Increase")
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.legend()
+        # Save if save_plot and save_filepath have been provided
+        if save_plot and save_filepath:
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        return ax
+
+    def _calc_analytical_delta_bic(self, epochs, timing_uncertainties, ephemeris_model_data):
+        """
+        QUESTION: Are the timing uncertainties different from the mid-time uncertainties??
+        QUESTION: Is the - 3 ln N + 3 part of the sum or outside of it??
+        delta BIC = ((e*P_a)/pi)^2 * sum(from i = 0 to N-1) [(timing uncertainties_i)^-2 * (cos(omega_i) + E_i * deltaP_s' + deltaT_0')^2 -3 ln(N) + 3]
+        omega_i = omega_0 + (dw/dE) * E_i
+        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
+        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
+        """
+        # TODO: is the period returned by the precession ephemeris sidereal or anomolistic??
+        # We need anomolistic for this
+        w_i = ephemeris_model_data["pericenter"] + ephemeris_model_data["pericenter_change_by_epoch"] * epochs
+        cos_w_i = np.cos(w_i)
+        P_a = self._calc_anomalistic_period(ephemeris_model_data["period"], ephemeris_model_data["pericenter_change_by_epoch"])
+        amplitude = pow(((ephemeris_model_data["eccentricity"] * P_a) / (np.pi)), 2)
+
+        delta_bic_right = np.pow(timing_uncertainties, -2) * np.pow((cos_w_i + epochs*self._calc_delta_P_prime(timing_uncertainties, epochs, ephemeris_model_data["pericenter"], ephemeris_model_data["pericenter_change_by_epoch"]) + self._calc_delta_T0_prime(timing_uncertainties, epochs, ephemeris_model_data["pericenter"], ephemeris_model_data["pericenter_change_by_epoch"])), 2) - 3.0 * np.log(len(epochs)) + 3.0
+        delta_bic_sum = np.sum(delta_bic_right)
+        analytical_delta_bic = amplitude * delta_bic_sum
+        return analytical_delta_bic
+
+    def _calc_delta_P_prime(self, timing_uncertainties, epochs, w_0, dwdE):
+        """
+        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
+
+        Parameters
+        ----------
+            timing_uncertainties: np.ndarray(float)
+                The uncertainties ???
+            epochs: np.ndarray(int)
+                Epochs of observations
+            w_0: float
+                Omega_0 or "pericenter" from the precession ephemeris
+            dwdE: float
+                dwdE or "change in pericenter over epochs" from the precession ephemeris
+                
+        Returns
+        -------
+            delta_P_prime: np.ndarray(float)
+        """
+        w_i = w_0 + dwdE * epochs
+        cos_w_i = np.cos(w_i)
+        S_e = self._calc_sum_of_errs(timing_uncertainties, epochs)
+        S_e_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, epochs, cos_w_i)
+        S_e_squared = self._calc_sum_of_errs(timing_uncertainties, np.pow(epochs, 2))
+        S_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, cos_w_i)
+        S = self._calc_sum_of_errs(timing_uncertainties)
+        delta_P_prime = ((S_e * S_cos_w_i) - (S * S_e_cos_w_i)) / ((S * S_e_squared) - np.pow(S_e, 2))
+        return delta_P_prime
+
+    def _calc_delta_T0_prime(self, timing_uncertainties, epochs, w_0, dwdE):
+        """
+        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
+
+        Parameters
+        ----------
+            timing_uncertainties: np.ndarray(float)
+                The uncertainties ???
+            epochs: np.ndarray(int)
+                Epochs of observations
+            w_0: float
+                Omega_0 or "pericenter" from the precession ephemeris
+            dwdE: float
+                dwdE or "change in pericenter over epochs" from the precession ephemeris
+                
+        Returns
+        -------
+            delta_T0_prime: np.ndarray(float)
+        """
+        w_i = w_0 + dwdE * epochs
+        cos_w_i = np.cos(w_i)
+        S_e = self._calc_sum_of_errs(timing_uncertainties, epochs)
+        S_e_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, epochs, cos_w_i)
+        S_e_squared = self._calc_sum_of_errs(timing_uncertainties, np.pow(epochs, 2))
+        S_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, cos_w_i)
+        S = self._calc_sum_of_errs(timing_uncertainties)
+        delta_T0_prime = ((S_e * S_e_cos_w_i) - (S_e_squared * S_cos_w_i)) / ((S * S_e_squared) - np.pow(S_e, 2))
+        return delta_T0_prime
+
+    def _calc_sum_of_errs(self, sigma, x=None, y=None):
+        """
+            QUESTION: the formula only goes from i=0 to N-1, should I not iterate through ALL data points, but just until the second the last one?? If so, why??
+        """
+        final_sum = 0
+        if x is None and y is None:
+            # Calculate sum with just sigma
+            for sigma_i in sigma:
+                final_sum += (1 / np.pow(sigma_i, 2))
+        elif x is not None and y is None:
+            # Calculate sum with just x and sigma
+            for x_i, sigma_i in zip(x, sigma):
+                final_sum += (np.pow(x_i, 2) / np.pow(sigma_i, 2))
+        elif x is not None and y is not None:
+            # Calculate sum with x, y, and sigma
+            for x_i, y_i, sigma_i in zip(x, y, sigma):
+                final_sum += ((x_i*y_i) / np.pow(sigma_i, 2))
+        else:
+            # Idk something is wrong with the inputs
+            raise ValueError("Check your inputs")
+        return final_sum
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
@@ -1803,6 +1943,12 @@ if __name__ == '__main__':
     # # nea_data = ephemeris_obj1._query_nasa_exoplanet_archive("WASP-12 b", select_query="pl_ratror,pl_orbsmax,pl_imppar,pl_orbincl")
     # print(nea_data)
     # print(np.arcsin(0.3642601363) * 0.3474 * 24)
-    ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
+    # ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
+    # plt.show()
+    # print(ephemeris_obj1.calc_delta_bic())
+    # instrument_uncertainties = np.full(len(epochs), 0.001)
+    # ephemeris_obj1.plot_analytical_delta_bic(instrument_uncertainties, "precession")
+    # plt.show()
+
+    ephemeris_obj1.plot_running_delta_bic("linear", "quadratic")
     plt.show()
-    print(ephemeris_obj1.calc_delta_bic())
