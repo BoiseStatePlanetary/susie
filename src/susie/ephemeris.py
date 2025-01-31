@@ -92,7 +92,6 @@ class LinearModelEphemeris(BaseModelEphemeris):
         """
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-
         # Getting difference between the first and last values of tra array
         mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
         epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
@@ -111,16 +110,6 @@ class LinearModelEphemeris(BaseModelEphemeris):
             "conjunction_time": T0,
             "period": period
         }
-
-        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # # If conjunction time needs to be a transit
-        # t0_tra = y[tra_mask][0]
-        # return_data = {
-        #     "conjunction_time": t0_tra,
-        #     "period": p_median
-        # }
         return return_data
     
     def lin_fit(self, E, T0, P, tra_or_occ_enum):
@@ -237,7 +226,6 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         """
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-
         # Getting difference between the first and last values of tra array
         mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
         epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
@@ -256,16 +244,6 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
             "conjunction_time": T0,
             "period": period
         }
-
-        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # # If conjunction time needs to be a transit
-        # t0_tra = y[tra_mask][0]
-        # return_data = {
-        #     "conjunction_time": t0_tra,
-        #     "period": p_median
-        # }
         return return_data
 
     def quad_fit(self, E, T0, P, dPdE, tra_or_occ_enum):
@@ -385,7 +363,6 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         # Can find this through nasa exoplanet archive search
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
-
         # Getting difference between the first and last values of tra array
         mid_time_diff_tra = abs(np.roll(y[tra_mask], -1)-y[tra_mask])
         epochs_diff_tra = abs(np.roll(x[tra_mask], -1)-x[tra_mask])
@@ -404,16 +381,6 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             "conjunction_time": T0,
             "period": period
         }
-
-        # p_diff_tra = np.diff(y[tra_mask])/np.diff(x[tra_mask])
-        # p_diff_occ = np.diff(y[occ_mask])/np.diff(x[occ_mask])
-        # p_median = np.median(np.concatenate((p_diff_tra, p_diff_occ)))
-        # If conjunction time needs to be a transit
-        # t0_tra = y[tra_mask][0]
-        # return_data = {
-        #     "conjunction_time": t0_tra,
-        #     "period": p_median
-        # }
         return return_data
     
     def _anomalistic_period(self, P, dwdE):
@@ -1019,6 +986,13 @@ class Ephemeris(object):
         result[self.tra_mask] = T0 + E[self.tra_mask]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.tra_mask]))
         result[self.occ_mask] = T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[self.occ_mask]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.occ_mask]))
         return result
+    
+    def _calc_sum_of_errs(self, numerator, denominator):
+        """Calculates the sum of minimized errors. 
+            Equations are pulled from "Numerical Recipes: The Art of Scientific Computing"
+            3rd Edition by Press et. al on page 781 (eq. 15.2.4). 
+        """
+        return np.sum((numerator / np.pow(denominator, 2)))
    
     def _calc_chi_squared(self, model_mid_times):
         """Calculates the residual chi squared values for the model ephemeris.
@@ -1040,6 +1014,125 @@ class Ephemeris(object):
         uncertainties = self.timing_data.mid_time_uncertainties
         # STEP 2: calculate X2 with observed data and model data
         return np.sum(((observed_data - model_mid_times)/uncertainties)**2)
+    
+    def _calc_delta_T0_prime_quad(self):
+        """
+        delta_T0_prime = (S_(e^2)^2 - S_(e^3)*S_e) / (S_(e^2)*S - S_e^2)
+        """
+        sigma = self.timing_data.mid_time_uncertainties
+        epochs = self.timing_data.epochs
+        S = self._calc_sum_of_errs(1, sigma)
+        S_e = self._calc_sum_of_errs(epochs, sigma)
+        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_e3 = self._calc_sum_of_errs(np.pow(epochs, 3), sigma)
+        delta_T0_prime = (S_e2**2 - (S_e3*S_e)) / ((S_e2*S) - S_e**2)
+        return delta_T0_prime
+    
+    def _calc_delta_P_prime_quad(self):
+        """
+        delta_P_prime = (S_(e^3)*S - S_(e^2)*S_e) / (S_(e^2)*S - S_e^2)
+        """
+        sigma = self.timing_data.mid_time_uncertainties
+        epochs = self.timing_data.epochs
+        S = self._calc_sum_of_errs(1, sigma)
+        S_e = self._calc_sum_of_errs(epochs, sigma)
+        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_e3 = self._calc_sum_of_errs(np.pow(epochs, 3), sigma)
+        delta_P_prime = (S_e3*S - S_e2*S_e) / ((S_e2*S) - S_e**2)
+        return delta_P_prime
+    
+    def _calc_analytical_delta_bic_quad(self, dPdE):
+        """
+        delta_bic = 0.25(dPdE)^2 * sum(((e^2 - delta_P_prime * e - delta_T0_prime) / (uncertainties))^2) - ln(N) + 1
+        """
+        epochs = self.timing_data.epochs
+        uncertainties = self.timing_data.mid_time_uncertainties
+        delta_P_prime = self._calc_delta_P_prime_quad()
+        delta_T0_prime = self._calc_delta_T0_prime_quad()
+        quad_param = 0.25 * (dPdE**2)
+        quad_sum = np.sum(np.pow(((np.pow(epochs, 2) - (delta_P_prime*epochs) - delta_T0_prime) / (uncertainties)), 2))
+        analytical_delta_bic = quad_param * quad_sum - np.log(len(epochs)) + 1
+        return analytical_delta_bic
+
+    def _calc_delta_P_prime_prec(self, w0, dwdE):
+        """
+        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
+
+        Parameters
+        ----------
+            timing_uncertainties: np.ndarray(float)
+                The uncertainties ???
+            epochs: np.ndarray(int)
+                Epochs of observations
+            w_0: float
+                Omega_0 or "pericenter" from the precession ephemeris
+            dwdE: float
+                dwdE or "change in pericenter over epochs" from the precession ephemeris
+                
+        Returns
+        -------
+            delta_P_prime: np.ndarray(float)
+        """
+        epochs = self.timing_data.epochs
+        sigma = self.timing_data.mid_time_uncertainties
+        cosw = np.cos(w0 + dwdE * self.timing_data.epochs)
+        S = self._calc_sum_of_errs(1, sigma)
+        S_e = self._calc_sum_of_errs(epochs, sigma)
+        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_cosw = self._calc_sum_of_errs(cosw, sigma)
+        S_e_cosw = self._calc_sum_of_errs((epochs*cosw), sigma)
+        delta_P_prime = ((S_e * S_cosw) - (S * S_e_cosw)) / ((S * S_e2) - (S_e * S_e))
+        return delta_P_prime
+
+    def _calc_delta_T0_prime_prec(self, w0, dwdE):
+        """
+        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
+
+        Parameters
+        ----------
+            timing_uncertainties: np.ndarray(float)
+                The uncertainties ???
+            epochs: np.ndarray(int)
+                Epochs of observations
+            w_0: float
+                Omega_0 or "pericenter" from the precession ephemeris
+            dwdE: float
+                dwdE or "change in pericenter over epochs" from the precession ephemeris
+                
+        Returns
+        -------
+            delta_T0_prime: np.ndarray(float)
+        """
+        epochs = self.timing_data.epochs
+        sigma = self.timing_data.mid_time_uncertainties
+        cosw = np.cos(w0+dwdE*epochs)
+        S = self._calc_sum_of_errs(1, sigma)
+        S_e = self._calc_sum_of_errs(epochs, sigma)
+        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_cosw = self._calc_sum_of_errs(cosw, sigma)
+        S_e_cosw = self._calc_sum_of_errs((epochs*cosw), sigma)
+        delta_T0_prime = ((S_e * S_e_cosw) - (S_e2 * S_cosw)) / ((S * S_e2) - (S_e * S_e))
+        return delta_T0_prime
+    
+    def _calc_analytical_delta_bic_prec(self, Pa, e, w0, dwdE):
+        """
+        delta BIC = ((e*P_a)/pi)^2 * sum(from i = 0 to N-1) [(timing uncertainties_i)^-2 * (cos(omega_i) + E_i * deltaP_s' + deltaT_0')^2 -3 ln(N) + 3]
+        omega_i = omega_0 + (dw/dE) * E_i
+        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
+        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
+        """
+        epochs = self.timing_data.epochs
+        sigma = self.timing_data.mid_time_uncertainties
+        # w_i = ephemeris_model_data["pericenter"] + ephemeris_model_data["pericenter_change_by_epoch"] * self.timing_data.epochs
+        cosw = np.cos(w0 + dwdE*epochs)
+        # QUESTION: Does this period need to be recalculated at each step or is this also a constant
+        # P_a = self._calc_anomalistic_period(ephemeris_model_data["period"], ephemeris_model_data["pericenter_change_by_epoch"])
+        delta_T0_prime = self._calc_delta_T0_prime_prec(w0, dwdE)
+        delta_P_prime = self._calc_delta_P_prime_prec(w0, dwdE)
+        amplitude = pow(((e*Pa) / (np.pi)), 2)
+        delta_bic_sum = np.sum(np.pow(sigma, -2) * np.pow((cosw + epochs*delta_P_prime + delta_T0_prime), 2))
+        analytical_delta_bic = amplitude * delta_bic_sum - 3.0 * np.log(len(epochs)) + 3.0
+        return analytical_delta_bic
     
     def _subtract_linear_parameters(self, model_mid_times, T0, P, E, tra_or_occ):
         """Subtracts the linear terms to show smaller changes in other model parameters for plotting functions.
@@ -1229,7 +1322,7 @@ class Ephemeris(object):
         model2_data = self.get_model_ephemeris(model2)
         model1_bic = self.calc_bic(model1_data)
         model2_bic = self.calc_bic(model2_data)
-        delta_bic = model1_bic - model2_bic
+        delta_bic = model1_bic - model2_bic2
         return delta_bic
     
     def _query_nasa_exoplanet_archive(self, obj_name, ra=None, dec=None, select_query=None):
@@ -1628,11 +1721,7 @@ class Ephemeris(object):
                 # Append 0s up until delta BIC can be calculated
                 delta_bics[i] = int(0)
             else:
-                epochs = np.delete(self.timing_data.epochs, i)
-                mid_times = np.delete(self.timing_data.mid_times, i)
-                mid_time_uncertainties = np.delete(self.timing_data.mid_time_uncertainties, i)
-                tra_or_occs = np.delete(self.timing_data.tra_or_occ, i)
-                timing_data = TimingData("jd", epochs, mid_times, mid_time_uncertainties, tra_or_occs, "tdb")
+                timing_data = TimingData("jd", all_epochs[:i+1], all_mid_times[:i+1], all_uncertainties[:i+1], all_tra_or_occ[:i+1], "tdb")
                 # Create new ephemeris object with new timing data
                 ephemeris = Ephemeris(timing_data)
                 delta_bic = ephemeris.calc_delta_bic(model1, model2)
@@ -1706,142 +1795,105 @@ class Ephemeris(object):
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
 
-    def plot_analytical_delta_bic(self, timing_uncertainties, model, save_plot=False, save_filepath=None):
+    def plot_running_analytical_delta_bic_quadratic(self, save_plot=False, save_filepath=None):
         """
-            Plot the running analytical delta BIC
+            delta_bic = 0.25(dPdE)^2 * sum(()^2) - ln(N) + 1
         """
-        analytical_delta_bics = np.zeros(len(self.timing_data.epochs))
-        for i in range(len(self.timing_data.epochs)):
-            # Create new timing data with elements at the given index removed
-            epochs = np.delete(self.timing_data.epochs, i)
-            mid_times = np.delete(self.timing_data.mid_times, i)
-            mid_time_uncertainties = np.delete(self.timing_data.mid_time_uncertainties, i)
-            tra_or_occs = np.delete(self.timing_data.tra_or_occ, i)
-            timing_data = TimingData("jd", epochs, mid_times, mid_time_uncertainties, tra_or_occs, "tdb")
-            timing_errs = np.delete(timing_uncertainties, i)
+        # Grab a copy of all timing data
+        all_epochs = self.timing_data.epochs[self.tra_mask].copy()
+        all_mid_times = self.timing_data.mid_times[self.tra_mask].copy()
+        all_uncertainties = self.timing_data.mid_time_uncertainties[self.tra_mask].copy()
+        all_tra_or_occ = self.timing_data.tra_or_occ[self.tra_mask].copy()
+        # Create some empty arrays to hold data
+        numerical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        analytical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        # Grab the tidal decay rate for the analytical calculation
+        dPdE = self.get_model_ephemeris("quadratic")["period_change_by_epoch"]
+        for i in range(3, len(self.timing_data.epochs[self.tra_mask])):
+            timing_data = TimingData("jd", all_epochs[:i], all_mid_times[:i], all_uncertainties[:i], all_tra_or_occ[:i], "tdb")
             # Create new ephemeris object with new timing data
             ephemeris = Ephemeris(timing_data)
-            model_data = ephemeris.get_model_ephemeris(model)
-            # Get delta BIC
-            d_bic = ephemeris._calc_analytical_delta_bic(epochs, timing_errs, model_data)
-            analytical_delta_bics[i] = (d_bic)
+            # quad_ephemeris = ephemeris.get_model_ephemeris("quadratic")
+            # Calculate the numerical delta BIC
+            numerical_delta_bic = ephemeris.calc_delta_bic("linear", "quadratic")
+            numerical_delta_bics[i] = numerical_delta_bic
+            # Calculate the analytical delta BIC
+            analytical_delta_bic = ephemeris._calc_analytical_delta_bic_quad(dPdE)
+            analytical_delta_bics[i] = analytical_delta_bic
+        # Plot the data
         fig, ax = plt.subplots(figsize=(15, 7))
-        ax.scatter(self.timing_data.epochs, analytical_delta_bics)
-        # ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(model1, model2)}")
-        # If we are given a percentage difference to mark, then plot that
-        # if outlier_percentage is not None:
-        #     is_outlier = delta_bic_percentages >= outlier_percentage
-        #     ax.scatter(self.timing_data.epochs[is_outlier], delta_bics[is_outlier], color="red", marker="s", zorder=10, label=rf"Shifts $\Delta$ BIC by ≥ {outlier_percentage}%")
+        ax.plot(self.timing_data.epochs[self.tra_mask], numerical_delta_bics, color='#0033A0', marker='.', markersize=7, mec="#0033A0", ls="-", linewidth=1.5, label=r"Evolution of Numerical $\Delta$BIC as Observational Epochs Increase")
+        ax.plot(self.timing_data.epochs[self.tra_mask], analytical_delta_bics, color="#D64309", marker='.', markersize=7, mec="#D64309", ls="--", linewidth=1.5, label=r"Evolution of Analytical $\Delta$BIC as Observational Epochs Increase")
+        ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
+        ax.set_xlabel('Epoch')
+        ax.set_ylabel(r"$\Delta$BIC")
+        ax.set_title(rf"Evolution of $\Delta$BIC Comparing Linear and Quadratic Models")
+        ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.legend()
+        # Save if save_plot and save_filepath have been provided
+        if save_plot and save_filepath:
+            fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
+        # Return the axis (so it can be further edited if needed)
+        return ax
+
+    def plot_running_analytical_delta_bic_precession(self, save_plot=False, save_filepath=None):
+        """
+        Plot the running analytical delta BIC
+
+        NOTES: Using synthetic precession data generated from Brian's nb,
+        Brian's parameters:
+         'period': 1.091419633,
+         'conjunction_time': 2456305.45488,
+         'eccentricity': 0.0031,
+         'pericenter': 2.62,
+         'pericenter_change_by_epoch': 0.000984
+        precession ephemeris parameters:
+         'period': 1.0914194950612286, 
+         'conjunction_time': 2456305.4547539037, 
+         'eccentricity': 0.004492419251877544,
+         'pericenter': 3.748694994358649,
+         'pericenter_change_by_epoch': 0.0005248792790545403
+
+        """
+        # Create copy of each variable to be used
+        all_epochs = self.timing_data.epochs[self.tra_mask].copy()
+        all_mid_times = self.timing_data.mid_times[self.tra_mask].copy()
+        all_uncertainties = self.timing_data.mid_time_uncertainties[self.tra_mask].copy()
+        all_tra_or_occ = self.timing_data.tra_or_occ[self.tra_mask].copy()
+        # Create some empty arrays to hold data
+        numerical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        analytical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        # Grab precession ephemeris to calcualte the cos_ws
+        precession_ephemeris = self.get_model_ephemeris("precession")
+        e = precession_ephemeris["eccentricity"]
+        w0 = precession_ephemeris["pericenter"]
+        dwdE = precession_ephemeris["pericenter_change_by_epoch"]
+        Pa = self._calc_anomalistic_period(precession_ephemeris["period"], dwdE)
+        # Iterate through all data points
+        for i in range(5, len(self.timing_data.epochs[self.tra_mask])):
+            timing_data = TimingData("jd", all_epochs[:i], all_mid_times[:i], all_uncertainties[:i], all_tra_or_occ[:i], "tdb")
+            # Create new ephemeris object with new timing data
+            ephemeris = Ephemeris(timing_data)
+            # Calculate the numerical delta BIC
+            numerical_delta_bic = ephemeris.calc_delta_bic("linear", "quadratic")
+            numerical_delta_bics[i] = numerical_delta_bic
+            # Calculate the analytical delta BIC
+            analytical_delta_bic = ephemeris._calc_analytical_delta_bic_prec(Pa, e, w0, dwdE)
+            analytical_delta_bics[i] = analytical_delta_bic
+        # Plot the data
+        fig, ax = plt.subplots(figsize=(15, 7))
+        ax.plot(self.timing_data.epochs[self.tra_mask], numerical_delta_bics, color='#0033A0', marker='.', markersize=7, mec="#0033A0", ls="-", linewidth=1.5, label=r"Evolution of Numerical $\Delta$BIC as Observational Epochs Increase")
+        ax.plot(self.timing_data.epochs[self.tra_mask], analytical_delta_bics, color="#D64309", marker='.', markersize=7, mec="#D64309", ls="--", linewidth=1.5, label=r"Evolution of Analytical $\Delta$BIC as Observational Epochs Increase")
+        ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel("Epochs")
-        ax.set_ylabel(r"Analytical $\Delta$BIC")
-        ax.set_title(r"Analytical $\Delta$BIC as Observations Increase")
+        ax.set_ylabel(r"$\Delta$BIC")
+        ax.set_title(r"Evolution of $\Delta$BIC Comparing Linear and Precession Ephemerides")
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         ax.legend()
         # Save if save_plot and save_filepath have been provided
         if save_plot and save_filepath:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
-
-    def _calc_analytical_delta_bic(self, epochs, timing_uncertainties, ephemeris_model_data):
-        """
-        QUESTION: Are the timing uncertainties different from the mid-time uncertainties??
-        QUESTION: Is the - 3 ln N + 3 part of the sum or outside of it??
-        delta BIC = ((e*P_a)/pi)^2 * sum(from i = 0 to N-1) [(timing uncertainties_i)^-2 * (cos(omega_i) + E_i * deltaP_s' + deltaT_0')^2 -3 ln(N) + 3]
-        omega_i = omega_0 + (dw/dE) * E_i
-        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
-        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
-        """
-        # TODO: is the period returned by the precession ephemeris sidereal or anomolistic??
-        # We need anomolistic for this
-        w_i = ephemeris_model_data["pericenter"] + ephemeris_model_data["pericenter_change_by_epoch"] * epochs
-        cos_w_i = np.cos(w_i)
-        P_a = self._calc_anomalistic_period(ephemeris_model_data["period"], ephemeris_model_data["pericenter_change_by_epoch"])
-        amplitude = pow(((ephemeris_model_data["eccentricity"] * P_a) / (np.pi)), 2)
-
-        delta_bic_right = np.pow(timing_uncertainties, -2) * np.pow((cos_w_i + epochs*self._calc_delta_P_prime(timing_uncertainties, epochs, ephemeris_model_data["pericenter"], ephemeris_model_data["pericenter_change_by_epoch"]) + self._calc_delta_T0_prime(timing_uncertainties, epochs, ephemeris_model_data["pericenter"], ephemeris_model_data["pericenter_change_by_epoch"])), 2) - 3.0 * np.log(len(epochs)) + 3.0
-        delta_bic_sum = np.sum(delta_bic_right)
-        analytical_delta_bic = amplitude * delta_bic_sum
-        return analytical_delta_bic
-
-    def _calc_delta_P_prime(self, timing_uncertainties, epochs, w_0, dwdE):
-        """
-        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
-
-        Parameters
-        ----------
-            timing_uncertainties: np.ndarray(float)
-                The uncertainties ???
-            epochs: np.ndarray(int)
-                Epochs of observations
-            w_0: float
-                Omega_0 or "pericenter" from the precession ephemeris
-            dwdE: float
-                dwdE or "change in pericenter over epochs" from the precession ephemeris
-                
-        Returns
-        -------
-            delta_P_prime: np.ndarray(float)
-        """
-        w_i = w_0 + dwdE * epochs
-        cos_w_i = np.cos(w_i)
-        S_e = self._calc_sum_of_errs(timing_uncertainties, epochs)
-        S_e_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, epochs, cos_w_i)
-        S_e_squared = self._calc_sum_of_errs(timing_uncertainties, np.pow(epochs, 2))
-        S_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, cos_w_i)
-        S = self._calc_sum_of_errs(timing_uncertainties)
-        delta_P_prime = ((S_e * S_cos_w_i) - (S * S_e_cos_w_i)) / ((S * S_e_squared) - np.pow(S_e, 2))
-        return delta_P_prime
-
-    def _calc_delta_T0_prime(self, timing_uncertainties, epochs, w_0, dwdE):
-        """
-        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
-
-        Parameters
-        ----------
-            timing_uncertainties: np.ndarray(float)
-                The uncertainties ???
-            epochs: np.ndarray(int)
-                Epochs of observations
-            w_0: float
-                Omega_0 or "pericenter" from the precession ephemeris
-            dwdE: float
-                dwdE or "change in pericenter over epochs" from the precession ephemeris
-                
-        Returns
-        -------
-            delta_T0_prime: np.ndarray(float)
-        """
-        w_i = w_0 + dwdE * epochs
-        cos_w_i = np.cos(w_i)
-        S_e = self._calc_sum_of_errs(timing_uncertainties, epochs)
-        S_e_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, epochs, cos_w_i)
-        S_e_squared = self._calc_sum_of_errs(timing_uncertainties, np.pow(epochs, 2))
-        S_cos_w_i = self._calc_sum_of_errs(timing_uncertainties, cos_w_i)
-        S = self._calc_sum_of_errs(timing_uncertainties)
-        delta_T0_prime = ((S_e * S_e_cos_w_i) - (S_e_squared * S_cos_w_i)) / ((S * S_e_squared) - np.pow(S_e, 2))
-        return delta_T0_prime
-
-    def _calc_sum_of_errs(self, sigma, x=None, y=None):
-        """
-            QUESTION: the formula only goes from i=0 to N-1, should I not iterate through ALL data points, but just until the second the last one?? If so, why??
-        """
-        final_sum = 0
-        if x is None and y is None:
-            # Calculate sum with just sigma
-            for sigma_i in sigma:
-                final_sum += (1 / np.pow(sigma_i, 2))
-        elif x is not None and y is None:
-            # Calculate sum with just x and sigma
-            for x_i, sigma_i in zip(x, sigma):
-                final_sum += (np.pow(x_i, 2) / np.pow(sigma_i, 2))
-        elif x is not None and y is not None:
-            # Calculate sum with x, y, and sigma
-            for x_i, y_i, sigma_i in zip(x, y, sigma):
-                final_sum += ((x_i*y_i) / np.pow(sigma_i, 2))
-        else:
-            # Idk something is wrong with the inputs
-            raise ValueError("Check your inputs")
-        return final_sum
 
 if __name__ == '__main__':
     # STEP 1: Upload datra from file
@@ -1851,6 +1903,8 @@ if __name__ == '__main__':
     jd_utc_filepath = "../../example_data/wasp12b_jd_utc.csv"
     jd_utc_no_occs_filepath = "../../example_data/wasp12b_jd_utc_tra.csv"
     test_filepath = "../../example_data/test_data.csv"
+    precession_test_filepath = "../../example_data/precession_test_data.csv"
+    wasp12_tra_only = "../../example_data/WASP12b_transit_ephemeris.csv"
     data = np.genfromtxt(bjd_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # bjd_data_no_occs = np.genfromtxt(bjd_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # isot_data = np.genfromtxt(isot_filepath, delimiter=',', names=True, dtype=None, encoding=None)
@@ -1862,6 +1916,7 @@ if __name__ == '__main__':
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"] # Base tra_or_occs
+    # tra_or_occs = None # Base tra_or_occs
     epochs = data["epoch"].astype('int') # Epochs with tra_or_occs
     # epochs_no_occs = bjd_data_no_occs["epochs"]
     mid_times = data["mid_time"] # BJD mid times
@@ -1936,7 +1991,7 @@ if __name__ == '__main__':
     # TODO: Do timezone checks and stuff in observing sched 
 
     # STEP 9: Running delta BIC plot
-    # running_bic_plot = ephemeris_obj1.plot_running_delta_bic(model1="linear", model2="quadratic", save_plot=False)
+    # ephemeris_obj1.plot_running_delta_bic(model1="linear", model2="precession", save_plot=False)
     # plt.show()
 
     # nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
@@ -1945,10 +2000,12 @@ if __name__ == '__main__':
     # print(np.arcsin(0.3642601363) * 0.3474 * 24)
     # ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
     # plt.show()
-    # print(ephemeris_obj1.calc_delta_bic())
-    # instrument_uncertainties = np.full(len(epochs), 0.001)
-    # ephemeris_obj1.plot_analytical_delta_bic(instrument_uncertainties, "precession")
+
+    # ephemeris_obj1.plot_running_delta_bic("linear", "quadratic")
     # plt.show()
 
-    ephemeris_obj1.plot_running_delta_bic("linear", "quadratic")
+    # ephemeris_obj1.plot_running_analytical_delta_bic_quadratic()
+    # plt.show()
+
+    ephemeris_obj1.plot_running_analytical_delta_bic_precession()
     plt.show()
