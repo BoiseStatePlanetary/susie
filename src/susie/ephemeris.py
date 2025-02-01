@@ -10,9 +10,9 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-# from susie.timing_data import TimingData # Use this for package pushes
+from susie.timing_data import TimingData # Use this for package pushes
 # from .timing_data import TimingData # Use this for running tests
-from timing_data import TimingData # Use this for running this file
+# from timing_data import TimingData # Use this for running this file
 
 class BaseEphemeris(ABC):
     """Abstract class that defines the structure of different ephemeris classes."""

@@ -21,7 +21,7 @@ Ephemeris module
    :members:
    :undoc-members:
    :show-inheritance:
-   :exclude-members: BaseModelEphemeris, LinearModelEphemeris, QuadraticModelEphemeris, PrecessionModelEphemeris, ModelEphemerisFactory
+   :exclude-members: BaseEphemeris, LinearEphemeris, QuadraticEphemeris, PrecessionEphemeris, EphemerisFactory
 .. :private-members:
 
 .. Module contents
