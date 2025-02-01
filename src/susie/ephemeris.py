@@ -14,11 +14,11 @@ from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
 # from .timing_data import TimingData # Use this for running tests
 from timing_data import TimingData # Use this for running this file
 
-class BaseModelEphemeris(ABC):
-    """Abstract class that defines the structure of different model ephemeris classes."""
+class BaseEphemeris(ABC):
+    """Abstract class that defines the structure of different ephemeris classes."""
     @abstractmethod
     def get_initial_params(self, x, y, tra_or_occ):
-        """Defines the structure for retrieving initial parameters for the model.
+        """Defines the structure for retrieving initial parameters for the ephemeris fit method.
         
         Parameters
         ----------
@@ -32,15 +32,15 @@ class BaseModelEphemeris(ABC):
 
         Returns
         -------
-        A dictionary containing initial parameter values for the LMfit model fitting procedure.
+        A dictionary containing initial parameter values for the LMfit Model fitting procedure.
         """
         pass
 
     @abstractmethod
-    def fit_model(self, x, y, yerr, tra_or_occ):
-        """Fits a model ephemeris to timing data.
+    def fit(self, x, y, yerr, tra_or_occ):
+        """Fits an ephemeris to timing data.
 
-        Defines the structure for fitting a model (linear, quadratic or precession) to timing data. 
+        Defines the structure for fitting an ephemeris (linear, quadratic or precession) to timing data. 
         All subclasses must implement this method.
 
         Parameters
@@ -57,15 +57,15 @@ class BaseModelEphemeris(ABC):
 
         Returns
         ------- 
-            A dictionary containing fitted model parameters. 
+            A dictionary containing ephemeris best-fit parameter values. 
         """
         pass
 
 
-class LinearModelEphemeris(BaseModelEphemeris):
-    """Subclass of BaseModelEphemeris that implements a linear fit."""
+class LinearEphemeris(BaseEphemeris):
+    """Subclass of BaseEphemeris that implements a linear fit."""
     def get_initial_params(self, x, y, tra_or_occ):
-        """Computes and returns the initial parameters for the ephemeris model.
+        """Computes and returns the initial parameters for the ephemeris fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
         using the provided timing data. The conjunction time is set to the first 
@@ -119,7 +119,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
          - (period * epochs + initial mid time) for transit observations 
          - (period * epochs + (initial mid time + (½ * period ))) for occultation observations 
         
-        as a linear function for an LMfit Model.
+        as a linear function for the LMfit Model.
         
         Parameters
         ----------
@@ -147,11 +147,11 @@ class LinearModelEphemeris(BaseModelEphemeris):
         result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask]
         return result
     
-    def fit_model(self, x, y, yerr, tra_or_occ):
-        """Fits a linear model to ephemeris data.
+    def fit(self, x, y, yerr, tra_or_occ):
+        """Fits observed data to a linear ephemeris.
 
-        Compares the model ephemeris data to the linear fit created by data in TimingData object calculated 
-        with lin_fit method. Then minimizes the difference between the two sets of data. LMfit Model then 
+        Compares the model data from the TimingData object to the linear fit calculated with 
+        lin_fit method. Then minimizes the difference between the two sets of data. The LMfit Model then 
         returns the parameters of the linear function corresponding to period, conjunction time, and their 
         respective errors. These parameters are returned in a dictionary to the user.
 
@@ -170,7 +170,7 @@ class LinearModelEphemeris(BaseModelEphemeris):
         Returns
         ------- 
         return_data: dict
-            A dictionary of parameters from the fit model ephemeris.
+            A dictionary of best-fit parameter values from the fit ephemeris.
             Example:
 
             .. code-block:: python
@@ -196,10 +196,10 @@ class LinearModelEphemeris(BaseModelEphemeris):
         return(return_data)
 
 
-class QuadraticModelEphemeris(BaseModelEphemeris):
-    """Subclass of BaseModelEphemeris that implements a quadratic fit."""
+class QuadraticEphemeris(BaseEphemeris):
+    """Subclass of BaseEphemeris that implements a quadratic fit."""
     def get_initial_params(self, x, y, tra_or_occ):
-        """Computes and returns the initial parameters for the ephemeris model.
+        """Computes and returns the initial parameters for the ephemeris fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
         using the provided timing data. The conjunction time is set to the first 
@@ -281,13 +281,13 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask] + 0.5*dPdE*np.power(E[occ_mask], 2)
         return result
     
-    def fit_model(self, x, y, yerr, tra_or_occ):
-        """Fits a quadratic model to ephemeris data.
+    def fit(self, x, y, yerr, tra_or_occ):
+        """Fits observed data to a quadratic ephemeris.
 
-        Compares the model ephemeris data to the quadratic fit calculated with quad_fit method. Then minimizes 
-        the difference between the two sets of data. The LMfit Model then returns the parameters of the quadratic 
-        function corresponding to period, conjunction time, period change by epoch, and their respective errors. 
-        These parameters are returned in a dictionary to the user.
+        Compares the observed data from the TimingData object to the quadratic fit calculated with quad_fit 
+        method. Then minimizes the difference between the two sets of data. The LMfit Model then returns the 
+        parameters of the quadratic function corresponding to period, conjunction time, period change by epoch, 
+        and their respective errors. These parameters are returned in a dictionary to the user.
 
         Parameters
         ----------
@@ -304,7 +304,7 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         Returns
         ------- 
         return_data: dict
-            A dictionary of parameters from the fit model ephemeris. 
+            A dictionary of best-fit parameter values from the fit ephemeris. 
             Example:
                 {
                  'period': Estimated orbital period of the exoplanet (in units of days),
@@ -331,10 +331,10 @@ class QuadraticModelEphemeris(BaseModelEphemeris):
         return(return_data)
     
 
-class PrecessionModelEphemeris(BaseModelEphemeris):
-    """ Subclass of BaseModelEphemeris that implements a precession fit."""
+class PrecessionEphemeris(BaseEphemeris):
+    """ Subclass of BaseEphemeris that implements a precession fit."""
     def get_initial_params(self, x, y, tra_or_occ):
-        """Computes and returns the initial parameters for the ephemeris model.
+        """Computes and returns the initial parameters for the ephemeris fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
         using the provided timing data. The conjunction time is set to the first 
@@ -359,8 +359,6 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
             - "period" (float): The median time difference between consecutive events 
             (transits and occultations).
         """
-        # TODO: find e, w0, and dwdE
-        # Can find this through nasa exoplanet archive search
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
         # Getting difference between the first and last values of tra array
@@ -384,7 +382,7 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         return return_data
     
     def _anomalistic_period(self, P, dwdE):
-       """Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
+       """Calculates the anomalistic period given values of sidereal period (P_s) and precession rate (dwdE).
 
        Uses the equation:
        P / (1 - (1/(2*pi)) * dwdE)
@@ -394,17 +392,17 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         P: float
            The exoplanet sideral orbital period.
         dwdE: float
-           Change in pericenter with respect to epoch.
+           The precession rate, which is the change in pericenter with respect to epoch.
 
         Returns
         -------
-           A float of the calculated starting anomalistic period.
+           A float of the calculated anomalistic period.
        """
        result = P/(1 - ((1/(2*np.pi))*dwdE))
        return result
     
     def _pericenter(self, E, w0, dwdE):
-       """Calculates the pericenter given a list of epochs, an intial pericenter value, and a change in pericenter with respect to epoch.
+       """Calculates the pericenter given a list of epochs and values of argument of pericenter and precession rate.
 
        Uses the equation:
         w0 + dwdE * E
@@ -413,11 +411,11 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
        ----------
         E: numpy.ndarray[int]
             The epoch data as recieved from the TimingData object.
-        dwdE: float
-            Change in pericenter with respect to epoch.
         w0: int
-            The intial pericenter.
-
+            The argument of pericenter.
+        dwdE: float
+            The precession rate, which is the change in pericenter with respect to epoch.
+        
         Returns
         -------
            A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
@@ -440,12 +438,12 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
                 The initial mid-time, also known as conjunction time.
             P: float
                 The exoplanet sideral orbital period.
-            dwdE: float
-                Change in pericenter with respect to epoch.
-            w0: int
-                The intial pericenter.
             e: float
                 The eccentricity.
+            w0: int
+                The argument of pericenter.
+            dwdE: float
+                Precession rate, which is change in pericenter with respect to epoch.
             tra_or_occ_enum: numpy.ndarray[int]
                 An array indicating the type of each event, with enumerated entries being either 
                 0 for transit or 1 for occultation.
@@ -465,13 +463,14 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         result[occ_mask] = T0 + P_a/2 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(E[occ_mask], w0, dwdE))
         return result
 
-    def fit_model(self, x, y, yerr, tra_or_occ):
-        """Fits a precession model to ephemeris data.
+    def fit(self, x, y, yerr, tra_or_occ):
+        """Fits observed data to a precession ephemeris.
 
-        Compares the model ephemeris data to the precession fit calculated with precession_fit method. Then minimizes 
-        the difference between the two sets of data. The LMfit Model then returns the parameters of the precession
-        function corresponding to period, conjunction time, pericenter change by epoch, eccentricity, pericenter, and their respective errors. 
-        These parameters are returned in a dictionary to the user.
+        Compares the observed data from the TimingData object to the precession fit calculated with 
+        precession_fit method. Then minimizes the difference between the two sets of data. The LMfit Model 
+        then returns the parameters of the precession function corresponding to period, conjunction time, 
+        pericenter change by epoch, eccentricity, pericenter, and their respective errors. These parameters 
+        are returned in a dictionary to the user.
 
         Parameters
         ----------
@@ -488,19 +487,19 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         Returns
         ------- 
         return_data: dict
-            A dictionary of parameters from the fit model ephemeris. 
+            A dictionary of best-fit parameter values from the fit ephemeris.
             Example:
                 {
                  'period': Estimated orbital period of the exoplanet (in units of days),
                  'period_err': Uncertainty associated with orbital period (in units of days),
                  'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                 'conjunction_time_err': Uncertainty associated with conjunction_time,
-                 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
-                 'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
-                 'eccentricity': The exoplanet pericenter,
+                 'conjunction_time_err': Uncertainty associated with conjunction time,
+                 'eccentricity': The eccentricity of the exoplanet's orbit,
                  'eccentricity_err': The uncertainties associated with eccentricity,
-                 'pericenter': The exoplanet inital pericenter value,
-                 'pericenter_err': The uncertainties associated with pericenter.
+                 'pericenter': The argument of pericenter of the exoplanet,
+                 'pericenter_err': The uncertainties associated with pericenter,
+                 'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
+                 'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
                 }
         """
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
@@ -526,20 +525,20 @@ class PrecessionModelEphemeris(BaseModelEphemeris):
         return(return_data)
 
 
-class ModelEphemerisFactory:
+class EphemerisFactory:
     """Factory class for selecting which type of ephemeris class (linear, quadratic or precession) to use."""
     @staticmethod
-    def create_model(model_type, x, y, yerr, tra_or_occ):
-        """Instantiates the appropriate BaseModelEphemeris subclass and runs fit_model method.
+    def create_ephemeris(ephemeris_type, x, y, yerr, tra_or_occ):
+        """Instantiates the appropriate BaseEphemeris subclass and runs fit_ephemeris method.
 
-        Based on the given user input of model type (linear, quadratic or precession) the factory will create the 
-        corresponding subclass of BaseModelEphemeris and run the fit_model method to recieve the model 
+        Based on the given user input of ephemeris type (linear, quadratic or precession) the factory will 
+        create the corresponding subclass of BaseEphemeris and run the fit_ephemeris method to recieve the 
         ephemeris return data dictionary.
         
         Parameters
         ----------
-            model_type: str
-                The name of the model ephemeris to create, either 'linear', 'quadratic' or 'precession'.
+            ephemeris_type: str
+                The name of the ephemeris to create, either 'linear', 'quadratic' or 'precession'.
             x: numpy.ndarray[int]
                 The epoch data as recieved from the TimingData object.
             y: numpy.ndarray[float]
@@ -552,41 +551,41 @@ class ModelEphemerisFactory:
 
         Returns
         ------- 
-            Model : dict
-                A dictionary of parameters from the fit model ephemeris. If a linear model was chosen, these parameters are:
+            Ephemeris : dict
+                A dictionary of parameters from the fit ephemeris. If a linear ephemeris was chosen, these parameters are:
                     * 'period': Estimated orbital period of the exoplanet (in units of days),
                     * 'period_err': Uncertainty associated with orbital period (in units of days),
                     * 'conjunction_time': Time of conjunction of exoplanet transit or occultation,
                     * 'conjunction_time_err': Uncertainty associated with conjunction_time
-                If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
+                If a quadratic ephemeris was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
                     * 'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
                     * 'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
-                If a precession model was chosen, the same varibales as linear are returned, and additional parameter is included in the dictionary:
-                    * 'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
-                    * 'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
-                    * 'eccentricity': The exoplanet pericenter,
-                    * 'eccentricity': The uncertainties associated with eccentricity,
-                    * 'pericenter': The exoplanet inital pericenter value,
-                    * 'pericenter_err': The uncertainties associated with pericenter
+                If a precession ephemeris was chosen, the same varibales as linear are returned, and additional parameter is included in the dictionary:
+                    * 'eccentricity': The eccentricity of the exoplanet's orbit,
+                    * 'eccentricity_err': The uncertainties associated with eccentricity,
+                    * 'pericenter': The argument of pericenter of the exoplanet,
+                    * 'pericenter_err': The uncertainties associated with pericenter,
+                    * 'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
+                    * 'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
         
         Raises
         ------
             ValueError:
-                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear', 'quadratic', or 'precession'.
+                If ephemeris specified is not a valid subclass of BaseEphemeris, which is either 'linear', 'quadratic', or 'precession'.
         """
-        models = {
-            'linear': LinearModelEphemeris(),
-            'quadratic': QuadraticModelEphemeris(),
-            'precession': PrecessionModelEphemeris()
+        ephemerides = {
+            'linear': LinearEphemeris(),
+            'quadratic': QuadraticEphemeris(),
+            'precession': PrecessionEphemeris()
         }
-        if model_type not in models:
-            raise ValueError(f"Invalid model type: {model_type}")
-        model = models[model_type]
-        return model.fit_model(x, y, yerr, tra_or_occ)
+        if ephemeris_type not in ephemerides:
+            raise ValueError(f"Invalid ephemeris type: {ephemeris_type}")
+        ephemeris = ephemerides[ephemeris_type]
+        return ephemeris.fit(x, y, yerr, tra_or_occ)
 
 
 class Ephemeris(object):
-    """Represents the model ephemeris using transit or occultation mid-time data over epochs.
+    """Represents the fit ephemeris using transit or occultation mid-time data over epochs.
 
     Parameters
     -----------
@@ -599,7 +598,7 @@ class Ephemeris(object):
         Raised if timing_data is not an instance of the TimingData object.
     """
     def __init__(self, timing_data):
-        """Initializing the model ephemeris object
+        """Initializing the ephemeris object
 
         Parameters
         -----------
@@ -650,124 +649,122 @@ class Ephemeris(object):
         tra_or_occ = self.timing_data.tra_or_occ
         return x, y, yerr, tra_or_occ
     
-    def _get_model_parameters(self, model_type, **kwargs):
-        """Creates the model ephemeris object and returns model parameters.
+    def _get_ephemeris_parameters(self, ephemeris_type, **kwargs):
+        """Creates the ephemeris object and returns ephemeris best-fit parameters.
         
-        This method fetches data from the TimingData object to be used in the model ephemeris. 
-        It creates the appropriate subclass of BaseModelEphemeris using the ModelEphemeris factory, then runs 
-        the fit_model method to return the model parameters dictionary to the user.
+        This method fetches data from the TimingData object to be used in the ephemeris fit. 
+        It creates the appropriate subclass of BaseEphemeris using the Ephemeris factory, then runs 
+        the fit method to return the ephemeris best-fit parameters dictionary to the user.
 
         Parameters
         ----------
-            model_type: str
+            ephemeris_type: str
                 Either 'linear', 'quadratic', or 'precession'. The ephemeris subclass specified to create and run.
 
         Returns
         -------
-            model_ephemeris_data: dict
-                A dictionary of parameters from the fit model ephemeris. 
-                If a linear model was chosen, these parameters are:
+            ephemeris_data: dict
+                A dictionary of best-fit parameters from the fit ephemeris. 
+                If a linear ephemeris was chosen, these parameters are:
                 {
                     'period': Estimated orbital period of the exoplanet (in units of days),
                     'period_err': Uncertainty associated with orbital period (in units of days),
                     'conjunction_time': Time of conjunction of exoplanet transit or occultation,
                     'conjunction_time_err': Uncertainty associated with conjunction_time
                 }
-                If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
+                If a quadratic ephemeris was chosen, the same linear variables are returned, and an additional parameter is included in the dictionary:
                 {
                     'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
                     'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
                 }
-                If a precession model was chosen, the same variables as the linear model are returned, and additional parameters are included in the dictionary:
+                If a precession ephemeris was chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
                 {
-                    'period': Estimated orbital period of the exoplanet (in units of days),
-                    'period_err': Uncertainty associated with orbital period (in units of days),
-                    'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                    'conjunction_time_err': Uncertainty associated with conjunction_time,
-                    'pericenter_change_by_epoch': The exoplanet pericenter change with respect to epoch,
-                    'pericenter_change_by_epoch_err': The uncertainties associated with pericenter_change_by_epoch,
-                    'eccentricity': The exoplanet pericenter,
+                    'eccentricity': The eccentricity of the exoplanet's orbit,
                     'eccentricity_err': The uncertainties associated with eccentricity,
-                    'pericenter': The exoplanet inital pericenter value,
-                    'pericenter_err': The uncertainties associated with pericenter.
+                    'pericenter': The argument of pericenter of the exoplanet,
+                    'pericenter_err': The uncertainties associated with pericenter,
+                    'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
+                    'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
                 }
 
         Raises
         ------
             ValueError:
-                If model specified is not a valid subclass of BaseModelEphemeris, which is either 'linear', 'quadratic', or 'precession'.
+                If ephemeris specified is not a valid subclass of BaseEphemeris, which is either 'linear', 'quadratic', or 'precession'.
         """
         # Step 1: Get data from transit times obj
         x, y, yerr, tra_or_occ = self._get_timing_data()
-        # Step 2: Create the model with the given variables & user inputs. 
-        # This will return a dictionary with the model parameters as key value pairs.
-        model_ephemeris_data = ModelEphemerisFactory.create_model(model_type, x, y, yerr, tra_or_occ, **kwargs)
-        # Step 3: Return the data dictionary with the model parameters
-        return model_ephemeris_data
+        # Step 2: Create the ephemeris with the given variables & user inputs. 
+        # This will return a dictionary with the best-fit parameters as key value pairs.
+        ephemeris_data = EphemerisFactory.create_ephemeris(ephemeris_type, x, y, yerr, tra_or_occ, **kwargs)
+        # Step 3: Return the data dictionary with the best-fit parameters
+        return ephemeris_data
     
-    def _get_k_value(self, model_type):
-        """Returns the number of parameters value to be used in the BIC calculation.
+    def _get_k_value(self, ephemeris_type):
+        """Returns the number of fit parameters for a given ephemeris.
         
         Parameters
         ----------
-            model_type: str
-                Either 'linear' or 'quadratic', used to specify how many fit parameters are present in the model.
+            ephemeris_type: str
+                Either 'linear', 'quadratic', or 'precession', used to specify how many fit parameters are present in the ephemeris.
 
         Returns
         -------
-            An int representing the number of fit parameters for the model. This will be 2 for a linear ephemeris 
-            and 3 for a quadratic ephemeris.
+            An int representing the number of fit parameters for the ephemeris. This will be: 
+                * 2 for a linear ephemeris 
+                * 3 for a quadratic ephemeris
+                * 5 for a precession ephemeris
 
         Raises
         ------
             ValueError
-                If the model_type is an unsupported model type. Currently supported model types are 'linear' and 
-                'quadratic'.
+                If the ephemeris_type is an unsupported ephemeris type. Currently supported ephemeris types are 
+                'linear', 'quadratic', and 'precession'.
         """
-        if model_type == 'linear':
+        if ephemeris_type == 'linear':
             return 2
-        elif model_type == 'quadratic':
+        elif ephemeris_type == 'quadratic':
             return 3
-        elif model_type == 'precession':
+        elif ephemeris_type == 'precession':
             return 5
         else:
-            raise ValueError('Only linear, quadratic, and precession models are supported at this time.')
+            raise ValueError('Only linear, quadratic, and precession ephemerides are supported at this time.')
     
     def _calc_anomalistic_period(self, P, dwdE):
-       """ Calculates the anomalistic period given a period and a change in pericenter with respect to epoch.
+       """Calculates the anomalistic period given values of sidereal period and precession rate (change in pericenter over epoch).
 
-       Uses the equation
-       :math:`\\frac{P}{(1 - \\frac{1}{2*\\pi})*frac{dw}{dE}}`
+        Uses the equation
+        :math:`\\frac{P}{(1 - \\frac{1}{2*\\pi})*frac{dw}{dE}}`
        
-       Parameters
-       ----------
-       P: float
-           The exoplanet sideral orbital period.
-        dwdE: float
-           Change in pericenter with respect to epoch.
+        Parameters
+        ----------
+            P: float
+                The exoplanet sidereal orbital period.
+            dwdE: float
+                The precession rate, which is the change in pericenter with respect to epoch.
 
         Returns
         -------
-           A float of the calculated anomalistic period.
+            A float of the calculated anomalistic period.
        """
        result = P/(1 - (1/(2*np.pi))*dwdE)
        return result
     
-    def _calc_pericenter(self, w0, dwdE, E):
-       """Calculates the pericenter given a list of epochs, a pericenter value, and a change in pericenter with respect to epoch.
+    def _calc_pericenter(self, E, w0, dwdE):
+       """Calculates the pericenter given a list of epochs and values of argument of pericenter and precession rate (change in pericenter with respect to epoch).
 
-       Uses the equation
+        Uses the equation
         :math:`w0 + \\frac{dw}{dE} * E`
 
 
-       Parameters
-       ----------
-        E: numpy.ndarray[int]
-            The epochs.
-        dwdE: float
-            Change in pericenter with respect to epoch.
-        w0: int
-            The pericenter.
+        Parameters
+        ----------
+            E: numpy.ndarray[int]
+                The epochs.
+            w0: int
+                The pericenter.
+            dwdE: float
+                Change in pericenter with respect to epoch.
 
         Returns
         -------
@@ -776,8 +773,8 @@ class Ephemeris(object):
        result = w0 + dwdE*E
        return result
     
-    def _calc_linear_model_uncertainties(self, T0_err, P_err):
-        """Calculates the uncertainties of a given linear model when compared to actual data in TimingData.
+    def _calc_linear_ephemeris_uncertainties(self, T0_err, P_err):
+        """Calculates the uncertainties of a given linear ephemeris when compared to observed data in TimingData.
         
         Uses the equation 
          - .. math::
@@ -790,18 +787,18 @@ class Ephemeris(object):
          - σ(t pred, occ) = √(σ(T0)² + σ(P)² * (½ + E)²) for occultation observations
          
         where σ(T0)=conjunction time error, E=epoch, and σ(P)=period error, to calculate the uncertainties 
-        between the model data and actual data over epochs.
+        between the ephemeris data and observed data.
         
         Parameters
         ----------
-        T0_err: numpy.ndarray[float]
-            The calculated conjunction time error from a linear model ephemeris.
-        P_err: numpy.ndarray[float]
-            The calculated period error from a linear model ephemeris.
+            T0_err: float
+                The error associated with the best-fit conjunction time from a linear ephemeris.
+            P_err: float
+                The error associated with the best-fit period from a linear ephemeris.
         
         Returns
         -------
-            A list of uncertainties associated with the model ephemeris data passed in, calculated with the 
+            A list of uncertainties associated with the ephemeris passed in, calculated with the 
             equation above and the TimingData epochs.
         """
         result = np.zeros(len(self.timing_data.epochs))
@@ -809,8 +806,8 @@ class Ephemeris(object):
         result[self.occ_mask] = np.sqrt((T0_err**2) + (((self.timing_data.epochs[self.occ_mask]+0.5)**2)*(P_err**2)))
         return result
     
-    def _calc_quadratic_model_uncertainties(self, T0_err, P_err, dPdE_err):
-        """Calculates the uncertainties of a given quadratic model when compared to actual data in TimingData.
+    def _calc_quadratic_ephemeris_uncertainties(self, T0_err, P_err, dPdE_err):
+        """Calculates the uncertainties of a given quadratic ephemeris when compared to observed data in TimingData.
         
         Uses the equation 
          - .. math::
@@ -823,20 +820,20 @@ class Ephemeris(object):
          - σ(t pred, tra) = √(σ(T0)² + (σ(P)² * E²) + (¼ * σ(dP/dE)² * E⁴)) for transit observation
          - σ(t pred, occ) = √(σ(T0)² + (σ(P)² * (½ + E)²) + (¼ * σ(dP/dE)² * E⁴)) for occultation observations
         where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change with respect 
-        to epoch error, to calculate the uncertainties between the model data and actual data over epochs.
+        to epoch error, to calculate the uncertainties between the ephemeris data and the observed data.
         
         Parameters
         ----------
-        T0_err: numpy.ndarray[float]
-            The calculated conjunction time error from a quadratic model ephemeris.
-        P_err: numpy.ndarray[float]
-            The calculated period error from a quadratic model ephemeris.
-        dPdE_err: numpy.ndarray[float]
-            The calculated change in period with respect to epoch error for a quadratic model ephemeris.
+            T0_err: float
+                The error associated with the best-fit conjunction time from a quadratic ephemeris.
+            P_err: float
+                The error associated with the best-fit period from a quadratic ephemeris.
+            dPdE_err: float
+                The error associated with the best-fit decay rate from a quadratic ephemeris.
         
         Returns
         -------
-            A list of uncertainties associated with the model ephemeris passed in, calculated with the 
+            A list of uncertainties associated with the ephemeris passed in, calculated with the 
             equation above and the TimingData epochs.
         """
         result = np.zeros(len(self.timing_data.epochs))
@@ -896,12 +893,12 @@ class Ephemeris(object):
     # ———————————————————————————————————————————————————————————————————————————————————————————
     
     def _calc_linear_ephemeris(self, E, T0, P):
-        """Calculates mid-times using parameters from a linear model ephemeris.
+        """Calculates mid-times using best-fit parameter values from a linear ephemeris fit.
         
         Uses the equation:
          - (T0 + PE) for transit observations
          - ((T0 + ½P) + PE) for occultation observations
-        to calculate the mid-time times over each epoch where T0 is conjunction time, P is period, 
+        to calculate the mid-times for each epoch where T0 is conjunction time, P is period, 
         and E is epoch.
 
         Parameters
@@ -909,13 +906,13 @@ class Ephemeris(object):
             E: numpy.ndarray[int]
                 The epochs pulled from the TimingData object.
             T0: float
-                The conjunction time of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit conjunction time from a linear ephemeris fit.
             P: float
-                The orbital period of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit orbital period from a linear ephemeris fit.
 
         Returns
         -------
-            A numpy array of mid-time times calculated over each epoch using the equation above.
+            A numpy array of mid-times calculated for each epoch.
         """
         result = np.zeros(len(self.timing_data.epochs))
         result[self.tra_mask] = T0 + (P*E[self.tra_mask])
@@ -923,28 +920,28 @@ class Ephemeris(object):
         return result
     
     def _calc_quadratic_ephemeris(self, E, T0, P, dPdE):
-        """Calculates mid-times using parameters from a quadratic model ephemeris.
+        """Calculates mid-times using best-fit parameter values from a quadratic ephemeris fit.
 
         Uses the equation:
          - (T0 + PE + (½ * dPdE * E²)) for transit observations
          - ((T0 + ½P) + PE + (½ * dPdE * E²)) for occultation observations
         to calculate the mid-times over each epoch where T0 is conjunction time, P is period, E is epoch, 
-        and dPdE is period change with respect to epoch.
+        and dPdE is the orbital decay rate (period change with respect to epoch).
 
         Parameters
         ----------
             E: numpy.ndarray[int]
                 The epochs pulled from the TimingData object.
             T0: float
-                The conjunction time of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit conjunction time from a quadratic ephemeris fit.
             P: float
-                The orbital period of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit orbital period from a quadratic ephemeris fit.
             dPdE: float
-                The period change with respect to epoch as calculated by the linear ephemeris model.
+                The best-fit orbital decay rate (period change with respect to epoch) from a quadratic ephemeris fit.
 
         Returns
         -------
-            A numpy array of mid-times calculated over each epoch using the equation above.
+            A numpy array of mid-times calculated for each epoch.
         """
         result = np.zeros(len(self.timing_data.epochs))
         result[self.tra_mask] = T0 + P*E[self.tra_mask] + 0.5*dPdE*E[self.tra_mask]*E[self.tra_mask]
@@ -952,13 +949,14 @@ class Ephemeris(object):
         return result
     
     def _calc_precession_ephemeris(self, E, T0, P, e, w0, dwdE):
-        """Calculates mid-times using parameters from a precession model ephemeris.
+        """Calculates mid-times using best-fit parameter values from a precession ephemeris fit.
 
         Uses the equation:
          -  T0 + E*P - (e*anomalistic period)/pi * cos(pericenter) for transit observations
          -  T0 + (anomalistic period / 2) + (e*anomalistic period)/pi * cos(pericenter) for occultation observations
         to calculate the mid-times over each epoch where T0 is conjunction time, P is sideral period, E is epoch, 
-        dwdE is pericenter change with respect to epoch, w0 is intial pericenter, e is eccentricity.
+        dwdE is the precession rate (pericenter change with respect to epoch), w0 is the argument of pericenter, 
+        and e is eccentricity.
 
         Parameters
         ----------
@@ -967,57 +965,75 @@ class Ephemeris(object):
             T0: float
                 The initial mid-time, also known as conjunction time.
             P: float
-                The exoplanet sideral orbital period.
+                The sideral orbital period of the exoplanet.
             e: float
                 The eccentricity.
             w0: int
-                The argument of periastron (initial pericenter).
+                The argument of pericenter.
             dwdE: float
-                The precession rate, or the change in pericenter with respect to epoch.
+                The precession rate, which is the change in pericenter with respect to epoch.
             tra_or_occ: numpy.ndarray[str]
                 An array indicating the type of each event, with entries being either 
                 "tra" for transit or "occ" for occultation.
 
         Returns
         -------
-            A numpy array of mid-times calculated over each epoch using the equation above.
+            A numpy array of mid-times calculated for each epoch.
         """ 
         result = np.zeros(len(self.timing_data.epochs))
-        result[self.tra_mask] = T0 + E[self.tra_mask]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.tra_mask]))
-        result[self.occ_mask] = T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[self.occ_mask]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(w0, dwdE, E[self.occ_mask]))
+        result[self.tra_mask] = T0 + E[self.tra_mask]*P - ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(E[self.tra_mask], w0, dwdE))
+        result[self.occ_mask] = T0 + (self._calc_anomalistic_period(P, dwdE)/2) + (E[self.occ_mask]*P) + ((e*self._calc_anomalistic_period(P, dwdE))/np.pi)*np.cos(self._calc_pericenter(E[self.occ_mask], w0, dwdE))
         return result
     
     def _calc_sum_of_errs(self, numerator, denominator):
         """Calculates the sum of minimized errors. 
+
             Equations are pulled from "Numerical Recipes: The Art of Scientific Computing"
             3rd Edition by Press et. al on page 781 (eq. 15.2.4). 
+
+            Σ (numerator / (denominator)²)
+
+            Parameters
+            ----------
+                numerator: np.array[float]
+                    The numerator value.
+                denominator: np.array[float]
+                    The denominator value.
+
+            Returns
+            -------
+                A calculated float value using the equation: Σ (numerator / (denominator)²)
         """
         return np.sum((numerator / np.pow(denominator, 2)))
    
-    def _calc_chi_squared(self, model_mid_times):
-        """Calculates the residual chi squared values for the model ephemeris.
+    def _calc_chi_squared(self, ephemeris_mid_times):
+        """Calculates the residual chi squared values comparing the ephemeris fit and observed data.
         
         Parameters
         ----------
-            model_mid_times : numpy.ndarray[float]
-                Mid-times calculated from a model ephemeris. This data can be accessed through the 'model_data'
-                key from a returned model ephemeris data dictionary. 
+            ephemeris_mid_times : numpy.ndarray[float]
+                Mid-times calculated from an ephemeris. This data can be accessed through the 'ephemeris_data'
+                key from a returned ephemeris data dictionary. 
         
         Returns
         -------
             Chi-squared value : float
                 The chi-squared value calculated with the equation:
-                Σ(((observed mid-times - model calculated mid-times) / observed mid-time uncertainties)²)
+                Σ(((observed mid-times - ephemeris calculated mid-times) / observed mid-time uncertainties)²)
         """
         # STEP 1: Get observed mid-times
         observed_data = self.timing_data.mid_times
         uncertainties = self.timing_data.mid_time_uncertainties
-        # STEP 2: calculate X2 with observed data and model data
-        return np.sum(((observed_data - model_mid_times)/uncertainties)**2)
+        # STEP 2: calculate X² with observed data and ephemeris data
+        return np.sum(((observed_data - ephemeris_mid_times)/uncertainties)**2)
     
     def _calc_delta_T0_prime_quad(self):
-        """
-        delta_T0_prime = (S_(e^2)^2 - S_(e^3)*S_e) / (S_(e^2)*S - S_e^2)
+        """Calculates the value of ΔT0' for a quadratic ephemeris, used in the analytical ΔBIC equation.
+
+            Equation is pulled Metrics for Optimizing Searches for Tidally Decaying Exoplanets by 
+            Jackson et. al (2023) (eq. 32).
+
+            ΔT0' = (S_(e²)² - S_(e³)*S_e) / (S_(e²)*S - S_e²)
         """
         sigma = self.timing_data.mid_time_uncertainties
         epochs = self.timing_data.epochs
@@ -1029,8 +1045,12 @@ class Ephemeris(object):
         return delta_T0_prime
     
     def _calc_delta_P_prime_quad(self):
-        """
-        delta_P_prime = (S_(e^3)*S - S_(e^2)*S_e) / (S_(e^2)*S - S_e^2)
+        """Calculates the value of ΔP' for a quadratic ephemeris, used in the analytical ΔBIC equation.
+            
+            Equation is pulled Metrics for Optimizing Searches for Tidally Decaying Exoplanets by 
+            Jackson et. al (2023) (eq. 33).
+            
+            ΔP' = (S_(e³)*S - S_(e²)*S_e) / (S_(e²)*S - S_e²)
         """
         sigma = self.timing_data.mid_time_uncertainties
         epochs = self.timing_data.epochs
@@ -1042,8 +1062,25 @@ class Ephemeris(object):
         return delta_P_prime
     
     def _calc_analytical_delta_bic_quad(self, dPdE):
-        """
-        delta_bic = 0.25(dPdE)^2 * sum(((e^2 - delta_P_prime * e - delta_T0_prime) / (uncertainties))^2) - ln(N) + 1
+        """Calculates the analytical ΔBIC for a quadratic ephemeris.
+
+            Equation is pulled Metrics for Optimizing Searches for Tidally Decaying Exoplanets by 
+            Jackson et. al (2023) (eq. 35).
+
+            ΔBIC = 0.25(dPdE)² * sum(((E² - ΔP'*E - ΔT0') / (uncertainties))²) - ln(N) + 1
+            Where dPdE is the orbital decay rate, E are epochs, uncertainties are the uncertainties on the
+            observed mid-times, and N is the total number of data points. Equations for ΔP' and ΔT0' can be 
+            found in the methods for _calc_delta_P_prime_quad and _calc_delta_T0_prime_quad.
+
+            Parameters
+            ----------
+                dPdE: float
+                    The best-fit parameter value for the orbital decay rate from a quadratic ephemeris fit.
+
+            Returns
+            -------
+                analytical_delta_bic: np.ndarray[float]
+                    The values of the analytical ΔBIC for each epoch.
         """
         epochs = self.timing_data.epochs
         uncertainties = self.timing_data.mid_time_uncertainties
@@ -1055,17 +1092,18 @@ class Ephemeris(object):
         return analytical_delta_bic
 
     def _calc_delta_P_prime_prec(self, w0, dwdE):
-        """
+        """Calculates the value of ΔP' for a precession ephemeris, used in the analytical ΔBIC equation.
+        
         deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
 
         Parameters
         ----------
             timing_uncertainties: np.ndarray(float)
-                The uncertainties ???
+                The uncertainties of the observed mid-times.
             epochs: np.ndarray(int)
                 Epochs of observations
             w_0: float
-                Omega_0 or "pericenter" from the precession ephemeris
+                The argument of pericenter, or "pericenter" from the precession ephemeris
             dwdE: float
                 dwdE or "change in pericenter over epochs" from the precession ephemeris
                 
@@ -1085,7 +1123,8 @@ class Ephemeris(object):
         return delta_P_prime
 
     def _calc_delta_T0_prime_prec(self, w0, dwdE):
-        """
+        """Calculates the value of ΔT0' for a precession ephemeris, used in the analytical ΔBIC equation.
+        
         deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
 
         Parameters
@@ -1115,18 +1154,14 @@ class Ephemeris(object):
         return delta_T0_prime
     
     def _calc_analytical_delta_bic_prec(self, Pa, e, w0, dwdE):
-        """
+        """Calculates the analytical ΔBIC for a precession ephemeris.
+
         delta BIC = ((e*P_a)/pi)^2 * sum(from i = 0 to N-1) [(timing uncertainties_i)^-2 * (cos(omega_i) + E_i * deltaP_s' + deltaT_0')^2 -3 ln(N) + 3]
-        omega_i = omega_0 + (dw/dE) * E_i
-        deltaP_s' = [(S_E * S_cos(omega) - S * S_E,cos(omega)) / (S * S_(E^2) - S_E^2)]
-        deltaT_0' = [(S_E * S_E,cos(omega) - S_(E^2) * S_cos(omega)) / (S * S_(E^2) - S_E^2)]
         """
         epochs = self.timing_data.epochs
         sigma = self.timing_data.mid_time_uncertainties
-        # w_i = ephemeris_model_data["pericenter"] + ephemeris_model_data["pericenter_change_by_epoch"] * self.timing_data.epochs
         cosw = np.cos(w0 + dwdE*epochs)
         # QUESTION: Does this period need to be recalculated at each step or is this also a constant
-        # P_a = self._calc_anomalistic_period(ephemeris_model_data["period"], ephemeris_model_data["pericenter_change_by_epoch"])
         delta_T0_prime = self._calc_delta_T0_prime_prec(w0, dwdE)
         delta_P_prime = self._calc_delta_P_prime_prec(w0, dwdE)
         amplitude = pow(((e*Pa) / (np.pi)), 2)
@@ -1134,22 +1169,22 @@ class Ephemeris(object):
         analytical_delta_bic = amplitude * delta_bic_sum - 3.0 * np.log(len(epochs)) + 3.0
         return analytical_delta_bic
     
-    def _subtract_linear_parameters(self, model_mid_times, T0, P, E, tra_or_occ):
-        """Subtracts the linear terms to show smaller changes in other model parameters for plotting functions.
+    def _subtract_linear_parameters(self, ephemeris_mid_times, T0, P, E, tra_or_occ):
+        """Subtracts the linear terms to show smaller changes in non-linear parameters.
 
         Uses the equations:
-         - (model midtime - T0 - PE) for transit observations
-         - (model midtime - T0 - (½P) - PE) for occultation observations
+         - (ephemeris midtime - T0 - PE) for transit observations
+         - (ephemeris midtime - T0 - (½P) - PE) for occultation observations
         
         Parameters
         ----------
-            model_mid_times : numpy.ndarray[float]
-                Mid-times calculated from a model ephemeris. This data can be accessed through the 'model_data'
-                key from a returned model ephemeris data dictionary. 
+            ephemeris_mid_times : numpy.ndarray[float]
+                Mid-times calculated from a ephemeris. This data can be accessed through the 'ephemeris_data'
+                key from a returned ephemeris data dictionary. 
             T0: float
-                The conjunction time of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit conjunction time from an ephemeris fit.
             P: float
-                The orbital period of the exoplanet as calculated by the linear ephemeris model.
+                The best-fit orbital period from an ephemeris fit.
             E: numpy.ndarray[int]
                 The epochs pulled from the TimingData object.
 
@@ -1160,68 +1195,83 @@ class Ephemeris(object):
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
         result = np.zeros(len(E))
-        result[tra_mask] = model_mid_times[tra_mask] - T0 - (P*E[tra_mask])
-        result[occ_mask] = model_mid_times[occ_mask] - T0 - (0.5*P) - (P*E[occ_mask])
+        result[tra_mask] = ephemeris_mid_times[tra_mask] - T0 - (P*E[tra_mask])
+        result[occ_mask] = ephemeris_mid_times[occ_mask] - T0 - (0.5*P) - (P*E[occ_mask])
         return result
     
-    def get_model_ephemeris(self, model_type):
-        """Fits the timing data to a specified model using an LMfit Model fit.
+    def fit_ephemeris(self, ephemeris_type):
+        """Fits the timing data to a specified ephemeris using an LMfit Model fit.
 
         Parameters
         ----------
-            model_type: str
-                Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
+            ephemeris_type: str
+                Either 'linear', 'quadratic', or 'precession'. Represents the type of ephemeris to fit the data to.
 
         Returns
         ------- 
-            model_ephemeris_data: dict
-                A dictionary of parameters from the fit model ephemeris.
+            ephemeris_data: dict
+                A dictionary of best-fit parameters from the ephemeris fit.
                     Example:
 
+                    If a linear ephemeris is chosen, these parameters are:
+
                     .. code-block:: python
-            
+                        
                         {
-                            'model_type': 'Either linear or quadratic',
-                            'model_data': 'A list of calculated mid-times using the estimated parameters over each epoch',
-                            'period': 'Estimated orbital period of the exoplanet (in units of days)',
-                            'period_err': 'Uncertainty associated with orbital period (in units of days)',
-                            'conjunction_time': 'Time of conjunction of exoplanet transit or occultation',
-                            'conjunction_time_err': 'Uncertainty associated with conjunction_time',
+                            'ephemeris_type': "Either linear, quadratic, or precession",
+                            'ephemeris_data': "A list of calculated mid-times using the best-fit parameter values for each epoch",
+                            'period': "Estimated orbital period of the exoplanet (in units of days)",
+                            'period_err': "Uncertainty associated with orbital period (in units of days)",
+                            'conjunction_time': "Time of conjunction of exoplanet transit or occultation",
+                            'conjunction_time_err': "Uncertainty associated with conjunction_time",
                         }
                     
-                    If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
+                    If a quadratic ephemeris is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
                     
                     .. code-block:: python
                         
                         {
-                            'period_change_by_epoch': 'The exoplanet period change with respect to epoch (in units of days)',
-                            'period_change_by_epoch_err': 'The uncertainties associated with period_change_by_epoch (in units of days)'
+                            'period_change_by_epoch': "The exoplanet orbital decay rate, which is the change in period with respect to epoch (in units of days)",
+                            'period_change_by_epoch_err': "The uncertainties associated with period_change_by_epoch (in units of days)"
+                        }
+
+                    If a precession ephemeris is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
+
+                    .. code-block:: python
+
+                        {
+                            'eccentricity': "The eccentricity of the exoplanet's orbit",
+                            'eccentricity_err': "The uncertainties associated with eccentricity",
+                            'pericenter': "The argument of pericenter of the exoplanet",
+                            'pericenter_err': "The uncertainties associated with pericenter",
+                            'pericenter_change_by_epoch': "The precession rate, which is the change in pericenter with respect to epoch, of the exoplanet's orbit",
+                            'pericenter_change_by_epoch_err': "The uncertainties associated with precession rate"
                         }
         """
-        model_ephemeris_data = self._get_model_parameters(model_type)
-        model_ephemeris_data["model_type"] = model_type
+        ephemeris_data = self._get_ephemeris_parameters(ephemeris_type)
+        ephemeris_data["ephemeris_type"] = ephemeris_type
         # Once we get parameters back, we call _calc_blank_ephemeris 
-        if model_type == "linear":
-            # Return dict with parameters and model data
-            model_ephemeris_data["model_data"] = self._calc_linear_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"])
-        elif model_type == "quadratic":
-            model_ephemeris_data["model_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"], model_ephemeris_data["period_change_by_epoch"])
-        elif model_type == "precession":
-            model_ephemeris_data["model_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, model_ephemeris_data["conjunction_time"], model_ephemeris_data["period"], model_ephemeris_data["eccentricity"], model_ephemeris_data["pericenter"], model_ephemeris_data["pericenter_change_by_epoch"])
-        return model_ephemeris_data
+        if ephemeris_type == "linear":
+            # Return dict with parameters and calculated mid-times
+            ephemeris_data["ephemeris_data"] = self._calc_linear_ephemeris(self.timing_data.epochs, ephemeris_data["conjunction_time"], ephemeris_data["period"])
+        elif ephemeris_type == "quadratic":
+            ephemeris_data["ephemeris_data"] = self._calc_quadratic_ephemeris(self.timing_data.epochs, ephemeris_data["conjunction_time"], ephemeris_data["period"], ephemeris_data["period_change_by_epoch"])
+        elif ephemeris_type == "precession":
+            ephemeris_data["ephemeris_data"] = self._calc_precession_ephemeris(self.timing_data.epochs, ephemeris_data["conjunction_time"], ephemeris_data["period"], ephemeris_data["eccentricity"], ephemeris_data["pericenter"], ephemeris_data["pericenter_change_by_epoch"])
+        return ephemeris_data
     
-    def get_ephemeris_uncertainties(self, model_params):
-        """Calculates the mid-time uncertainties of specific model data when compared to the actual data. 
+    def get_ephemeris_uncertainties(self, ephemeris_data):
+        """Calculates the mid-time uncertainties of specific ephemeris data when compared to the actual data. 
 
-        Calculate the uncertainties between the model data and actual data over epochs using the equations...
+        Calculate the uncertainties between the ephemeris data and actual data over epochs using the equations...
         
-        For linear models:
+        For a linear ephemeris:
         
          - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * E^2)}` for transit observations
 
          - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + \\sigma(P)^2 * (\\frac{1}{2} + E)^2)}` for occultation observations
             
-        And for quadratic models:
+        For a quadratic ephemeris:
 
          - :math:`\\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * E^2) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))}` for transit observations
 
@@ -1231,98 +1281,100 @@ class Ephemeris(object):
         
         Parameters
         ----------
-        model_params: dict
-            The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+        ephemeris_data: dict
+            The ephemeris data dictionary recieved from the `fit_ephemeris` method.
         
         Returns
         -------
-            A list of mid-time uncertainties associated with the model ephemeris passed in, calculated with the 
+            A list of mid-time uncertainties associated with the ephemeris passed in, calculated with the 
             equation above and the TimingData epochs.
         
         Raises
         ------
             KeyError
-                If the model type in not in the model parameter dictionary.
+                If the ephemeris type in not in the ephemeris parameter dictionary.
             KeyError
-                If the model parameter error values are not in the model parameter dictionary.
+                If the ephemeris parameter error values are not in the ephemeris parameter dictionary.
         """
-        linear_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err']
+        linear_params = ["conjunction_time", "conjunction_time_err", "period", "period_err"]
         quad_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err', 'period_change_by_epoch', 'period_change_by_epoch_err']
         prec_params = ['conjunction_time', 'conjunction_time_err', 'period', 'period_err', 'pericenter_change_by_epoch', 'pericenter_change_by_epoch_err', 'eccentricity', 'eccentricity_err', 'pericenter', 'pericenter_err']
-        if 'model_type' not in model_params:
-            raise KeyError("Cannot find model type in model data. Please run the get_model_ephemeris method to return ephemeris fit parameters.")
-        if model_params['model_type'] == 'linear':
-            if any(linear_params) not in model_params:
-                raise KeyError("Cannot find conjunction time and period and/or their respective errors in model data. Please run the get_model_ephemeris method with 'linear' model_type to return ephemeris fit parameters.")
-            return self._calc_linear_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'])
-        elif model_params['model_type'] == 'quadratic':
-            if any(quad_params) not in model_params:
-                raise KeyError("Cannot find conjunction time, period, and/or period change by epoch and/or their respective errors in model data. Please run the get_model_ephemeris method with 'quadratic' model_type to return ephemeris fit parameters.")
-            return self._calc_quadratic_model_uncertainties(model_params['conjunction_time_err'], model_params['period_err'], model_params['period_change_by_epoch_err'])
-        elif model_params['model_type'] == 'precession':
-            if any(prec_params) not in model_params:
-                raise KeyError("Cannot find conjunction time, period, eccentricity, pericenter, and/or pericenter change by epoch and/or their respective errors in model data. Please run the get_model_ephemeris method with 'precession' model_type to return ephemeris fit parameters.")
-            return self._calc_precession_model_uncertainties(model_params)
+        if 'ephemeris_type' not in ephemeris_data:
+            raise KeyError("Cannot find ephemeris type in ephemeris data. Please run the fit_ephemeris method to return ephemeris fit parameters.")
+        if ephemeris_data['ephemeris_type'] == 'linear':
+            if not any(np.isin(sorted(linear_params), sorted(ephemeris_data.keys()))):
+                raise KeyError("Cannot find conjunction time and period and/or their respective errors in ephemeris data. Please run the fit_ephemeris method with 'linear' ephemeris_type to return ephemeris fit parameters.")
+            return self._calc_linear_ephemeris_uncertainties(ephemeris_data['conjunction_time_err'], ephemeris_data['period_err'])
+        elif ephemeris_data['ephemeris_type'] == 'quadratic':
+            if not any(np.isin(sorted(quad_params), sorted(ephemeris_data.keys()))):
+                raise KeyError("Cannot find conjunction time, period, and/or period change by epoch and/or their respective errors in ephemeris data. Please run the fit_ephemeris method with 'quadratic' ephemeris_type to return ephemeris fit parameters.")
+            return self._calc_quadratic_ephemeris_uncertainties(ephemeris_data['conjunction_time_err'], ephemeris_data['period_err'], ephemeris_data['period_change_by_epoch_err'])
+        elif ephemeris_data['ephemeris_type'] == 'precession':
+            if not any(np.isin(sorted(prec_params), sorted(ephemeris_data.keys()))):
+                raise KeyError("Cannot find conjunction time, period, eccentricity, pericenter, and/or pericenter change by epoch and/or their respective errors in ephemeris data. Please run the fit_ephemeris method with 'precession' ephemeris_type to return ephemeris fit parameters.")
+            return self._calc_precession_ephemeris_uncertainties(ephemeris_data)
 
-    def calc_bic(self, model_data_dict):
-        """Calculates the BIC value for a given model ephemeris. 
+    def calc_bic(self, ephemeris_data):
+        """Calculates the BIC value for a given ephemeris. 
         
         The BIC value is a modified :math:`\\chi^2` value that penalizes for additional parameters. 
         Uses the equation :math:`BIC = \\chi^2 + (k * log(N))` where :math:`\\chi^2=\\sum{\\frac{(\\text{
-        observed midtimes - model midtimes})}{\\text{(observed midtime uncertainties})^2}},`
-        k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.
+        observed midtimes - ephemeris midtimes})}{\\text{(observed midtime uncertainties})^2}},`
+        k=number of fit parameters (2 for linear ephemerides, 3 for quadratic ephemerides, 5 for precession 
+        ephemerides), and N=total number of data points.
         
         Parameters
         ----------
-            model_data_dict: dict
-                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+            ephemeris_data: dict
+                The ephemeris data dictionary recieved from the `fit_ephemeris` method.
         
         Returns
         ------- 
-            A float value representing the BIC value for this model ephemeris.
+            A float value representing the BIC value for this ephemeris.
         """
-        # Step 1: Get value of k based on model_type (linear=2, quad=3, custom=?)
-        num_params = self._get_k_value(model_data_dict['model_type'])
+        # Step 1: Get value of k based on ephemeris_type (linear=2, quad=3, custom=?)
+        num_params = self._get_k_value(ephemeris_data['ephemeris_type'])
         # Step 2: Calculate chi-squared
-        chi_squared = self._calc_chi_squared(model_data_dict['model_data'])
+        chi_squared = self._calc_chi_squared(ephemeris_data['ephemeris_data'])
         # Step 3: Calculate BIC
-        return chi_squared + (num_params*np.log(len(model_data_dict['model_data'])))
+        return chi_squared + (num_params*np.log(len(ephemeris_data['ephemeris_data'])))
 
-    def calc_delta_bic(self, model1="linear", model2="quadratic"):
-        """Calculates the :math:`\\Delta BIC` value between linear and quadratic model ephemerides using the given timing data. 
+    def calc_delta_bic(self, ephemeris1="linear", ephemeris2="quadratic"):
+        """Calculates the :math:`\\Delta BIC` value between linear and quadratic ephemerides using the given timing data. 
+        
+        ephemeris1 BIC value - ephemeris2 BIC value, default of linear - quadratic BIC values.
         
         The BIC value is a modified :math:`\\chi^2` value that penalizes for additional parameters. The
         :math:`\\Delta BIC` value is the difference between the linear BIC value and the quadratic BIC value.
-        Models that have smaller values of BIC are favored. Therefore, if the :math:`\\Delta BIC` value for your
-        data is a large positive number (large linear BIC - small quadratic BIC), the quadratic model is favored and
+        Ephemerides that have smaller values of BIC are favored. Therefore, if the :math:`\\Delta BIC` value for your
+        data is a large positive number (large linear BIC - small quadratic BIC), a quadratic ephemeris is favored and
         your data indicates possible orbital decay in your extrasolar system. If the :math:`\\Delta BIC` value for
-        your data is a small number or negative (small linear BIC - large quadratic BIC), then the linear model is
+        your data is a small number or negative (small linear BIC - large quadratic BIC), then a linear ephemeris is
         favored and your data may not indicate orbital decay. 
 
-        This function will run all model ephemeris instantiation and BIC calculations for you using the TimingData
+        This function will run all ephemeris instantiation and BIC calculations for you using the TimingData
         information you entered.
 
         Parameters
         ----------
-            model1: str
-                This is the name of the model you would like to compare to the linear model.
-                Can be either "quadratic" or "precession".
+            ephemeris1: str
+                This is the name of the first ephemeris.
+            ephemeris2: str
+                This is the name of second ephemeris, whose BIC value will be subtracted from the first.
 
         Returns
         ------- 
             delta_bic : float
                 Represents the :math:`\\Delta BIC` value for this timing data. 
         """
-        # For quad: lin - quad (model1="linear", model2="quadratic")
-        # For prec: lin - prec (model1="linear", model2="precession")
-        valid_models = ["linear", "quadratic", "precession"]
-        if model1 not in valid_models or model2 not in valid_models:
-            raise ValueError("Only linear, quadratic, and precession models are accepted at this time.")
-        model1_data = self.get_model_ephemeris(model1)
-        model2_data = self.get_model_ephemeris(model2)
-        model1_bic = self.calc_bic(model1_data)
-        model2_bic = self.calc_bic(model2_data)
-        delta_bic = model1_bic - model2_bic2
+        valid_ephemerides = ["linear", "quadratic", "precession"]
+        if ephemeris1 not in valid_ephemerides or ephemeris2 not in valid_ephemerides:
+            raise ValueError("Only linear, quadratic, and precession ephemerides are accepted at this time.")
+        ephemeris1_data = self.fit_ephemeris(ephemeris1)
+        ephemeris2_data = self.fit_ephemeris(ephemeris2)
+        ephemeris1_bic = self.calc_bic(ephemeris1_data)
+        ephemeris2_bic = self.calc_bic(ephemeris2_data)
+        delta_bic = ephemeris1_bic - ephemeris2_bic
         return delta_bic
     
     def _query_nasa_exoplanet_archive(self, obj_name, ra=None, dec=None, select_query=None):
@@ -1504,13 +1556,13 @@ class Ephemeris(object):
             raise ValueError("Object location must be specified with either (1) an valid object name or (2) right ascension and declination in degrees as accepted by astropy.coordinates.ra and astropy.coordinates.dec.")
         return target
     
-    def get_observing_schedule(self, model_data_dict, timezone, observer, target, n_transits, n_occultations, obs_start_time, exoplanet_name=None, eclipse_duration=None, csv_filename=None):
+    def get_observing_schedule(self, ephemeris_data, timezone, observer, target, n_transits, n_occultations, obs_start_time, exoplanet_name=None, eclipse_duration=None, csv_filename=None):
         """Returns a list of observable future transits for the target object
 
         Parameters
         ----------
-            model_data_dict: dict
-                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+            ephemeris_data: dict
+                The ephemeris data dictionary recieved from the `fit_ephemeris` method.
             timezone: str
                 The local timezone. If a string, it will be passed through `pytz.timezone()` to produce the timezone object.
             observer: Astroplan Observer obj
@@ -1545,8 +1597,8 @@ class Ephemeris(object):
         self._validate_observing_schedule_params(observer, target, obs_start_time)
         # Grab the most recent mid transit time
         primary_eclipse_time = Time(self.timing_data.mid_times[-1], format='jd')
-        # Pull orbital period from the model
-        orbital_period = model_data_dict['period'] * u.day
+        # Pull orbital period from the ephemeris data
+        orbital_period = ephemeris_data['period'] * u.day
         if eclipse_duration == None:
             # If not given, query the archive for it
             eclipse_duration = self._get_eclipse_duration(exoplanet_name, target.ra, target.dec)
@@ -1575,45 +1627,46 @@ class Ephemeris(object):
             schedule_df.to_csv(csv_filename, index=False)
         return schedule_df
     
-    def plot_model_ephemeris(self, model_data_dict, subtract_lin_params=False, show_occultations=False, save_plot=False, save_filepath=None):
-        """Plots a scatterplot of epochs vs. model calculated mid-times.
+    def plot_ephemeris(self, ephemeris_data, subtract_lin_params=False, show_occultations=False, save_plot=False, save_filepath=None):
+        """Plots a scatterplot of epochs vs. ephemeris calculated mid-times.
 
         Parameters
         ----------
-            model_data_dict: dict
-                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+            ephemeris_data: dict
+                The ephemeris data dictionary recieved from the `fit_ephemeris` method.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
         fig, ax = plt.subplots()
-        y_data = model_data_dict['model_data']
+        y_data = ephemeris_data['ephemeris_data']
         if subtract_lin_params is True:
-            y_data = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
+            y_data = self._subtract_linear_parameters(ephemeris_data['ephemeris_data'], ephemeris_data['conjunction_time'], ephemeris_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
+        ax.scatter(x=self.timing_data.epochs, y=y_data, color='#0033A0', zorder=10, label="Transits")
         if show_occultations is True:
             occ_mask = self.timing_data.tra_or_occ == "occ"
-            occ_data = model_data_dict["model_data"][occ_mask]
+            occ_data = ephemeris_data["ephemeris_data"][occ_mask]
             if subtract_lin_params is True:
-                occ_data = self._subtract_linear_parameters(occ_data, model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs[occ_mask], self.timing_data.tra_or_occ[occ_mask])
-            ax.scatter(x=self.timing_data.epochs[occ_mask], y=occ_data, color="#D64309", zorder=20)
-        ax.scatter(x=self.timing_data.epochs, y=y_data, color='#0033A0', zorder=10)
+                occ_data = self._subtract_linear_parameters(occ_data, ephemeris_data['conjunction_time'], ephemeris_data['period'], self.timing_data.epochs[occ_mask], self.timing_data.tra_or_occ[occ_mask])
+            ax.scatter(x=self.timing_data.epochs[occ_mask], y=occ_data, color="#D64309", zorder=20, label="Occultations")
+            ax.legend()
         ax.set_xlabel('Epochs')
         ax.set_ylabel('Mid-Times (JD TDB)')
-        ax.set_title(f'{model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
+        ax.set_title(f'{ephemeris_data["ephemeris_type"].capitalize()} Ephemeris Mid-Times')
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         ax.ticklabel_format(style="plain", useOffset=False)
         if save_plot == True:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
 
-    def plot_timing_uncertainties(self, model_data_dict, save_plot=False, save_filepath=None):
-        """Plots a scatterplot of epochs vs. model calculated mid-time uncertainties.
+    def plot_timing_uncertainties(self, ephemeris_data, save_plot=False, save_filepath=None):
+        """Plots a scatterplot of uncertainties on the fit ephemeris for each epoch.
 
         Parameters
         ----------
-            model_data_dict: dict
-                The model ephemeris data dictionary recieved from the `get_model_ephemeris` method.
+            ephemeris_data: dict
+                The ephemeris data dictionary recieved from the `fit_ephemeris` method.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
@@ -1621,31 +1674,34 @@ class Ephemeris(object):
         """
         # get uncertainties
         fig, ax = plt.subplots()
-        model_uncertainties = self.get_ephemeris_uncertainties(model_data_dict)
+        uncertainties = self.get_ephemeris_uncertainties(ephemeris_data)
         x = self.timing_data.epochs
         # get T(E)-T0-PE (for transits), T(E)-T0-0.5P-PE (for occultations)
-        y = self._subtract_linear_parameters(model_data_dict['model_data'], model_data_dict['conjunction_time'], model_data_dict['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
+        y = self._subtract_linear_parameters(ephemeris_data['ephemeris_data'], ephemeris_data['conjunction_time'], ephemeris_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
         # plot the y line, then the line +- the uncertainties
         ax.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
-        ax.plot(x, y + model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
-        ax.plot(x, y - model_uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
+        ax.plot(x, y + uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
+        ax.plot(x, y - uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
         # Add labels and show legend
         ax.set_xlabel('Epochs')
         ax.set_ylabel('Mid-Time Uncertainties (JD TDB)')
-        ax.set_title(f'Uncertainties of {model_data_dict["model_type"].capitalize()} Model Ephemeris Mid-Times')
+        ax.set_title(f'Uncertainties of {ephemeris_data["ephemeris_type"].capitalize()} Ephemeris Mid-Times')
         ax.legend()
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
 
-    def plot_oc_plot(self, model, save_plot=False, save_filepath=None):
-        """Plots a scatter plot of observed minus calculated values of mid-times for linear and quadratic model ephemerides over epochs.
+    def plot_oc_plot(self, ephemeris_type, save_plot=False, save_filepath=None):
+        """Plots a scatter plot of observed minus calculated mid-times. 
+        
+        Subtracts the linear portion from the observed mid-times. The linear portion is calculated using
+        the best-fit parameters from the given ephemeris_type. 
 
         Parameters
         ----------
-            model: str
-                Either "quadratic" or "precession". One of the models being compared to the linear model.
+            ephemeris_type: str
+                Either "quadratic" or "precession". One of the ephemerides being compared to the linear ephemeris.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
@@ -1654,33 +1710,32 @@ class Ephemeris(object):
         fig, ax = plt.subplots()
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
-        # lin_model_data = self.get_model_ephemeris("linear")
-        model_data = self.get_model_ephemeris(model)
+        ephemeris = self.fit_ephemeris(ephemeris_type)
         # plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
-        y = (self._subtract_linear_parameters(self.timing_data.mid_times, model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
+        y = (self._subtract_linear_parameters(self.timing_data.mid_times, ephemeris['conjunction_time'], ephemeris['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
         self.oc_vals = y
         ax.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
                     label=r'$t(E) - T_0 - P E$')
-        if model == "quadratic":
+        if ephemeris_type == "quadratic":
             # Plot additional quadratic curve
             # y = 0.5 dP/dE * (E - median E)^2
-            quad_model_curve = (0.5*model_data['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2) * DAYS_TO_SECONDS
+            quad_curve = (0.5*ephemeris['period_change_by_epoch'])*((self.timing_data.epochs - np.median(self.timing_data.epochs))**2) * DAYS_TO_SECONDS
             ax.plot(self.timing_data.epochs,
-                    (quad_model_curve),
+                    (quad_curve),
                     color='#D64309', ls="--", label=r'$\frac{1}{2}(\frac{dP}{dE})E^2$')
-        if model == "precession":
+        if ephemeris_type == "precession":
             # Plot additional precession curve
             tra_mask = self.timing_data.tra_or_occ == "tra"
             occ_mask = self.timing_data.tra_or_occ == "occ"
-            precession_model_curve_tra = (-1*((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[tra_mask] - np.median(self.timing_data.epochs[tra_mask])))))) * DAYS_TO_SECONDS
-            precession_model_curve_occ = (((model_data["eccentricity"] * (model_data["period"] / (1 - ((1/(2*np.pi)) * model_data["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(model_data["pericenter"] + (model_data["pericenter_change_by_epoch"] * (self.timing_data.epochs[occ_mask] - np.median(self.timing_data.epochs[occ_mask])))))) * DAYS_TO_SECONDS
+            precession_curve_tra = (-1*((ephemeris["eccentricity"] * (ephemeris["period"] / (1 - ((1/(2*np.pi)) * ephemeris["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(ephemeris["pericenter"] + (ephemeris["pericenter_change_by_epoch"] * (self.timing_data.epochs[tra_mask] - np.median(self.timing_data.epochs[tra_mask])))))) * DAYS_TO_SECONDS
+            precession_curve_occ = (((ephemeris["eccentricity"] * (ephemeris["period"] / (1 - ((1/(2*np.pi)) * ephemeris["pericenter_change_by_epoch"])))) / np.pi)*(np.cos(ephemeris["pericenter"] + (ephemeris["pericenter_change_by_epoch"] * (self.timing_data.epochs[occ_mask] - np.median(self.timing_data.epochs[occ_mask])))))) * DAYS_TO_SECONDS
             ax.plot(self.timing_data.epochs[tra_mask],
-                    (precession_model_curve_tra),
+                    (precession_curve_tra),
                     color='#D64309', ls="--", label=r'$-\frac{eP_a}{\pi}\cos\omega(E)$')
                 # $\frac{1}{2}(\frac{dP}{dE})E^2$
             ax.plot(self.timing_data.epochs[occ_mask],
-                    (precession_model_curve_occ),
+                    (precession_curve_occ),
                     color='#D64309', ls=":", label=r'$\frac{eP_a}{\pi}\cos\omega(E)$')
         ax.legend()
         ax.set_xlabel('Epoch')
@@ -1691,7 +1746,7 @@ class Ephemeris(object):
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
 
-    def plot_running_delta_bic(self, model1, model2, save_plot=False, save_filepath=None):
+    def plot_running_delta_bic(self, ephemeris1, ephemeris2, save_plot=False, save_filepath=None):
         """Plots a scatterplot of epochs vs. :math:`\\Delta BIC` for each epoch.
 
         Starting at the third epoch, will plot the value of :math:`\\Delta BIC` for all previous epochs,
@@ -1699,10 +1754,10 @@ class Ephemeris(object):
 
         Parameters
         ----------
-            model1: str
-                Either "linear", "quadratic", or "precession". One of the models being compared.
-            model2: str
-                Either "linear", "quadratic", or "precession". One of the models being compared.
+            ephemeris1: str
+                Either "linear", "quadratic", or "precession". One of the ephemerides being compared.
+            ephemeris2: str
+                Either "linear", "quadratic", or "precession". One of the ephemerides being compared.
             save_plot: bool 
                 If True, will save the plot as a figure.
             save_filepath: Optional(str)
@@ -1717,14 +1772,14 @@ class Ephemeris(object):
         all_tra_or_occ = self.timing_data.tra_or_occ.copy()
         # For each epoch, calculate delta BIC using all data up to that epoch
         for i in range(0, len(self.timing_data.epochs)):
-            if i < max(self._get_k_value(model1), self._get_k_value(model2))-1:
+            if i < max(self._get_k_value(ephemeris1), self._get_k_value(ephemeris2))-1:
                 # Append 0s up until delta BIC can be calculated
                 delta_bics[i] = int(0)
             else:
                 timing_data = TimingData("jd", all_epochs[:i+1], all_mid_times[:i+1], all_uncertainties[:i+1], all_tra_or_occ[:i+1], "tdb")
                 # Create new ephemeris object with new timing data
                 ephemeris = Ephemeris(timing_data)
-                delta_bic = ephemeris.calc_delta_bic(model1, model2)
+                delta_bic = ephemeris.calc_delta_bic(ephemeris1, ephemeris2)
                 delta_bics[i] = delta_bic
         # Plot the data
         fig, ax = plt.subplots(figsize=(15, 7))
@@ -1732,7 +1787,7 @@ class Ephemeris(object):
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel('Epoch')
         ax.set_ylabel(r"$\Delta$BIC")
-        ax.set_title(rf"Value of $\Delta$BIC Comparing {model1.capitalize()} and {model2.capitalize()} Models"
+        ax.set_title(rf"Value of $\Delta$BIC Comparing {ephemeris1.capitalize()} and {ephemeris2.capitalize()} Models"
                     "\n"
                     rf"as Observational Epochs Increase")
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
@@ -1742,13 +1797,13 @@ class Ephemeris(object):
         # Return the axis (so it can be further edited if needed)
         return ax
     
-    def plot_delta_bic_omit_one(self, model1="linear", model2="quadratic", outlier_percentage=None, save_plot=False, save_filepath=None):
+    def plot_delta_bic_omit_one(self, ephemeris1="linear", ephemeris2="quadratic", outlier_percentage=None, save_plot=False, save_filepath=None):
         """
         Parameters
         ----------
-            model1: str
+            ephemeris1: str
 
-            model2: str
+            ephemeris2: str
 
             outlier_percentage: int
 
@@ -1760,7 +1815,7 @@ class Ephemeris(object):
         # Need to remove the data point at each index and calculate the BIC value
         # Plotting the BIC value when the point at each epoch is removed
         # If outlier percentage: calculate a percentage for each
-        delta_bic = self.calc_delta_bic(model1, model2)
+        delta_bic = self.calc_delta_bic(ephemeris1, ephemeris2)
         delta_bics = np.zeros(len(self.timing_data.epochs))
         delta_bic_percentages = np.zeros(len(self.timing_data.epochs))
         for i in range(len(self.timing_data.epochs)):
@@ -1773,14 +1828,14 @@ class Ephemeris(object):
             # Create new ephemeris object with new timing data
             ephemeris = Ephemeris(timing_data)
             # Get delta BIC
-            d_bic = ephemeris.calc_delta_bic(model1, model2)
+            d_bic = ephemeris.calc_delta_bic(ephemeris1, ephemeris2)
             delta_bics[i] = (d_bic)
             # Calculate the percentage difference 
             perc_diff = (abs(d_bic - delta_bic) / ((d_bic + delta_bic) / 2)) * 100
             delta_bic_percentages[i] = (perc_diff)
         fig, ax = plt.subplots(figsize=(15, 7))
         ax.scatter(self.timing_data.epochs, delta_bics)
-        ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(model1, model2)}")
+        ax.axhline(y=self.calc_delta_bic(ephemeris1, ephemeris2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(ephemeris1, ephemeris2)}")
         # If we are given a percentage difference to mark, then plot that
         if outlier_percentage is not None:
             is_outlier = delta_bic_percentages >= outlier_percentage
@@ -1808,12 +1863,12 @@ class Ephemeris(object):
         numerical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         analytical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         # Grab the tidal decay rate for the analytical calculation
-        dPdE = self.get_model_ephemeris("quadratic")["period_change_by_epoch"]
+        dPdE = self.fit_ephemeris("quadratic")["period_change_by_epoch"]
         for i in range(3, len(self.timing_data.epochs[self.tra_mask])):
             timing_data = TimingData("jd", all_epochs[:i], all_mid_times[:i], all_uncertainties[:i], all_tra_or_occ[:i], "tdb")
             # Create new ephemeris object with new timing data
             ephemeris = Ephemeris(timing_data)
-            # quad_ephemeris = ephemeris.get_model_ephemeris("quadratic")
+            # quad_ephemeris = ephemeris.fit_ephemeris("quadratic")
             # Calculate the numerical delta BIC
             numerical_delta_bic = ephemeris.calc_delta_bic("linear", "quadratic")
             numerical_delta_bics[i] = numerical_delta_bic
@@ -1864,7 +1919,7 @@ class Ephemeris(object):
         numerical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         analytical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         # Grab precession ephemeris to calcualte the cos_ws
-        precession_ephemeris = self.get_model_ephemeris("precession")
+        precession_ephemeris = self.fit_ephemeris("precession")
         e = precession_ephemeris["eccentricity"]
         w0 = precession_ephemeris["pericenter"]
         dwdE = precession_ephemeris["pericenter_change_by_epoch"]
@@ -1911,8 +1966,7 @@ if __name__ == '__main__':
     # jd_utc_data = np.genfromtxt(jd_utc_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # jd_utc_no_occs_data = np.genfromtxt(jd_utc_no_occs_filepath, delimiter=',', names=True, dtype=None, encoding=None)
     # test_data = np.genfromtxt(test_filepath, delimiter=',', names=True, dtype=None, encoding=None)
-    # Set what data file you are using here
-    data = data
+
     # STEP 2: Break data up into epochs, mid-times, and error
     # STEP 2.5 (Optional): Make sure the epochs are integers and not floats
     tra_or_occs = data["tra_or_occ"] # Base tra_or_occs
@@ -1925,6 +1979,7 @@ if __name__ == '__main__':
     # print(f"mid_times: {list(mid_times)}")
     # print(f"mid_time_errs: {list(mid_time_errs)}")
     # print(f"tra_or_occ: {list(tra_or_occs)}")
+
     # STEP 3: Create new transit times object with above data
     """NOTE: ISOT (NO UNCERTAINTIES)"""
     # times_obj1 = TimingData('isot', epochs, mid_times, tra_or_occ=tra_or_occs, object_ra=97.64, object_dec=29.67, observatory_lat=43.60, observatory_lon=-116.21)
@@ -1938,60 +1993,89 @@ if __name__ == '__main__':
     # times_obj1 = TimingData('jd', epochs_no_occs, mid_times, mid_time_errs, time_scale='tdb')
     """NOTE: JD TDB (BJD) ALL INFO"""
     times_obj1 = TimingData('jd', epochs, mid_times, mid_time_errs, time_scale='tdb', tra_or_occ=tra_or_occs)
-    # # STEP 4: Create new ephemeris object with transit times object
+    
+    # STEP 4: Create new ephemeris object with transit times object
     ephemeris_obj1 = Ephemeris(times_obj1)
-    # STEP 5: Get model ephemeris data & BIC values
-    # # LINEAR MODEL
-    # linear_model_data = ephemeris_obj1.get_model_ephemeris('linear')
-    # print(linear_model_data)
-    # linear_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_model_data)
-    # print(linear_model_uncertainties)
-    # lin_bic = ephemeris_obj1.calc_bic(linear_model_data)
-    # print(lin_bic)
+    
+    # STEP 5: Get ephemeris data & BIC values
+    # LINEAR MODEL
+    linear_ephemeris = ephemeris_obj1.fit_ephemeris('linear')
+    print(linear_ephemeris)
+    linear_ephemeris_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(linear_ephemeris)
+    print(linear_ephemeris_uncertainties)
+    lin_bic = ephemeris_obj1.calc_bic(linear_ephemeris)
+    print(lin_bic)
     # QUADRATIC MODEL
-    quad_model_data = ephemeris_obj1.get_model_ephemeris('quadratic')
-    # print(quad_model_data)
-    # quad_model_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_model_data)
-    # print(quad_model_uncertainties)
-    # quad_bic = ephemeris_obj1.calc_bic(quad_model_data)
-    # print(quad_bic)
-    # STEP 5.5a: Get the delta BIC value for the linear and quadratic models
-    # delta_bic_lq = ephemeris_obj1.calc_delta_bic("linear", "quadratic")
-    # print(delta_bic_lq)
-    # STEP 5.5b: Get the delta BIC value for the linear and precession models
-    # delta_bic_lp = ephemeris_obj1.calc_delta_bic("linear", "precession")
-    # print(delta_bic_lp)
-
+    quad_ephemeris = ephemeris_obj1.fit_ephemeris('quadratic')
+    print(quad_ephemeris)
+    quad_ephemeris_uncertainties = ephemeris_obj1.get_ephemeris_uncertainties(quad_ephemeris)
+    print(quad_ephemeris_uncertainties)
+    quad_bic = ephemeris_obj1.calc_bic(quad_ephemeris)
+    print(quad_bic)
     # PRECESSION MODEL
-    # precession_model_data = ephemeris_obj1.get_model_ephemeris("precession")
-    # print(precession_model_data)
-
-    # STEP 6: Show a plot of the model ephemeris data
-    # ephemeris_obj1.plot_model_ephemeris(linear_model_data, save_plot=False)
-    # plt.show()
-    # ephemeris_obj1.plot_model_ephemeris(quad_model_data, save_plot=False)
-    # plt.show()
+    precession_ephemeris = ephemeris_obj1.fit_ephemeris("precession")
+    print(precession_ephemeris)
+    prec_bic = ephemeris_obj1.calc_bic(precession_ephemeris)
+    print(prec_bic)
+    # STEP 5.5a: Get the delta BIC value for the linear and quadratic ephemerides
+    delta_bic_lq = ephemeris_obj1.calc_delta_bic("linear", "quadratic")
+    print(delta_bic_lq)
+    # STEP 5.5b: Get the delta BIC value for the linear and precession ephemerides
+    delta_bic_lp = ephemeris_obj1.calc_delta_bic("linear", "precession")
+    print(delta_bic_lp)
+    # STEP 5.5c: Get the delta BIC value for the quadratic and precession ephemerides
+    delta_bic_qp = ephemeris_obj1.calc_delta_bic("quadratic", "precession")
+    print(delta_bic_qp)
+    
+    # STEP 6: Show a plot of the ephemeris data
+    ephemeris_obj1.plot_ephemeris(linear_ephemeris, save_plot=False)
+    plt.show()
+    ephemeris_obj1.plot_ephemeris(quad_ephemeris, save_plot=False)
+    plt.show()
+    ephemeris_obj1.plot_ephemeris(precession_ephemeris, save_plot=False)
+    plt.show()
 
     # STEP 7: Uncertainties plot
-    # ephemeris_obj1.plot_timing_uncertainties(linear_model_data, save_plot=False)
-    # plt.show()
-    # ephemeris_obj1.plot_timing_uncertainties(quad_model_data, save_plot=False)
-    # plt.show()
+    ephemeris_obj1.plot_timing_uncertainties(linear_ephemeris, save_plot=False)
+    plt.show()
+    ephemeris_obj1.plot_timing_uncertainties(quad_ephemeris, save_plot=False)
+    plt.show()
     
     # STEP 8: O-C Plot
-    # ephemeris_obj1.plot_oc_plot("quadratic", save_plot=False)
-    # plt.show()
+    ephemeris_obj1.plot_oc_plot("quadratic", save_plot=False)
+    plt.show()
+    ephemeris_obj1.plot_oc_plot("precession", save_plot=False)
+    plt.show()
 
+    # STEP 9: Plot running delta BICs
+    ephemeris_obj1.plot_running_delta_bic("linear", "quadratic")
+    plt.show()
+    ephemeris_obj1.plot_running_delta_bic("linear", "precession")
+    plt.show()
+    ephemeris_obj1.plot_running_delta_bic("quadratic", "precession")
+    plt.show()
+
+    ephemeris_obj1.plot_delta_bic_omit_one("linear", "quadratic")
+    plt.show()
+    ephemeris_obj1.plot_delta_bic_omit_one("linear", "precession")
+    plt.show()
+    ephemeris_obj1.plot_delta_bic_omit_one("quadratic", "precession")
+    plt.show()
+
+    ephemeris_obj1.plot_running_analytical_delta_bic_quadratic()
+    plt.show()
+
+    # STEP 10: Get observing schedule
     # ephemeris_obj1._get_eclipse_duration("TrES-3 b")
     # observer_obj = ephemeris_obj1.create_observer_obj(timezone="US/Mountain", longitude=-116.208710, latitude=43.602,
     #                                                   elevation=821, name="BoiseState")
     # target_obj = ephemeris_obj1.create_target_obj("TrES-3")
-    # obs_sch = ephemeris_obj1.get_observing_schedule(quad_model_data, "US/Mountain", observer_obj, target_obj, 10, 2, "2024-12-04", exoplanet_name="TrES-3")
+    # obs_sch = ephemeris_obj1.get_observing_schedule(quad_ephemeris, "US/Mountain", observer_obj, target_obj, 10, 2, "2024-12-04", exoplanet_name="TrES-3")
 
     # TODO: Do timezone checks and stuff in observing sched 
 
     # STEP 9: Running delta BIC plot
-    # ephemeris_obj1.plot_running_delta_bic(model1="linear", model2="precession", save_plot=False)
+    # ephemeris_obj1.plot_running_delta_bic(ephemeris1="linear", ephemeris2="precession", save_plot=False)
     # plt.show()
 
     # nea_data = ephemeris_obj1._get_eclipse_system_params("WASP-12 b", ra=None, dec=None)
@@ -2000,12 +2084,3 @@ if __name__ == '__main__':
     # print(np.arcsin(0.3642601363) * 0.3474 * 24)
     # ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
     # plt.show()
-
-    # ephemeris_obj1.plot_running_delta_bic("linear", "quadratic")
-    # plt.show()
-
-    # ephemeris_obj1.plot_running_analytical_delta_bic_quadratic()
-    # plt.show()
-
-    ephemeris_obj1.plot_running_analytical_delta_bic_precession()
-    plt.show()
