@@ -45,7 +45,7 @@ Represents the model ephemeris using timing midpoint data over epochs.
  - `timing_data` (TimingData): A successfully instantiated TimingData object holding epochs, mid times, and uncertainties.
 
 **Methods:**
- - `get_model_ephemeris`
+ - `fit_ephemeris`
     Fits the timing data to a specified model using an [LMfit Model](https://pypi.org/project/lmfit/).
      - **Parameters**:
         `model_type` (str): Either 'linear' or 'quadratic'. Represents the type of ephemeris to fit the data to.
@@ -66,14 +66,14 @@ Represents the model ephemeris using timing midpoint data over epochs.
  - `get_ephemeris_uncertainties`
     Calculates the uncertainties of a specific model data when compared to the actual data. Uses the equation $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2)}$ for linear models and $σ_{t_tra^{pred}} = \sqrt{σ_T0^2 + (E^2 * σ_P^2) + (1/4 * σ_{\frac{dP}{dE}}^2 * E^4)}$ for quadratic models (where $σ_T0$ = conjunction time error, E = epoch, $σ_P$ = period error, and $σ_{\frac{dP}{dE}}$ = period change by epoch error).
      - **Parameters**: 
-        `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.fit_ephemeris`.
      - **Returns**:
         A list of uncertainties associated with the model ephemeris passed in, calculated with the equations above and the passed in model data.
 
  - `calc_bic`
     Calculates the BIC value for a given model ephemeris. Uses the equation $\chi^2 + (k * \log(N))$ where $𝜒^2=\sum(\frac{(\texttt{observed mid times} - \texttt{model ephemeris mid times})}{\texttt{observed mid time uncertainties}})^2$, k = number of fit parameters (2 for linear models, 3 for quadratic models), and N = total number of data points.
      - **Parameters**:
-        `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.fit_ephemeris`.
      - **Returns**:
         A float value representing the BIC value for this model ephemeris.
     
@@ -85,7 +85,7 @@ Represents the model ephemeris using timing midpoint data over epochs.
  - `plot_model_ephemeris`
     Returns a MatplotLib scatter plot showing predicted mid transit times from the model ephemeris over epochs.
      - **Parameters**:
-        - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.fit_ephemeris`.
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
      - **Returns**:
@@ -93,7 +93,7 @@ Represents the model ephemeris using timing midpoint data over epochs.
     
  - `plot_timing_uncertainties`
      - **Parameters**:
-        - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.get_model_ephemeris`.
+        - `model_data_dict` (dict): A dictionary of model ephemeris parameters recieved from `Ephemeris.fit_ephemeris`.
         - `save_plot` (bool): If True, will save the plot as a figure.
         - `save_filepath` (Optional[str]): The path used to save the plot if `save_plot` is True.
      - **Returns**:

@@ -168,7 +168,7 @@ documentation](<a class="reference external" href="https://docs.astropy.org/en/s
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.susie.ephemeris.</span></span><span class="sig-name descname"><span class="pre">Ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timing_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris'"><span>#</span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents the model ephemeris using transit or occultation mid-time data over epochs.</p>
+<p>Represents the fit ephemeris using transit or occultation mid-time data over epochs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timing_data</strong> (<em>TimingData obj</em>) – A successfully instantiated TimingData object holding epochs, mid-times, and uncertainties.</p>
@@ -178,32 +178,44 @@ documentation](<a class="reference external" href="https://docs.astropy.org/en/s
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.get_model_ephemeris">
-<span class="sig-name descname"><span class="pre">get_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_model_ephemeris" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.get_model_ephemeris'"><span>#</span></a></dt>
-<dd><p>Fits the timing data to a specified model using an LMfit Model fit.</p>
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.fit_ephemeris">
+<span class="sig-name descname"><span class="pre">fit_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.fit_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.fit_ephemeris" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.fit_ephemeris'"><span>#</span></a></dt>
+<dd><p>Fits the timing data to a specified ephemeris using an LMfit Model fit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_type</strong> (<em>str</em>) – Either ‘linear’ or ‘quadratic’. Represents the type of ephemeris to fit the data to.</p>
+<dd class="field-odd"><p><strong>ephemeris_type</strong> (<em>str</em>) – Either ‘linear’, ‘quadratic’, or ‘precession’. Represents the type of ephemeris to fit the data to.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p><strong>model_ephemeris_data</strong> –</p>
+<dd class="field-even"><p><p><strong>ephemeris_data</strong> –</p>
 <dl>
-<dt>A dictionary of parameters from the fit model ephemeris.</dt><dd><p>Example:</p>
+<dt>A dictionary of best-fit parameters from the ephemeris fit.</dt><dd><p>Example:</p>
+<p>If a linear ephemeris is chosen, these parameters are:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span>
-</span><span id="line-2">    <span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'Either linear or quadratic'</span><span class="p">,</span>
-</span><span id="line-3">    <span class="s1">'model_data'</span><span class="p">:</span> <span class="s1">'A list of calculated mid-times using the estimated parameters over each epoch'</span><span class="p">,</span>
-</span><span id="line-4">    <span class="s1">'period'</span><span class="p">:</span> <span class="s1">'Estimated orbital period of the exoplanet (in units of days)'</span><span class="p">,</span>
-</span><span id="line-5">    <span class="s1">'period_err'</span><span class="p">:</span> <span class="s1">'Uncertainty associated with orbital period (in units of days)'</span><span class="p">,</span>
-</span><span id="line-6">    <span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="s1">'Time of conjunction of exoplanet transit or occultation'</span><span class="p">,</span>
-</span><span id="line-7">    <span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="s1">'Uncertainty associated with conjunction_time'</span><span class="p">,</span>
+</span><span id="line-2">    <span class="s1">'ephemeris_type'</span><span class="p">:</span> <span class="s2">"Either linear, quadratic, or precession"</span><span class="p">,</span>
+</span><span id="line-3">    <span class="s1">'ephemeris_data'</span><span class="p">:</span> <span class="s2">"A list of calculated mid-times using the best-fit parameter values for each epoch"</span><span class="p">,</span>
+</span><span id="line-4">    <span class="s1">'period'</span><span class="p">:</span> <span class="s2">"Estimated orbital period of the exoplanet (in units of days)"</span><span class="p">,</span>
+</span><span id="line-5">    <span class="s1">'period_err'</span><span class="p">:</span> <span class="s2">"Uncertainty associated with orbital period (in units of days)"</span><span class="p">,</span>
+</span><span id="line-6">    <span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="s2">"Time of conjunction of exoplanet transit or occultation"</span><span class="p">,</span>
+</span><span id="line-7">    <span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="s2">"Uncertainty associated with conjunction_time"</span><span class="p">,</span>
 </span><span id="line-8"><span class="p">}</span>
 </span></code></pre></div>
 </div>
-<p>If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</p>
+<p>If a quadratic ephemeris is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span>
-</span><span id="line-2">    <span class="s1">'period_change_by_epoch'</span><span class="p">:</span> <span class="s1">'The exoplanet period change with respect to epoch (in units of days)'</span><span class="p">,</span>
-</span><span id="line-3">    <span class="s1">'period_change_by_epoch_err'</span><span class="p">:</span> <span class="s1">'The uncertainties associated with period_change_by_epoch (in units of days)'</span>
+</span><span id="line-2">    <span class="s1">'period_change_by_epoch'</span><span class="p">:</span> <span class="s2">"The exoplanet orbital decay rate, which is the change in period with respect to epoch (in units of days)"</span><span class="p">,</span>
+</span><span id="line-3">    <span class="s1">'period_change_by_epoch_err'</span><span class="p">:</span> <span class="s2">"The uncertainties associated with period_change_by_epoch (in units of days)"</span>
 </span><span id="line-4"><span class="p">}</span>
+</span></code></pre></div>
+</div>
+<p>If a precession ephemeris is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span>
+</span><span id="line-2">    <span class="s1">'eccentricity'</span><span class="p">:</span> <span class="s2">"The eccentricity of the exoplanet's orbit"</span><span class="p">,</span>
+</span><span id="line-3">    <span class="s1">'eccentricity_err'</span><span class="p">:</span> <span class="s2">"The uncertainties associated with eccentricity"</span><span class="p">,</span>
+</span><span id="line-4">    <span class="s1">'pericenter'</span><span class="p">:</span> <span class="s2">"The argument of pericenter of the exoplanet"</span><span class="p">,</span>
+</span><span id="line-5">    <span class="s1">'pericenter_err'</span><span class="p">:</span> <span class="s2">"The uncertainties associated with pericenter"</span><span class="p">,</span>
+</span><span id="line-6">    <span class="s1">'pericenter_change_by_epoch'</span><span class="p">:</span> <span class="s2">"The precession rate, which is the change in pericenter with respect to epoch, of the exoplanet's orbit"</span><span class="p">,</span>
+</span><span id="line-7">    <span class="s1">'pericenter_change_by_epoch_err'</span><span class="p">:</span> <span class="s2">"The uncertainties associated with precession rate"</span>
+</span><span id="line-8"><span class="p">}</span>
 </span></code></pre></div>
 </div>
 </dd>
@@ -217,17 +229,17 @@ documentation](<a class="reference external" href="https://docs.astropy.org/en/s
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties">
-<span class="sig-name descname"><span class="pre">get_ephemeris_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_ephemeris_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties'"><span>#</span></a></dt>
-<dd><p>Calculates the mid-time uncertainties of specific model data when compared to the actual data.</p>
-<p>Calculate the uncertainties between the model data and actual data over epochs using the equations…</p>
-<p>For linear models:</p>
+<span class="sig-name descname"><span class="pre">get_ephemeris_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_ephemeris_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties'"><span>#</span></a></dt>
+<dd><p>Calculates the mid-time uncertainties of specific ephemeris data when compared to the actual data.</p>
+<p>Calculate the uncertainties between the ephemeris data and actual data over epochs using the equations…</p>
+<p>For a linear ephemeris:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * E^2)}\)</span> for transit observations</p></li>
 <li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + \sigma(P)^2 * (\frac{1}{2} + E)^2)}\)</span> for occultation observations</p></li>
 </ul>
 </div></blockquote>
-<p>And for quadratic models:</p>
+<p>For a quadratic ephemeris:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\sigma(\text{t pred, tra}) = \sqrt{(\sigma(T_0)^2 + (\sigma(P)^2 * E^2) + (\frac{1}{4} * \sigma(\frac{dP}{dE})^2 * E^4))}\)</span> for transit observations</p></li>
@@ -237,57 +249,61 @@ documentation](<a class="reference external" href="https://docs.astropy.org/en/s
 <p>where <span class="math notranslate nohighlight">\(\sigma(T_0) =\)</span> conjunction time error, <span class="math notranslate nohighlight">\(E=\)</span> epoch, <span class="math notranslate nohighlight">\(\sigma(P)=\)</span> period error, and <span class="math notranslate nohighlight">\(\sigma(\frac{dP}{dE})=\)</span> period change with respect to epoch error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_params</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p>
+<dd class="field-odd"><p><strong>ephemeris_data</strong> (<em>dict</em>) – The ephemeris data dictionary recieved from the <cite>fit_ephemeris</cite> method.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><em>A list of mid-time uncertainties associated with the model ephemeris passed in, calculated with the</em></p></li>
+<li><p><em>A list of mid-time uncertainties associated with the ephemeris passed in, calculated with the</em></p></li>
 <li><p><em>equation above and the TimingData epochs.</em></p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>KeyError</strong> – If the model type in not in the model parameter dictionary.</p></li>
-<li><p><strong>KeyError</strong> – If the model parameter error values are not in the model parameter dictionary.</p></li>
+<li><p><strong>KeyError</strong> – If the ephemeris type in not in the ephemeris parameter dictionary.</p></li>
+<li><p><strong>KeyError</strong> – If the ephemeris parameter error values are not in the ephemeris parameter dictionary.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_bic">
-<span class="sig-name descname"><span class="pre">calc_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.calc_bic'"><span>#</span></a></dt>
-<dd><p>Calculates the BIC value for a given model ephemeris.</p>
+<span class="sig-name descname"><span class="pre">calc_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.calc_bic'"><span>#</span></a></dt>
+<dd><p>Calculates the BIC value for a given ephemeris.</p>
 <p>The BIC value is a modified <span class="math notranslate nohighlight">\(\chi^2\)</span> value that penalizes for additional parameters.
 Uses the equation <span class="math notranslate nohighlight">\(BIC = \chi^2 + (k * log(N))\)</span> where <span class="math notranslate nohighlight">\(\chi^2=\sum{\frac{(\text{
-observed midtimes - model midtimes})}{\text{(observed midtime uncertainties})^2}},\)</span>
-k=number of fit parameters (2 for linear models, 3 for quadratic models), and N=total number of data points.</p>
+observed midtimes - ephemeris midtimes})}{\text{(observed midtime uncertainties})^2}},\)</span>
+k=number of fit parameters (2 for linear ephemerides, 3 for quadratic ephemerides, 5 for precession
+ephemerides), and N=total number of data points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model_data_dict</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p>
+<dd class="field-odd"><p><strong>ephemeris_data</strong> (<em>dict</em>) – The ephemeris data dictionary recieved from the <cite>fit_ephemeris</cite> method.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>A float value representing the BIC value for this model ephemeris.</p>
+<dd class="field-even"><p>A float value representing the BIC value for this ephemeris.</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.calc_delta_bic">
-<span class="sig-name descname"><span class="pre">calc_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.calc_delta_bic'"><span>#</span></a></dt>
-<dd><p>Calculates the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value between linear and quadratic model ephemerides using the given timing data.</p>
+<span class="sig-name descname"><span class="pre">calc_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ephemeris2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'quadratic'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.calc_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.calc_delta_bic'"><span>#</span></a></dt>
+<dd><p>Calculates the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value between linear and quadratic ephemerides using the given timing data.</p>
+<p>ephemeris1 BIC value - ephemeris2 BIC value, default of linear - quadratic BIC values.</p>
 <p>The BIC value is a modified <span class="math notranslate nohighlight">\(\chi^2\)</span> value that penalizes for additional parameters. The
 <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value is the difference between the linear BIC value and the quadratic BIC value.
-Models that have smaller values of BIC are favored. Therefore, if the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for your
-data is a large positive number (large linear BIC - small quadratic BIC), the quadratic model is favored and
+Ephemerides that have smaller values of BIC are favored. Therefore, if the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for your
+data is a large positive number (large linear BIC - small quadratic BIC), a quadratic ephemeris is favored and
 your data indicates possible orbital decay in your extrasolar system. If the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for
-your data is a small number or negative (small linear BIC - large quadratic BIC), then the linear model is
+your data is a small number or negative (small linear BIC - large quadratic BIC), then a linear ephemeris is
 favored and your data may not indicate orbital decay.</p>
-<p>This function will run all model ephemeris instantiation and BIC calculations for you using the TimingData
+<p>This function will run all ephemeris instantiation and BIC calculations for you using the TimingData
 information you entered.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>model1</strong> (<em>str</em>) – This is the name of the model you would like to compare to the linear model.
-Can be either “quadratic” or “precession”.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ephemeris1</strong> (<em>str</em>) – This is the name of the first ephemeris.</p></li>
+<li><p><strong>ephemeris2</strong> (<em>str</em>) – This is the name of second ephemeris, whose BIC value will be subtracted from the first.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>delta_bic</strong> – Represents the <span class="math notranslate nohighlight">\(\Delta BIC\)</span> value for this timing data.</p>
@@ -347,12 +363,12 @@ for more information on this) OR it can be a custom name to keep track of your F
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.get_observing_schedule">
-<span class="sig-name descname"><span class="pre">get_observing_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_transits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_occultations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exoplanet_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eclipse_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_observing_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_observing_schedule" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.get_observing_schedule'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">get_observing_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_transits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_occultations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exoplanet_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eclipse_duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.get_observing_schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.get_observing_schedule" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.get_observing_schedule'"><span>#</span></a></dt>
 <dd><p>Returns a list of observable future transits for the target object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_data_dict</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p></li>
+<li><p><strong>ephemeris_data</strong> (<em>dict</em>) – The ephemeris data dictionary recieved from the <cite>fit_ephemeris</cite> method.</p></li>
 <li><p><strong>timezone</strong> (<em>str</em>) – The local timezone. If a string, it will be passed through <cite>pytz.timezone()</cite> to produce the timezone object.</p></li>
 <li><p><strong>observer</strong> (<em>Astroplan Observer obj</em>) – An Astroplan Observer object holding information on the observer’s Earth location. Can be created
 through the <cite>create_observer_obj</cite> method, or can be manually created. See the <a class="reference external" href="https://astroplan.readthedocs.io/en/latest/api/astroplan.Observer.html">Astroplan Observer Documentation</a>
@@ -379,13 +395,13 @@ using either provided system parameters or parameters pulled from the NASA Exopl
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_model_ephemeris">
-<span class="sig-name descname"><span class="pre">plot_model_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract_lin_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_occultations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_model_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_model_ephemeris'"><span>#</span></a></dt>
-<dd><p>Plots a scatterplot of epochs vs. model calculated mid-times.</p>
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_ephemeris">
+<span class="sig-name descname"><span class="pre">plot_ephemeris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract_lin_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_occultations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_ephemeris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_ephemeris" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_ephemeris'"><span>#</span></a></dt>
+<dd><p>Plots a scatterplot of epochs vs. ephemeris calculated mid-times.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_data_dict</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p></li>
+<li><p><strong>ephemeris_data</strong> (<em>dict</em>) – The ephemeris data dictionary recieved from the <cite>fit_ephemeris</cite> method.</p></li>
 <li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
 <li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
@@ -394,12 +410,12 @@ using either provided system parameters or parameters pulled from the NASA Exopl
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_timing_uncertainties">
-<span class="sig-name descname"><span class="pre">plot_timing_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_timing_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties'"><span>#</span></a></dt>
-<dd><p>Plots a scatterplot of epochs vs. model calculated mid-time uncertainties.</p>
+<span class="sig-name descname"><span class="pre">plot_timing_uncertainties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_timing_uncertainties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties'"><span>#</span></a></dt>
+<dd><p>Plots a scatterplot of uncertainties on the fit ephemeris for each epoch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_data_dict</strong> (<em>dict</em>) – The model ephemeris data dictionary recieved from the <cite>get_model_ephemeris</cite> method.</p></li>
+<li><p><strong>ephemeris_data</strong> (<em>dict</em>) – The ephemeris data dictionary recieved from the <cite>fit_ephemeris</cite> method.</p></li>
 <li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
 <li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
@@ -408,12 +424,14 @@ using either provided system parameters or parameters pulled from the NASA Exopl
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_oc_plot">
-<span class="sig-name descname"><span class="pre">plot_oc_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_oc_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_oc_plot'"><span>#</span></a></dt>
-<dd><p>Plots a scatter plot of observed minus calculated values of mid-times for linear and quadratic model ephemerides over epochs.</p>
+<span class="sig-name descname"><span class="pre">plot_oc_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_oc_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_oc_plot'"><span>#</span></a></dt>
+<dd><p>Plots a scatter plot of observed minus calculated mid-times.</p>
+<p>Subtracts the linear portion from the observed mid-times. The linear portion is calculated using
+the best-fit parameters from the given ephemeris_type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>str</em>) – Either “quadratic” or “precession”. One of the models being compared to the linear model.</p></li>
+<li><p><strong>ephemeris_type</strong> (<em>str</em>) – Either “quadratic” or “precession”. One of the ephemerides being compared to the linear ephemeris.</p></li>
 <li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
 <li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
@@ -422,18 +440,60 @@ using either provided system parameters or parameters pulled from the NASA Exopl
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_running_delta_bic">
-<span class="sig-name descname"><span class="pre">plot_running_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_running_delta_bic'"><span>#</span></a></dt>
+<span class="sig-name descname"><span class="pre">plot_running_delta_bic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ephemeris2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_delta_bic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_running_delta_bic'"><span>#</span></a></dt>
 <dd><p>Plots a scatterplot of epochs vs. <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for each epoch.</p>
 <p>Starting at the third epoch, will plot the value of <span class="math notranslate nohighlight">\(\Delta BIC\)</span> for all previous epochs,
 showing how the value of <span class="math notranslate nohighlight">\(\Delta BIC\)</span> progresses over time with more observations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model1</strong> (<em>str</em>) – Either “linear”, “quadratic”, or “precession”. One of the models being compared.</p></li>
-<li><p><strong>model2</strong> (<em>str</em>) – Either “linear”, “quadratic”, or “precession”. One of the models being compared.</p></li>
+<li><p><strong>ephemeris1</strong> (<em>str</em>) – Either “linear”, “quadratic”, or “precession”. One of the ephemerides being compared.</p></li>
+<li><p><strong>ephemeris2</strong> (<em>str</em>) – Either “linear”, “quadratic”, or “precession”. One of the ephemerides being compared.</p></li>
 <li><p><strong>save_plot</strong> (<em>bool</em>) – If True, will save the plot as a figure.</p></li>
 <li><p><strong>save_filepath</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) – The path used to save the plot if <cite>save_plot</cite> is True.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_delta_bic_omit_one">
+<span class="sig-name descname"><span class="pre">plot_delta_bic_omit_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ephemeris1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ephemeris2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'quadratic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outlier_percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_delta_bic_omit_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_delta_bic_omit_one" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_delta_bic_omit_one'"><span>#</span></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ephemeris1</strong> (<em>str</em>)</p></li>
+<li><p><strong>ephemeris2</strong> (<em>str</em>)</p></li>
+<li><p><strong>outlier_percentage</strong> (<em>int</em>)</p></li>
+<li><p><strong>save_plot</strong> (<em>bool</em>)</p></li>
+<li><p><strong>save_filepath</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_quadratic">
+<span class="sig-name descname"><span class="pre">plot_running_analytical_delta_bic_quadratic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_analytical_delta_bic_quadratic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_quadratic" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_quadratic'"><span>#</span></a></dt>
+<dd><p>delta_bic = 0.25(dPdE)^2 * sum(()^2) - ln(N) + 1</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_precession">
+<span class="sig-name descname"><span class="pre">plot_running_analytical_delta_bic_precession</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/susie/ephemeris.html#Ephemeris.plot_running_analytical_delta_bic_precession"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_precession" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_precession'"><span>#</span></a></dt>
+<dd><p>Plot the running analytical delta BIC</p>
+<p>NOTES: Using synthetic precession data generated from Brian’s nb,
+Brian’s parameters:</p>
+<blockquote>
+<div><p>‘period’: 1.091419633,
+‘conjunction_time’: 2456305.45488,
+‘eccentricity’: 0.0031,
+‘pericenter’: 2.62,
+‘pericenter_change_by_epoch’: 0.000984</p>
+</div></blockquote>
+<dl class="simple">
+<dt>precession ephemeris parameters:</dt><dd><p>‘period’: 1.0914194950612286,
+‘conjunction_time’: 2456305.4547539037,
+‘eccentricity’: 0.004492419251877544,
+‘pericenter’: 3.748694994358649,
+‘pericenter_change_by_epoch’: 0.0005248792790545403</p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,17 +509,20 @@ showing how the value of <span class="math notranslate nohighlight">\(\Delta BIC
 </li>
 <li><a :data-current="activeSection === '#module-src.susie.ephemeris'" class="reference internal" href="#module-src.susie.ephemeris">Ephemeris module</a><ul>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris'" class="reference internal" href="#src.susie.ephemeris.Ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris</span></code></a><ul>
-<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.get_model_ephemeris'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_model_ephemeris()</span></code></a></li>
+<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.fit_ephemeris'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.fit_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.fit_ephemeris()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_ephemeris_uncertainties()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.calc_bic'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.calc_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_bic()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.calc_delta_bic'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.calc_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_delta_bic()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.create_observer_obj'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.create_observer_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_observer_obj()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.create_target_obj'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.create_target_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_target_obj()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.get_observing_schedule'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.get_observing_schedule"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_observing_schedule()</span></code></a></li>
-<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_model_ephemeris'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_model_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_model_ephemeris()</span></code></a></li>
+<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_ephemeris'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_ephemeris()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_timing_uncertainties()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_oc_plot'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_oc_plot"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_oc_plot()</span></code></a></li>
 <li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_running_delta_bic'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_running_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_delta_bic()</span></code></a></li>
+<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_delta_bic_omit_one'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_delta_bic_omit_one"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_delta_bic_omit_one()</span></code></a></li>
+<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_quadratic'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_quadratic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_analytical_delta_bic_quadratic()</span></code></a></li>
+<li><a :data-current="activeSection === '#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_precession'" class="reference internal" href="#src.susie.ephemeris.Ephemeris.plot_running_analytical_delta_bic_precession"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_analytical_delta_bic_precession()</span></code></a></li>
 </ul>
 </li>
 </ul>
