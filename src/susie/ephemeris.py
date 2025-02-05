@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import pytz
+import pyvo
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,8 +11,8 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseEphemeris(ABC):
@@ -86,7 +87,7 @@ class LinearEphemeris(BaseEphemeris):
         -------
         dict
             A dictionary containing:
-            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "conjunction_time" (float): The mid-time of the transit events corresponding to Epoch = 0.
             - "period" (float): The median time difference between consecutive events 
             (transits and occultations).
         """
@@ -105,7 +106,7 @@ class LinearEphemeris(BaseEphemeris):
         # Finding final period by getting average of the two
         period = np.nanmean([period_tra, period_occ])
         # Conjunction time (we assume to use transits, use occultations if there are no transits)
-        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
+        T0 = y[np.where(x == 0) if len(np.where(x == 0)[0]) > 0 else 0]
         return_data = {
             "conjunction_time": T0,
             "period": period
@@ -220,7 +221,7 @@ class QuadraticEphemeris(BaseEphemeris):
         -------
         dict
             A dictionary containing:
-            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "conjunction_time" (float): The mid-time of the transit events corresponding to Epoch = 0.
             - "period" (float): The median time difference between consecutive events 
             (transits and occultations).
         """
@@ -239,7 +240,7 @@ class QuadraticEphemeris(BaseEphemeris):
         # Finding final period by getting average of the two
         period = np.nanmean([period_tra, period_occ])
         # Conjunction time (we assume to use transits, use occultations if there are no transits)
-        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
+        T0 = y[np.where(x == 0) if len(np.where(x == 0)[0]) > 0 else 0]
         return_data = {
             "conjunction_time": T0,
             "period": period
@@ -333,7 +334,7 @@ class QuadraticEphemeris(BaseEphemeris):
 
 class PrecessionEphemeris(BaseEphemeris):
     """ Subclass of BaseEphemeris that implements a precession fit."""
-    def get_initial_params(self, x, y, tra_or_occ):
+    def get_initial_params(self, x, y, yerr, tra_or_occ):
         """Computes and returns the initial parameters for the ephemeris fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
@@ -355,7 +356,7 @@ class PrecessionEphemeris(BaseEphemeris):
         -------
         dict
             A dictionary containing:
-            - "conjunction_time" (float): The first mid-time of the transit events.
+            - "conjunction_time" (float): The mid-time of the transit events corresponding to Epoch = 0.
             - "period" (float): The median time difference between consecutive events 
             (transits and occultations).
         """
@@ -374,7 +375,32 @@ class PrecessionEphemeris(BaseEphemeris):
         # Finding final period by getting average of the two
         period = np.nanmean([period_tra, period_occ])
         # Conjunction time (we assume to use transits, use occultations if there are no transits)
-        T0 = y[tra_mask][0] if y[tra_mask].size > 0 else y[occ_mask][0]
+        T0 = y[np.where(x == 0) if len(np.where(x == 0)[0]) > 0 else 0]
+        # # Pull the eccentricity from the NASA Exoplanet Archive
+        # service = pyvo.dal.TAPService("https://exoplanetarchive.ipac.caltech.edu/TAP")
+        # query = f"SELECT pl_orbeccen FROM ps WHERE pl_name='TrES-5 b'"
+        # results = service.search(query)
+        # table = results.to_table()
+        # eccentricity = next((x for x in np.array(table["pl_orbeccen"]) if not np.isnan(x) and x != 0.0), 0.001)
+        # # Default of 2 radians (114.592 degrees) if nothing is found
+        # # arg_of_periastron = (next((x for x in np.array(table["pl_orblper"]) if not np.isnan(x) and x != 0.0), 114.592) * np.pi) / 180
+        # # Calculate the initial values using the quadratic ephemeris
+        # quad_ephem = Ephemeris(TimingData("jd", x, y, yerr, tra_or_occ, "tdb")).fit_ephemeris("quadratic")
+        # a = 0.5*quad_ephem["period_change_by_epoch"]
+        # b = quad_ephem["period"]
+        # c = quad_ephem["conjunction_time"]
+        # p = [a, b, c]
+        # roots = np.roots(p)
+        # w_0 = ((((2*a)/(b)) * roots[0] + 0.5) / (((2*a)/(b)) * roots[0] - 1)) * np.pi
+        # dwdE = (np.pi) / (roots[0] - roots[1])
+        # e = (c - ((b**2)/(4*a))) * ((2*np.pi) / b)
+        # return_data = {
+        #     "conjunction_time": T0,
+        #     "period": period,
+        #     "eccentricity": eccentricity,
+        #     "pericenter": w_0,
+        #     "precession_rate": dwdE
+        # }
         return_data = {
             "conjunction_time": T0,
             "period": period
@@ -505,9 +531,10 @@ class PrecessionEphemeris(BaseEphemeris):
         # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = self.get_initial_params(x, y, tra_or_occ)
+        init_params = self.get_initial_params(x, y, yerr, tra_or_occ)
         # TODO: Can put bounds between 0 and 2pi for omega0
         # TODO: Try out bound for d omega dE for abs(dwdE) < 2pi/delta E
+        # params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=init_params["eccentricity"], min=0, max=1), w0=dict(value=init_params["pericenter"], min=0, max=2*np.pi), dwdE=dict(value=init_params["precession_rate"]), tra_or_occ_enum=tra_or_occ_enum)
         params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=0.001, min=0, max=1), w0=2.0, dwdE=dict(value=0.001), tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
@@ -815,9 +842,7 @@ class Ephemeris(object):
             for transit observations
          - .. math::
             \\sigma(\\text{t pred, tra}) = \\sqrt{(\\sigma(T_0)^2 + (\\sigma(P)^2 * (\\frac{1}{2} + E^2)) + (\\frac{1}{4} * \\sigma(\\frac{dP}{dE})^2 * E^4))} 
-            for occultation observations
-
-         - σ(t pred, tra) = √(σ(T0)² + (σ(P)² * E²) + (¼ * σ(dP/dE)² * E⁴)) for transit observation
+            for occultation observation��(σ(T0)² + (σ(P)² * E²) + (¼ * σ(dP/dE)² * E⁴)) for transit observation
          - σ(t pred, occ) = √(σ(T0)² + (σ(P)² * (½ + E)²) + (¼ * σ(dP/dE)² * E⁴)) for occultation observations
         where σ(T0)=conjunction time error, E=epoch, σ(P)=period error, and σ(dP/dE)=period change with respect 
         to epoch error, to calculate the uncertainties between the ephemeris data and the observed data.
@@ -1710,9 +1735,10 @@ class Ephemeris(object):
         fig, ax = plt.subplots()
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
+        linear_ephemeris = self.fit_ephemeris("linear")
         ephemeris = self.fit_ephemeris(ephemeris_type)
         # plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
-        y = (self._subtract_linear_parameters(self.timing_data.mid_times, ephemeris['conjunction_time'], ephemeris['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
+        y = (self._subtract_linear_parameters(self.timing_data.mid_times, linear_ephemeris['conjunction_time'], linear_ephemeris['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
         self.oc_vals = y
         ax.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
@@ -2083,4 +2109,5 @@ if __name__ == '__main__':
     # print(nea_data)
     # print(np.arcsin(0.3642601363) * 0.3474 * 24)
     # ephemeris_obj1.plot_delta_bic_omit_one(outlier_percentage=5)
+    # plt.show()lta_bic_omit_one(outlier_percentage=5)
     # plt.show()
