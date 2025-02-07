@@ -188,14 +188,14 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 </li>
 <li class="toctree-l2"><a class="reference internal" href="susie.html#module-src.susie.ephemeris">Ephemeris module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.fit_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.fit_ephemeris()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_ephemeris_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_ephemeris_uncertainties()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.fit_model"><code class="docutils literal notranslate"><span class="pre">Ephemeris.fit_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_model_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_model_uncertainties()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.calc_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_bic()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.calc_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.calc_delta_bic()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.create_observer_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_observer_obj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.create_target_obj"><code class="docutils literal notranslate"><span class="pre">Ephemeris.create_target_obj()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.get_observing_schedule"><code class="docutils literal notranslate"><span class="pre">Ephemeris.get_observing_schedule()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_ephemeris"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_ephemeris()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_model"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_model()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_timing_uncertainties"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_timing_uncertainties()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_oc_plot()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="susie.html#src.susie.ephemeris.Ephemeris.plot_running_delta_bic"><code class="docutils literal notranslate"><span class="pre">Ephemeris.plot_running_delta_bic()</span></code></a></li>
@@ -222,21 +222,26 @@ functionality to detect precession that may masquerade as tidal decay in your sy
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="basic_usage.html#basic-usage">🔵 Basic Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
 <li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris. You can specify what type of ephemeris with the options “linear”, “quadratic”, or “precession”.</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-linear-ephemeris">🔹 The <strong>Linear</strong> Ephemeris</a></li>
-<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-quadratic-ephemeris">🔹 The <strong>Quadratic</strong> Ephemeris</a></li>
-<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-precession-ephemeris">🔹 The <strong>Precession</strong> Ephemeris</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#example">🟢  EXAMPLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#id1">🟢  EXAMPLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-precession-model">🔹 The <strong>Precession</strong> Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#id2">🟢  EXAMPLE</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="basic_usage.html#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
-<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-model-calculated-mid-times">🔹 Plot the model calculated mid-times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-model-uncertainties">🔹 Plot the model uncertainties</a></li>
 <li class="toctree-l4"><a class="reference internal" href="basic_usage.html#the-o-c-plot">🔹 The O-C Plot</a></li>
 <li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-analytical-running-delta-bic">🔹 Plot the analytical running $\Delta$ BIC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basic_usage.html#plot-the-omit-one-delta-bic">🔹 Plot the omit one $\Delta$ BIC</a></li>
 </ul>
 </li>
 </ul>
