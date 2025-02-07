@@ -1029,7 +1029,7 @@ class Ephemeris(object):
             -------
                 A calculated float value using the equation: Σ (numerator / (denominator)²)
         """
-        return np.sum((numerator / np.pow(denominator, 2)))
+        return np.sum((numerator / np.power(denominator, 2)))
    
     def _calc_chi_squared(self, ephemeris_mid_times):
         """Calculates the residual chi squared values comparing the ephemeris fit and observed data.
@@ -1064,8 +1064,8 @@ class Ephemeris(object):
         epochs = self.timing_data.epochs
         S = self._calc_sum_of_errs(1, sigma)
         S_e = self._calc_sum_of_errs(epochs, sigma)
-        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
-        S_e3 = self._calc_sum_of_errs(np.pow(epochs, 3), sigma)
+        S_e2 = self._calc_sum_of_errs(np.power(epochs, 2), sigma)
+        S_e3 = self._calc_sum_of_errs(np.power(epochs, 3), sigma)
         delta_T0_prime = (S_e2**2 - (S_e3*S_e)) / ((S_e2*S) - S_e**2)
         return delta_T0_prime
     
@@ -1081,8 +1081,8 @@ class Ephemeris(object):
         epochs = self.timing_data.epochs
         S = self._calc_sum_of_errs(1, sigma)
         S_e = self._calc_sum_of_errs(epochs, sigma)
-        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
-        S_e3 = self._calc_sum_of_errs(np.pow(epochs, 3), sigma)
+        S_e2 = self._calc_sum_of_errs(np.power(epochs, 2), sigma)
+        S_e3 = self._calc_sum_of_errs(np.power(epochs, 3), sigma)
         delta_P_prime = (S_e3*S - S_e2*S_e) / ((S_e2*S) - S_e**2)
         return delta_P_prime
     
@@ -1112,7 +1112,7 @@ class Ephemeris(object):
         delta_P_prime = self._calc_delta_P_prime_quad()
         delta_T0_prime = self._calc_delta_T0_prime_quad()
         quad_param = 0.25 * (dPdE**2)
-        quad_sum = np.sum(np.pow(((np.pow(epochs, 2) - (delta_P_prime*epochs) - delta_T0_prime) / (uncertainties)), 2))
+        quad_sum = np.sum(np.power(((np.power(epochs, 2) - (delta_P_prime*epochs) - delta_T0_prime) / (uncertainties)), 2))
         analytical_delta_bic = quad_param * quad_sum - np.log(len(epochs)) + 1
         return analytical_delta_bic
 
@@ -1141,7 +1141,7 @@ class Ephemeris(object):
         cosw = np.cos(w0 + dwdE * self.timing_data.epochs)
         S = self._calc_sum_of_errs(1, sigma)
         S_e = self._calc_sum_of_errs(epochs, sigma)
-        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_e2 = self._calc_sum_of_errs(np.power(epochs, 2), sigma)
         S_cosw = self._calc_sum_of_errs(cosw, sigma)
         S_e_cosw = self._calc_sum_of_errs((epochs*cosw), sigma)
         delta_P_prime = ((S_e * S_cosw) - (S * S_e_cosw)) / ((S * S_e2) - (S_e * S_e))
@@ -1172,7 +1172,7 @@ class Ephemeris(object):
         cosw = np.cos(w0+dwdE*epochs)
         S = self._calc_sum_of_errs(1, sigma)
         S_e = self._calc_sum_of_errs(epochs, sigma)
-        S_e2 = self._calc_sum_of_errs(np.pow(epochs, 2), sigma)
+        S_e2 = self._calc_sum_of_errs(np.power(epochs, 2), sigma)
         S_cosw = self._calc_sum_of_errs(cosw, sigma)
         S_e_cosw = self._calc_sum_of_errs((epochs*cosw), sigma)
         delta_T0_prime = ((S_e * S_e_cosw) - (S_e2 * S_cosw)) / ((S * S_e2) - (S_e * S_e))
@@ -1189,8 +1189,8 @@ class Ephemeris(object):
         # QUESTION: Does this period need to be recalculated at each step or is this also a constant
         delta_T0_prime = self._calc_delta_T0_prime_prec(w0, dwdE)
         delta_P_prime = self._calc_delta_P_prime_prec(w0, dwdE)
-        amplitude = pow(((e*Pa) / (np.pi)), 2)
-        delta_bic_sum = np.sum(np.pow(sigma, -2) * np.pow((cosw + epochs*delta_P_prime + delta_T0_prime), 2))
+        amplitude = np.power(((e*Pa) / (np.pi)), 2)
+        delta_bic_sum = np.sum(np.power(sigma, -2) * np.power((cosw + epochs*delta_P_prime + delta_T0_prime), 2))
         analytical_delta_bic = amplitude * delta_bic_sum - 3.0 * np.log(len(epochs)) + 3.0
         return analytical_delta_bic
     
