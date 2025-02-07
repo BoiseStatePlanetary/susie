@@ -15,8 +15,6 @@
 <link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
 <link href="genindex.html" rel="index" title="Index"/>
-<link href="special_usage.html" rel="next" title="🐷 Susie Special Timing Object Usage"/>
-<link href="FAQ.html" rel="prev" title="Frequently Asked Questions"/>
 <script>
     <!-- Prevent Flash of wrong theme -->
       const userPreference = localStorage.getItem('darkMode');
@@ -73,8 +71,8 @@
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage of TimingData and Ephemeris Objects</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage of TimingData and Ephemeris Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="observing_schedule.html">Generating an Observing Schedule</a></li>
 </ul>
@@ -124,8 +122,8 @@
 </ol>
 <p>We will pull this data from the repository below.</p>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;">
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">
-<h3>🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'"><span>#</span></a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">
+<h3>🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository<a class="headerlink" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">url</span> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/BoiseStatePlanetary/susie/refs/heads/main/example_data/wasp12b_tra_occ.csv'</span>
@@ -147,7 +145,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Create new transit times object with above data</span>
-</span><span id="line-2"><span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s2">"jd"</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s2">"tdb"</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -165,34 +163,37 @@
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-<section id="step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
-<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'"><span>#</span></a></h3>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="the-linear-model">
-<h4>🔹 The <strong>Linear</strong> Model<a class="headerlink" href="#the-linear-model" title="Link to this heading"><span>#</span></a></h4>
+<section id="step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession">
+<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris. You can specify what type of ephemeris with the options “linear”, “quadratic”, or “precession”.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession'"><span>#</span></a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="the-linear-ephemeris">
+<h4>🔹 The <strong>Linear</strong> Ephemeris<a class="headerlink" href="#the-linear-ephemeris" title="Link to this heading"><span>#</span></a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear ephemeris will solve for period, conjuction time, and their respective errors</span>
+</span><span id="line-2"><span class="n">linear_ephemeris</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_ephemeris</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:100: RuntimeWarning: divide by zero encountered in divide
-</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gt">---------------------------------------------------------------------------</span>
+</span><span id="line-2"><span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+</span><span id="line-3"><span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+</span><span id="line-4"><span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># Getting a linear ephemeris will solve for period, conjuction time, and their respective errors</span>
+</span><span id="line-5"><span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">linear_ephemeris</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_ephemeris</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">)</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="ne">AttributeError</span>: 'Ephemeris' object has no attribute 'fit_ephemeris'
 </span></code></pre></div>
 </div>
 </div>
 </div>
-</section>
-<section id="example">
-<h4>🟢  EXAMPLE<a class="headerlink" href="#example" title="Link to this heading"><span>#</span></a></h4>
-<p>Calling <code class="docutils literal notranslate"><span class="pre">fit_model</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
+<p><strong>🟢  EXAMPLE</strong></p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">fit_ephemeris</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
 </span><span id="line-2"> <span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
 </span><span id="line-3"> <span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
 </span><span id="line-4"> <span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
-</span><span id="line-5"> <span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
-</span><span id="line-6"> <span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
+</span><span id="line-5"> <span class="s1">'ephemeris_type'</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+</span><span id="line-6"> <span class="s1">'ephemeris_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
 </span><span id="line-7">
 </span></code></pre></div>
 </div>
@@ -200,98 +201,132 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
 </span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in linear_model_data.items():</span>
+</span><span id="line-3"><span class="c1"># for key, value in linear_ephemeris.items():</span>
 </span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-<section id="the-quadratic-model">
-<h4>🔹 The <strong>Quadratic</strong> Model<a class="headerlink" href="#the-quadratic-model" title="Link to this heading"><span>#</span></a></h4>
-<p>We can do the same process for a quadratic model by specifying ‘quadratic’ for the model type instead of linear. The same process above is shown below for the quadratic model.</p>
+<p>🔹 We can also <strong>plot</strong> the ephemeris calculated data. Here, the data will look very similar to our actual, observed data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">linear_ephemeris</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:234: RuntimeWarning: divide by zero encountered in divide
+<img alt="_images/cc8fb4463d62c1485515b29b027c4c7af8e5b5e3afcf64d0291250a68d33f86f.png" src="_images/cc8fb4463d62c1485515b29b027c4c7af8e5b5e3afcf64d0291250a68d33f86f.png"/>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="the-quadratic-ephemeris">
+<h4>🔹 The <strong>Quadratic</strong> Ephemeris<a class="headerlink" href="#the-quadratic-ephemeris" title="Link to this heading"><span>#</span></a></h4>
+<p>We can do the same process for a quadratic ephemeris by specifying ‘quadratic’ for the ephemeris type instead of linear. The same process above is shown below for the quadratic ephemeris.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic ephemeris will solve for period, conjuction time, orbital decay rate (change in period over epochs), and their respective errors</span>
+</span><span id="line-2"><span class="n">quadratic_ephemeris</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_ephemeris</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: divide by zero encountered in divide
 </span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
 </span></code></pre></div>
 </div>
 </div>
 </div>
-</section>
-<section id="id1">
-<h4>🟢  EXAMPLE<a class="headerlink" href="#id1" title="Link to this heading"><span>#</span></a></h4>
-<p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_model_data</span></code>:</p>
+<p><strong>🟢  EXAMPLE</strong></p>
+<p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_ephemeris</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
 </span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
 </span><span id="line-3"><span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
 </span><span id="line-4"><span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
 </span><span id="line-5"><span class="s1">'period_change_by_epoch'</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
 </span><span id="line-6"><span class="s1">'period_change_by_epoch_err'</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
-</span><span id="line-7"><span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'quadratic'</span><span class="p">,</span>
-</span><span id="line-8"><span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
+</span><span id="line-7"><span class="s1">'ephemeris_type'</span><span class="p">:</span> <span class="s1">'quadratic'</span><span class="p">,</span>
+</span><span id="line-8"><span class="s1">'ephemeris_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
 </span></code></pre></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
 </span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in quadratic_model_data.items():</span>
+</span><span id="line-3"><span class="c1"># for key, value in quadratic_ephemeris.items():</span>
 </span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-<section id="the-precession-model">
-<h4>🔹 The <strong>Precession</strong> Model<a class="headerlink" href="#the-precession-model" title="Link to this heading"><span>#</span></a></h4>
+<p>🔹 Let’s <strong>plot</strong> the quadratic ephemeris calculated data. However, to see the quadratic effect in the data (which is very small compared to the linear term values) let’s use the <code class="docutils literal notranslate"><span class="pre">subtract_lin_params</span></code> argument in the method below with the value <code class="docutils literal notranslate"><span class="pre">True</span></code>. This will subtract the linear terms from the data so we can see the pattern of the smaller quadratic terms.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">precession_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'precession'</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">quadratic_ephemeris</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:369: RuntimeWarning: divide by zero encountered in divide
+<img alt="_images/b88b793c963f748c6a5769939c7a46e362f22c57e57846c48dae435e4480bcf9.png" src="_images/b88b793c963f748c6a5769939c7a46e362f22c57e57846c48dae435e4480bcf9.png"/>
+</div>
+</div>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
+<section id="the-precession-ephemeris">
+<h4>🔹 The <strong>Precession</strong> Ephemeris<a class="headerlink" href="#the-precession-ephemeris" title="Link to this heading"><span>#</span></a></h4>
+<p style="color:#FFCC00;">WARNING: This is still a work in progress.</p>
+<p>We can do the same process for a precession ephemeris by specifying ‘precession’ for the ephemeris type. The same process above is shown below for the precession ephemeris.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a precession model will solve for period, conjuction time, eccentricity, argument of pericenter, precession rate (change in pericenter over epochs), and all respective errors</span>
+</span><span id="line-2"><span class="n">precession_ephemeris</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_ephemeris</span><span class="p">(</span><span class="s1">'precession'</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:368: RuntimeWarning: divide by zero encountered in divide
 </span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
 </span></code></pre></div>
 </div>
 </div>
 </div>
-</section>
-<section id="id2">
-<h4>🟢  EXAMPLE<a class="headerlink" href="#id2" title="Link to this heading"><span>#</span></a></h4>
-<p><em>NOTE: This is incorrect. Needs to be fixed!</em></p>
-<p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">precession_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.091419177243411</span><span class="p">,</span>
-</span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">5.2742554781294556e-06</span><span class="p">,</span>
-</span><span id="line-3"><span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">2454515.5341239404</span><span class="p">,</span>
-</span><span id="line-4"><span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">0.01180572813100868</span><span class="p">,</span>
-</span><span id="line-5"><span class="s1">'eccentricity'</span><span class="p">:</span> <span class="mf">0.9733689469952322</span><span class="p">,</span>
-</span><span id="line-6"><span class="s1">'eccentricity_err'</span><span class="p">:</span> <span class="mf">2854.540631393408</span><span class="p">,</span>
-</span><span id="line-7"><span class="s1">'pericenter'</span><span class="p">:</span> <span class="o">-</span><span class="mf">155322665.49323985</span><span class="p">,</span>
-</span><span id="line-8"><span class="s1">'pericenter_err'</span><span class="p">:</span> <span class="mf">347918.9038971391</span><span class="p">,</span>
-</span><span id="line-9"><span class="s1">'pericenter_change_by_epoch'</span><span class="p">:</span> <span class="o">-</span><span class="mf">71560.06616158684</span><span class="p">,</span>
-</span><span id="line-10"><span class="s1">'pericenter_change_by_epoch_err'</span><span class="p">:</span> <span class="mf">151.81905076798304</span><span class="p">,</span>
-</span><span id="line-11"><span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'precession'</span><span class="p">,</span>
-</span><span id="line-12"><span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2454515.53409434</span><span class="p">,</span> <span class="mf">2454768.74344835</span><span class="p">,</span> <span class="mf">2454773.10907557</span><span class="o">...</span><span class="p">])}</span>
+<p><strong>🟢  EXAMPLE</strong></p>
+<p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">precession_ephemeris</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span> 
+</span><span id="line-2">  <span class="n">period</span><span class="p">:</span> <span class="mf">1.0914197028967376</span>
+</span><span id="line-3">  <span class="n">period_err</span><span class="p">:</span> <span class="mf">1.153266507777357e-07</span>
+</span><span id="line-4">  <span class="n">conjunction_time</span><span class="p">:</span> <span class="mf">2456305.4551834567</span>
+</span><span id="line-5">  <span class="n">conjunction_time_err</span><span class="p">:</span> <span class="mf">8.594867897673676e-05</span>
+</span><span id="line-6">  <span class="n">eccentricity</span><span class="p">:</span> <span class="mf">0.0011126223574276506</span>
+</span><span id="line-7">  <span class="n">eccentricity_err</span><span class="p">:</span> <span class="mf">0.000244930760422585</span>
+</span><span id="line-8">  <span class="n">pericenter</span><span class="p">:</span> <span class="mf">3.0305775444476373</span>
+</span><span id="line-9">  <span class="n">pericenter_err</span><span class="p">:</span> <span class="mf">0.0997763818517451</span>
+</span><span id="line-10">  <span class="n">pericenter_change_by_epoch</span><span class="p">:</span> <span class="mf">0.0013029813801310435</span>
+</span><span id="line-11">  <span class="n">pericenter_change_by_epoch_err</span><span class="p">:</span> <span class="mf">0.0001249448032116432</span>
+</span><span id="line-12">  <span class="n">ephemeris_type</span><span class="p">:</span> <span class="n">precession</span>
+</span><span id="line-13">  <span class="n">ephemeris_data</span><span class="p">:</span> <span class="p">[</span><span class="mf">2454515.52662848</span> <span class="mf">2454769.28220636</span> <span class="mf">2454773.6478833</span>  <span class="mf">2454836.40415131</span><span class="p">]</span>
+</span><span id="line-14"><span class="p">}</span>
 </span></code></pre></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
 </span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in precession_model_data.items():</span>
+</span><span id="line-3"><span class="c1"># for key, value in precession_ephemeris.items():</span>
 </span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
 </span></code></pre></div>
 </div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">precession_ephemeris</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_occultations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/42df603ce4b390b36aeef5455482166021553a6038b4e1a22b5c49b774971e89.png" src="_images/42df603ce4b390b36aeef5455482166021553a6038b4e1a22b5c49b774971e89.png"/>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
@@ -299,26 +334,26 @@
 </section>
 <section id="step-5-get-bic-values">
 <h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-5-get-bic-values'"><span>#</span></a></h3>
-<p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">fit_model</span></code> method.</p>
+<p>We can get the BIC value for a specific ephemeris fit using the ephemeris data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">fit_ephemeris</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
-</span><span id="line-3"><span class="n">precession_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_ephemeris</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_ephemeris</span><span class="p">)</span>
+</span><span id="line-3"><span class="n">precession_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">precession_ephemeris</span><span class="p">)</span>
 </span><span id="line-4">
-</span><span id="line-5"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Precession Model BIC: </span><span class="si">{</span><span class="n">precession_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-5"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Ephemeris BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Ephemeris BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Precession Ephemeris BIC: </span><span class="si">{</span><span class="n">precession_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear Model BIC: 386.71897985393696
-</span><span id="line-2">Quadratic Model BIC: 184.99006009832587
-</span><span id="line-3">Precession Model BIC: 398.67927230204737
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear Ephemeris BIC: 386.7189797398746
+</span><span id="line-2">Quadratic Ephemeris BIC: 184.9900589092177
+</span><span id="line-3">Precession Ephemeris BIC: 322.1803552647068
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<p>And we can also get a $\Delta$ BIC value using the method <code class="docutils literal notranslate"><span class="pre">calc_delta_bic</span></code>. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC values for each model, then calculate the $\Delta$ BIC value.</p>
+<p>And we can also get a $\Delta$ BIC value using the method <code class="docutils literal notranslate"><span class="pre">calc_delta_bic</span></code>. We do not need to input any data for this method. It will create the specified ephemerides for you and calculate the BIC values for each ephemeris, then calculate the $\Delta$ BIC value.</p>
 <p>Keep in mind, it <span style="color: #4BA5DD;"><strong>ONLY returns the $\Delta$ BIC value</strong></span> and not the other data calculated.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -331,9 +366,17 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear vs. Quadratic Δ BIC: 201.7289197556111
-</span><span id="line-2">Linear vs. Precession Δ BIC: -11.960292448110408
-</span><span id="line-3">Quadratic vs. Precession Δ BIC: -213.6892122037215
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear vs. Quadratic Δ BIC: 201.7289208306569
+</span><span id="line-2">Linear vs. Precession Δ BIC: 64.53862447516781
+</span><span id="line-3">Quadratic vs. Precession Δ BIC: -137.1902963554891
+</span></code></pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:99: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span><span id="line-3">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-4">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span><span id="line-5">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:368: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-6">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
 </span></code></pre></div>
 </div>
 </div>
@@ -342,82 +385,81 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-6-plot-your-data">
 <h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-6-plot-your-data'"><span>#</span></a></h3>
-<p>Now you can use the model data dictionaries for plotting methods. Available plotting methods include:</p>
+<p>Now you can use the linear_ephemeris and quadratic_ephemeris dictionaries for plotting methods. Available plotting methods include:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">plot_model</span></code>: This will plot the model predicted mid-times. This takes in a model data dictionary.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code>: This will plot the range of uncertainties for the model predicted mid-times. This takes in a model data dictionary.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">plot_oc_plot</span></code>: This will plot the observed mid-times minus the linear model predicted mid-times (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$) and a curve(s) with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$) or the precession terms ($$). This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_ephemeris</span></code>: This will plot the ephemeris predicted mid-times. This takes in a ephemeris data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_timing_uncertainties</span></code>: This will plot the range of uncertainties for the ephemeris predicted mid-times. This takes in a ephemeris data dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_oc_plot</span></code>: This will plot the observed mid-times minus the ephemeris predicted mid-times (calculated with $x=E$, $y=T_0-PE$, $y_{\rm err}=\sigma T_0$) and a curve(s) with the quadratic term ($x=E$, $y=0.5 \frac{dP}{dE} (E - {\rm median} (E))^2$) or the precession terms ($$). This <strong>DOES NOT</strong> take an ephemeris data dictionary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_running_delta_bic</span></code>: This will plot how the $\Delta$ BIC value changes as observations increase over time. This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">plot_running_analytical_delta_bic_quadratic</span></code>: This will plot how both the numerical $\Delta$ BIC value and the analytical $\Delta$ BIC value changes as observations increase over time. This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_delta_bic_omit_one</span></code>: This omits one data point at a time for each epoch and calculates the corresponding change in $\Delta$ BIC with that data point excluded.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot_running_analytical_delta_bic_quadratic</span></code>: This will plot how both the numerical $\Delta$ BIC value and the analytical $\Delta$ BIC value changes as observations increase over time. This <strong>DOES NOT</strong> take a model data dictionary.</p></li>
 </ul>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="plot-the-model-calculated-mid-times">
-<h4>🔹 Plot the model calculated mid-times<a class="headerlink" href="#plot-the-model-calculated-mid-times" title="Link to this heading"><span>#</span></a></h4>
-<p>🔹 For the Linear Model</p>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="plot-the-ephemeris">
+<h4>🔹 Plot the ephemeris<a class="headerlink" href="#plot-the-ephemeris" title="Link to this heading"><span>#</span></a></h4>
+<p>🔹 For the Linear Ephemeris</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
-</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this ephemeris</span>
+</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">linear_ephemeris</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-3"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/83d309ebaf155aa98d36d938963780308ec8e332be4bf3ac68cfd92187e64c0f.png" src="_images/83d309ebaf155aa98d36d938963780308ec8e332be4bf3ac68cfd92187e64c0f.png"/>
+<img alt="_images/cc8fb4463d62c1485515b29b027c4c7af8e5b5e3afcf64d0291250a68d33f86f.png" src="_images/cc8fb4463d62c1485515b29b027c4c7af8e5b5e3afcf64d0291250a68d33f86f.png"/>
 </div>
 </div>
-<p>🔹 For the Quadratic Model</p>
-<p>To see the quadratic effect in the data (which is very small compared to the linear term values) let’s use the <code class="docutils literal notranslate"><span class="pre">subtract_lin_params</span></code> arg in the method below with the value <code class="docutils literal notranslate"><span class="pre">True</span></code>. This will subtract the linear terms from the data so we can see the pattern of the smaller quadratic terms.</p>
+<p>🔹 For the Quadratic Ephemeris</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
-</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this ephemeris</span>
+</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">quadratic_ephemeris</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="line-3"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d951e5017e2809b6293bc3e9fed7038f28d9dd832cb375649e416e1d5445456b.png" src="_images/d951e5017e2809b6293bc3e9fed7038f28d9dd832cb375649e416e1d5445456b.png"/>
+<img alt="_images/b88b793c963f748c6a5769939c7a46e362f22c57e57846c48dae435e4480bcf9.png" src="_images/b88b793c963f748c6a5769939c7a46e362f22c57e57846c48dae435e4480bcf9.png"/>
 </div>
 </div>
-<p>🔹 For the Precession Model</p>
-<p>To see the non-linear effect in the data, we subtract the linear parameters as we did above. We can also set the arg <code class="docutils literal notranslate"><span class="pre">show_occultations</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> to see the occultations plotted seperately.</p>
+<p>🔹 For the precession ephemeris</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_occultations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this ephemeris</span>
+</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_ephemeris</span><span class="p">(</span><span class="n">precession_ephemeris</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_occultations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-3"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c23019b960d9ed3065e86fc7bdd992a1eccc9f7a8af039318dda33f32485a56c.png" src="_images/c23019b960d9ed3065e86fc7bdd992a1eccc9f7a8af039318dda33f32485a56c.png"/>
+<img alt="_images/42df603ce4b390b36aeef5455482166021553a6038b4e1a22b5c49b774971e89.png" src="_images/42df603ce4b390b36aeef5455482166021553a6038b4e1a22b5c49b774971e89.png"/>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
-<section id="plot-the-model-uncertainties">
-<h4>🔹 Plot the model uncertainties<a class="headerlink" href="#plot-the-model-uncertainties" title="Link to this heading"><span>#</span></a></h4>
-<p>🔹 For the Linear Model</p>
+<section id="plot-the-ephemeris-uncertainties">
+<h4>🔹 Plot the ephemeris uncertainties<a class="headerlink" href="#plot-the-ephemeris-uncertainties" title="Link to this heading"><span>#</span></a></h4>
+<p>🔹 For the Linear Ephemeris</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_ephemeris</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5dad0cca062084447120358eb3b7653144e8885d3809c93167eac3359aeffdc8.png" src="_images/5dad0cca062084447120358eb3b7653144e8885d3809c93167eac3359aeffdc8.png"/>
+<img alt="_images/d7befd9409aae5df9317b4513e240a74507f8e1e53868889ec766e9d65689191.png" src="_images/d7befd9409aae5df9317b4513e240a74507f8e1e53868889ec766e9d65689191.png"/>
 </div>
 </div>
-<p>🔹 For the Quadratic Model</p>
+<p>🔹 For the Quadratic Ephemeris</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_ephemeris</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d5527208d7093f4aade40eff72f4cf96fc7f44fbcad5a5db8bd32b2faec31ef4.png" src="_images/d5527208d7093f4aade40eff72f4cf96fc7f44fbcad5a5db8bd32b2faec31ef4.png"/>
+<img alt="_images/472533d66c0f281cab70b2eaf4ec75828b24300c41941e3d57527b1f1585a170.png" src="_images/472533d66c0f281cab70b2eaf4ec75828b24300c41941e3d57527b1f1585a170.png"/>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -431,7 +473,11 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/9f70e754ab44d96efc13e17bed15bc45f8bcebc4aa800a8e9fd7db51ef0e0b3b.png" src="_images/9f70e754ab44d96efc13e17bed15bc45f8bcebc4aa800a8e9fd7db51ef0e0b3b.png"/>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span></code></pre></div>
+</div>
+<img alt="_images/2142286dbc019397185033c3fff9b8059fd0d842a808cfeae9533bf91c2aa9f4.png" src="_images/2142286dbc019397185033c3fff9b8059fd0d842a808cfeae9533bf91c2aa9f4.png"/>
 </div>
 </div>
 <div class="cell docutils container">
@@ -442,13 +488,16 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/de0914a13ae34ade6f0844ff7b9bd0a6f621795e3f2fec0a0998caafc009b805.png" src="_images/de0914a13ae34ade6f0844ff7b9bd0a6f621795e3f2fec0a0998caafc009b805.png"/>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:368: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span></code></pre></div>
+</div>
+<img alt="_images/f7ac6e1596c58eb78f9f76773346fb6758d0ae030198a4463d48f9faac70c1b3.png" src="_images/f7ac6e1596c58eb78f9f76773346fb6758d0ae030198a4463d48f9faac70c1b3.png"/>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="plot-the-running-delta-bic">
 <h4>🔹 Plot the running $\Delta$ BIC<a class="headerlink" href="#plot-the-running-delta-bic" title="Link to this heading"><span>#</span></a></h4>
-<p>Comparing a linear model and a quadratic model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"quadratic"</span><span class="p">)</span>
@@ -457,91 +506,36 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:100: RuntimeWarning: invalid value encountered in divide
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:99: RuntimeWarning: invalid value encountered in divide
 </span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span><span id="line-3">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:234: RuntimeWarning: invalid value encountered in divide
+</span><span id="line-3">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: invalid value encountered in divide
 </span><span id="line-4">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span><span id="line-5">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:99: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-6">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span><span id="line-7">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-8">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
 </span></code></pre></div>
 </div>
-<img alt="_images/5b9e61285752a9e529058c98ecf8c3a1919467508b34a62ce85e503b1fcbef37.png" src="_images/5b9e61285752a9e529058c98ecf8c3a1919467508b34a62ce85e503b1fcbef37.png"/>
+<img alt="_images/0889d5f687c61151a3ec5a5cee08fe636477102f32d478a4fd2736475a96f77a.png" src="_images/0889d5f687c61151a3ec5a5cee08fe636477102f32d478a4fd2736475a96f77a.png"/>
 </div>
 </div>
-<p>Comparing a linear model and a precession model</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/904571b8dcfa64906207ed39474bbbaa2d516350bf1e963d706fe96f482c8846.png" src="_images/904571b8dcfa64906207ed39474bbbaa2d516350bf1e963d706fe96f482c8846.png"/>
-</div>
-</div>
-<p>Comparing a quadratic model and a precession model</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/41ade9c526d1790ace7ac0e51c9fef3bd92f6ad10d538b1220b850a0b70b4597.png" src="_images/41ade9c526d1790ace7ac0e51c9fef3bd92f6ad10d538b1220b850a0b70b4597.png"/>
-</div>
-</div>
-</section>
-<section id="plot-the-analytical-running-delta-bic">
-<h4>🔹 Plot the analytical running $\Delta$ BIC<a class="headerlink" href="#plot-the-analytical-running-delta-bic" title="Link to this heading"><span>#</span></a></h4>
-<p>As of right now, this is only available for comparing a linear model and a quadratic model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_analytical_delta_bic_quadratic</span><span class="p">()</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:233: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span><span id="line-3">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:99: RuntimeWarning: divide by zero encountered in divide
+</span><span id="line-4">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</span></code></pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">&lt;Axes: title={'center': 'Evolution of $\\Delta$BIC Comparing Linear and Quadratic Models'}, xlabel='Epoch', ylabel='$\\Delta$BIC'&gt;
+</span></code></pre></div>
+</div>
 <img alt="_images/4f6bb867d3fa3694ba8916716a7b8025165bbb97179642bda2061227916c5c2d.png" src="_images/4f6bb867d3fa3694ba8916716a7b8025165bbb97179642bda2061227916c5c2d.png"/>
-</div>
-</div>
-</section>
-<section id="plot-the-omit-one-delta-bic">
-<h4>🔹 Plot the omit one $\Delta$ BIC<a class="headerlink" href="#plot-the-omit-one-delta-bic" title="Link to this heading"><span>#</span></a></h4>
-<p>Comparing a linear model and a quadratic model</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"quadratic"</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/645cfcea8bdc82d22e34927745d22cd09025e9cecc949e5d7a3511823a3b9918.png" src="_images/645cfcea8bdc82d22e34927745d22cd09025e9cecc949e5d7a3511823a3b9918.png"/>
-</div>
-</div>
-<p>Comparing a linear model and a precession model</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/8b51e2c3bb9fd41371b8c153ec712d6113e0b3482a7c1dd024c143ff7d99156a.png" src="_images/8b51e2c3bb9fd41371b8c153ec712d6113e0b3482a7c1dd024c143ff7d99156a.png"/>
-</div>
-</div>
-<p>Comparing a quadratic model and a precession model</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="_images/b239d9d6411053746a34d508756563477f5a40c88a7ae8135800184b086aeebf.png" src="_images/b239d9d6411053746a34d508756563477f5a40c88a7ae8135800184b086aeebf.png"/>
 </div>
 </div>
 <hr style="color: #D64309;"/>
@@ -553,26 +547,21 @@
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
 <li><a :data-current="activeSection === '#basic-usage'" class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
-<li><a :data-current="activeSection === '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'" class="reference internal" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
+<li><a :data-current="activeSection === '#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository'" class="reference internal" href="#step-1-download-the-example-timing-data-includes-transit-and-occultation-data-in-barycentric-julian-date-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the example timing data <small>(includes transit and occultation data in Barycentric Julian Date)</small> from the GitHub repository</a></li>
 <li><a :data-current="activeSection === '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'" class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
 <li><a :data-current="activeSection === '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'" class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
-<li><a :data-current="activeSection === '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'" class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
-<li><a :data-current="activeSection === '#the-linear-model'" class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
-<li><a :data-current="activeSection === '#example'" class="reference internal" href="#example">🟢  EXAMPLE</a></li>
-<li><a :data-current="activeSection === '#the-quadratic-model'" class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
-<li><a :data-current="activeSection === '#id1'" class="reference internal" href="#id1">🟢  EXAMPLE</a></li>
-<li><a :data-current="activeSection === '#the-precession-model'" class="reference internal" href="#the-precession-model">🔹 The <strong>Precession</strong> Model</a></li>
-<li><a :data-current="activeSection === '#id2'" class="reference internal" href="#id2">🟢  EXAMPLE</a></li>
+<li><a :data-current="activeSection === '#step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession'" class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-you-can-specify-what-type-of-ephemeris-with-the-options-linear-quadratic-or-precession">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris. You can specify what type of ephemeris with the options “linear”, “quadratic”, or “precession”.</a><ul>
+<li><a :data-current="activeSection === '#the-linear-ephemeris'" class="reference internal" href="#the-linear-ephemeris">🔹 The <strong>Linear</strong> Ephemeris</a></li>
+<li><a :data-current="activeSection === '#the-quadratic-ephemeris'" class="reference internal" href="#the-quadratic-ephemeris">🔹 The <strong>Quadratic</strong> Ephemeris</a></li>
+<li><a :data-current="activeSection === '#the-precession-ephemeris'" class="reference internal" href="#the-precession-ephemeris">🔹 The <strong>Precession</strong> Ephemeris</a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#step-5-get-bic-values'" class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
 <li><a :data-current="activeSection === '#step-6-plot-your-data'" class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
-<li><a :data-current="activeSection === '#plot-the-model-calculated-mid-times'" class="reference internal" href="#plot-the-model-calculated-mid-times">🔹 Plot the model calculated mid-times</a></li>
-<li><a :data-current="activeSection === '#plot-the-model-uncertainties'" class="reference internal" href="#plot-the-model-uncertainties">🔹 Plot the model uncertainties</a></li>
+<li><a :data-current="activeSection === '#plot-the-ephemeris'" class="reference internal" href="#plot-the-ephemeris">🔹 Plot the ephemeris</a></li>
+<li><a :data-current="activeSection === '#plot-the-ephemeris-uncertainties'" class="reference internal" href="#plot-the-ephemeris-uncertainties">🔹 Plot the ephemeris uncertainties</a></li>
 <li><a :data-current="activeSection === '#the-o-c-plot'" class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
 <li><a :data-current="activeSection === '#plot-the-running-delta-bic'" class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
-<li><a :data-current="activeSection === '#plot-the-analytical-running-delta-bic'" class="reference internal" href="#plot-the-analytical-running-delta-bic">🔹 Plot the analytical running $\Delta$ BIC</a></li>
-<li><a :data-current="activeSection === '#plot-the-omit-one-delta-bic'" class="reference internal" href="#plot-the-omit-one-delta-bic">🔹 Plot the omit one $\Delta$ BIC</a></li>
 </ul>
 </li>
 </ul>
