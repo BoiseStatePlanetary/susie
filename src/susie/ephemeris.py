@@ -1666,7 +1666,7 @@ class Ephemeris(object):
                 The path used to save the plot if `save_plot` is True.
         """
         DAYS_TO_SECONDS = 1*24*60*60
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         y_data = model_data['model_data']
         # Subtract the linear parameters if arg is True
         if subtract_lin_params:
@@ -1704,15 +1704,16 @@ class Ephemeris(object):
                 The path used to save the plot if `save_plot` is True.
         """
         # get uncertainties
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         uncertainties = self.get_model_uncertainties(model_data)
         x = self.timing_data.epochs
         # get T(E)-T0-PE (for transits), T(E)-T0-0.5P-PE (for occultations)
         y = self._subtract_linear_parameters(model_data['model_data'], model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)
         # plot the y line, then the line +- the uncertainties
         ax.plot(x, y, c='blue', label='$t(E) - T_{0} - PE$')
-        ax.plot(x, y + uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
-        ax.plot(x, y - uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
+        ax.fill_between(x, y-uncertainties, y+uncertainties, alpha=0.2, label='$(t(E) - T_{0} - PE) \pm σ_{t^{pred}_{tra}}$')
+        # ax.plot(x, y + uncertainties, c='red', label='$(t(E) - T_{0} - PE) + σ_{t^{pred}_{tra}}$')
+        # ax.plot(x, y - uncertainties, c='red', label='$(t(E) - T_{0} - PE) - σ_{t^{pred}_{tra}}$')
         # Add labels and show legend
         ax.set_xlabel('Epochs')
         ax.set_ylabel('Mid-Time Uncertainties (JD TDB)')
@@ -1738,7 +1739,7 @@ class Ephemeris(object):
             save_filepath: Optional(str)
                 The path used to save the plot if `save_plot` is True.
         """
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
         linear_model = self.fit_model("linear")
@@ -1772,7 +1773,7 @@ class Ephemeris(object):
         ax.legend()
         ax.set_xlabel('Epoch')
         ax.set_ylabel('O-C (seconds)')
-        ax.set_title('Observed Minus Calculated Mid-Times')
+        ax.set_title(f'Observed Minus {model_type.capitalize()} Model Calculated Mid-Times')
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         if save_plot is True:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
@@ -1797,25 +1798,28 @@ class Ephemeris(object):
         """
         # Create empty array to store values
         delta_bics = np.zeros(len(self.timing_data.epochs))
+        uncertainties = np.zeros(len(self.timing_data.epochs))
         # Create copy of each variable to be used
         all_epochs = self.timing_data.epochs.copy()
         all_mid_times = self.timing_data.mid_times.copy()
         all_uncertainties = self.timing_data.mid_time_uncertainties.copy()
         all_tra_or_occ = self.timing_data.tra_or_occ.copy()
         # For each epoch, calculate delta BIC using all data up to that epoch
-        for i in range(0, len(self.timing_data.epochs)):
-            if i < max(self._get_k_value(model1), self._get_k_value(model2))-1:
-                # Append 0s up until delta BIC can be calculated
-                delta_bics[i] = int(0)
-            else:
-                timing_data = TimingData("jd", all_epochs[:i+1], all_mid_times[:i+1], all_uncertainties[:i+1], all_tra_or_occ[:i+1], "tdb")
-                # Create new model object with new timing data
-                model = Ephemeris(timing_data)
-                delta_bic = model.calc_delta_bic(model1, model2)
-                delta_bics[i] = delta_bic
+        ks = (self._get_k_value(model1), self._get_k_value(model2))
+        for i in range(max(ks), len(self.timing_data.epochs)):
+            timing_data = TimingData("jd", all_epochs[:i+1], all_mid_times[:i+1], all_uncertainties[:i+1], all_tra_or_occ[:i+1], "tdb")
+            # Create new model object with new timing data
+            model = Ephemeris(timing_data)
+            # Get delta bic of the two models
+            delta_bic = model.calc_delta_bic(model1, model2)
+            delta_bics[i] = delta_bic
+            # Get uncertainties of the delta bic
+            uncertainties[i] = np.sqrt((2*i-sum(ks)))
         # Plot the data
-        fig, ax = plt.subplots(figsize=(15, 7))
-        ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
+        ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', ls="-", linewidth=2, label=rf"$\Delta$BIC=BIC$_{{{model1}}}$ - BIC$_{{{model2}}}$={delta_bics[-1]:.2f}")
+        ax.fill_between(self.timing_data.epochs, delta_bics-uncertainties, delta_bics+uncertainties, alpha=0.2)
+        # ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel('Epoch')
         ax.set_ylabel(r"$\Delta$BIC")
@@ -1823,6 +1827,7 @@ class Ephemeris(object):
                     "\n"
                     rf"as Observational Epochs Increase")
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
+        ax.legend()
         # Save if save_plot and save_filepath have been provided
         if save_plot and save_filepath:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
@@ -1865,9 +1870,9 @@ class Ephemeris(object):
             # Calculate the percentage difference 
             perc_diff = (abs(d_bic - delta_bic) / ((d_bic + delta_bic) / 2)) * 100
             delta_bic_percentages[i] = (perc_diff)
-        fig, ax = plt.subplots(figsize=(15, 7))
-        ax.scatter(self.timing_data.epochs, delta_bics)
-        ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = {self.calc_delta_bic(model1, model2)}")
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
+        ax.scatter(self.timing_data.epochs, delta_bics, color="#0033A0")
+        ax.axhline(y=self.calc_delta_bic(model1, model2), color='#D64309', linestyle='--', zorder=0, label=rf"$\Delta$BIC = BIC$_{{{model1}}}$ - BIC$_{{{model2}}}$ = {self.calc_delta_bic(model1, model2):.2f}")
         # If we are given a percentage difference to mark, then plot that
         if outlier_percentage is not None:
             is_outlier = delta_bic_percentages >= outlier_percentage
@@ -1893,7 +1898,9 @@ class Ephemeris(object):
         all_tra_or_occ = self.timing_data.tra_or_occ[self.tra_mask].copy()
         # Create some empty arrays to hold data
         numerical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        numerical_delta_bic_errs = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         analytical_delta_bics = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
+        analytical_delta_bic_errs = np.zeros(len(self.timing_data.epochs[self.tra_mask]))
         # Grab the tidal decay rate for the analytical calculation
         dPdE = self.fit_model("quadratic")["period_change_by_epoch"]
         for i in range(3, len(self.timing_data.epochs[self.tra_mask])):
@@ -1907,10 +1914,15 @@ class Ephemeris(object):
             # Calculate the analytical delta BIC
             analytical_delta_bic = model._calc_analytical_delta_bic_quad(dPdE)
             analytical_delta_bics[i] = analytical_delta_bic
+            # Calculate the err
+            numerical_delta_bic_errs[i] = np.sqrt((2*(i-5)))
+            analytical_delta_bic_errs[i] = np.sqrt((2*(i-5)))
         # Plot the data
-        fig, ax = plt.subplots(figsize=(15, 7))
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         ax.plot(self.timing_data.epochs[self.tra_mask], numerical_delta_bics, color='#0033A0', marker='.', markersize=7, mec="#0033A0", ls="-", linewidth=1.5, label=r"Evolution of Numerical $\Delta$BIC as Observational Epochs Increase")
         ax.plot(self.timing_data.epochs[self.tra_mask], analytical_delta_bics, color="#D64309", marker='.', markersize=7, mec="#D64309", ls="--", linewidth=1.5, label=r"Evolution of Analytical $\Delta$BIC as Observational Epochs Increase")
+        ax.fill_between(self.timing_data.epochs[self.tra_mask], numerical_delta_bics-numerical_delta_bic_errs, numerical_delta_bics+numerical_delta_bic_errs, alpha=0.2)
+        ax.fill_between(self.timing_data.epochs[self.tra_mask], analytical_delta_bics-analytical_delta_bic_errs, analytical_delta_bics+analytical_delta_bic_errs, alpha=0.2)
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel('Epoch')
         ax.set_ylabel(r"$\Delta$BIC")
@@ -1968,7 +1980,7 @@ class Ephemeris(object):
             analytical_delta_bic = model._calc_analytical_delta_bic_prec(Pa, e, w0, dwdE)
             analytical_delta_bics[i] = analytical_delta_bic
         # Plot the data
-        fig, ax = plt.subplots(figsize=(15, 7))
+        fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         ax.plot(self.timing_data.epochs[self.tra_mask], numerical_delta_bics, color='#0033A0', marker='.', markersize=7, mec="#0033A0", ls="-", linewidth=1.5, label=r"Evolution of Numerical $\Delta$BIC as Observational Epochs Increase")
         ax.plot(self.timing_data.epochs[self.tra_mask], analytical_delta_bics, color="#D64309", marker='.', markersize=7, mec="#D64309", ls="--", linewidth=1.5, label=r"Evolution of Analytical $\Delta$BIC as Observational Epochs Increase")
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
