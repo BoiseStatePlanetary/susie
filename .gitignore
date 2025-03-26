@@ -82,3 +82,11 @@ testing_env
 ephemeris_tests.ipynb
 schedule_test.csv
 /example_data/elisabeth_targets
+/notebooks/tres_5b.ipynb
+/notebooks/tres_5b_copy.ipynb
+/example_data/combined_times_TrES_5b.csv
+/example_data/all_lit_times_TrES-5b copy.csv
+/example_data/best_fit_values_TrES-5b.csv
+/example_data/updated_combined_TrES5b.csv
+help_env
+notebooks/brian*

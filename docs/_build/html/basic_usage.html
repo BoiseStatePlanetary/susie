@@ -1,75 +1,125 @@
 <!DOCTYPE html>
 
-<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="./" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
-<head>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta charset="utf-8"/>
-<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="black" media="(prefers-color-scheme: dark)" name="theme-color"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation</title>
-<meta content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" property="og:title"/>
-<meta content="🐷 Susie Basic Timing and Ephemeris Object Usage | Susie Sept. 2023 documentation" name="twitter:title"/>
-<link href="_static/pygments.css?v=e72c8e07" rel="stylesheet" type="text/css"/>
-<link href="_static/theme.css?v=42baaae4" rel="stylesheet" type="text/css"/>
-<link href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" rel="stylesheet" type="text/css"/>
-<link href="search.html" rel="search" title="Search"/>
-<link href="genindex.html" rel="index" title="Index"/>
-<link href="special_usage.html" rel="next" title="🐷 Susie Special Timing Object Usage"/>
-<link href="FAQ.html" rel="prev" title="Frequently Asked Questions"/>
-<script>
-    <!-- Prevent Flash of wrong theme -->
-      const userPreference = localStorage.getItem('darkMode');
-      let mode;
-      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mode = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        mode = 'light';
-      }
-      if (!userPreference) {localStorage.setItem('darkMode', mode)}
-    </script>
-</head>
-<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false, showScrollTop: false }">
-<div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
-      Skip to content
-    </a><header class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
-<div class="hidden mr-4 md:flex">
-<a class="flex items-center mr-6" href="index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
-</a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
-<svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
-</svg>
-<span class="sr-only">Toggle navigation menu</span>
-</button>
-<div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
-<div class="flex-1 w-full md:w-auto md:flex-none"><form @keydown.k.window.meta="$refs.search.focus()" action="search.html" class="relative flex items-center group" id="searchbox" method="get">
-<input aria-label="Search the docs" class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" id="search-input" name="q" placeholder="Search ..." type="search" x-ref="search"/>
-<kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
-<span class="text-xs">⌘</span>
-    K
-  </kbd>
-</form>
-</div>
-<nav class="flex items-center space-x-1">
-<button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'" aria-label="Color theme switcher" class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button">
-<svg class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z"></path>
-</svg>
-<svg class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z"></path>
-</svg>
-</button>
-</nav>
-</div>
-</div>
-</header>
-<div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
-<a class="!justify-start text-sm md:!hidden bg-background" href="index.html"><span class="font-bold text-clip whitespace-nowrap">Susie Sept. 2023 documentation</span>
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>🐷 Susie Basic Timing and Ephemeris Object Usage &#8212; Susie Sept. 2023 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="_static/basic_mod.css?v=9b2032db" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <script src="_static/documentation_options.js?v=cc8b8c85"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <script src="_static/js/petite-vue.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="🐷 Susie Special Timing Object Usage" href="special_usage.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="FAQ.html" /> 
+  </head><body data-dark_mode_code_blocks="true">
+
+<div id="top_nav">
+    
+
+    <nav>
+        
+            
+        
+
+        <p id="toggle_sidebar">
+            <a href="#" title="Toggle sidebar">|||</a>
+        </p>
+        <h1><a href="index.html" title="Go to homepage">Susie Sept. 2023 documentation</a></h1>
+
+        <a id="mode_toggle" href="#" @click.prevent="handleClick" :title="mode">
+    <template v-if="mode == 'light'">
+        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_light"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><circle cx="39.311" cy="39.524" r="15.734" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.212,4.901c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901l-0,9.614c-0,2.705 2.196,4.901 4.9,4.901c2.705,0 4.901,-2.196 4.901,-4.901l0,-9.614Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M67.48,18.073c1.913,-1.912 1.913,-5.018 0,-6.931c-1.912,-1.912 -5.018,-1.912 -6.931,0l-6.798,6.799c-1.912,1.912 -1.912,5.018 0,6.931c1.913,1.912 5.018,1.912 6.931,-0l6.798,-6.799Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.728,61.108c1.912,-1.913 1.912,-5.018 -0,-6.931c-1.913,-1.913 -5.019,-1.913 -6.931,-0l-6.799,6.798c-1.912,1.913 -1.912,5.019 0,6.931c1.913,1.913 5.019,1.913 6.931,0l6.799,-6.798Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.682,54.177c-1.913,-1.913 -5.018,-1.913 -6.931,-0c-1.912,1.913 -1.912,5.018 0,6.931l6.798,6.798c1.913,1.913 5.019,1.913 6.931,0c1.913,-1.912 1.913,-5.018 0,-6.931l-6.798,-6.798Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M4.901,34.623c-2.705,0 -4.901,2.196 -4.901,4.901c0,2.705 2.196,4.901 4.901,4.901l9.614,0c2.705,0 4.901,-2.196 4.901,-4.901c0,-2.705 -2.196,-4.901 -4.901,-4.901l-9.614,0Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.212,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901l-0,9.614c-0,2.705 2.196,4.901 4.9,4.901c2.705,-0 4.901,-2.196 4.901,-4.901l0,-9.614Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M18.929,11.142c-1.912,-1.912 -5.018,-1.912 -6.931,0c-1.912,1.913 -1.912,5.019 0,6.931l6.799,6.799c1.912,1.912 5.018,1.912 6.931,-0c1.912,-1.913 1.912,-5.019 -0,-6.931l-6.799,-6.799Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.108,34.623c-2.705,0 -4.901,2.196 -4.901,4.901c-0,2.705 2.196,4.901 4.901,4.901l9.614,0c2.705,0 4.901,-2.196 4.901,-4.901c-0,-2.705 -2.196,-4.901 -4.901,-4.901l-9.614,0Z" style="fill:#fff;"/></g></g></g></svg>
+    </template>
+
+    <template v-if="mode == 'dark'">
+        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_dark"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><circle cx="39.311" cy="39.524" r="15.734" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.212,14.515c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,0 -4.901,2.196 -4.901,4.901c0,2.705 2.197,4.901 4.901,4.901c2.705,0 4.901,-2.196 4.901,-4.901Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M60.662,24.892c1.902,-1.902 1.902,-4.99 0,-6.892l-0.04,-0.039c-1.901,-1.902 -4.989,-1.902 -6.891,-0c-1.901,1.901 -1.901,4.989 0,6.891l0.04,0.04c1.902,1.901 4.989,1.901 6.891,-0Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.732,61.103c1.91,-1.91 1.91,-5.011 0,-6.921l-0.009,-0.01c-1.91,-1.91 -5.012,-1.91 -6.921,-0c-1.91,1.91 -1.91,5.011 -0,6.921l0.01,0.01c1.909,1.91 5.011,1.91 6.92,-0Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.672,54.167c-1.907,-1.907 -5.004,-1.907 -6.911,0l-0.02,0.02c-1.907,1.907 -1.907,5.004 0,6.911c1.907,1.907 5.004,1.907 6.911,-0l0.02,-0.02c1.907,-1.907 1.907,-5.004 0,-6.911Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M14.52,34.623c-2.702,0 -4.896,2.194 -4.896,4.896l0,0.01c0,2.702 2.194,4.896 4.896,4.896c2.702,0 4.896,-2.194 4.896,-4.896l-0,-0.01c-0,-2.702 -2.194,-4.896 -4.896,-4.896Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.212,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.901,2.196 -4.901,4.901c0,2.704 2.197,4.9 4.901,4.9c2.705,0 4.901,-2.196 4.901,-4.9Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M25.73,17.943c-1.911,-1.911 -5.015,-1.911 -6.926,0l-0.005,0.005c-1.911,1.911 -1.911,5.015 0,6.926c1.911,1.911 5.015,1.911 6.926,0l0.005,-0.005c1.911,-1.911 1.911,-5.014 -0,-6.926Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.098,34.623c-2.699,0 -4.891,2.192 -4.891,4.892l-0,0.019c-0,2.699 2.192,4.891 4.891,4.891c2.7,0 4.892,-2.192 4.892,-4.891l0,-0.019c0,-2.7 -2.192,-4.892 -4.892,-4.892Z" style="fill:#fff;"/></g></g></g></svg>
+    </template>
+
+    <template v-if="mode == 'darkest'">
+        <svg width="100%" height="100%" viewBox="0 0 79 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="mode_darkest"><rect id="Bounds" x="0" y="-0" width="78.623" height="79.049" style="fill:none;"/><path d="M39.315,23.791c8.684,-0 15.734,7.05 15.734,15.733c0,8.684 -7.05,15.734 -15.734,15.734c-8.683,0 -15.733,-7.05 -15.733,-15.734c-0,-8.683 7.05,-15.733 15.733,-15.733Zm0,4.737c6.069,0 10.997,4.927 10.997,10.996c-0,6.069 -4.928,10.996 -10.997,10.996c-6.068,0 -10.996,-4.927 -10.996,-10.996c0,-6.069 4.928,-10.996 10.996,-10.996Z" style="fill:#fff;"/><g id="beams"><g id="beam"><path id="beam1" serif:id="beam" d="M44.216,14.515c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,0 -4.9,2.196 -4.9,4.901c-0,2.705 2.196,4.901 4.9,4.901c2.705,0 4.901,-2.196 4.901,-4.901Z" style="fill:#fff;"/></g><g id="beam2" serif:id="beam"><path id="beam3" serif:id="beam" d="M60.666,24.892c1.902,-1.902 1.902,-4.99 0,-6.892l-0.04,-0.039c-1.901,-1.902 -4.989,-1.902 -6.891,-0c-1.901,1.901 -1.901,4.989 0,6.891l0.04,0.04c1.902,1.901 4.99,1.901 6.891,-0Z" style="fill:#fff;"/></g><g id="beam4" serif:id="beam"><path id="beam5" serif:id="beam" d="M25.737,61.103c1.909,-1.91 1.909,-5.011 -0,-6.921l-0.01,-0.01c-1.91,-1.91 -5.011,-1.91 -6.921,-0c-1.91,1.91 -1.91,5.011 -0,6.921l0.01,0.01c1.91,1.91 5.011,1.91 6.921,-0Z" style="fill:#fff;"/></g><g id="beam6" serif:id="beam"><path id="beam7" serif:id="beam" d="M60.676,54.167c-1.907,-1.907 -5.004,-1.907 -6.911,0l-0.02,0.02c-1.907,1.907 -1.907,5.004 0,6.911c1.907,1.907 5.004,1.907 6.911,-0l0.02,-0.02c1.907,-1.907 1.907,-5.004 0,-6.911Z" style="fill:#fff;"/></g><g id="beam8" serif:id="beam"><path id="beam9" serif:id="beam" d="M14.524,34.623c-2.702,0 -4.896,2.194 -4.896,4.896l0,0.01c0,2.702 2.194,4.896 4.896,4.896c2.702,0 4.896,-2.194 4.896,-4.896l0,-0.01c0,-2.702 -2.194,-4.896 -4.896,-4.896Z" style="fill:#fff;"/></g><g id="beam10" serif:id="beam"><path id="beam11" serif:id="beam" d="M44.216,64.534c0,-2.705 -2.196,-4.901 -4.901,-4.901c-2.704,-0 -4.9,2.196 -4.9,4.901c-0,2.704 2.196,4.9 4.9,4.9c2.705,0 4.901,-2.196 4.901,-4.9Z" style="fill:#fff;"/></g><g id="beam12" serif:id="beam"><path id="beam13" serif:id="beam" d="M25.734,17.943c-1.911,-1.911 -5.015,-1.911 -6.926,0l-0.005,0.005c-1.911,1.911 -1.911,5.015 0,6.926c1.911,1.911 5.015,1.911 6.926,0l0.005,-0.005c1.911,-1.911 1.911,-5.014 0,-6.926Z" style="fill:#fff;"/></g><g id="beam14" serif:id="beam"><path id="beam15" serif:id="beam" d="M64.103,34.623c-2.7,0 -4.892,2.192 -4.892,4.892l-0,0.019c-0,2.699 2.192,4.891 4.892,4.891c2.699,0 4.891,-2.192 4.891,-4.891l0,-0.019c0,-2.7 -2.192,-4.892 -4.891,-4.892Z" style="fill:#fff;"/></g></g></g></svg>
+    </template>
 </a>
-<div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
-<div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
-<ul>
+
+<script>
+(function() {
+    const LOCAL_STORAGE_KEY = 'piccoloThemeMode'
+
+    var initialMode = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+    if (initialMode) {
+        // Make sure the value in local storage is valid
+        if (['light', 'dark', 'darkest'].indexOf(initialMode) == -1) {
+            initialMode = 'light'
+            localStorage.setItem(LOCAL_STORAGE_KEY, initialMode)
+        }
+    } else {
+        // Check if the client prefers dark mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            initialMode = 'dark'
+        } else {
+            initialMode = 'light'
+        }
+        localStorage.setItem(LOCAL_STORAGE_KEY, initialMode)
+    }
+
+    document.documentElement.dataset.mode = initialMode
+
+    PetiteVue.createApp({
+        'mode': initialMode,
+        handleClick() {
+            let currentMode = this.mode
+
+            if (currentMode == 'light') {
+                this.mode = 'dark'
+            } else if (currentMode == 'dark') {
+                this.mode = 'darkest'
+            } else if (currentMode == 'darkest') {
+                this.mode = 'light'
+            }
+
+            document.documentElement.dataset.mode = this.mode
+            localStorage.setItem(LOCAL_STORAGE_KEY, this.mode)
+
+            console.log(this.mode)
+        }
+    }).mount('#mode_toggle')
+})()
+</script>
+            <p class="mobile_search_link">
+                <a href="search.html" title="Search">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 64" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
+                        <path d="M14.873 40.009c-2.315-3.943-3.642-8.532-3.642-13.429C11.231 11.91 23.141 0 37.811 0s26.58 11.91 26.58 26.58-11.91 26.58-26.58 26.58a26.44 26.44 0 0 1-14.277-4.161L9.739 62.794a3.12 3.12 0 0 1-4.413 0L.913 58.382c-1.217-1.218-1.217-3.196 0-4.413l13.96-13.96zM37.811 8.054c10.225 0 18.526 8.301 18.526 18.526s-8.301 18.526-18.526 18.526-18.526-8.301-18.526-18.526S27.586 8.054 37.811 8.054z" fill="#fff" />
+                    </svg>
+                </a>
+            </p>
+        
+
+        <div class="searchbox_wrapper">
+            
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+    </nav>
+</div>
+
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><ul>
 <li class="toctree-l1"><a class="reference internal" href="susie.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
@@ -78,44 +128,33 @@
 <li class="toctree-l1"><a class="reference internal" href="special_usage.html">Special TimingData Object Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="observing_schedule.html">Generating an Observing Schedule</a></li>
 </ul>
-</nav>
-</div>
-</div>
-<button @click="showSidebar = false" class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100" type="button">
-<svg class="h-4 w-4" fill="currentColor" height="24" stroke="none" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
-<path d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z"></path>
-</svg>
-</button>
-</aside>
-<main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
-<div class="w-full min-w-0 mx-auto">
-<nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
-<a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="index.html">
-<span class="hidden md:inline">Susie Sept. 2023 documentation</span>
-<svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
-<path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
-</svg>
-</a>
-<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">🐷 Susie Basic Timing and Ephemeris Object Usage</span>
-</nav>
-<div id="content" role="main">
-<section id="susie-basic-timing-and-ephemeris-object-usage">
+
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="susie-basic-timing-and-ephemeris-object-usage">
 <h1>🐷 Susie Basic Timing and Ephemeris Object Usage<a class="headerlink" href="#susie-basic-timing-and-ephemeris-object-usage" title="Link to this heading"><span>#</span></a></h1>
 <p>🔵 Import the necessary python libraries and Susie objects.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="line-2"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-</span><span id="line-3"><span class="kn">from</span><span class="w"> </span><span class="nn">susie.timing_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimingData</span>
-</span><span id="line-4"><span class="kn">from</span><span class="w"> </span><span class="nn">susie.ephemeris</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ephemeris</span>
-</span><span id="line-5"><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">susie.timing_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimingData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">susie.ephemeris</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ephemeris</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</pre></div>
 </div>
 </div>
 </div>
-<hr style="color: #D64309;"/>
-<hr style="color: #D64309;"/><section id="basic-usage">
-<h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#basic-usage'"><span>#</span></a></h2>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"><section id="basic-usage">
+<h2>🔵 Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"><span>#</span></a></h2>
 <p>The basic creation and usage of the <strong>TimingData</strong> and <strong>Ephemeris</strong> objects. This will assume the following:</p>
 <ol class="arabic simple">
 <li><p>Your data is in JD TDB timing format and system</p></li>
@@ -123,63 +162,63 @@
 <li><p>You have mid time uncertainties included in your data</p></li>
 </ol>
 <p>We will pull this data from the repository below.</p>
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;">
-<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"><section id="step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">
-<h3>🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'"><span>#</span></a></h3>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
+<hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">
+<h3>🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository<a class="headerlink" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">url</span> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/BoiseStatePlanetary/susie/refs/heads/main/example_data/wasp12b_tra_occ.csv'</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="c1"># Read the CSV file directly from the URL</span>
-</span><span id="line-4"><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-</span><span id="line-5"><span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"tra_or_occ"</span><span class="p">])</span>
-</span><span id="line-6"><span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"epoch"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int'</span><span class="p">))</span>
-</span><span id="line-7"><span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"mid_time"</span><span class="p">])</span>
-</span><span id="line-8"><span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"mid_time_err"</span><span class="p">])</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/BoiseStatePlanetary/susie/refs/heads/main/example_data/wasp12b_tra_occ.csv&#39;</span>
+
+<span class="c1"># Read the CSV file directly from the URL</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">tra_or_occs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tra_or_occ&quot;</span><span class="p">])</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">))</span>
+<span class="n">mid_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;mid_time&quot;</span><span class="p">])</span>
+<span class="n">mid_time_errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;mid_time_err&quot;</span><span class="p">])</span>
+</pre></div>
 </div>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">
-<h3>🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.<a class="headerlink" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.<a class="headerlink" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Create new transit times object with above data</span>
-</span><span id="line-2"><span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">'jd'</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">'tdb'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new transit times object with above data</span>
+<span class="n">timing_obj1</span> <span class="o">=</span> <span class="n">TimingData</span><span class="p">(</span><span class="s1">&#39;jd&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">mid_times</span><span class="p">,</span> <span class="n">mid_time_uncertainties</span><span class="o">=</span><span class="n">mid_time_errs</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="o">=</span><span class="n">tra_or_occs</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="s1">&#39;tdb&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-3-create-the-ephemeris-object-and-add-your-timingdata-object">
-<h3>🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.<a class="headerlink" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.<a class="headerlink" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object" title="Link to this heading"><span>#</span></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">timing_obj1</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span> <span class="o">=</span> <span class="n">Ephemeris</span><span class="p">(</span><span class="n">timing_obj1</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">
-<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.<a class="headerlink" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic" title="Link to this heading"><span>#</span></a></h3>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/><section id="the-linear-model">
 <h4>🔹 The <strong>Linear</strong> Model<a class="headerlink" href="#the-linear-model" title="Link to this heading"><span>#</span></a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
-</span><span id="line-2"><span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'linear'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a linear model will solve for period and conjuction time (and their respective errors)</span>
+<span class="n">linear_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:100: RuntimeWarning: divide by zero encountered in divide
-</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:100: RuntimeWarning: divide by zero encountered in divide
+  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</pre></div>
 </div>
 </div>
 </div>
@@ -187,22 +226,22 @@
 <section id="example">
 <h4>🟢  EXAMPLE<a class="headerlink" href="#example" title="Link to this heading"><span>#</span></a></h4>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">fit_model</span></code> will return a dictionary of data. Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">linear_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
-</span><span id="line-2"> <span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
-</span><span id="line-3"> <span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
-</span><span id="line-4"> <span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
-</span><span id="line-5"> <span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
-</span><span id="line-6"> <span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
-</span><span id="line-7">
-</span></code></pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914196400440928</span><span class="p">,</span>
+ <span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">4.21033087274383e-08</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0023543850341696416</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">9.256430832207615e-05</span><span class="p">,</span>
+ <span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2.35438503e-03</span><span class="p">,</span> <span class="mf">2.53757421e+02</span><span class="p">,</span> <span class="mf">2.58123099e+02</span><span class="o">...</span><span class="p">])}</span>
+
+</pre></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in linear_model_data.items():</span>
-</span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in linear_model_data.items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -212,15 +251,15 @@
 <p>We can do the same process for a quadratic model by specifying ‘quadratic’ for the model type instead of linear. The same process above is shown below for the quadratic model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'quadratic'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
+<span class="n">quadratic_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">&#39;quadratic&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:234: RuntimeWarning: divide by zero encountered in divide
-</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:234: RuntimeWarning: divide by zero encountered in divide
+  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</pre></div>
 </div>
 </div>
 </div>
@@ -228,23 +267,23 @@
 <section id="id1">
 <h4>🟢  EXAMPLE<a class="headerlink" href="#id1" title="Link to this heading"><span>#</span></a></h4>
 <p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">quadratic_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
-</span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
-</span><span id="line-3"><span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
-</span><span id="line-4"><span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
-</span><span id="line-5"><span class="s1">'period_change_by_epoch'</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
-</span><span id="line-6"><span class="s1">'period_change_by_epoch_err'</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
-</span><span id="line-7"><span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'quadratic'</span><span class="p">,</span>
-</span><span id="line-8"><span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
-</span></code></pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914217244026556</span><span class="p">,</span>
+<span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">1.543206321797526e-07</span><span class="p">,</span>
+<span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">0.0005511865218625013</span><span class="p">,</span>
+<span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">0.00014528672879359023</span><span class="p">,</span>
+<span class="s1">&#39;period_change_by_epoch&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.902087992310958e-10</span><span class="p">,</span>
+<span class="s1">&#39;period_change_by_epoch_err&#39;</span><span class="p">:</span> <span class="mf">7.206633676288036e-11</span><span class="p">,</span>
+<span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;quadratic&#39;</span><span class="p">,</span>
+<span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">5.51186522e-04</span><span class="p">,</span> <span class="mf">2.53756075e+02</span><span class="p">,</span> <span class="mf">2.58121761e+02</span><span class="p">,</span> <span class="mf">3.20878495e+02</span><span class="o">...</span><span class="p">])}</span>
+</pre></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in quadratic_model_data.items():</span>
-</span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in quadratic_model_data.items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -253,44 +292,43 @@
 <h4>🔹 The <strong>Precession</strong> Model<a class="headerlink" href="#the-precession-model" title="Link to this heading"><span>#</span></a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
-</span><span id="line-2"><span class="n">precession_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">'precession'</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Getting a quadratic model will solve for period, conjuction time, and period change per epoch (and their respective errors)</span>
+<span class="n">precession_model_data</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s1">&#39;precession&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:369: RuntimeWarning: divide by zero encountered in divide
-</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span></code></pre></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:369: RuntimeWarning: divide by zero encountered in divide
+  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
+</pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="id2">
 <h4>🟢  EXAMPLE<a class="headerlink" href="#id2" title="Link to this heading"><span>#</span></a></h4>
-<p><em>NOTE: This is incorrect. Needs to be fixed!</em></p>
 <p>Below is an example of the dictionary returned for <code class="docutils literal notranslate"><span class="pre">precession_model_data</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span><span class="s1">'period'</span><span class="p">:</span> <span class="mf">1.091419177243411</span><span class="p">,</span>
-</span><span id="line-2"><span class="s1">'period_err'</span><span class="p">:</span> <span class="mf">5.2742554781294556e-06</span><span class="p">,</span>
-</span><span id="line-3"><span class="s1">'conjunction_time'</span><span class="p">:</span> <span class="mf">2454515.5341239404</span><span class="p">,</span>
-</span><span id="line-4"><span class="s1">'conjunction_time_err'</span><span class="p">:</span> <span class="mf">0.01180572813100868</span><span class="p">,</span>
-</span><span id="line-5"><span class="s1">'eccentricity'</span><span class="p">:</span> <span class="mf">0.9733689469952322</span><span class="p">,</span>
-</span><span id="line-6"><span class="s1">'eccentricity_err'</span><span class="p">:</span> <span class="mf">2854.540631393408</span><span class="p">,</span>
-</span><span id="line-7"><span class="s1">'pericenter'</span><span class="p">:</span> <span class="o">-</span><span class="mf">155322665.49323985</span><span class="p">,</span>
-</span><span id="line-8"><span class="s1">'pericenter_err'</span><span class="p">:</span> <span class="mf">347918.9038971391</span><span class="p">,</span>
-</span><span id="line-9"><span class="s1">'pericenter_change_by_epoch'</span><span class="p">:</span> <span class="o">-</span><span class="mf">71560.06616158684</span><span class="p">,</span>
-</span><span id="line-10"><span class="s1">'pericenter_change_by_epoch_err'</span><span class="p">:</span> <span class="mf">151.81905076798304</span><span class="p">,</span>
-</span><span id="line-11"><span class="s1">'model_type'</span><span class="p">:</span> <span class="s1">'precession'</span><span class="p">,</span>
-</span><span id="line-12"><span class="s1">'model_data'</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2454515.53409434</span><span class="p">,</span> <span class="mf">2454768.74344835</span><span class="p">,</span> <span class="mf">2454773.10907557</span><span class="o">...</span><span class="p">])}</span>
-</span></code></pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="mf">1.0914196985313172</span><span class="p">,</span>
+ <span class="s1">&#39;period_err&#39;</span><span class="p">:</span> <span class="mf">1.32187600804159e-07</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time&#39;</span><span class="p">:</span> <span class="mf">2456305.45536</span><span class="p">,</span>
+ <span class="s1">&#39;conjunction_time_err&#39;</span><span class="p">:</span> <span class="mf">0.00015706406134456078</span><span class="p">,</span>
+ <span class="s1">&#39;eccentricity&#39;</span><span class="p">:</span> <span class="mf">0.0010000000000000009</span><span class="p">,</span>
+ <span class="s1">&#39;eccentricity_err&#39;</span><span class="p">:</span> <span class="mf">0.0005602519531796543</span><span class="p">,</span>
+ <span class="s1">&#39;pericenter&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+ <span class="s1">&#39;pericenter_err&#39;</span><span class="p">:</span> <span class="mf">0.4577749036402396</span><span class="p">,</span>
+ <span class="s1">&#39;pericenter_change_by_epoch&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+ <span class="s1">&#39;pericenter_change_by_epoch_err&#39;</span><span class="p">:</span> <span class="mf">0.0003538492772010009</span><span class="p">,</span>
+ <span class="s1">&#39;model_type&#39;</span><span class="p">:</span> <span class="s1">&#39;precession&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;model_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">2454515.52672922</span><span class="p">,</span> <span class="mf">2454769.28250952</span><span class="p">,</span> <span class="mf">2454773.64818754</span><span class="o">...</span><span class="p">])}</span>
+</pre></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="c1"># for key, value in precession_model_data.items():</span>
-</span><span id="line-4"><span class="c1">#     print(f"{key}: {value}\n")</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this ↓↓↓↓ to see the real data!</span>
+
+<span class="c1"># for key, value in precession_model_data.items():</span>
+<span class="c1">#     print(f&quot;{key}: {value}\n&quot;)</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -298,50 +336,50 @@
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 </section>
 <section id="step-5-get-bic-values">
-<h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-5-get-bic-values'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 5:</strong> Get BIC Values<a class="headerlink" href="#step-5-get-bic-values" title="Link to this heading"><span>#</span></a></h3>
 <p>We can get the BIC value for a specific model fit using the model data dictionaries returned from the <code class="docutils literal notranslate"><span class="pre">fit_model</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
-</span><span id="line-3"><span class="n">precession_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">)</span>
-</span><span id="line-4">
-</span><span id="line-5"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Precession Model BIC: </span><span class="si">{</span><span class="n">precession_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">)</span>
+<span class="n">quadratic_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">)</span>
+<span class="n">precession_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_bic</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Model BIC: </span><span class="si">{</span><span class="n">linear_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic Model BIC: </span><span class="si">{</span><span class="n">quadratic_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Precession Model BIC: </span><span class="si">{</span><span class="n">precession_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear Model BIC: 386.71897985393696
-</span><span id="line-2">Quadratic Model BIC: 184.99006009832587
-</span><span id="line-3">Precession Model BIC: 398.67927230204737
-</span></code></pre></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Linear Model BIC: 386.71897985393696
+Quadratic Model BIC: 184.99006009832587
+Precession Model BIC: 398.67927230204737
+</pre></div>
 </div>
 </div>
 </div>
-<p>And we can also get a $\Delta$ BIC value using the method <code class="docutils literal notranslate"><span class="pre">calc_delta_bic</span></code>. We do not need to input any data for this method. It will create the linear and quadratic models for you and calculate the BIC values for each model, then calculate the $\Delta$ BIC value.</p>
+<p>And we can also get a $\Delta$ BIC value using the method <code class="docutils literal notranslate"><span class="pre">calc_delta_bic</span></code>. We only need to specify which two models we would like to compare, with the second model BIC value being subtracted from the first model BIC value ($\Delta$ BIC = BIC $<em>{model1}$ - BIC $</em>{model2}$). The function will create the models, calculate the BIC values, and return the $\Delta$ BIC value for you!</p>
 <p>Keep in mind, it <span style="color: #4BA5DD;"><strong>ONLY returns the $\Delta$ BIC value</strong></span> and not the other data calculated.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">lq_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"quadratic"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">lp_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-3"><span class="n">qp_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-4">
-</span><span id="line-5"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linear vs. Quadratic </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">lq_delta_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Linear vs. Precession </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">lp_delta_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic vs. Precession </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">qp_delta_bic_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lq_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">)</span>
+<span class="n">lp_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+<span class="n">qp_delta_bic_value</span> <span class="o">=</span> <span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">calc_delta_bic</span><span class="p">(</span><span class="s2">&quot;quadratic&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear vs. Quadratic </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">lq_delta_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Linear vs. Precession </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">lp_delta_bic_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quadratic vs. Precession </span><span class="se">\u0394</span><span class="s2"> BIC: </span><span class="si">{</span><span class="n">qp_delta_bic_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">Linear vs. Quadratic Δ BIC: 201.7289197556111
-</span><span id="line-2">Linear vs. Precession Δ BIC: -11.960292448110408
-</span><span id="line-3">Quadratic vs. Precession Δ BIC: -213.6892122037215
-</span></code></pre></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Linear vs. Quadratic Δ BIC: 201.7289197556111
+Linear vs. Precession Δ BIC: -11.960292448110408
+Quadratic vs. Precession Δ BIC: -213.6892122037215
+</pre></div>
 </div>
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
 <section id="step-6-plot-your-data">
-<h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#step-6-plot-your-data'"><span>#</span></a></h3>
+<h3>🔷 <strong>STEP 6:</strong> Plot your data!<a class="headerlink" href="#step-6-plot-your-data" title="Link to this heading"><span>#</span></a></h3>
 <p>Now you can use the model data dictionaries for plotting methods. Available plotting methods include:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">plot_model</span></code>: This will plot the model predicted mid-times. This takes in a model data dictionary.</p></li>
@@ -356,41 +394,41 @@
 <p>🔹 For the Linear Model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
-</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="line-3"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can plot this model</span>
+<span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/83d309ebaf155aa98d36d938963780308ec8e332be4bf3ac68cfd92187e64c0f.png" src="_images/83d309ebaf155aa98d36d938963780308ec8e332be4bf3ac68cfd92187e64c0f.png"/>
+<img alt="_images/13f890b68dd5520a917594d5cfe5e6a5b15d59a694a9df1a8b41bca8e44c56f2.png" src="_images/13f890b68dd5520a917594d5cfe5e6a5b15d59a694a9df1a8b41bca8e44c56f2.png" />
 </div>
 </div>
 <p>🔹 For the Quadratic Model</p>
-<p>To see the quadratic effect in the data (which is very small compared to the linear term values) let’s use the <code class="docutils literal notranslate"><span class="pre">subtract_lin_params</span></code> arg in the method below with the value <code class="docutils literal notranslate"><span class="pre">True</span></code>. This will subtract the linear terms from the data so we can see the pattern of the smaller quadratic terms.</p>
+<p>To see the quadratic effect in the data (which is very small compared to the linear term values) let’s use the <code class="docutils literal notranslate"><span class="pre">subtract_lin_params</span></code> argument in the method below with the value <code class="docutils literal notranslate"><span class="pre">True</span></code>. This will subtract the linear terms from the data so we can see the pattern of the smaller quadratic terms.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># Now we can plot this model</span>
-</span><span id="line-2"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-3"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can plot this model</span>
+<span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d951e5017e2809b6293bc3e9fed7038f28d9dd832cb375649e416e1d5445456b.png" src="_images/d951e5017e2809b6293bc3e9fed7038f28d9dd832cb375649e416e1d5445456b.png"/>
+<img alt="_images/1fa80f9b1724617509e8546f646a1de27af7c5caa537f178ba88054ac8a2502d.png" src="_images/1fa80f9b1724617509e8546f646a1de27af7c5caa537f178ba88054ac8a2502d.png" />
 </div>
 </div>
 <p>🔹 For the Precession Model</p>
-<p>To see the non-linear effect in the data, we subtract the linear parameters as we did above. We can also set the arg <code class="docutils literal notranslate"><span class="pre">show_occultations</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> to see the occultations plotted seperately.</p>
+<p>To see the non-linear effect in the data, we subtract the linear parameters as we did above by setting <code class="docutils literal notranslate"><span class="pre">subtract_lin_params</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>. We can also set the argument <code class="docutils literal notranslate"><span class="pre">show_occultations</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> to see the occultations plotted seperately.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_occultations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">precession_model_data</span><span class="p">,</span> <span class="n">subtract_lin_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_occultations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/c23019b960d9ed3065e86fc7bdd992a1eccc9f7a8af039318dda33f32485a56c.png" src="_images/c23019b960d9ed3065e86fc7bdd992a1eccc9f7a8af039318dda33f32485a56c.png"/>
+<img alt="_images/fd134829ae4909b2ec8074e7738d5ead73fbc06bd160cb4642a399a5cec5746d.png" src="_images/fd134829ae4909b2ec8074e7738d5ead73fbc06bd160cb4642a399a5cec5746d.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -399,25 +437,25 @@
 <p>🔹 For the Linear Model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">linear_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/5dad0cca062084447120358eb3b7653144e8885d3809c93167eac3359aeffdc8.png" src="_images/5dad0cca062084447120358eb3b7653144e8885d3809c93167eac3359aeffdc8.png"/>
+<img alt="_images/cca3aa88737bbe72454d2ba15fd02f120fbdf420ba01d6a107a691c3bfee83dc.png" src="_images/cca3aa88737bbe72454d2ba15fd02f120fbdf420ba01d6a107a691c3bfee83dc.png" />
 </div>
 </div>
 <p>🔹 For the Quadratic Model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_timing_uncertainties</span><span class="p">(</span><span class="n">quadratic_model_data</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/d5527208d7093f4aade40eff72f4cf96fc7f44fbcad5a5db8bd32b2faec31ef4.png" src="_images/d5527208d7093f4aade40eff72f4cf96fc7f44fbcad5a5db8bd32b2faec31ef4.png"/>
+<img alt="_images/75c71f6d7db0fbc0b1d93f4a5d1af905376c833206799cb479685e3e1be58334.png" src="_images/75c71f6d7db0fbc0b1d93f4a5d1af905376c833206799cb479685e3e1be58334.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -425,24 +463,24 @@
 <h4>🔹 The O-C Plot<a class="headerlink" href="#the-o-c-plot" title="Link to this heading"><span>#</span></a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">(</span><span class="s2">&quot;quadratic&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/9f70e754ab44d96efc13e17bed15bc45f8bcebc4aa800a8e9fd7db51ef0e0b3b.png" src="_images/9f70e754ab44d96efc13e17bed15bc45f8bcebc4aa800a8e9fd7db51ef0e0b3b.png"/>
+<img alt="_images/39445992cc31fa6835c61df27e9d0cfceef51a1ac75ab62cceac9498fe6463ce.png" src="_images/39445992cc31fa6835c61df27e9d0cfceef51a1ac75ab62cceac9498fe6463ce.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">(</span><span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_oc_plot</span><span class="p">(</span><span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/de0914a13ae34ade6f0844ff7b9bd0a6f621795e3f2fec0a0998caafc009b805.png" src="_images/de0914a13ae34ade6f0844ff7b9bd0a6f621795e3f2fec0a0998caafc009b805.png"/>
+<img alt="_images/cc7d7470917c9535eb1c9ae5baf16d817a95b82703399dcbc176133ee949682c.png" src="_images/cc7d7470917c9535eb1c9ae5baf16d817a95b82703399dcbc176133ee949682c.png" />
 </div>
 </div>
 <hr style="border: 1px dotted #ff0000; border-style: none none dotted; color: #D64309;"/></section>
@@ -451,43 +489,37 @@
 <p>Comparing a linear model and a quadratic model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"quadratic"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:100: RuntimeWarning: invalid value encountered in divide
-</span><span id="line-2">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span><span id="line-3">/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:234: RuntimeWarning: invalid value encountered in divide
-</span><span id="line-4">  period_tra = np.divide(mid_time_diff_tra, epochs_diff_tra)[-1] if x[tra_mask].size &gt; 0 else np.nan
-</span></code></pre></div>
-</div>
-<img alt="_images/5b9e61285752a9e529058c98ecf8c3a1919467508b34a62ce85e503b1fcbef37.png" src="_images/5b9e61285752a9e529058c98ecf8c3a1919467508b34a62ce85e503b1fcbef37.png"/>
+<img alt="_images/35e23cedfe012b133f3aee402868be4c1a8144f1a5a0af69aac269b799a43dd2.png" src="_images/35e23cedfe012b133f3aee402868be4c1a8144f1a5a0af69aac269b799a43dd2.png" />
 </div>
 </div>
 <p>Comparing a linear model and a precession model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/904571b8dcfa64906207ed39474bbbaa2d516350bf1e963d706fe96f482c8846.png" src="_images/904571b8dcfa64906207ed39474bbbaa2d516350bf1e963d706fe96f482c8846.png"/>
+<img alt="_images/b9bcd9a69f7a4d4057ca6810e6aa7fc4875f5e81492a309e37b57473a207bc67.png" src="_images/b9bcd9a69f7a4d4057ca6810e6aa7fc4875f5e81492a309e37b57473a207bc67.png" />
 </div>
 </div>
 <p>Comparing a quadratic model and a precession model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_delta_bic</span><span class="p">(</span><span class="s2">&quot;quadratic&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/41ade9c526d1790ace7ac0e51c9fef3bd92f6ad10d538b1220b850a0b70b4597.png" src="_images/41ade9c526d1790ace7ac0e51c9fef3bd92f6ad10d538b1220b850a0b70b4597.png"/>
+<img alt="_images/004b30d335582be66e4d7e25778577bfc3f6d51215a18899a09913fabac96f39.png" src="_images/004b30d335582be66e4d7e25778577bfc3f6d51215a18899a09913fabac96f39.png" />
 </div>
 </div>
 </section>
@@ -496,103 +528,140 @@
 <p>As of right now, this is only available for comparing a linear model and a quadratic model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_analytical_delta_bic_quadratic</span><span class="p">()</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_running_analytical_delta_bic_quadratic</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4f6bb867d3fa3694ba8916716a7b8025165bbb97179642bda2061227916c5c2d.png" src="_images/4f6bb867d3fa3694ba8916716a7b8025165bbb97179642bda2061227916c5c2d.png"/>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:1918: RuntimeWarning: invalid value encountered in sqrt
+  numerical_delta_bic_errs[i] = np.sqrt((2*(i-5)))
+/Users/maliabarker/Desktop/susie/docs_env/lib/python3.12/site-packages/susie/ephemeris.py:1919: RuntimeWarning: invalid value encountered in sqrt
+  analytical_delta_bic_errs[i] = np.sqrt((2*(i-5)))
+</pre></div>
+</div>
+<img alt="_images/20b31ac6bcc64f8de73987d050d8d7fad9923f7314c5acb425c904227391019a.png" src="_images/20b31ac6bcc64f8de73987d050d8d7fad9923f7314c5acb425c904227391019a.png" />
 </div>
 </div>
 </section>
 <section id="plot-the-omit-one-delta-bic">
 <h4>🔹 Plot the omit one $\Delta$ BIC<a class="headerlink" href="#plot-the-omit-one-delta-bic" title="Link to this heading"><span>#</span></a></h4>
+<p>For these plots, we have the option of highlighting outliers, or points that shift the value of $\Delta$ BIC by a specified percentage when omitted. We can specific the percentage we want to highlight using the argument <code class="docutils literal notranslate"><span class="pre">outlier_percentage</span></code>. For example, setting <code class="docutils literal notranslate"><span class="pre">outlier_percentage</span></code> to 25 will highlight any data point that shifts the value of $\Delta$ BIC by 25% or more.</p>
 <p>Comparing a linear model and a quadratic model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"quadratic"</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/645cfcea8bdc82d22e34927745d22cd09025e9cecc949e5d7a3511823a3b9918.png" src="_images/645cfcea8bdc82d22e34927745d22cd09025e9cecc949e5d7a3511823a3b9918.png"/>
+<img alt="_images/24498d8ce8b06648121304d484cf575f0b19a074d1e91bf2b78bc57014fc9aa9.png" src="_images/24498d8ce8b06648121304d484cf575f0b19a074d1e91bf2b78bc57014fc9aa9.png" />
 </div>
 </div>
 <p>Comparing a linear model and a precession model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">,</span> <span class="n">outlier_percentage</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/8b51e2c3bb9fd41371b8c153ec712d6113e0b3482a7c1dd024c143ff7d99156a.png" src="_images/8b51e2c3bb9fd41371b8c153ec712d6113e0b3482a7c1dd024c143ff7d99156a.png"/>
+<img alt="_images/10c79bb825c9686df5b9da1540473f43254a2b4ca8f821233cbf8368b041fbd4.png" src="_images/10c79bb825c9686df5b9da1540473f43254a2b4ca8f821233cbf8368b041fbd4.png" />
 </div>
 </div>
 <p>Comparing a quadratic model and a precession model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">"quadratic"</span><span class="p">,</span> <span class="s2">"precession"</span><span class="p">)</span>
-</span><span id="line-2"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephemeris_obj1</span><span class="o">.</span><span class="n">plot_delta_bic_omit_one</span><span class="p">(</span><span class="s2">&quot;quadratic&quot;</span><span class="p">,</span> <span class="s2">&quot;precession&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/b239d9d6411053746a34d508756563477f5a40c88a7ae8135800184b086aeebf.png" src="_images/b239d9d6411053746a34d508756563477f5a40c88a7ae8135800184b086aeebf.png"/>
+<img alt="_images/a68348ed0789f427a1d29f2082343d18fed55027a181f2a9ab65992c9cd94709.png" src="_images/a68348ed0789f427a1d29f2082343d18fed55027a181f2a9ab65992c9cd94709.png" />
 </div>
 </div>
-<hr style="color: #D64309;"/>
-<hr style="color: #D64309;"/></section>
+<hr style="color: #D64309;">
+<hr style="color: #D64309;"></section>
 </section>
-</hr></hr></section>
 </section>
-</div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
-<div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
-<ul>
-<li><a :data-current="activeSection === '#basic-usage'" class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
-<li><a :data-current="activeSection === '#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository'" class="reference internal" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
-<li><a :data-current="activeSection === '#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object'" class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
-<li><a :data-current="activeSection === '#step-3-create-the-ephemeris-object-and-add-your-timingdata-object'" class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
-<li><a :data-current="activeSection === '#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic'" class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
-<li><a :data-current="activeSection === '#the-linear-model'" class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
-<li><a :data-current="activeSection === '#example'" class="reference internal" href="#example">🟢  EXAMPLE</a></li>
-<li><a :data-current="activeSection === '#the-quadratic-model'" class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
-<li><a :data-current="activeSection === '#id1'" class="reference internal" href="#id1">🟢  EXAMPLE</a></li>
-<li><a :data-current="activeSection === '#the-precession-model'" class="reference internal" href="#the-precession-model">🔹 The <strong>Precession</strong> Model</a></li>
-<li><a :data-current="activeSection === '#id2'" class="reference internal" href="#id2">🟢  EXAMPLE</a></li>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+    
+        <div id="show_right_sidebar">
+            <p><a class="toggle_right_sidebar" href="#"><span class="icon">&lt;</span><span>Page contents</span></a></p>
+        </div>
+
+        <div id="right_sidebar">
+            <p><a class="toggle_right_sidebar" href="#"><span class="icon">&gt;</span><span>Page contents:</span></a></p>
+            <div class="page_toc">
+                <ul>
+<li><a class="reference internal" href="#">🐷 Susie Basic Timing and Ephemeris Object Usage</a><ul>
+<li><a class="reference internal" href="#basic-usage">🔵 Basic Usage</a><ul>
+<li><a class="reference internal" href="#step-1-download-the-timing-data-that-includes-occultations-from-the-github-repository">🔷 <strong>STEP 1:</strong> Download the timing data (that includes occultations) from the GitHub repository</a></li>
+<li><a class="reference internal" href="#step-2-add-your-transit-and-occultation-data-to-the-timingdata-object">🔷 <strong>STEP 2:</strong> Add your transit and occultation data to the TimingData object.</a></li>
+<li><a class="reference internal" href="#step-3-create-the-ephemeris-object-and-add-your-timingdata-object">🔷 <strong>STEP 3:</strong> Create the Ephemeris object and add your TimingData object.</a></li>
+<li><a class="reference internal" href="#step-4-fit-your-transit-time-data-to-an-ephemeris-model-you-can-specify-what-type-of-model-with-the-options-linear-or-quadratic">🔷 <strong>STEP 4:</strong> Fit your transit time data to an ephemeris model. You can specify what type of model with the options ‘linear’ or ‘quadratic’.</a><ul>
+<li><a class="reference internal" href="#the-linear-model">🔹 The <strong>Linear</strong> Model</a></li>
+<li><a class="reference internal" href="#example">🟢  EXAMPLE</a></li>
+<li><a class="reference internal" href="#the-quadratic-model">🔹 The <strong>Quadratic</strong> Model</a></li>
+<li><a class="reference internal" href="#id1">🟢  EXAMPLE</a></li>
+<li><a class="reference internal" href="#the-precession-model">🔹 The <strong>Precession</strong> Model</a></li>
+<li><a class="reference internal" href="#id2">🟢  EXAMPLE</a></li>
 </ul>
 </li>
-<li><a :data-current="activeSection === '#step-5-get-bic-values'" class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
-<li><a :data-current="activeSection === '#step-6-plot-your-data'" class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
-<li><a :data-current="activeSection === '#plot-the-model-calculated-mid-times'" class="reference internal" href="#plot-the-model-calculated-mid-times">🔹 Plot the model calculated mid-times</a></li>
-<li><a :data-current="activeSection === '#plot-the-model-uncertainties'" class="reference internal" href="#plot-the-model-uncertainties">🔹 Plot the model uncertainties</a></li>
-<li><a :data-current="activeSection === '#the-o-c-plot'" class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
-<li><a :data-current="activeSection === '#plot-the-running-delta-bic'" class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
-<li><a :data-current="activeSection === '#plot-the-analytical-running-delta-bic'" class="reference internal" href="#plot-the-analytical-running-delta-bic">🔹 Plot the analytical running $\Delta$ BIC</a></li>
-<li><a :data-current="activeSection === '#plot-the-omit-one-delta-bic'" class="reference internal" href="#plot-the-omit-one-delta-bic">🔹 Plot the omit one $\Delta$ BIC</a></li>
+<li><a class="reference internal" href="#step-5-get-bic-values">🔷 <strong>STEP 5:</strong> Get BIC Values</a></li>
+<li><a class="reference internal" href="#step-6-plot-your-data">🔷 <strong>STEP 6:</strong> Plot your data!</a><ul>
+<li><a class="reference internal" href="#plot-the-model-calculated-mid-times">🔹 Plot the model calculated mid-times</a></li>
+<li><a class="reference internal" href="#plot-the-model-uncertainties">🔹 Plot the model uncertainties</a></li>
+<li><a class="reference internal" href="#the-o-c-plot">🔹 The O-C Plot</a></li>
+<li><a class="reference internal" href="#plot-the-running-delta-bic">🔹 Plot the running $\Delta$ BIC</a></li>
+<li><a class="reference internal" href="#plot-the-analytical-running-delta-bic">🔹 Plot the analytical running $\Delta$ BIC</a></li>
+<li><a class="reference internal" href="#plot-the-omit-one-delta-bic">🔹 Plot the omit one $\Delta$ BIC</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</div>
-</aside>
-</main>
-</div>
-</div><footer class="py-6 border-t border-border md:py-0">
-<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-<div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2023, Boise State University Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 8.1.3</a></p>
-</div>
-</div>
-</footer>
-</div>
-<script src="_static/documentation_options.js?v=cc8b8c85"></script>
-<script src="_static/doctools.js?v=9bcbadda"></script>
-<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-<script defer="defer" src="_static/theme.js?v=073f68d9"></script>
-</body>
+</li>
+</ul>
+
+            </div>
+        </div>
+    
+
+      <div class="clearer"></div>
+    </div>
+    <div class="button_nav_wrapper">
+        <div class="button_nav">
+            <div class="left">
+                
+                <a href="FAQ.html">
+                    <span class="icon">&lt;</span><span>Frequently Asked Questions</span></a>
+                
+            </div>
+
+            <div class="right">
+                
+                    <a href="special_usage.html"><span>🐷 Susie Special Timing Object Usage</span><span class="icon">&gt;</span></a>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2023, Boise State University.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+
+<p id="theme_credit">Styled using the <a href="https://github.com/piccolo-orm/piccolo_theme">Piccolo Theme</a></p>
+  </body>
 </html>
