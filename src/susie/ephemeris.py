@@ -5,14 +5,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from lmfit import Model
+from scipy.optimize import curve_fit
 from astropy.units import Quantity
 import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astroplan import FixedTarget, Observer, EclipsingSystem, AtNightConstraint, AltitudeConstraint, is_event_observable
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
-from susie.timing_data import TimingData # Use this for package pushes
-# from .timing_data import TimingData # Use this for running tests
+# from susie.timing_data import TimingData # Use this for package pushes
+from .timing_data import TimingData # Use this for running tests
 # from timing_data import TimingData # Use this for running this file
 
 class BaseModel(ABC):
@@ -148,7 +149,7 @@ class LinearModel(BaseModel):
         result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask]
         return result
     
-    def fit(self, x, y, yerr, tra_or_occ):
+    def fit(self, x, y, yerr, tra_or_occ, **kwargs):
         """Fits observed data to a linear model.
 
         Compares the model data from the TimingData object to the linear fit calculated with 
@@ -167,6 +168,13 @@ class LinearModel(BaseModel):
             tra_or_occ: numpy.ndarray[str]
                 An array indicating the type of each event, with entries being either 
                 "tra" for transit or "occ" for occultation.
+            
+        Keyword Arguments
+        ------------------    
+            init_params: dict (Optional)
+                A dictionary containing inital parameter values to pass to the LMfit model. Includes:
+                    * 'period': Estimated orbital period of the exoplanet (in units of days),
+                    * 'conjunction_time': Time of conjunction of exoplanet transit or occultation
 
         Returns
         ------- 
@@ -183,9 +191,9 @@ class LinearModel(BaseModel):
                 'conjunction_time_err': Uncertainty associated with conjunction_time
                 }
         """
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = self.get_initial_params(x, y, tra_or_occ)
         params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
@@ -243,7 +251,8 @@ class QuadraticModel(BaseModel):
         T0 = y[np.where(x == 0) if len(np.where(x == 0)[0]) > 0 else 0]
         return_data = {
             "conjunction_time": T0,
-            "period": period
+            "period": period,
+            "decay_rate": 0.0
         }
         return return_data
 
@@ -282,7 +291,7 @@ class QuadraticModel(BaseModel):
         result[occ_mask] = (T0 + 0.5*P) + P*E[occ_mask] + 0.5*dPdE*np.power(E[occ_mask], 2)
         return result
     
-    def fit(self, x, y, yerr, tra_or_occ):
+    def fit(self, x, y, yerr, tra_or_occ, **kwargs):
         """Fits observed data to a quadratic model.
 
         Compares the observed data from the TimingData object to the quadratic fit calculated with quad_fit 
@@ -301,6 +310,14 @@ class QuadraticModel(BaseModel):
             tra_or_occ: numpy.ndarray[str]
                 An array indicating the type of each event, with entries being either 
                 "tra" for transit or "occ" for occultation.
+        
+        Keyword Arguments
+        ------------------
+            init_params: dict (Optional)
+                A dictionary containing inital parameter values to pass to the LMfit model. Includes:
+                    * 'period': Estimated orbital period of the exoplanet (in units of days),
+                    * 'conjunction_time': Time of conjunction of exoplanet transit or occultation
+                    * 'decay_rate': The exoplanet period change with respect to epoch (in units of days)
 
         Returns
         ------- 
@@ -318,8 +335,8 @@ class QuadraticModel(BaseModel):
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.quad_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = self.get_initial_params(x, y, tra_or_occ)
-        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], dPdE=0.0, tra_or_occ_enum=tra_or_occ_enum)
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
+        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], dPdE=init_params["decay_rate"], tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             "period": result.params["P"].value,
@@ -333,32 +350,36 @@ class QuadraticModel(BaseModel):
     
 
 class PrecessionModel(BaseModel):
-    """ Subclass of BaseModel that implements a precession fit."""
+    """Subclass of BaseModel that implements fitting of timing data to a precession orbital model."""
     def get_initial_params(self, x, y, yerr, tra_or_occ):
-        """Computes and returns the initial parameters for the model fit method.
+        """Computes and returns initial parameters for the model fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
         using the provided timing data. The conjunction time is set to the first 
-        transit time, while the orbital period is estimated as the median of the 
-        differences between consecutive mid-times of transits and occultations.
+        transit time, while the orbital period is estimated as the difference 
+        between the first and last mid-times divided by the difference between 
+        the first and last epoch. If occultations are included, the final estimated 
+        period is the average of the transit and occultation period estimates.
 
         Parameters
         ----------
-        x : numpy.ndarray[int]
-            The epoch data as recieved from the TimingData object.
-        y : numpy.ndarray[float]
-            The mid-time data as received from the TimingData object.
-        tra_or_occ : numpy.ndarray[str]
-            An array indicating the type of each event, with entries being either 
-            "tra" for transit or "occ" for occultation.
+        x : numpy.ndarray of int
+            Epoch data as received from the TimingData object.
+        y : numpy.ndarray of float
+            Mid-time data as received from the TimingData object.
+        tra_or_occ : numpy.ndarray of str
+            Array indicating the event type for each observation, with entries 
+            either "tra" for transit or "occ" for occultation.
 
         Returns
         -------
         dict
-            A dictionary containing:
-            - "conjunction_time" (float): The mid-time of the transit events corresponding to Epoch = 0.
-            - "period" (float): The median time difference between consecutive events 
-            (transits and occultations).
+            Dictionary containing initial parameter estimates:
+            - "conjunction_time" (float): Mid-time at epoch zero.
+            - "period" (float): Estimated orbital period (days).
+            - "eccentricity" (float): Orbital eccentricity (default 0.001).
+            - "pericenter" (float): Argument of pericenter in radians (default 2.0).
+            - "precession_rate" (float): Rate of pericenter change per epoch (default 0.001).
         """
         tra_mask = tra_or_occ == "tra"
         occ_mask = tra_or_occ == "occ"
@@ -404,83 +425,110 @@ class PrecessionModel(BaseModel):
         # }
         return_data = {
             "conjunction_time": T0,
-            "period": period
+            "period": period,
+            "eccentricity": 0.001,
+            "pericenter": 2.0,
+            "precession_rate": 0.001
         }
         return return_data
     
     def _anomalistic_period(self, P, dwdE):
-       """Calculates the anomalistic period given values of sidereal period (P_s) and precession rate (dwdE).
+        """
+        Calculates the anomalistic period given the sidereal period and precession rate.
 
-       Uses the equation:
-       P / (1 - (1/(2*pi)) * dwdE)
+        Uses the formula:
 
-       Parameters
-       ----------
-        P: float
-           The exoplanet sideral orbital period.
-        dwdE: float
-           The precession rate, which is the change in pericenter with respect to epoch.
+        .. math::
 
-        Returns
-        -------
-           A float of the calculated anomalistic period.
-       """
-       result = P/(1.0 - ((1.0/(2.0*np.pi))*dwdE))
-       return result
-    
-    def _pericenter(self, E, w0, dwdE):
-       """Calculates the pericenter given a list of epochs and values of argument of pericenter and precession rate.
+            P_a = \frac{P}{1 - \frac{1}{2\pi} \frac{d\omega}{dE}}
 
-       Uses the equation:
-        w0 + dwdE * E
-
-       Parameters
-       ----------
-        E: numpy.ndarray[int]
-            The epoch data as recieved from the TimingData object.
-        w0: int
-            The argument of pericenter.
-        dwdE: float
-            The precession rate, which is the change in pericenter with respect to epoch.
-        
-        Returns
-        -------
-           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.
-       """
-       result = w0 + (dwdE*E)
-       return result
-    
-    def precession_fit(self, E, T0, P, e, w0, dwdE, tra_or_occ_enum):
-        """Calculates a precession function with given data.
-
-        Uses the equation 
-         -  conjunction time + (epochs * period) - ((eccentricity * anomalistic period) / pi) * cos(pericenter) for transit observations
-         -  conjunction time + (anomalistic period / 2) + epochs * period + ((eccentricity * anomalistic period) / pi) * cos(pericenter) for occultation observations as a precession function for the LMfit Model.
-        
         Parameters
         ----------
-            E: numpy.ndarray[int]
-                The epoch data as recieved from the TimingData object.
-            T0: float
-                The initial mid-time, also known as conjunction time.
-            P: float
-                The exoplanet sideral orbital period.
-            e: float
-                The eccentricity.
-            w0: int
-                The argument of pericenter.
-            dwdE: float
-                Precession rate, which is change in pericenter with respect to epoch.
-            tra_or_occ_enum: numpy.ndarray[int]
-                An array indicating the type of each event, with enumerated entries being either 
-                0 for transit or 1 for occultation.
-        
+        P : float
+            Sidereal orbital period of the exoplanet (in days).
+        dwdE : float
+            Precession rate, the change in pericenter with respect to epoch (radians per epoch).
+
         Returns
         -------
-            result: numpy.ndarray[float]
-                A precession function to be used with the LMfit Model, returned as:
-                :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
-                :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`
+        float
+            The calculated anomalistic period (in days).
+        """
+        result = P/(1.0 - ((1.0/(2.0*np.pi))*dwdE))
+        return result
+    
+    def _pericenter(self, E, w0, dwdE):
+        """
+        Calculates the argument of pericenter for given epochs.
+
+        Uses the linear relation:
+
+        .. math::
+
+            \omega(E) = \omega_0 + \frac{d\omega}{dE} \cdot E
+
+        Parameters
+        ----------
+        E : numpy.ndarray of int
+            Epoch data as received from the TimingData object.
+        w0 : float
+            Argument of pericenter at epoch zero (in radians).
+        dwdE : float
+            Precession rate, i.e., change in pericenter per epoch (radians per epoch).
+
+        Returns
+        -------
+        numpy.ndarray of float
+            Calculated pericenter values for each epoch.
+        """
+        result = w0 + (dwdE*E)
+        return result
+    
+    def precession_fit(self, E, T0, P, e, w0, dwdE, tra_or_occ_enum):
+        """
+        Calculates the precession function for given orbital data.
+
+        This function computes the expected mid-times for each epoch based on the 
+        precession model, using different formulas for transit and occultation events:
+
+        - For transit observations:
+        
+        .. math::
+
+            T(E) = T_0 + E \cdot P - \frac{e \cdot P_a}{\pi} \cos \left( \omega(E) \right)
+
+        - For occultation observations:
+
+        .. math::
+
+            T(E) = T_0 + \frac{P_a}{2} + E \cdot P + \frac{e \cdot P_a}{\pi} \cos \left( \omega(E) \right)
+
+        where
+
+        - :math:`P_a` is the anomalistic period calculated from :math:`P` and the precession rate,
+        - :math:`\omega(E)` is the pericenter angle as a function of epoch.
+
+        Parameters
+        ----------
+        E : numpy.ndarray of int
+            Epoch data as received from the TimingData object.
+        T0 : float
+            Initial mid-time (conjunction time).
+        P : float
+            Sidereal orbital period of the exoplanet.
+        e : float
+            Orbital eccentricity.
+        w0 : float
+            Argument of pericenter at epoch zero (in radians).
+        dwdE : float
+            Precession rate (change in pericenter per epoch, in radians).
+        tra_or_occ_enum : numpy.ndarray of int
+            Array indicating event types: 0 for transit, 1 for occultation.
+
+        Returns
+        -------
+        result : numpy.ndarray of float
+            Calculated mid-times for each epoch using the precession model.
         """
         result = np.zeros(len(E))
         P_a = self._anomalistic_period(P, dwdE)
@@ -490,53 +538,82 @@ class PrecessionModel(BaseModel):
         result[occ_mask] = T0 + P_a/2.0 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(E[occ_mask], w0, dwdE))
         return result
 
-    def fit(self, x, y, yerr, tra_or_occ):
-        """Fits observed data to a precession model.
+    def fit(self, x, y, yerr, tra_or_occ, **kwargs):
+        """Fits observed timing data to a precession model.
 
-        Compares the observed data from the TimingData object to the precession fit calculated with 
-        precession_fit method. Then minimizes the difference between the two sets of data. The LMfit Model 
-        then returns the parameters of the precession function corresponding to period, conjunction time, 
-        pericenter change by epoch, eccentricity, pericenter, and their respective errors. These parameters 
-        are returned in a dictionary to the user.
+        This method compares observed mid-time data from the `TimingData` object with the 
+        model values calculated by the `precession_fit` function. It uses the LMfit 
+        library to minimize the difference between the observed and model data, optimizing 
+        parameters including orbital period, conjunction time, eccentricity, pericenter, 
+        and the rate of pericenter change per epoch.
 
         Parameters
         ----------
-            x: numpy.ndarray[int]
-                The epoch data as recieved from the TimingData object.
-            y: numpy.ndarray[float]
-                The mid-time data as recieved from the TimingData object.
-            yerr: numpy.ndarray[float]
-                The mid-time error data as recieved from the TimingData object.
-            tra_or_occ: numpy.ndarray[str]
-                An array indicating the type of each event, with entries being either 
-                "tra" for transit or "occ" for occultation.
+        x : numpy.ndarray of int
+            Epoch data as received from the TimingData object.
+        y : numpy.ndarray of float
+            Mid-time data as received from the TimingData object.
+        yerr : numpy.ndarray of float
+            Mid-time error data as received from the TimingData object.
+        tra_or_occ : numpy.ndarray of str
+            Array indicating the event type for each data point, with values `"tra"` for transit or `"occ"` for occultation.
+        
+        Keyword Arguments
+        -----------------
+        init_params : dict, optional
+            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:
+
+            For `'linear'`:
+                - `'period'` (float): Estimated orbital period (in days).
+                - `'conjunction_time'` (float): Reference time of mid-transit or occultation.
+
+            For `'quadratic'`:
+                - All `'linear'` parameters.
+                - `'decay_rate'` (float): Change in period per epoch (in days/epoch).
+
+            For `'precession'`:
+                - All `'linear'` parameters.
+                - `'eccentricity'` (float): Orbital eccentricity (unitless).
+                - `'pericenter'` (float): Argument of pericenter (in radians).
+                - `'precession_rate'` (float): Rate of pericenter precession per epoch (in radians/epoch).
 
         Returns
-        ------- 
-        return_data: dict
-            A dictionary of best-fit parameter values from the fit model.
-            Example:
-                {
-                 'period': Estimated orbital period of the exoplanet (in units of days),
-                 'period_err': Uncertainty associated with orbital period (in units of days),
-                 'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                 'conjunction_time_err': Uncertainty associated with conjunction time,
-                 'eccentricity': The eccentricity of the exoplanet's orbit,
-                 'eccentricity_err': The uncertainties associated with eccentricity,
-                 'pericenter': The argument of pericenter of the exoplanet,
-                 'pericenter_err': The uncertainties associated with pericenter,
-                 'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
-                 'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
-                }
+        -------
+        return_data : dict
+            Dictionary of best-fit parameter values from the fit model. Included keys and their descriptions:
+
+            - 'period' : float
+                Estimated orbital period (days).
+            - 'period_err' : float
+                Uncertainty in the orbital period (days).
+            - 'conjunction_time' : float
+                Time of conjunction (days).
+            - 'conjunction_time_err' : float
+                Uncertainty in conjunction time (days).
+            - 'eccentricity' : float
+                Orbital eccentricity.
+            - 'eccentricity_err' : float
+                Uncertainty in eccentricity.
+            - 'pericenter' : float
+                Argument of pericenter (radians).
+            - 'pericenter_err' : float
+                Uncertainty in pericenter.
+            - 'pericenter_change_by_epoch' : float
+                Precession rate (radians per epoch).
+            - 'pericenter_change_by_epoch_err' : float
+                Uncertainty in precession rate.
         """
-        # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
+        # NOTE:
+            # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = self.get_initial_params(x, y, yerr, tra_or_occ)
-        # TODO: Can put bounds between 0 and 2pi for omega0
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
+        if init_params is None:
+            init_params = self.get_initial_params(x, y, yerr, tra_or_occ)
+        # Can put bounds between 0 and 2pi for omega0 THIS DOES NOT WORK, WILL MESS UP RESULTS
         # TODO: Try out bound for d omega dE for abs(dwdE) < 2pi/delta E
         # params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=init_params["eccentricity"], min=0, max=1), w0=dict(value=init_params["pericenter"], min=0, max=2*np.pi), dwdE=dict(value=init_params["precession_rate"]), tra_or_occ_enum=tra_or_occ_enum)
-        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=0.001, min=0, max=1), w0=2.0, dwdE=dict(value=0.001), tra_or_occ_enum=tra_or_occ_enum)
+        params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], e=dict(value=init_params["eccentricity"], min=0, max=1), w0=init_params["pericenter"], dwdE=dict(value=init_params["precession_rate"]), tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
             "period": result.params["P"].value,
@@ -554,62 +631,87 @@ class PrecessionModel(BaseModel):
 
 
 class ModelFactory:
-    """Factory class for selecting which type of model class (linear, quadratic or precession) to use."""
-    @staticmethod
-    def create_model(model_type, x, y, yerr, tra_or_occ):
-        """Instantiates the appropriate BaseModel subclass and runs fit_model method.
+    """
+    Factory class for creating and fitting model instances based on the specified model type.
 
-        Based on the given user input of model type (linear, quadratic or precession) the factory will 
-        create the corresponding subclass of BaseModel and run the fit_model method to recieve the 
-        model return data dictionary.
+    This class provides a static interface to instantiate the appropriate `BaseModel` subclass
+    (either `'linear'`, `'quadratic'`, or `'precession'`) and fit it to timing data.
+    """
+    @staticmethod
+    def create_model(model_type, x, y, yerr, tra_or_occ, **kwargs):
+        """Instantiates the appropriate `BaseModel` subclass and fits it to the data.
+
+        Given a user-specified model type (`'linear'`, `'quadratic'`, or `'precession'`),
+        this method uses the model factory to create the corresponding `BaseModel` subclass,
+        runs its `fit_model()` method, and returns the resulting dictionary of best-fit parameters.
         
         Parameters
         ----------
-            model_type: str
-                The name of the model to create, either 'linear', 'quadratic' or 'precession'.
-            x: numpy.ndarray[int]
-                The epoch data as recieved from the TimingData object.
-            y: numpy.ndarray[float]
-                The mid-time data as recieved from the TimingData object.
-            yerr: numpy.ndarray[float]
-                The mid-time error data as recieved from the TimingData object.
-            tra_or_occ: numpy.ndarray[str]
-                An array indicating the type of each event, with entries being either 
-                "tra" for transit or "occ" for occultation.
+        model_type : str
+            The type of model to fit. Must be one of:
+            - `'linear'`: Constant-period orbital model.
+            - `'quadratic'`: Linear model with a period change (e.g., tidal decay).
+            - `'precession'`: Model including apsidal precession.
+
+        Keyword Arguments
+        -----------------
+        init_params : dict, optional
+            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:
+
+            For `'linear'`:
+                - `'period'` (float): Estimated orbital period (in days).
+                - `'conjunction_time'` (float): Reference time of mid-transit or occultation.
+
+            For `'quadratic'`:
+                - All `'linear'` parameters.
+                - `'decay_rate'` (float): Change in period per epoch (in days/epoch).
+
+            For `'precession'`:
+                - All `'linear'` parameters.
+                - `'eccentricity'` (float): Orbital eccentricity (unitless).
+                - `'pericenter'` (float): Argument of pericenter (in radians).
+                - `'precession_rate'` (float): Rate of pericenter precession per epoch (in radians/epoch).
 
         Returns
-        ------- 
-            Model : dict
-                A dictionary of parameters from the fit model. If a linear model was chosen, these parameters are:
-                    * 'period': Estimated orbital period of the exoplanet (in units of days),
-                    * 'period_err': Uncertainty associated with orbital period (in units of days),
-                    * 'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                    * 'conjunction_time_err': Uncertainty associated with conjunction_time
-                If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:
-                    * 'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
-                    * 'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
-                If a precession model was chosen, the same varibales as linear are returned, and additional parameter is included in the dictionary:
-                    * 'eccentricity': The eccentricity of the exoplanet's orbit,
-                    * 'eccentricity_err': The uncertainties associated with eccentricity,
-                    * 'pericenter': The argument of pericenter of the exoplanet,
-                    * 'pericenter_err': The uncertainties associated with pericenter,
-                    * 'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
-                    * 'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
-        
+        -------
+        model_data : dict
+            Dictionary of best-fit parameters from the model, including:
+
+            Common to all models:
+                - `'model_type'`: Name of the model used (`'linear'`, `'quadratic'`, or `'precession'`).
+                - `'model_data'`: Array of predicted mid-times using best-fit parameters.
+                - `'period'`, `'period_err'`: Fitted orbital period and its uncertainty.
+                - `'conjunction_time'`, `'conjunction_time_err'`: Fitted time of conjunction and its uncertainty.
+
+            Additional for `'quadratic'`:
+                - `'period_change_by_epoch'`, `'period_change_by_epoch_err'`: Rate of period change per epoch and its uncertainty.
+
+            Additional for `'precession'`:
+                - `'eccentricity'`, `'eccentricity_err'`
+                - `'pericenter'`, `'pericenter_err'`
+                - `'pericenter_change_by_epoch'`, `'pericenter_change_by_epoch_err'`: Precession rate and its uncertainty.
+                    }
+
         Raises
         ------
-            ValueError:
-                If model specified is not a valid subclass of BaseModel, which is either 'linear', 'quadratic', or 'precession'.
+        ValueError
+            If `model_type` is not one of `'linear'`, `'quadratic'`, or `'precession'`.
         """
         models = {
-            'linear': LinearModel(),
-            'quadratic': QuadraticModel(),
-            'precession': PrecessionModel()
+            "linear": LinearModel,
+            "quadratic": QuadraticModel,
+            "precession": PrecessionModel
         }
-        if model_type not in models:
-            raise ValueError(f"Invalid model type: {model_type}")
-        model = models[model_type]
-        return model.fit(x, y, yerr, tra_or_occ)
+
+        try:
+            model_class = models[model_type]
+        except KeyError:
+            raise ValueError(
+                f"Invalid model type '{model_type}'. Expected one of: {', '.join(models.keys())}."
+            )
+
+        model = model_class()
+        return model.fit(x, y, yerr, tra_or_occ, **kwargs)
 
 
 class Ephemeris(object):
@@ -678,47 +780,63 @@ class Ephemeris(object):
         return x, y, yerr, tra_or_occ
     
     def _get_model_parameters(self, model_type, **kwargs):
-        """Creates the model object and returns model best-fit parameters.
-        
-        This method fetches data from the TimingData object to be used in the model fit. 
-        It creates the appropriate subclass of BaseModel using the Model factory, then runs 
-        the fit method to return the model best-fit parameters dictionary to the user.
+        """Creates and fits a model to the timing data, returning best-fit parameters.
+
+        This method retrieves timing data from the `TimingData` object, selects the appropriate
+        subclass of `BaseModel` using the `ModelFactory`, and fits the model to the data.
+        It returns a dictionary containing the model's best-fit parameters and associated metadata.
 
         Parameters
         ----------
-            model_type: str
-                Either 'linear', 'quadratic', or 'precession'. The model subclass specified to create and run.
+        model_type : str
+            The type of model to fit. Must be one of:
+            - `'linear'`: Constant-period orbital model.
+            - `'quadratic'`: Linear model with a period change (e.g., tidal decay).
+            - `'precession'`: Model including apsidal precession.
+
+        Keyword Arguments
+        -----------------
+        init_params : dict, optional
+            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:
+
+            For `'linear'`:
+                - `'period'` (float): Estimated orbital period (in days).
+                - `'conjunction_time'` (float): Reference time of mid-transit or occultation.
+
+            For `'quadratic'`:
+                - All `'linear'` parameters.
+                - `'decay_rate'` (float): Change in period per epoch (in days/epoch).
+
+            For `'precession'`:
+                - All `'linear'` parameters.
+                - `'eccentricity'` (float): Orbital eccentricity (unitless).
+                - `'pericenter'` (float): Argument of pericenter (in radians).
+                - `'precession_rate'` (float): Rate of pericenter precession per epoch (in radians/epoch).
 
         Returns
         -------
-            model_data: dict
-                A dictionary of best-fit parameters from the fit model. 
-                If a linear model was chosen, these parameters are:
-                {
-                    'period': Estimated orbital period of the exoplanet (in units of days),
-                    'period_err': Uncertainty associated with orbital period (in units of days),
-                    'conjunction_time': Time of conjunction of exoplanet transit or occultation,
-                    'conjunction_time_err': Uncertainty associated with conjunction_time
-                }
-                If a quadratic model was chosen, the same linear variables are returned, and an additional parameter is included in the dictionary:
-                {
-                    'period_change_by_epoch': The exoplanet period change with respect to epoch (in units of days),
-                    'period_change_by_epoch_err': The uncertainties associated with period_change_by_epoch (in units of days)
-                }
-                If a precession model was chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
-                {
-                    'eccentricity': The eccentricity of the exoplanet's orbit,
-                    'eccentricity_err': The uncertainties associated with eccentricity,
-                    'pericenter': The argument of pericenter of the exoplanet,
-                    'pericenter_err': The uncertainties associated with pericenter,
-                    'pericenter_change_by_epoch': The precession rate of the exoplanet's orbit,
-                    'pericenter_change_by_epoch_err': The uncertainties associated with precession rate
-                }
+        model_data : dict
+            Dictionary of best-fit parameters from the model, including:
+
+            Common to all models:
+                - `'model_type'`: Name of the model used (`'linear'`, `'quadratic'`, or `'precession'`).
+                - `'model_data'`: Array of predicted mid-times using best-fit parameters.
+                - `'period'`, `'period_err'`: Fitted orbital period and its uncertainty.
+                - `'conjunction_time'`, `'conjunction_time_err'`: Fitted time of conjunction and its uncertainty.
+
+            Additional for `'quadratic'`:
+                - `'period_change_by_epoch'`, `'period_change_by_epoch_err'`: Rate of period change per epoch and its uncertainty.
+
+            Additional for `'precession'`:
+                - `'eccentricity'`, `'eccentricity_err'`
+                - `'pericenter'`, `'pericenter_err'`
+                - `'pericenter_change_by_epoch'`, `'pericenter_change_by_epoch_err'`: Precession rate and its uncertainty.
+                    }
 
         Raises
         ------
-            ValueError:
-                If model specified is not a valid subclass of BaseModel, which is either 'linear', 'quadratic', or 'precession'.
+        ValueError
+            If `model_type` is not one of `'linear'`, `'quadratic'`, or `'precession'`.
         """
         # Step 1: Get data from transit times obj
         x, y, yerr, tra_or_occ = self._get_timing_data()
@@ -1225,56 +1343,61 @@ class Ephemeris(object):
         result[occ_mask] = model_mid_times[occ_mask] - T0 - (0.5*P) - (P*E[occ_mask])
         return result
     
-    def fit_model(self, model_type):
-        """Fits the timing data to a specified model using an LMfit Model fit.
-
-        Parameters
-        ----------
-            model_type: str
-                Either 'linear', 'quadratic', or 'precession'. Represents the type of model to fit the data to.
-
-        Returns
-        ------- 
-            model_data: dict
-                A dictionary of best-fit parameters from the model fit.
-                    Example:
-
-                    If a linear model is chosen, these parameters are:
-
-                    .. code-block:: python
-                        
-                        {
-                            'model_type': "Either linear, quadratic, or precession",
-                            'model_data': "A list of calculated mid-times using the best-fit parameter values for each epoch",
-                            'period': "Estimated orbital period of the exoplanet (in units of days)",
-                            'period_err': "Uncertainty associated with orbital period (in units of days)",
-                            'conjunction_time': "Time of conjunction of exoplanet transit or occultation",
-                            'conjunction_time_err': "Uncertainty associated with conjunction_time",
-                        }
-                    
-                    If a quadratic model is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
-                    
-                    .. code-block:: python
-                        
-                        {
-                            'period_change_by_epoch': "The exoplanet orbital decay rate, which is the change in period with respect to epoch (in units of days)",
-                            'period_change_by_epoch_err': "The uncertainties associated with period_change_by_epoch (in units of days)"
-                        }
-
-                    If a precession model is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:
-
-                    .. code-block:: python
-
-                        {
-                            'eccentricity': "The eccentricity of the exoplanet's orbit",
-                            'eccentricity_err': "The uncertainties associated with eccentricity",
-                            'pericenter': "The argument of pericenter of the exoplanet",
-                            'pericenter_err': "The uncertainties associated with pericenter",
-                            'pericenter_change_by_epoch': "The precession rate, which is the change in pericenter with respect to epoch, of the exoplanet's orbit",
-                            'pericenter_change_by_epoch_err': "The uncertainties associated with precession rate"
-                        }
+    def fit_model(self, model_type, **kwargs):
         """
-        model_data = self._get_model_parameters(model_type)
+            Fits the timing data to a specified model using an LMFIT `Model.fit()` method.
+
+            This function selects and fits one of three supported orbital models—linear, quadratic, or precession—
+            to mid-time exoplanet data using non-linear least squares optimization.
+
+            Parameters
+            ----------
+            model_type : str
+                The type of model to fit. Must be one of:
+                - `'linear'`: Constant-period orbital model.
+                - `'quadratic'`: Linear model with a period change (e.g., tidal decay).
+                - `'precession'`: Model including apsidal precession.
+
+            Keyword Arguments
+            -----------------
+            init_params : dict, optional
+                Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:
+
+                For `'linear'`:
+                    - `'period'` (float): Estimated orbital period (in days).
+                    - `'conjunction_time'` (float): Reference time of mid-transit or occultation.
+
+                For `'quadratic'`:
+                    - All `'linear'` parameters.
+                    - `'decay_rate'` (float): Change in period per epoch (in days/epoch).
+
+                For `'precession'`:
+                    - All `'linear'` parameters.
+                    - `'eccentricity'` (float): Orbital eccentricity (unitless).
+                    - `'pericenter'` (float): Argument of pericenter (in radians).
+                    - `'precession_rate'` (float): Rate of pericenter precession per epoch (in radians/epoch).
+
+            Returns
+            -------
+            model_data : dict
+                Dictionary of best-fit parameters from the model, including:
+
+                Common to all models:
+                    - `'model_type'`: Name of the model used (`'linear'`, `'quadratic'`, or `'precession'`).
+                    - `'model_data'`: Array of predicted mid-times using best-fit parameters.
+                    - `'period'`, `'period_err'`: Fitted orbital period and its uncertainty.
+                    - `'conjunction_time'`, `'conjunction_time_err'`: Fitted time of conjunction and its uncertainty.
+
+                Additional for `'quadratic'`:
+                    - `'period_change_by_epoch'`, `'period_change_by_epoch_err'`: Rate of period change per epoch and its uncertainty.
+
+                Additional for `'precession'`:
+                    - `'eccentricity'`, `'eccentricity_err'`
+                    - `'pericenter'`, `'pericenter_err'`
+                    - `'pericenter_change_by_epoch'`, `'pericenter_change_by_epoch_err'`: Precession rate and its uncertainty.
+            """
+
+        model_data = self._get_model_parameters(model_type, **kwargs)
         model_data["model_type"] = model_type
         # Once we get parameters back, we call _calc_blank_model 
         if model_type == "linear":
