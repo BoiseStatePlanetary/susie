@@ -425,7 +425,7 @@ class PrecessionModel(BaseModel):
         -------
            A float of the calculated anomalistic period.
        """
-       result = P/(1 - ((1/(2*np.pi))*dwdE))
+       result = P/(1.0 - ((1.0/(2.0*np.pi))*dwdE))
        return result
     
     def _pericenter(self, E, w0, dwdE):
@@ -487,7 +487,7 @@ class PrecessionModel(BaseModel):
         tra_mask = tra_or_occ_enum == 0
         occ_mask = tra_or_occ_enum == 1
         result[tra_mask] = T0 + (E[tra_mask]*P) - ((e*P_a)/np.pi)*np.cos(self._pericenter(E[tra_mask], w0, dwdE))
-        result[occ_mask] = T0 + P_a/2 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(E[occ_mask], w0, dwdE))
+        result[occ_mask] = T0 + P_a/2.0 + (E[occ_mask]*P) + ((e*P_a)/np.pi)*np.cos(self._pericenter(E[occ_mask], w0, dwdE))
         return result
 
     def fit(self, x, y, yerr, tra_or_occ):
@@ -1749,7 +1749,7 @@ class Ephemeris(object):
         self.oc_vals = y
         ax.errorbar(self.timing_data.epochs, y, yerr=self.timing_data.mid_time_uncertainties*DAYS_TO_SECONDS, 
                     marker='o', ls='', color='#0033A0',
-                    label=r'$t(E) - T_0 - P E$')
+                    label=r'$t(E) - T_{0,\mathrm{lin}} - P_{\mathrm{lin}} E$')
         if model_type == "quadratic":
             # Plot additional quadratic curve
             # y = 0.5 dP/dE * (E - median E)^2
@@ -1817,13 +1817,15 @@ class Ephemeris(object):
             uncertainties[i] = np.sqrt((2*i-sum(ks)))
         # Plot the data
         fig, ax = plt.subplots(figsize=(6*(16/9), 6))
-        ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', ls="-", linewidth=2, label=rf"$\Delta$BIC=BIC$_{{{model1}}}$ - BIC$_{{{model2}}}$={delta_bics[-1]:.2f}")
+        ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', ls="-", linewidth=2)
+        ax.scatter(self.timing_data.epochs, delta_bics, color='#0033A0', ls="-", linewidth=2)
+        ax.scatter(self.timing_data.epochs[-1], delta_bics[-1], zorder=10, color='#D64309', label=rf"Final $\Delta$BIC=BIC$_{{{model1}}}$ - BIC$_{{{model2}}}$={delta_bics[-1]:.2f}")
         ax.fill_between(self.timing_data.epochs, delta_bics-uncertainties, delta_bics+uncertainties, alpha=0.2)
         # ax.plot(self.timing_data.epochs, delta_bics, color='#0033A0', marker='.', markersize=6, mec="#D64309", ls="--", linewidth=2)
         ax.axhline(y=0, color='grey', linestyle='-', zorder=0)
         ax.set_xlabel('Epoch')
         ax.set_ylabel(r"$\Delta$BIC")
-        ax.set_title(rf"Value of $\Delta$BIC Comparing {model1.capitalize()} and {model2.capitalize()} Models"
+        ax.set_title(rf"Evolution of $\Delta$BIC Comparing {model1.capitalize()} and {model2.capitalize()} Models"
                     "\n"
                     rf"as Observational Epochs Increase")
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
