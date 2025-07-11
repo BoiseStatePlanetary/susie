@@ -138,7 +138,6 @@
   <h1>Source code for src.susie.ephemeris</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyvo</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -286,7 +285,7 @@
         <span class="n">result</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">T0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">result</span>
     
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits observed data to a linear model.</span>
 
 <span class="sd">        Compares the model data from the TimingData object to the linear fit calculated with </span>
@@ -305,6 +304,13 @@
 <span class="sd">            tra_or_occ: numpy.ndarray[str]</span>
 <span class="sd">                An array indicating the type of each event, with entries being either </span>
 <span class="sd">                &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
+<span class="sd">            </span>
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        ------------------    </span>
+<span class="sd">            init_params: dict (Optional)</span>
+<span class="sd">                A dictionary containing inital parameter values to pass to the LMfit model. Includes:</span>
+<span class="sd">                    * &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
+<span class="sd">                    * &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
@@ -321,9 +327,9 @@
 <span class="sd">                &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction_time</span>
 <span class="sd">                }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_params&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">))</span>
         <span class="n">tra_or_occ_enum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;tra&#39;</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tra_or_occ</span><span class="p">]</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_fit</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;tra_or_occ_enum&quot;</span><span class="p">])</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">T0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;conjunction_time&quot;</span><span class="p">],</span> <span class="n">P</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">],</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">yerr</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -381,7 +387,8 @@
         <span class="n">T0</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;conjunction_time&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span>
-            <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">period</span>
+            <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">period</span><span class="p">,</span>
+            <span class="s2">&quot;decay_rate&quot;</span><span class="p">:</span> <span class="mf">0.0</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">return_data</span>
 
@@ -420,7 +427,7 @@
         <span class="n">result</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">T0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="n">P</span><span class="o">*</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dPdE</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
     
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits observed data to a quadratic model.</span>
 
 <span class="sd">        Compares the observed data from the TimingData object to the quadratic fit calculated with quad_fit </span>
@@ -439,6 +446,14 @@
 <span class="sd">            tra_or_occ: numpy.ndarray[str]</span>
 <span class="sd">                An array indicating the type of each event, with entries being either </span>
 <span class="sd">                &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
+<span class="sd">        </span>
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">            init_params: dict (Optional)</span>
+<span class="sd">                A dictionary containing inital parameter values to pass to the LMfit model. Includes:</span>
+<span class="sd">                    * &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
+<span class="sd">                    * &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation</span>
+<span class="sd">                    * &#39;decay_rate&#39;: The exoplanet period change with respect to epoch (in units of days)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ------- </span>
@@ -456,8 +471,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tra_or_occ_enum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;tra&#39;</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tra_or_occ</span><span class="p">]</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quad_fit</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;tra_or_occ_enum&quot;</span><span class="p">])</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">T0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;conjunction_time&quot;</span><span class="p">],</span> <span class="n">P</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">],</span> <span class="n">dPdE</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_params&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">))</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">T0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;conjunction_time&quot;</span><span class="p">],</span> <span class="n">P</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">],</span> <span class="n">dPdE</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;decay_rate&quot;</span><span class="p">],</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">yerr</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
@@ -471,32 +486,36 @@
     
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PrecessionModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Subclass of BaseModel that implements a precession fit.&quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_initial_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes and returns the initial parameters for the model fit method.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass of BaseModel that implements fitting of timing data to a precession orbital model.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_initial_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes and returns initial parameters for the model fit method.</span>
 
 <span class="sd">        This method calculates the conjunction time (T0) and orbital period (P) </span>
 <span class="sd">        using the provided timing data. The conjunction time is set to the first </span>
-<span class="sd">        transit time, while the orbital period is estimated as the median of the </span>
-<span class="sd">        differences between consecutive mid-times of transits and occultations.</span>
+<span class="sd">        transit time, while the orbital period is estimated as the difference </span>
+<span class="sd">        between the first and last mid-times divided by the difference between </span>
+<span class="sd">        the first and last epoch. If occultations are included, the final estimated </span>
+<span class="sd">        period is the average of the transit and occultation period estimates.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : numpy.ndarray[int]</span>
-<span class="sd">            The epoch data as recieved from the TimingData object.</span>
-<span class="sd">        y : numpy.ndarray[float]</span>
-<span class="sd">            The mid-time data as received from the TimingData object.</span>
-<span class="sd">        tra_or_occ : numpy.ndarray[str]</span>
-<span class="sd">            An array indicating the type of each event, with entries being either </span>
-<span class="sd">            &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
+<span class="sd">        x : numpy.ndarray of int</span>
+<span class="sd">            Epoch data as received from the TimingData object.</span>
+<span class="sd">        y : numpy.ndarray of float</span>
+<span class="sd">            Mid-time data as received from the TimingData object.</span>
+<span class="sd">        tra_or_occ : numpy.ndarray of str</span>
+<span class="sd">            Array indicating the event type for each observation, with entries </span>
+<span class="sd">            either &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            A dictionary containing:</span>
-<span class="sd">            - &quot;conjunction_time&quot; (float): The mid-time of the transit events corresponding to Epoch = 0.</span>
-<span class="sd">            - &quot;period&quot; (float): The median time difference between consecutive events </span>
-<span class="sd">            (transits and occultations).</span>
+<span class="sd">            Dictionary containing initial parameter estimates:</span>
+<span class="sd">            - &quot;conjunction_time&quot; (float): Mid-time at epoch zero.</span>
+<span class="sd">            - &quot;period&quot; (float): Estimated orbital period (days).</span>
+<span class="sd">            - &quot;eccentricity&quot; (float): Orbital eccentricity (default 0.001).</span>
+<span class="sd">            - &quot;pericenter&quot; (float): Argument of pericenter in radians (default 2.0).</span>
+<span class="sd">            - &quot;precession_rate&quot; (float): Rate of pericenter change per epoch (default 0.001).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tra_mask</span> <span class="o">=</span> <span class="n">tra_or_occ</span> <span class="o">==</span> <span class="s2">&quot;tra&quot;</span>
         <span class="n">occ_mask</span> <span class="o">=</span> <span class="n">tra_or_occ</span> <span class="o">==</span> <span class="s2">&quot;occ&quot;</span>
@@ -542,139 +561,195 @@
         <span class="c1"># }</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;conjunction_time&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span>
-            <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">period</span>
+            <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">period</span><span class="p">,</span>
+            <span class="s2">&quot;eccentricity&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+            <span class="s2">&quot;pericenter&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+            <span class="s2">&quot;precession_rate&quot;</span><span class="p">:</span> <span class="mf">0.001</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">return_data</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">_anomalistic_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">):</span>
-<span class="w">       </span><span class="sd">&quot;&quot;&quot;Calculates the anomalistic period given values of sidereal period (P_s) and precession rate (dwdE).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the anomalistic period given the sidereal period and precession rate.</span>
 
-<span class="sd">       Uses the equation:</span>
-<span class="sd">       P / (1 - (1/(2*pi)) * dwdE)</span>
+<span class="sd">        Uses the formula:</span>
 
-<span class="sd">       Parameters</span>
-<span class="sd">       ----------</span>
-<span class="sd">        P: float</span>
-<span class="sd">           The exoplanet sideral orbital period.</span>
-<span class="sd">        dwdE: float</span>
-<span class="sd">           The precession rate, which is the change in pericenter with respect to epoch.</span>
+<span class="sd">        .. math::</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">           A float of the calculated anomalistic period.</span>
-<span class="sd">       &quot;&quot;&quot;</span>
-       <span class="n">result</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">*</span><span class="n">dwdE</span><span class="p">))</span>
-       <span class="k">return</span> <span class="n">result</span>
-    
-    <span class="k">def</span><span class="w"> </span><span class="nf">_pericenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">):</span>
-<span class="w">       </span><span class="sd">&quot;&quot;&quot;Calculates the pericenter given a list of epochs and values of argument of pericenter and precession rate.</span>
+<span class="sd">            P_a = \frac{P}{1 - \frac{1}{2\pi} \frac{d\omega}{dE}}</span>
 
-<span class="sd">       Uses the equation:</span>
-<span class="sd">        w0 + dwdE * E</span>
-
-<span class="sd">       Parameters</span>
-<span class="sd">       ----------</span>
-<span class="sd">        E: numpy.ndarray[int]</span>
-<span class="sd">            The epoch data as recieved from the TimingData object.</span>
-<span class="sd">        w0: int</span>
-<span class="sd">            The argument of pericenter.</span>
-<span class="sd">        dwdE: float</span>
-<span class="sd">            The precession rate, which is the change in pericenter with respect to epoch.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">           A numpy.ndarray[float] of the calculated pericenter as a function of epochs.</span>
-<span class="sd">       &quot;&quot;&quot;</span>
-       <span class="n">result</span> <span class="o">=</span> <span class="n">w0</span> <span class="o">+</span> <span class="p">(</span><span class="n">dwdE</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
-       <span class="k">return</span> <span class="n">result</span>
-    
-    <span class="k">def</span><span class="w"> </span><span class="nf">precession_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates a precession function with given data.</span>
-
-<span class="sd">        Uses the equation </span>
-<span class="sd">         -  conjunction time + (epochs * period) - ((eccentricity * anomalistic period) / pi) * cos(pericenter) for transit observations</span>
-<span class="sd">         -  conjunction time + (anomalistic period / 2) + epochs * period + ((eccentricity * anomalistic period) / pi) * cos(pericenter) for occultation observations as a precession function for the LMfit Model.</span>
-<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            E: numpy.ndarray[int]</span>
-<span class="sd">                The epoch data as recieved from the TimingData object.</span>
-<span class="sd">            T0: float</span>
-<span class="sd">                The initial mid-time, also known as conjunction time.</span>
-<span class="sd">            P: float</span>
-<span class="sd">                The exoplanet sideral orbital period.</span>
-<span class="sd">            e: float</span>
-<span class="sd">                The eccentricity.</span>
-<span class="sd">            w0: int</span>
-<span class="sd">                The argument of pericenter.</span>
-<span class="sd">            dwdE: float</span>
-<span class="sd">                Precession rate, which is change in pericenter with respect to epoch.</span>
-<span class="sd">            tra_or_occ_enum: numpy.ndarray[int]</span>
-<span class="sd">                An array indicating the type of each event, with enumerated entries being either </span>
-<span class="sd">                0 for transit or 1 for occultation.</span>
-<span class="sd">        </span>
+<span class="sd">        P : float</span>
+<span class="sd">            Sidereal orbital period of the exoplanet (in days).</span>
+<span class="sd">        dwdE : float</span>
+<span class="sd">            Precession rate, the change in pericenter with respect to epoch (radians per epoch).</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            result: numpy.ndarray[float]</span>
-<span class="sd">                A precession function to be used with the LMfit Model, returned as:</span>
-<span class="sd">                :math:`T0 + E*P - \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`</span>
-<span class="sd">                :math:`T0 + \\frac{\\text{self.anomalistic_period}(P,dwdE)}{2} + E*P + \\frac{e * \\text{self.anomalistic_period}(P,dwdE)}{\\pi} * \\cos(\\text{self.pericenter}(w0, dwdE, E))`</span>
+<span class="sd">        float</span>
+<span class="sd">            The calculated anomalistic period (in days).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">((</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">*</span><span class="n">dwdE</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pericenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the argument of pericenter for given epochs.</span>
+
+<span class="sd">        Uses the linear relation:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \omega(E) = \omega_0 + \frac{d\omega}{dE} \cdot E</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : numpy.ndarray of int</span>
+<span class="sd">            Epoch data as received from the TimingData object.</span>
+<span class="sd">        w0 : float</span>
+<span class="sd">            Argument of pericenter at epoch zero (in radians).</span>
+<span class="sd">        dwdE : float</span>
+<span class="sd">            Precession rate, i.e., change in pericenter per epoch (radians per epoch).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray of float</span>
+<span class="sd">            Calculated pericenter values for each epoch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">w0</span> <span class="o">+</span> <span class="p">(</span><span class="n">dwdE</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">precession_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the precession function for given orbital data.</span>
+
+<span class="sd">        This function computes the expected mid-times for each epoch based on the </span>
+<span class="sd">        precession model, using different formulas for transit and occultation events:</span>
+
+<span class="sd">        - For transit observations:</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">            T(E) = T_0 + E \cdot P - \frac{e \cdot P_a}{\pi} \cos \left( \omega(E) \right)</span>
+
+<span class="sd">        - For occultation observations:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            T(E) = T_0 + \frac{P_a}{2} + E \cdot P + \frac{e \cdot P_a}{\pi} \cos \left( \omega(E) \right)</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">        - :math:`P_a` is the anomalistic period calculated from :math:`P` and the precession rate,</span>
+<span class="sd">        - :math:`\omega(E)` is the pericenter angle as a function of epoch.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : numpy.ndarray of int</span>
+<span class="sd">            Epoch data as received from the TimingData object.</span>
+<span class="sd">        T0 : float</span>
+<span class="sd">            Initial mid-time (conjunction time).</span>
+<span class="sd">        P : float</span>
+<span class="sd">            Sidereal orbital period of the exoplanet.</span>
+<span class="sd">        e : float</span>
+<span class="sd">            Orbital eccentricity.</span>
+<span class="sd">        w0 : float</span>
+<span class="sd">            Argument of pericenter at epoch zero (in radians).</span>
+<span class="sd">        dwdE : float</span>
+<span class="sd">            Precession rate (change in pericenter per epoch, in radians).</span>
+<span class="sd">        tra_or_occ_enum : numpy.ndarray of int</span>
+<span class="sd">            Array indicating event types: 0 for transit, 1 for occultation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : numpy.ndarray of float</span>
+<span class="sd">            Calculated mid-times for each epoch using the precession model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
         <span class="n">P_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anomalistic_period</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">)</span>
         <span class="n">tra_mask</span> <span class="o">=</span> <span class="n">tra_or_occ_enum</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="n">occ_mask</span> <span class="o">=</span> <span class="n">tra_or_occ_enum</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="n">result</span><span class="p">[</span><span class="n">tra_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">T0</span> <span class="o">+</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">tra_mask</span><span class="p">]</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="p">((</span><span class="n">e</span><span class="o">*</span><span class="n">P_a</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pericenter</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">))</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">T0</span> <span class="o">+</span> <span class="n">P_a</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">e</span><span class="o">*</span><span class="n">P_a</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pericenter</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">))</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">T0</span> <span class="o">+</span> <span class="n">P_a</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">]</span><span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">e</span><span class="o">*</span><span class="n">P_a</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pericenter</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">w0</span><span class="p">,</span> <span class="n">dwdE</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits observed data to a precession model.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits observed timing data to a precession model.</span>
 
-<span class="sd">        Compares the observed data from the TimingData object to the precession fit calculated with </span>
-<span class="sd">        precession_fit method. Then minimizes the difference between the two sets of data. The LMfit Model </span>
-<span class="sd">        then returns the parameters of the precession function corresponding to period, conjunction time, </span>
-<span class="sd">        pericenter change by epoch, eccentricity, pericenter, and their respective errors. These parameters </span>
-<span class="sd">        are returned in a dictionary to the user.</span>
+<span class="sd">        This method compares observed mid-time data from the `TimingData` object with the </span>
+<span class="sd">        model values calculated by the `precession_fit` function. It uses the LMfit </span>
+<span class="sd">        library to minimize the difference between the observed and model data, optimizing </span>
+<span class="sd">        parameters including orbital period, conjunction time, eccentricity, pericenter, </span>
+<span class="sd">        and the rate of pericenter change per epoch.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            x: numpy.ndarray[int]</span>
-<span class="sd">                The epoch data as recieved from the TimingData object.</span>
-<span class="sd">            y: numpy.ndarray[float]</span>
-<span class="sd">                The mid-time data as recieved from the TimingData object.</span>
-<span class="sd">            yerr: numpy.ndarray[float]</span>
-<span class="sd">                The mid-time error data as recieved from the TimingData object.</span>
-<span class="sd">            tra_or_occ: numpy.ndarray[str]</span>
-<span class="sd">                An array indicating the type of each event, with entries being either </span>
-<span class="sd">                &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
+<span class="sd">        x : numpy.ndarray of int</span>
+<span class="sd">            Epoch data as received from the TimingData object.</span>
+<span class="sd">        y : numpy.ndarray of float</span>
+<span class="sd">            Mid-time data as received from the TimingData object.</span>
+<span class="sd">        yerr : numpy.ndarray of float</span>
+<span class="sd">            Mid-time error data as received from the TimingData object.</span>
+<span class="sd">        tra_or_occ : numpy.ndarray of str</span>
+<span class="sd">            Array indicating the event type for each data point, with values `&quot;tra&quot;` for transit or `&quot;occ&quot;` for occultation.</span>
+<span class="sd">        </span>
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        init_params : dict, optional</span>
+<span class="sd">            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:</span>
+
+<span class="sd">            For `&#39;linear&#39;`:</span>
+<span class="sd">                - `&#39;period&#39;` (float): Estimated orbital period (in days).</span>
+<span class="sd">                - `&#39;conjunction_time&#39;` (float): Reference time of mid-transit or occultation.</span>
+
+<span class="sd">            For `&#39;quadratic&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;decay_rate&#39;` (float): Change in period per epoch (in days/epoch).</span>
+
+<span class="sd">            For `&#39;precession&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;eccentricity&#39;` (float): Orbital eccentricity (unitless).</span>
+<span class="sd">                - `&#39;pericenter&#39;` (float): Argument of pericenter (in radians).</span>
+<span class="sd">                - `&#39;precession_rate&#39;` (float): Rate of pericenter precession per epoch (in radians/epoch).</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ------- </span>
-<span class="sd">        return_data: dict</span>
-<span class="sd">            A dictionary of best-fit parameter values from the fit model.</span>
-<span class="sd">            Example:</span>
-<span class="sd">                {</span>
-<span class="sd">                 &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
-<span class="sd">                 &#39;period_err&#39;: Uncertainty associated with orbital period (in units of days),</span>
-<span class="sd">                 &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation,</span>
-<span class="sd">                 &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction time,</span>
-<span class="sd">                 &#39;eccentricity&#39;: The eccentricity of the exoplanet&#39;s orbit,</span>
-<span class="sd">                 &#39;eccentricity_err&#39;: The uncertainties associated with eccentricity,</span>
-<span class="sd">                 &#39;pericenter&#39;: The argument of pericenter of the exoplanet,</span>
-<span class="sd">                 &#39;pericenter_err&#39;: The uncertainties associated with pericenter,</span>
-<span class="sd">                 &#39;pericenter_change_by_epoch&#39;: The precession rate of the exoplanet&#39;s orbit,</span>
-<span class="sd">                 &#39;pericenter_change_by_epoch_err&#39;: The uncertainties associated with precession rate</span>
-<span class="sd">                }</span>
+<span class="sd">        -------</span>
+<span class="sd">        return_data : dict</span>
+<span class="sd">            Dictionary of best-fit parameter values from the fit model. Included keys and their descriptions:</span>
+
+<span class="sd">            - &#39;period&#39; : float</span>
+<span class="sd">                Estimated orbital period (days).</span>
+<span class="sd">            - &#39;period_err&#39; : float</span>
+<span class="sd">                Uncertainty in the orbital period (days).</span>
+<span class="sd">            - &#39;conjunction_time&#39; : float</span>
+<span class="sd">                Time of conjunction (days).</span>
+<span class="sd">            - &#39;conjunction_time_err&#39; : float</span>
+<span class="sd">                Uncertainty in conjunction time (days).</span>
+<span class="sd">            - &#39;eccentricity&#39; : float</span>
+<span class="sd">                Orbital eccentricity.</span>
+<span class="sd">            - &#39;eccentricity_err&#39; : float</span>
+<span class="sd">                Uncertainty in eccentricity.</span>
+<span class="sd">            - &#39;pericenter&#39; : float</span>
+<span class="sd">                Argument of pericenter (radians).</span>
+<span class="sd">            - &#39;pericenter_err&#39; : float</span>
+<span class="sd">                Uncertainty in pericenter.</span>
+<span class="sd">            - &#39;pericenter_change_by_epoch&#39; : float</span>
+<span class="sd">                Precession rate (radians per epoch).</span>
+<span class="sd">            - &#39;pericenter_change_by_epoch_err&#39; : float</span>
+<span class="sd">                Uncertainty in precession rate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL</span>
+        <span class="c1"># NOTE:</span>
+            <span class="c1"># STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL</span>
         <span class="n">tra_or_occ_enum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;tra&#39;</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tra_or_occ</span><span class="p">]</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precession_fit</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;tra_or_occ_enum&quot;</span><span class="p">])</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
-        <span class="c1"># TODO: Can put bounds between 0 and 2pi for omega0</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_params&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">init_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_params</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
+        <span class="c1"># Can put bounds between 0 and 2pi for omega0 THIS DOES NOT WORK, WILL MESS UP RESULTS</span>
         <span class="c1"># TODO: Try out bound for d omega dE for abs(dwdE) &lt; 2pi/delta E</span>
         <span class="c1"># params = model.make_params(T0=init_params[&quot;conjunction_time&quot;], P=init_params[&quot;period&quot;], e=dict(value=init_params[&quot;eccentricity&quot;], min=0, max=1), w0=dict(value=init_params[&quot;pericenter&quot;], min=0, max=2*np.pi), dwdE=dict(value=init_params[&quot;precession_rate&quot;]), tra_or_occ_enum=tra_or_occ_enum)</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">T0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;conjunction_time&quot;</span><span class="p">],</span> <span class="n">P</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">],</span> <span class="n">e</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">w0</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">dwdE</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.001</span><span class="p">),</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">T0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;conjunction_time&quot;</span><span class="p">],</span> <span class="n">P</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">],</span> <span class="n">e</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;eccentricity&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">w0</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;pericenter&quot;</span><span class="p">],</span> <span class="n">dwdE</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">init_params</span><span class="p">[</span><span class="s2">&quot;precession_rate&quot;</span><span class="p">]),</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">yerr</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">tra_or_occ_enum</span><span class="o">=</span><span class="n">tra_or_occ_enum</span><span class="p">)</span>
         <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
@@ -692,62 +767,87 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelFactory</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory class for selecting which type of model class (linear, quadratic or precession) to use.&quot;&quot;&quot;</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiates the appropriate BaseModel subclass and runs fit_model method.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class for creating and fitting model instances based on the specified model type.</span>
 
-<span class="sd">        Based on the given user input of model type (linear, quadratic or precession) the factory will </span>
-<span class="sd">        create the corresponding subclass of BaseModel and run the fit_model method to recieve the </span>
-<span class="sd">        model return data dictionary.</span>
+<span class="sd">    This class provides a static interface to instantiate the appropriate `BaseModel` subclass</span>
+<span class="sd">    (either `&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`) and fit it to timing data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiates the appropriate `BaseModel` subclass and fits it to the data.</span>
+
+<span class="sd">        Given a user-specified model type (`&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`),</span>
+<span class="sd">        this method uses the model factory to create the corresponding `BaseModel` subclass,</span>
+<span class="sd">        runs its `fit_model()` method, and returns the resulting dictionary of best-fit parameters.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            model_type: str</span>
-<span class="sd">                The name of the model to create, either &#39;linear&#39;, &#39;quadratic&#39; or &#39;precession&#39;.</span>
-<span class="sd">            x: numpy.ndarray[int]</span>
-<span class="sd">                The epoch data as recieved from the TimingData object.</span>
-<span class="sd">            y: numpy.ndarray[float]</span>
-<span class="sd">                The mid-time data as recieved from the TimingData object.</span>
-<span class="sd">            yerr: numpy.ndarray[float]</span>
-<span class="sd">                The mid-time error data as recieved from the TimingData object.</span>
-<span class="sd">            tra_or_occ: numpy.ndarray[str]</span>
-<span class="sd">                An array indicating the type of each event, with entries being either </span>
-<span class="sd">                &quot;tra&quot; for transit or &quot;occ&quot; for occultation.</span>
+<span class="sd">        model_type : str</span>
+<span class="sd">            The type of model to fit. Must be one of:</span>
+<span class="sd">            - `&#39;linear&#39;`: Constant-period orbital model.</span>
+<span class="sd">            - `&#39;quadratic&#39;`: Linear model with a period change (e.g., tidal decay).</span>
+<span class="sd">            - `&#39;precession&#39;`: Model including apsidal precession.</span>
+
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        init_params : dict, optional</span>
+<span class="sd">            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:</span>
+
+<span class="sd">            For `&#39;linear&#39;`:</span>
+<span class="sd">                - `&#39;period&#39;` (float): Estimated orbital period (in days).</span>
+<span class="sd">                - `&#39;conjunction_time&#39;` (float): Reference time of mid-transit or occultation.</span>
+
+<span class="sd">            For `&#39;quadratic&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;decay_rate&#39;` (float): Change in period per epoch (in days/epoch).</span>
+
+<span class="sd">            For `&#39;precession&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;eccentricity&#39;` (float): Orbital eccentricity (unitless).</span>
+<span class="sd">                - `&#39;pericenter&#39;` (float): Argument of pericenter (in radians).</span>
+<span class="sd">                - `&#39;precession_rate&#39;` (float): Rate of pericenter precession per epoch (in radians/epoch).</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ------- </span>
-<span class="sd">            Model : dict</span>
-<span class="sd">                A dictionary of parameters from the fit model. If a linear model was chosen, these parameters are:</span>
-<span class="sd">                    * &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
-<span class="sd">                    * &#39;period_err&#39;: Uncertainty associated with orbital period (in units of days),</span>
-<span class="sd">                    * &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation,</span>
-<span class="sd">                    * &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction_time</span>
-<span class="sd">                If a quadratic model was chosen, the same variables are returned, and an additional parameter is included in the dictionary:</span>
-<span class="sd">                    * &#39;period_change_by_epoch&#39;: The exoplanet period change with respect to epoch (in units of days),</span>
-<span class="sd">                    * &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days)</span>
-<span class="sd">                If a precession model was chosen, the same varibales as linear are returned, and additional parameter is included in the dictionary:</span>
-<span class="sd">                    * &#39;eccentricity&#39;: The eccentricity of the exoplanet&#39;s orbit,</span>
-<span class="sd">                    * &#39;eccentricity_err&#39;: The uncertainties associated with eccentricity,</span>
-<span class="sd">                    * &#39;pericenter&#39;: The argument of pericenter of the exoplanet,</span>
-<span class="sd">                    * &#39;pericenter_err&#39;: The uncertainties associated with pericenter,</span>
-<span class="sd">                    * &#39;pericenter_change_by_epoch&#39;: The precession rate of the exoplanet&#39;s orbit,</span>
-<span class="sd">                    * &#39;pericenter_change_by_epoch_err&#39;: The uncertainties associated with precession rate</span>
-<span class="sd">        </span>
+<span class="sd">        -------</span>
+<span class="sd">        model_data : dict</span>
+<span class="sd">            Dictionary of best-fit parameters from the model, including:</span>
+
+<span class="sd">            Common to all models:</span>
+<span class="sd">                - `&#39;model_type&#39;`: Name of the model used (`&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`).</span>
+<span class="sd">                - `&#39;model_data&#39;`: Array of predicted mid-times using best-fit parameters.</span>
+<span class="sd">                - `&#39;period&#39;`, `&#39;period_err&#39;`: Fitted orbital period and its uncertainty.</span>
+<span class="sd">                - `&#39;conjunction_time&#39;`, `&#39;conjunction_time_err&#39;`: Fitted time of conjunction and its uncertainty.</span>
+
+<span class="sd">            Additional for `&#39;quadratic&#39;`:</span>
+<span class="sd">                - `&#39;period_change_by_epoch&#39;`, `&#39;period_change_by_epoch_err&#39;`: Rate of period change per epoch and its uncertainty.</span>
+
+<span class="sd">            Additional for `&#39;precession&#39;`:</span>
+<span class="sd">                - `&#39;eccentricity&#39;`, `&#39;eccentricity_err&#39;`</span>
+<span class="sd">                - `&#39;pericenter&#39;`, `&#39;pericenter_err&#39;`</span>
+<span class="sd">                - `&#39;pericenter_change_by_epoch&#39;`, `&#39;pericenter_change_by_epoch_err&#39;`: Precession rate and its uncertainty.</span>
+<span class="sd">                    }</span>
+
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">            ValueError:</span>
-<span class="sd">                If model specified is not a valid subclass of BaseModel, which is either &#39;linear&#39;, &#39;quadratic&#39;, or &#39;precession&#39;.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `model_type` is not one of `&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="n">LinearModel</span><span class="p">(),</span>
-            <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span> <span class="n">QuadraticModel</span><span class="p">(),</span>
-            <span class="s1">&#39;precession&#39;</span><span class="p">:</span> <span class="n">PrecessionModel</span><span class="p">()</span>
+            <span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="n">LinearModel</span><span class="p">,</span>
+            <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="n">QuadraticModel</span><span class="p">,</span>
+            <span class="s2">&quot;precession&quot;</span><span class="p">:</span> <span class="n">PrecessionModel</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="n">model_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">model_class</span> <span class="o">=</span> <span class="n">models</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid model type &#39;</span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&#39;. Expected one of: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Ephemeris">
@@ -818,47 +918,63 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_model_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the model object and returns model best-fit parameters.</span>
-<span class="sd">        </span>
-<span class="sd">        This method fetches data from the TimingData object to be used in the model fit. </span>
-<span class="sd">        It creates the appropriate subclass of BaseModel using the Model factory, then runs </span>
-<span class="sd">        the fit method to return the model best-fit parameters dictionary to the user.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates and fits a model to the timing data, returning best-fit parameters.</span>
+
+<span class="sd">        This method retrieves timing data from the `TimingData` object, selects the appropriate</span>
+<span class="sd">        subclass of `BaseModel` using the `ModelFactory`, and fits the model to the data.</span>
+<span class="sd">        It returns a dictionary containing the model&#39;s best-fit parameters and associated metadata.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            model_type: str</span>
-<span class="sd">                Either &#39;linear&#39;, &#39;quadratic&#39;, or &#39;precession&#39;. The model subclass specified to create and run.</span>
+<span class="sd">        model_type : str</span>
+<span class="sd">            The type of model to fit. Must be one of:</span>
+<span class="sd">            - `&#39;linear&#39;`: Constant-period orbital model.</span>
+<span class="sd">            - `&#39;quadratic&#39;`: Linear model with a period change (e.g., tidal decay).</span>
+<span class="sd">            - `&#39;precession&#39;`: Model including apsidal precession.</span>
+
+<span class="sd">        Keyword Arguments</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        init_params : dict, optional</span>
+<span class="sd">            Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:</span>
+
+<span class="sd">            For `&#39;linear&#39;`:</span>
+<span class="sd">                - `&#39;period&#39;` (float): Estimated orbital period (in days).</span>
+<span class="sd">                - `&#39;conjunction_time&#39;` (float): Reference time of mid-transit or occultation.</span>
+
+<span class="sd">            For `&#39;quadratic&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;decay_rate&#39;` (float): Change in period per epoch (in days/epoch).</span>
+
+<span class="sd">            For `&#39;precession&#39;`:</span>
+<span class="sd">                - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                - `&#39;eccentricity&#39;` (float): Orbital eccentricity (unitless).</span>
+<span class="sd">                - `&#39;pericenter&#39;` (float): Argument of pericenter (in radians).</span>
+<span class="sd">                - `&#39;precession_rate&#39;` (float): Rate of pericenter precession per epoch (in radians/epoch).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">            model_data: dict</span>
-<span class="sd">                A dictionary of best-fit parameters from the fit model. </span>
-<span class="sd">                If a linear model was chosen, these parameters are:</span>
-<span class="sd">                {</span>
-<span class="sd">                    &#39;period&#39;: Estimated orbital period of the exoplanet (in units of days),</span>
-<span class="sd">                    &#39;period_err&#39;: Uncertainty associated with orbital period (in units of days),</span>
-<span class="sd">                    &#39;conjunction_time&#39;: Time of conjunction of exoplanet transit or occultation,</span>
-<span class="sd">                    &#39;conjunction_time_err&#39;: Uncertainty associated with conjunction_time</span>
-<span class="sd">                }</span>
-<span class="sd">                If a quadratic model was chosen, the same linear variables are returned, and an additional parameter is included in the dictionary:</span>
-<span class="sd">                {</span>
-<span class="sd">                    &#39;period_change_by_epoch&#39;: The exoplanet period change with respect to epoch (in units of days),</span>
-<span class="sd">                    &#39;period_change_by_epoch_err&#39;: The uncertainties associated with period_change_by_epoch (in units of days)</span>
-<span class="sd">                }</span>
-<span class="sd">                If a precession model was chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:</span>
-<span class="sd">                {</span>
-<span class="sd">                    &#39;eccentricity&#39;: The eccentricity of the exoplanet&#39;s orbit,</span>
-<span class="sd">                    &#39;eccentricity_err&#39;: The uncertainties associated with eccentricity,</span>
-<span class="sd">                    &#39;pericenter&#39;: The argument of pericenter of the exoplanet,</span>
-<span class="sd">                    &#39;pericenter_err&#39;: The uncertainties associated with pericenter,</span>
-<span class="sd">                    &#39;pericenter_change_by_epoch&#39;: The precession rate of the exoplanet&#39;s orbit,</span>
-<span class="sd">                    &#39;pericenter_change_by_epoch_err&#39;: The uncertainties associated with precession rate</span>
-<span class="sd">                }</span>
+<span class="sd">        model_data : dict</span>
+<span class="sd">            Dictionary of best-fit parameters from the model, including:</span>
+
+<span class="sd">            Common to all models:</span>
+<span class="sd">                - `&#39;model_type&#39;`: Name of the model used (`&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`).</span>
+<span class="sd">                - `&#39;model_data&#39;`: Array of predicted mid-times using best-fit parameters.</span>
+<span class="sd">                - `&#39;period&#39;`, `&#39;period_err&#39;`: Fitted orbital period and its uncertainty.</span>
+<span class="sd">                - `&#39;conjunction_time&#39;`, `&#39;conjunction_time_err&#39;`: Fitted time of conjunction and its uncertainty.</span>
+
+<span class="sd">            Additional for `&#39;quadratic&#39;`:</span>
+<span class="sd">                - `&#39;period_change_by_epoch&#39;`, `&#39;period_change_by_epoch_err&#39;`: Rate of period change per epoch and its uncertainty.</span>
+
+<span class="sd">            Additional for `&#39;precession&#39;`:</span>
+<span class="sd">                - `&#39;eccentricity&#39;`, `&#39;eccentricity_err&#39;`</span>
+<span class="sd">                - `&#39;pericenter&#39;`, `&#39;pericenter_err&#39;`</span>
+<span class="sd">                - `&#39;pericenter_change_by_epoch&#39;`, `&#39;pericenter_change_by_epoch_err&#39;`: Precession rate and its uncertainty.</span>
+<span class="sd">                    }</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">            ValueError:</span>
-<span class="sd">                If model specified is not a valid subclass of BaseModel, which is either &#39;linear&#39;, &#39;quadratic&#39;, or &#39;precession&#39;.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `model_type` is not one of `&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Step 1: Get data from transit times obj</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">tra_or_occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_timing_data</span><span class="p">()</span>
@@ -1367,56 +1483,62 @@
     
 <div class="viewcode-block" id="Ephemeris.fit_model">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.fit_model">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fits the timing data to a specified model using an LMfit Model fit.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Fits the timing data to a specified model using an LMFIT `Model.fit()` method.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">            model_type: str</span>
-<span class="sd">                Either &#39;linear&#39;, &#39;quadratic&#39;, or &#39;precession&#39;. Represents the type of model to fit the data to.</span>
+<span class="sd">            This function selects and fits one of three supported orbital models—linear, quadratic, or precession—</span>
+<span class="sd">            to mid-time exoplanet data using non-linear least squares optimization.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        ------- </span>
-<span class="sd">            model_data: dict</span>
-<span class="sd">                A dictionary of best-fit parameters from the model fit.</span>
-<span class="sd">                    Example:</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            model_type : str</span>
+<span class="sd">                The type of model to fit. Must be one of:</span>
+<span class="sd">                </span>
+<span class="sd">                - `&#39;linear&#39;`: Constant-period orbital model.</span>
+<span class="sd">                - `&#39;quadratic&#39;`: Linear model with a period change (e.g., tidal decay).</span>
+<span class="sd">                - `&#39;precession&#39;`: Model including apsidal precession.</span>
 
-<span class="sd">                    If a linear model is chosen, these parameters are:</span>
+<span class="sd">            Keyword Arguments</span>
+<span class="sd">            -----------------</span>
+<span class="sd">            init_params : dict, optional</span>
+<span class="sd">                Dictionary of initial parameter guesses to seed the fit. Required keys depend on the model type:</span>
 
-<span class="sd">                    .. code-block:: python</span>
-<span class="sd">                        </span>
-<span class="sd">                        {</span>
-<span class="sd">                            &#39;model_type&#39;: &quot;Either linear, quadratic, or precession&quot;,</span>
-<span class="sd">                            &#39;model_data&#39;: &quot;A list of calculated mid-times using the best-fit parameter values for each epoch&quot;,</span>
-<span class="sd">                            &#39;period&#39;: &quot;Estimated orbital period of the exoplanet (in units of days)&quot;,</span>
-<span class="sd">                            &#39;period_err&#39;: &quot;Uncertainty associated with orbital period (in units of days)&quot;,</span>
-<span class="sd">                            &#39;conjunction_time&#39;: &quot;Time of conjunction of exoplanet transit or occultation&quot;,</span>
-<span class="sd">                            &#39;conjunction_time_err&#39;: &quot;Uncertainty associated with conjunction_time&quot;,</span>
-<span class="sd">                        }</span>
-<span class="sd">                    </span>
-<span class="sd">                    If a quadratic model is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:</span>
-<span class="sd">                    </span>
-<span class="sd">                    .. code-block:: python</span>
-<span class="sd">                        </span>
-<span class="sd">                        {</span>
-<span class="sd">                            &#39;period_change_by_epoch&#39;: &quot;The exoplanet orbital decay rate, which is the change in period with respect to epoch (in units of days)&quot;,</span>
-<span class="sd">                            &#39;period_change_by_epoch_err&#39;: &quot;The uncertainties associated with period_change_by_epoch (in units of days)&quot;</span>
-<span class="sd">                        }</span>
+<span class="sd">                For `&#39;linear&#39;`:</span>
+<span class="sd">                    - `&#39;period&#39;` (float): Estimated orbital period (in days).</span>
+<span class="sd">                    - `&#39;conjunction_time&#39;` (float): Reference time of mid-transit or occultation.</span>
 
-<span class="sd">                    If a precession model is chosen, the same linear variables are returned, and the following additional parameters are included in the dictionary:</span>
+<span class="sd">                For `&#39;quadratic&#39;`:</span>
+<span class="sd">                    - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                    - `&#39;decay_rate&#39;` (float): Change in period per epoch (in days/epoch).</span>
 
-<span class="sd">                    .. code-block:: python</span>
+<span class="sd">                For `&#39;precession&#39;`:</span>
+<span class="sd">                    - All `&#39;linear&#39;` parameters.</span>
+<span class="sd">                    - `&#39;eccentricity&#39;` (float): Orbital eccentricity (unitless).</span>
+<span class="sd">                    - `&#39;pericenter&#39;` (float): Argument of pericenter (in radians).</span>
+<span class="sd">                    - `&#39;precession_rate&#39;` (float): Rate of pericenter precession per epoch (in radians/epoch).</span>
 
-<span class="sd">                        {</span>
-<span class="sd">                            &#39;eccentricity&#39;: &quot;The eccentricity of the exoplanet&#39;s orbit&quot;,</span>
-<span class="sd">                            &#39;eccentricity_err&#39;: &quot;The uncertainties associated with eccentricity&quot;,</span>
-<span class="sd">                            &#39;pericenter&#39;: &quot;The argument of pericenter of the exoplanet&quot;,</span>
-<span class="sd">                            &#39;pericenter_err&#39;: &quot;The uncertainties associated with pericenter&quot;,</span>
-<span class="sd">                            &#39;pericenter_change_by_epoch&#39;: &quot;The precession rate, which is the change in pericenter with respect to epoch, of the exoplanet&#39;s orbit&quot;,</span>
-<span class="sd">                            &#39;pericenter_change_by_epoch_err&#39;: &quot;The uncertainties associated with precession rate&quot;</span>
-<span class="sd">                        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">model_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_parameters</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            model_data : dict</span>
+<span class="sd">                Dictionary of best-fit parameters from the model, including:</span>
+
+<span class="sd">                Common to all models:</span>
+<span class="sd">                    - `&#39;model_type&#39;`: Name of the model used (`&#39;linear&#39;`, `&#39;quadratic&#39;`, or `&#39;precession&#39;`).</span>
+<span class="sd">                    - `&#39;model_data&#39;`: Array of predicted mid-times using best-fit parameters.</span>
+<span class="sd">                    - `&#39;period&#39;`, `&#39;period_err&#39;`: Fitted orbital period and its uncertainty.</span>
+<span class="sd">                    - `&#39;conjunction_time&#39;`, `&#39;conjunction_time_err&#39;`: Fitted time of conjunction and its uncertainty.</span>
+
+<span class="sd">                Additional for `&#39;quadratic&#39;`:</span>
+<span class="sd">                    - `&#39;period_change_by_epoch&#39;`, `&#39;period_change_by_epoch_err&#39;`: Rate of period change per epoch and its uncertainty.</span>
+
+<span class="sd">                Additional for `&#39;precession&#39;`:</span>
+<span class="sd">                    - `&#39;eccentricity&#39;`, `&#39;eccentricity_err&#39;`</span>
+<span class="sd">                    - `&#39;pericenter&#39;`, `&#39;pericenter_err&#39;`</span>
+<span class="sd">                    - `&#39;pericenter_change_by_epoch&#39;`, `&#39;pericenter_change_by_epoch_err&#39;`: Precession rate and its uncertainty.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+        <span class="n">model_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_parameters</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">model_data</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_type</span>
         <span class="c1"># Once we get parameters back, we call _calc_blank_model </span>
         <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
@@ -1831,17 +1953,24 @@
         <span class="n">DAYS_TO_SECONDS</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="p">(</span><span class="mi">16</span><span class="o">/</span><span class="mi">9</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
         <span class="n">y_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">]</span>
+        <span class="n">y_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">mid_times</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">y_times_errs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">mid_time_uncertainties</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Subtract the linear parameters if arg is True</span>
         <span class="k">if</span> <span class="n">subtract_lin_params</span><span class="p">:</span>
-            <span class="n">y_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subtract_linear_parameters</span><span class="p">(</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;model_data&#39;</span><span class="p">],</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">],</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">tra_or_occ</span><span class="p">)</span><span class="o">*</span><span class="n">DAYS_TO_SECONDS</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subtract_linear_parameters</span><span class="p">(</span><span class="n">y_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">],</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">tra_or_occ</span><span class="p">)</span><span class="o">*</span><span class="n">DAYS_TO_SECONDS</span>
+            <span class="n">y_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subtract_linear_parameters</span><span class="p">(</span><span class="n">y_times</span><span class="p">,</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">],</span> <span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">tra_or_occ</span><span class="p">)</span><span class="o">*</span><span class="n">DAYS_TO_SECONDS</span>
+            <span class="n">y_times_errs</span><span class="o">*=</span><span class="n">DAYS_TO_SECONDS</span>
         <span class="c1"># Plot transits and occultations separately if arg is True</span>
         <span class="k">if</span> <span class="n">show_occultations</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Transits&quot;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#D64309&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Occultations&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Transits&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">y_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#D64309&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Occultations&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">y_times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">y_times_errs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tra_mask</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observed Transit Mid-Times&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">y_times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">y_times_errs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_mask</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#D64309&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observed Occultation Mid-Times&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="c1"># Else just plot all data together</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y_times</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">y_times_errs</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observed Mid-Times&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">subtract_lin_params</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Lin-Subtracted Mid-Times (Seconds)&#39;</span><span class="p">)</span>
@@ -1850,6 +1979,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model_data</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1"> Model Mid-Times&#39;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">ticklabel_format</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;plain&quot;</span><span class="p">,</span> <span class="n">useOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">save_plot</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
@@ -1893,7 +2023,7 @@
 
 <div class="viewcode-block" id="Ephemeris.plot_oc_plot">
 <a class="viewcode-back" href="../../../susie.html#src.susie.ephemeris.Ephemeris.plot_oc_plot">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_oc_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a scatter plot of observed minus calculated mid-times. </span>
 <span class="sd">        </span>
 <span class="sd">        Subtracts the linear portion from the observed mid-times. The linear portion is calculated using</span>
@@ -1912,13 +2042,13 @@
         <span class="n">DAYS_TO_SECONDS</span> <span class="o">=</span> <span class="mi">86400</span>
         <span class="c1"># y = T0 - PE - 0.5 dP/dE E^2</span>
         <span class="n">linear_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subtract_linear_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">mid_times</span><span class="p">,</span> <span class="n">linear_model</span><span class="p">[</span><span class="s1">&#39;conjunction_time&#39;</span><span class="p">],</span> <span class="n">linear_model</span><span class="p">[</span><span class="s1">&#39;period&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">tra_or_occ</span><span class="p">))</span> <span class="o">*</span> <span class="n">DAYS_TO_SECONDS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">oc_vals</span> <span class="o">=</span> <span class="n">y</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">mid_time_uncertainties</span><span class="o">*</span><span class="n">DAYS_TO_SECONDS</span><span class="p">,</span> 
                     <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span>
-                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$t(E) - T_0 - P E$&#39;</span><span class="p">)</span>
+                    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$t(E) - T_{0,\mathrm</span><span class="si">{lin}</span><span class="s1">} - P_{\mathrm</span><span class="si">{lin}</span><span class="s1">} E$&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span>
             <span class="c1"># Plot additional quadratic curve</span>
             <span class="c1"># y = 0.5 dP/dE * (E - median E)^2</span>
@@ -1989,13 +2119,15 @@
             <span class="n">uncertainties</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="nb">sum</span><span class="p">(</span><span class="n">ks</span><span class="p">)))</span>
         <span class="c1"># Plot the data</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="p">(</span><span class="mi">16</span><span class="o">/</span><span class="mi">9</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;$\Delta$BIC=BIC$_</span><span class="se">{{</span><span class="si">{</span><span class="n">model1</span><span class="si">}</span><span class="se">}}</span><span class="s2">$ - BIC$_</span><span class="se">{{</span><span class="si">{</span><span class="n">model2</span><span class="si">}</span><span class="se">}}</span><span class="s2">$=</span><span class="si">{</span><span class="n">delta_bics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#0033A0&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">delta_bics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#D64309&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;Final $\Delta$BIC=BIC$_</span><span class="se">{{</span><span class="si">{</span><span class="n">model1</span><span class="si">}</span><span class="se">}}</span><span class="s2">$ - BIC$_</span><span class="se">{{</span><span class="si">{</span><span class="n">model2</span><span class="si">}</span><span class="se">}}</span><span class="s2">$=</span><span class="si">{</span><span class="n">delta_bics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timing_data</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">delta_bics</span><span class="o">-</span><span class="n">uncertainties</span><span class="p">,</span> <span class="n">delta_bics</span><span class="o">+</span><span class="n">uncertainties</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
         <span class="c1"># ax.plot(self.timing_data.epochs, delta_bics, color=&#39;#0033A0&#39;, marker=&#39;.&#39;, markersize=6, mec=&quot;#D64309&quot;, ls=&quot;--&quot;, linewidth=2)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta$BIC&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;Value of $\Delta$BIC Comparing </span><span class="si">{</span><span class="n">model1</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">model2</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Models&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;Evolution of $\Delta$BIC Comparing </span><span class="si">{</span><span class="n">model1</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">model2</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Models&quot;</span>
                     <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="sa">rf</span><span class="s2">&quot;as Observational Epochs Increase&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
