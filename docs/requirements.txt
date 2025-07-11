@@ -1,3 +1,4 @@
+accessible-pygments==0.0.5
 alabaster==1.0.0
 appnope==0.1.4
 asteval==1.0.5
@@ -71,6 +72,7 @@ prompt_toolkit==3.0.48
 psutil==6.1.1
 ptyprocess==0.7.0
 pure_eval==0.2.3
+pydata-sphinx-theme==0.16.1
 pyerfa==2.0.1.5
 Pygments==2.19.1
 pyparsing==3.2.1

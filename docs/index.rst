@@ -6,8 +6,7 @@
 Welcome to Susie's documentation!
 =================================
 
-Susie is a package built for astronomers to estimate rates of orbital decay due to tidal interactions in their 
-extrasolar system.
+Susie is a Python package for modeling the orbital evolution of exoplanets using transit and occultation timing data. It helps detect and characterize tidal orbital decay and apsidal precession, offering statistical tools to compare models and infer the physical processes shaping close-in planetary systems—linking timing data to insights on tidal dissipation, planetary interiors, and dynamical interactions.
 
 .. image:: images/SP_Susie.png
    :alt: The Susie Exoplanets Group Logo
@@ -15,25 +14,36 @@ extrasolar system.
 About
 -----
 
-Susie works by fitting your transit and/or occultation mid-times to both a linear and quadratic model, 
-then calculating a modified :math:`\chi ^2` metric called :math:`\rm BIC` for both models to determine which model 
-best represents your data. Whichever model has a larger value of :math:`BIC` will be the model that best represents 
-your data. If a linear model provides a better fit, your system is assumed to not be exhibiting tidal decay. 
-If a quadratic model provides a better fit, your system is assumed to be exhibiting tidal decay. Metrics are simplified 
-for you by calculating a :math:`\Delta BIC` value (the linear :math:`BIC` minus the quadratic :math:`BIC`). The higher
-your :math:`\Delta BIC` value, the more likely your system is exhbiting tidal decay. More data on these metrics and how
-they are calculated can be found in `our team's paper here <https://arxiv.org/abs/2308.04587>`_. 
+**Susie** is a Python package for fitting models to exoplanet transit and occultation timing data in order to investigate orbital evolution. It is designed to detect deviations from constant orbital motion, such as tidal orbital decay or apsidal precession, by fitting the data to different timing models and comparing their statistical likelihoods.
 
-You can choose to fit your data to a specified model, or we can do the work for you, fitting both models with your data 
-and returning a :math:`\Delta BIC` value for you to further assess. Visualizations are given for you to further examine 
-your results with your resturned model data. Just input your data into the :ref:`timing_data.py <timing_data_label>`
-object, then insert your created object into the :ref:`ephemeris.py <ephemeris_label>` object to proceed with your choice
-of modeling and visualizations. See the documentation and example scripts below for more.
+Susie supports three models:
 
-Future work includes implementation of `Astroplan <https://astroplan.readthedocs.io/en/stable/index.html>`_ to provide
-future observing schedules so you can make sure to catch every transit available from your observing point. We also
-plan to improve our model fits with the `Emcee <https://emcee.readthedocs.io/en/stable/>`_ package, as well as include
-functionality to detect precession that may masquerade as tidal decay in your system.
+- **Linear**: constant-period orbit (no orbital evolution)
+- **Quadratic**: changing orbital period (e.g., due to tidal decay)
+- **Sinusoidal**: precession of the orbit (e.g., due to apsidal motion)
+
+The workflow is as follows:
+
+1. Fit your timing data to one or more of the models (linear, quadratic, or sinusoidal).
+2. Evaluate the quality of the model fit using the Bayesian Information Criterion (BIC).
+3. Compare models using ΔBIC (difference in BIC values) to determine which model best explains the data.
+4. Visualize model parameters and fit residuals to better interpret the orbital behavior.
+
+A lower BIC indicates a better-fitting model. ΔBIC is computed as the BIC of one model minus the BIC of another. While it’s common to compare a non-linear model (quadratic or sinusoidal) against a linear one to test for non-constant orbits, any pair of models can be compared. A positive ΔBIC value indicates that the second model better explains the data (i.e., it has a lower BIC).
+
+Susie allows you to:
+
+- Fit individual models and examine their parameter estimates and fit diagnostics.
+- Automatically fit multiple models and return a summary of BIC values and pairwise ΔBIC comparisons.
+- Generate clear visualizations to assess model performance and potential orbital changes.
+
+To get started, load your timing data using the ``timing_data.py`` object, then pass it to ``ephemeris.py`` to perform model fitting, comparison, and visualization.
+
+Planned features include:
+
+- Integration with `Astroplan <https://astroplan.readthedocs.io/en/stable/index.html>`_ to plan future transit observations.
+- Improved parameter estimation using the `emcee <https://emcee.readthedocs.io/en/stable/>`_ MCMC sampler.
+- Extended support for distinguishing precession from decay in ambiguous timing signals.
 
 .. note::
    This project is under active development.

@@ -38,4 +38,4 @@ autodoc_default_flags = ['members', 'undoc-members', 'private-members']
 # html_theme = "furo"
 html_permalinks_icon = '<span>#</span>'
 # html_theme = 'sphinxawesome_theme'
-html_theme = 'piccolo_theme'
+html_theme = "pydata_sphinx_theme"
