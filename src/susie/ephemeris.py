@@ -191,7 +191,7 @@ class LinearModel(BaseModel):
                 'conjunction_time_err': Uncertainty associated with conjunction_time
                 }
         """
-        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, tra_or_occ))
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.lin_fit, independent_vars=["E", "tra_or_occ_enum"])
         params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], tra_or_occ_enum=tra_or_occ_enum)
@@ -335,7 +335,7 @@ class QuadraticModel(BaseModel):
         """
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.quad_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, tra_or_occ))
         params = model.make_params(T0=init_params["conjunction_time"], P=init_params["period"], dPdE=init_params["decay_rate"], tra_or_occ_enum=tra_or_occ_enum)
         result = model.fit(y, params, weights=1.0/yerr, E=x, tra_or_occ_enum=tra_or_occ_enum)
         return_data = {
@@ -351,7 +351,7 @@ class QuadraticModel(BaseModel):
 
 class PrecessionModel(BaseModel):
     """Subclass of BaseModel that implements fitting of timing data to a precession orbital model."""
-    def get_initial_params(self, x, y, yerr, tra_or_occ):
+    def get_initial_params(self, x, y, tra_or_occ):
         """Computes and returns initial parameters for the model fit method.
 
         This method calculates the conjunction time (T0) and orbital period (P) 
@@ -607,7 +607,7 @@ class PrecessionModel(BaseModel):
             # STARTING VAL OF dwdE CANNOT BE 0, WILL RESULT IN NAN VALUES FOR THE MODEL
         tra_or_occ_enum = [0 if i == 'tra' else 1 for i in tra_or_occ]
         model = Model(self.precession_fit, independent_vars=["E", "tra_or_occ_enum"])
-        init_params = kwargs.get("init_params", self.get_initial_params(x, y, yerr, tra_or_occ))
+        init_params = kwargs.get("init_params", self.get_initial_params(x, y, tra_or_occ))
         if init_params is None:
             init_params = self.get_initial_params(x, y, yerr, tra_or_occ)
         # Can put bounds between 0 and 2pi for omega0 THIS DOES NOT WORK, WILL MESS UP RESULTS
@@ -1791,17 +1791,24 @@ class Ephemeris(object):
         DAYS_TO_SECONDS = 1*24*60*60
         fig, ax = plt.subplots(figsize=(6*(16/9), 6))
         y_data = model_data['model_data']
+        y_times = self.timing_data.mid_times.copy()
+        y_times_errs = self.timing_data.mid_time_uncertainties.copy()
         # Subtract the linear parameters if arg is True
         if subtract_lin_params:
-            y_data = self._subtract_linear_parameters(model_data['model_data'], model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)*DAYS_TO_SECONDS
+            y_data = self._subtract_linear_parameters(y_data, model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)*DAYS_TO_SECONDS
+            y_times = self._subtract_linear_parameters(y_times, model_data['conjunction_time'], model_data['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)*DAYS_TO_SECONDS
+            y_times_errs*=DAYS_TO_SECONDS
         # Plot transits and occultations separately if arg is True
         if show_occultations:
-            ax.plot(self.timing_data.epochs[self.tra_mask], y_data[self.tra_mask], color='#0033A0', label="Transits")
-            ax.plot(self.timing_data.epochs[self.occ_mask], y_data[self.occ_mask], color="#D64309", label="Occultations")
+            ax.plot(self.timing_data.epochs[self.tra_mask], y_data[self.tra_mask], color='#0033A0', ls="--", label="Transits")
+            ax.plot(self.timing_data.epochs[self.occ_mask], y_data[self.occ_mask], color="#D64309", ls="--", label="Occultations")
+            ax.errorbar(self.timing_data.epochs[self.tra_mask], y_times[self.tra_mask], yerr=y_times_errs[self.tra_mask], marker='o', ls='', color='#0033A0', label="Observed Transit Mid-Times")
+            ax.errorbar(self.timing_data.epochs[self.occ_mask], y_times[self.occ_mask], yerr=y_times_errs[self.occ_mask], marker='o', ls='', color="#D64309", label="Observed Occultation Mid-Times")
             ax.legend()
         # Else just plot all data together
         else:
-            ax.plot(self.timing_data.epochs, y_data, color='#0033A0')
+            ax.plot(self.timing_data.epochs, y_data, color='#0033A0', ls="--")
+            ax.errorbar(self.timing_data.epochs, y_times, yerr=y_times_errs, marker='o', ls='', color='#0033A0', label="Observed Mid-Times")
         ax.set_xlabel('Epochs')
         if subtract_lin_params:
             ax.set_ylabel('Lin-Subtracted Mid-Times (Seconds)')
@@ -1810,6 +1817,7 @@ class Ephemeris(object):
         ax.set_title(f'{model_data["model_type"].capitalize()} Model Mid-Times')
         ax.grid(linestyle='--', linewidth=0.25, zorder=-1)
         ax.ticklabel_format(style="plain", useOffset=False)
+        ax.legend()
         if save_plot == True:
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
@@ -1847,7 +1855,7 @@ class Ephemeris(object):
             fig.savefig(save_filepath, bbox_inches='tight', dpi=300)
         return ax
 
-    def plot_oc_plot(self, model_type, save_plot=False, save_filepath=None):
+    def plot_oc_plot(self, model_type, save_plot=False, save_filepath=None, **kwargs):
         """Plots a scatter plot of observed minus calculated mid-times. 
         
         Subtracts the linear portion from the observed mid-times. The linear portion is calculated using
@@ -1866,7 +1874,7 @@ class Ephemeris(object):
         DAYS_TO_SECONDS = 86400
         # y = T0 - PE - 0.5 dP/dE E^2
         linear_model = self.fit_model("linear")
-        model = self.fit_model(model_type)
+        model = self.fit_model(model_type, **kwargs)
         # plot observed points w/ x=epoch, y=T(E)-T0-PE, yerr=sigmaT0
         y = (self._subtract_linear_parameters(self.timing_data.mid_times, linear_model['conjunction_time'], linear_model['period'], self.timing_data.epochs, self.timing_data.tra_or_occ)) * DAYS_TO_SECONDS
         self.oc_vals = y
