@@ -90,3 +90,5 @@ schedule_test.csv
 /example_data/updated_combined_TrES5b.csv
 help_env
 notebooks/brian*
+notebooks/hat-p-37-b.ipynb
+example_data/Athano2022_Table6.csv
